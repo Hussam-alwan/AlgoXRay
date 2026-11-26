@@ -1,4 +1,6 @@
 from copy import deepcopy
+from dataclasses import replace
+from algoxray.problem_registry import REGISTRY
 import json
 
 import jsonschema
@@ -95,7 +97,7 @@ def test_snapshot_is_independent_and_strict_json():
 def test_oracle_disagreement_never_accuses(monkeypatch):
     def disagree(*_):
         raise OracleDisagreement("test disagreement")
-    monkeypatch.setattr(engine, "reference", disagree)
+    monkeypatch.setitem(REGISTRY, "dijkstra_v1", replace(REGISTRY["dijkstra_v1"], reference=disagree))
     r = analyze(get_submission("dijkstra_correct"), Options(), case=PROBLEMS["dijkstra_v1"]["example"], persist=False)
     assert r["status"] == "oracle_disagreement" and not r["claims"]
 

@@ -30,3 +30,6 @@ htmlcov/
 node_modules/
 .DS_Store
 Thumbs.db
+
+.venv-option-b/
+results/option-b-new/
