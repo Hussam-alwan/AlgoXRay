@@ -12,7 +12,7 @@ This is a forward development log, separate from historical release results.
 | WP5 explanation | Structural and rule-predicate verification, abstention and constrained claim selection integrated; untested | Independent human evaluation; external provider optional |
 | WP6 UI | Ranked observations and frame identity integrated; untested | Browser verification and remaining usability work |
 | WP7 evaluation | Prospective protocol drafted | Prospective runner, 30-file corpus and 450-run protocol prepared; not executed; external label review required |
-| WP8 conference | Demo sequence and claims checklist drafted | Revise actual manuscript, poster and reviewer response |
+| WP8 conference | Separate Option B manuscript, poster HTML, demo script and reviewer response drafted | Actual review text, measured results, final template and author approval |
 
 Branch: option-b. Main remains unchanged. Historical benchmark evidence is not
 regenerated or rewritten. Build, run and runtime verification are deferred

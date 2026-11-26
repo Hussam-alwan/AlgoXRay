@@ -15,7 +15,7 @@ def client(tmp_path, monkeypatch):
 
 def test_health_source_catalog_and_offline_ui(client):
     assert client.get("/api/health").json()["status"] == "ready"
-    assert len(client.get("/api/problems").json()) == 2
+    assert {p["id"] for p in client.get("/api/problems").json()} == {"dijkstra_v1", "binary_search_v1", "max_subarray_v1"}
     fixtures = client.get("/api/fixtures").json()
     assert len(fixtures) >= 7 and all("source_sha256" in f for f in fixtures)
     assert client.get("/").status_code == 200
@@ -58,3 +58,13 @@ def test_concurrent_run_receives_busy_response(client):
         assert r.status_code == 409
     finally:
         analysis_lock.release()
+
+def test_max_subarray_api_witness(client):
+    response = client.post("/api/analyze", json={"problem_id": "max_subarray_v1",
+        "fixture_id": "max_subarray_empty_bug", "case": {"array": [-2]},
+        "options": {"shrink": False}})
+    assert response.status_code == 200
+    bundle = response.json()
+    assert bundle["failure_kind"] == "wrong_answer"
+    assert bundle["witness_explanation"]["sum"] == -2
+    assert bundle["evidence_revision"] == "option-b.1"
