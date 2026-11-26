@@ -1,4 +1,5 @@
 import json
+import math
 import os
 from pathlib import Path
 import queue
@@ -36,11 +37,18 @@ class Runner:
 
         def reader():
             try:
-                for line in process.stdout:
+                while True:
+                    line = process.stdout.readline(3 * 1024 * 1024 + 1)
+                    if not line:
+                        break
                     if len(line) > 3 * 1024 * 1024:
                         messages.put({"protocol_error": "Worker output too large"})
                         return
-                    messages.put(json.loads(line))
+                    decoded = json.loads(line)
+                    if type(decoded) is not dict:
+                        messages.put({'protocol_error': 'Worker response is not an object'})
+                        return
+                    messages.put(decoded)
             except (ValueError, OSError) as exc:
                 messages.put({"protocol_error": str(exc)})
             finally:
@@ -58,7 +66,12 @@ class Runner:
 
     def run(self, case, trace=False, trace_limit=2000):
         if self.process is None or self.process.poll() is not None:
-            self._start()
+            self.close()
+            try:
+                self._start()
+            except OSError as exc:
+                self.close()
+                raise InvalidSubmission('Worker startup failed') from exc
         self.calls += 1
         start = time.perf_counter()
         try:
@@ -70,6 +83,14 @@ class Runner:
             if "worker_exited" in result or "protocol_error" in result or result.get("status") == "worker_error":
                 self.close()
                 raise InvalidSubmission("Worker protocol failed")
+            elapsed = result.get("elapsed_ms")
+            if (result.get("status") not in {"ok","contract_violation","timeout","exception"}
+                    or type(elapsed) not in (int,float) or not math.isfinite(elapsed) or elapsed < 0
+                    or type(result.get("events")) is not list
+                    or result.get("trace_status") not in {"complete","truncated","not_run","failed"}
+                    or (result["status"] == "ok" and "output" not in result)):
+                self.close()
+                raise InvalidSubmission("Invalid worker response")
             return result
         except queue.Empty:
             self.close()

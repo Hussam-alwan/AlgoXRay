@@ -91,6 +91,15 @@ def validate_bundle(bundle):
         verify = bundle["verification"]
         if not verify["input_valid"] or verify["replay_matches"] != verify["replay_attempts"] or verify["replay_attempts"] < 2:
             raise ValueError("Unverified witness")
+    if bundle.get("evidence_revision") == "option-b.1":
+        line_count = len(bundle["submission"]["source"].splitlines())
+        if any(type(e.get("line")) is not int or not 1 <= e["line"] <= line_count for e in bundle["events"]):
+            raise ValueError("Trace refers to a missing source line")
+        verify_claim_links(bundle)
+        if bundle.get("ranked_observations") != rank_observations(bundle):
+            raise ValueError("Ranked observations differ from verified claim references")
+        if bundle.get("explanation_cards") != explanation_cards(bundle):
+            raise ValueError("Explanation cards differ from verified claims")
     if bundle["evidence_level"] == "E3" and (bundle["trace_status"] != "complete" or not events):
         raise ValueError("E3 requires recorded execution")
     json.dumps(bundle, allow_nan=False)
@@ -224,10 +233,14 @@ def analyze(submission, options=None, case=None, persist=True):
                         if _fingerprint(trace, traced_failure) != best["fingerprint"]:
                             trace = {"events": [], "trace_status": "failed"}
         except InvalidSubmission as exc:
-            best = None
-            status, error = "invalid_submission", str(exc)
             trace = {"events": [], "trace_status": "failed"}
-            stop_reason = "verification_infrastructure_failure"
+            if status == "witness_found":
+                # A trace infrastructure failure cannot erase an already confirmed witness.
+                stop_reason = "trace_infrastructure_failure"
+            else:
+                best = None
+                status, error = "invalid_submission", str(exc)
+                stop_reason = "verification_infrastructure_failure"
         stats.setdefault("replay_ms", 0.0)
         stats.setdefault("trace_ms", 0.0)
         stats.update({"total_solver_calls": runner.calls, "worker_startups": runner.startups,
@@ -262,7 +275,6 @@ def analyze(submission, options=None, case=None, persist=True):
     bundle["witness_explanation"] = (spec.certificate(best["case"], best["result"]["output"], best["expected"])
                                      if best and best["failure"] == "wrong_answer" else None)
     bundle["claims"], bundle["hints"] = build_hints(bundle, submission)
-    verify_claim_links(bundle)
     abstain_on_unsupported(bundle)
     if any(c["kind"] == "source_specific_observation" for c in bundle["claims"]):
         bundle["evidence_level"] = "E3"

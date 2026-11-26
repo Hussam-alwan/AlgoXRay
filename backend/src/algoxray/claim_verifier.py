@@ -61,6 +61,7 @@ def abstain_on_unsupported(bundle):
         if claim["kind"] != "source_specific_observation":
             continue
         try:
+            verify_claim_links({**bundle, "claims": [claim]})
             valid = semantic_observation_valid(bundle, claim)
         except (KeyError, IndexError, TypeError, ValueError):
             valid = False
