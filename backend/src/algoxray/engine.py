@@ -19,7 +19,7 @@ from .hints import build_hints
 from .localization import rank_observations
 from .spectrum import coverage, rank_spectrum
 from .dependencies import dynamic_dependencies
-from .claim_verifier import verify_claim_links, abstain_on_unsupported
+from .claim_verifier import verify_claim_links, abstain_on_unsupported, verify_published_claims
 from .explanation import explanation_cards
 from .paths import RESULTS
 from .problems import OracleDisagreement
@@ -105,8 +105,31 @@ def validate_bundle(bundle):
         if bundle.get("explanation_cards") != explanation_cards(bundle):
             raise ValueError("Explanation cards differ from verified claims")
     if bundle.get("evidence_revision") == "option-b.2":
+        verify_published_claims(bundle)
         samples = bundle.get("diagnostic_samples",[])
+        if len(samples)>5:
+            raise ValueError("Too many diagnostic samples")
+        spec = spec_for(bundle["problem_id"])
+        keys=set()
         for sample in samples:
+            legal = spec.validate(sample["case"])
+            key=json.dumps(legal,sort_keys=True)
+            if key in keys or sample["outcome"] not in {"pass","fail"}:
+                raise ValueError("Invalid or duplicate diagnostic sample")
+            keys.add(key)
+            if sample.get("witness"):
+                if legal!=bundle["case"] or sample["outcome"]!="fail":
+                    raise ValueError("Diagnostic witness mismatch")
+            else:
+                expected=spec.reference(legal)
+                if expected!=sample["expected"]:
+                    raise ValueError("Diagnostic sample oracle mismatch")
+                if sample["outcome"]=="pass" and (sample["failure_kind"] is not None or spec.check(legal,sample["observed"],expected) is not None):
+                    raise ValueError("Invalid passing diagnostic sample")
+                if sample["outcome"]=="fail" and sample["failure_kind"] not in {"wrong_answer","contract_violation","exception","timeout"}:
+                    raise ValueError("Invalid failing diagnostic sample")
+                if sample["failure_kind"]=="wrong_answer" and spec.check(legal,sample["observed"],expected)!="wrong_answer":
+                    raise ValueError("Invalid diagnostic wrong answer")
             source_events = bundle["events"] if sample.get("witness") else sample["events"]
             if sample["lines"] != coverage(source_events):
                 raise ValueError("Diagnostic sample coverage mismatch")
@@ -251,28 +274,33 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
                         traced_failure = trace["status"] if trace["status"] != "ok" else spec.check(best["case"], trace.get("output"), best["expected"])
                         if _fingerprint(trace, traced_failure) != best["fingerprint"]:
                             trace = {"events": [], "trace_status": "failed"}
-            if best and trace["trace_status"] == "complete" and options.diagnostic_samples:
-                diagnostic_samples.append({"case":deepcopy(best["case"]),"outcome":"fail","lines":coverage(trace["events"]),"witness":True})
-                seen = {json.dumps(best["case"],sort_keys=True)}
-                candidates = [a["case"] for a in attempts if a["status"]=="pass"][:8]
-                candidates += [spec.random_case(rng) for _ in range(8)]
-                for candidate in candidates[:12]:
-                    if len(diagnostic_samples)-1 >= options.diagnostic_samples: break
-                    key=json.dumps(candidate,sort_keys=True)
-                    if key in seen: continue
-                    seen.add(key)
-                    expected=spec.reference(candidate)
-                    ordinary=runner.run(candidate)
-                    stats["diagnostic_solver_calls"]+=1
-                    failure=ordinary["status"] if ordinary["status"]!="ok" else spec.check(candidate,ordinary.get("output"),expected)
-                    outcome="fail" if failure else "pass"
-                    if failure and not any(s["outcome"]=="pass" for s in diagnostic_samples): continue
-                    recorded=runner.run(candidate,trace=True,trace_limit=options.trace_limit)
-                    stats["diagnostic_solver_calls"]+=1
-                    recorded_failure=recorded["status"] if recorded["status"]!="ok" else spec.check(candidate,recorded.get("output"),expected)
-                    if recorded["trace_status"]=="complete" and _fingerprint(ordinary,failure)==_fingerprint(recorded,recorded_failure):
-                        diagnostic_samples.append({"case":candidate,"outcome":outcome,"lines":coverage(recorded["events"]),
-                                                   "expected":expected,"observed":ordinary.get("output"),"failure_kind":failure,"events":[{"line":v["line"],"kind":v["kind"],"event_id":v["event_id"]} for v in recorded["events"]]})
+            try:
+                if best and trace["trace_status"] == "complete" and options.diagnostic_samples:
+                    diagnostic_samples.append({"case":deepcopy(best["case"]),"outcome":"fail","lines":coverage(trace["events"]),"witness":True})
+                    seen = {json.dumps(best["case"],sort_keys=True)}
+                    candidates = [a["case"] for a in attempts if a["status"]=="pass"][:8]
+                    candidates += [spec.random_case(rng) for _ in range(8)]
+                    for candidate in candidates[:12]:
+                        if len(diagnostic_samples)-1 >= options.diagnostic_samples: break
+                        key=json.dumps(candidate,sort_keys=True)
+                        if key in seen: continue
+                        seen.add(key)
+                        candidate=spec.validate(candidate)
+                        expected=spec.reference(candidate)
+                        ordinary=runner.run(candidate)
+                        stats["diagnostic_solver_calls"]+=1
+                        failure=ordinary["status"] if ordinary["status"]!="ok" else spec.check(candidate,ordinary.get("output"),expected)
+                        outcome="fail" if failure else "pass"
+                        if failure and not any(s["outcome"]=="pass" for s in diagnostic_samples): continue
+                        recorded=runner.run(candidate,trace=True,trace_limit=options.trace_limit)
+                        stats["diagnostic_solver_calls"]+=1
+                        recorded_failure=recorded["status"] if recorded["status"]!="ok" else spec.check(candidate,recorded.get("output"),expected)
+                        if recorded["trace_status"]=="complete" and _fingerprint(ordinary,failure)==_fingerprint(recorded,recorded_failure):
+                            diagnostic_samples.append({"case":candidate,"outcome":outcome,"lines":coverage(recorded["events"]),
+                                                       "expected":expected,"observed":ordinary.get("output"),"failure_kind":failure,"events":[{"line":v["line"],"kind":v["kind"],"event_id":v["event_id"]} for v in recorded["events"]]})
+            except (InvalidSubmission, OracleDisagreement) as exc:
+                # Optional diagnostic failures do not erase the verified primary trace.
+                stats['diagnostic_error'] = type(exc).__name__
         except AnalysisCancelled:
             status, best, stop_reason = 'cancelled', None, 'user_cancelled'
             diagnostic_samples = []

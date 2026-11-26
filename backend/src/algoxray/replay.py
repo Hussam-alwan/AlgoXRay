@@ -12,7 +12,8 @@ def replay_witness(bundle):
         raise ValueError("This bundle has no verified witness to replay")
     identity = bundle["submission"]
     options = Options(seed=bundle["seed"], per_case_seconds=bundle["options"]["per_case_seconds"],
-                      replay_count=bundle["options"]["replay_count"], shrink=False, include_trace=True)
+                      replay_count=bundle["options"]["replay_count"], shrink=False, include_trace=True,
+                      fresh_process=bundle["options"].get("fresh_process",False))
     with TemporaryDirectory(prefix="algoxray_replay_") as temp:
         candidate = None
         if identity["origin"] != "reviewed_local_file":

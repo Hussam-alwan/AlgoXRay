@@ -78,3 +78,38 @@ def abstain_on_unsupported(bundle):
     bundle["claim_verification"] = {"rejected_ids": sorted(rejected), "method": "rule_predicates_v1",
                                     "rejected_candidates": rejected_candidates}
     return bundle
+
+def verify_published_claims(bundle):
+    """Rebuild deterministic published prose; reject free-text tampering.
+
+    This validates recorded evidence, not authenticity of an untrusted recording.
+    Actual historical execution must be checked separately by replay.
+    """
+    from copy import deepcopy
+    from types import SimpleNamespace
+    from .hints import build_hints
+    from .registry import catalog
+    from .problem_registry import spec_for
+    identity=bundle["submission"]
+    adapter=None
+    if identity.get("adapter_id"):
+        for row in catalog():
+            if row["id"]==identity["fixture_id"] and row["sha256"]==identity["source_sha256"] and row.get("adapter")==identity["adapter_id"]:
+                adapter=row["adapter"]
+                break
+        if adapter is None:
+            raise ValueError("Unrecognized source-bound adapter")
+    if bundle["status"]=="witness_found":
+        spec=spec_for(bundle["problem_id"])
+        legal=spec.validate(bundle["case"])
+        expected=spec.reference(legal)
+        if expected!=bundle["expected_output"]:
+            raise ValueError("Witness oracle mismatch")
+        if bundle["failure_kind"]=="wrong_answer" and spec.check(legal,bundle["observed_output"],expected)!="wrong_answer":
+            raise ValueError("Witness does not violate output contract")
+    regenerated={**bundle}
+    regenerated["claims"],regenerated["hints"]=build_hints(bundle,SimpleNamespace(source=identity["source"],origin=identity["origin"],adapter=adapter))
+    abstain_on_unsupported(regenerated)
+    if regenerated["claims"]!=bundle["claims"] or regenerated["hints"]!=bundle["hints"]:
+        raise ValueError("Published explanation differs from deterministic evidence templates")
+    return bundle

@@ -298,6 +298,91 @@
         "fresh_process_per_case",
         "persistent_worker_fresh_namespace"
       ]
+    },
+    "diagnostic_samples": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "case",
+          "outcome",
+          "lines"
+        ],
+        "properties": {
+          "case": {
+            "type": "object"
+          },
+          "outcome": {
+            "enum": [
+              "pass",
+              "fail"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "uniqueItems": true
+          },
+          "witness": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "suspicion_ranking": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "required": [
+          "line",
+          "event_id",
+          "score",
+          "basis",
+          "causal_fault_proven"
+        ],
+        "properties": {
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "basis": {
+            "const": "ochiai_suspicion"
+          },
+          "causal_fault_proven": {
+            "const": false
+          }
+        }
+      }
+    },
+    "dynamic_dependencies": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": [
+          "line",
+          "frame_id",
+          "before_event_id",
+          "after_event_id",
+          "reads",
+          "write",
+          "basis",
+          "causal_fault_proven"
+        ]
+      }
     }
   },
   "allOf": [
