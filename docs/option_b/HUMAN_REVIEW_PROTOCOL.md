@@ -1,0 +1,9 @@
+# Independent review protocol (pending reviewers)
+
+Keep each review packet separate from its mapping key. Recruit at least two human reviewers not involved in implementing the diagnostic rules; record expertise and independence, and have them rate independently before discussion. Do not replace humans with AI or claim blind status if a reviewer knows the implementation.
+
+Claim factuality: supported (all asserted factual parts follow from the given source and recorded evidence), contradicted (at least one part is false), uncheckable (insufficient evidence). Supply a reason and identify the relevant event or contract. Educational helpfulness is a separate question, not implied by support.
+
+Localization: given code, case, expected/observed outcome and trace, label all independently acceptable lines where the defect could be addressed, or mark missing_step or ambiguous. Do not equate a recorded return symptom with the causal faulty line. Reasons are required. Leave algorithm rankings hidden while labeling. For a located defect use semicolon-separated 1-based lines; do not invent a line for a missing operation.
+
+Use tools/option_b_human_review.py prepare to produce localization packets and CSV templates from a completed audit. Distribute only the localization packet and the explanation review_packet.jsonl, never the keys. Duplicate the relevant CSV template for each reviewer and fill reviewer, verdict and reason; fill acceptable_lines for located cases. Keep disagreements and original ratings; a subsequent independently recorded adjudication can be reported separately. Run the score command to report per-arm before/after factuality counts, inter-rater agreement/kappa, and Top-1/3/5 localization counts with missing/ambiguous/no-ranking counts. Do not report a score until real ratings arrive. Program-level clustering and learner outcomes require separate study.
