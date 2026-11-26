@@ -19,3 +19,5 @@ python benchmarks/option_b/evaluate.py freeze --out results/option-b-new
 python benchmarks/option_b/evaluate.py run --out results/option-b-new
 ```
 The three paired variants use five declared seeds, giving 450 planned runs. No runs have been executed. The review CSV requires actual independent reviewer judgments.
+
+The current UI separates historical results from the prospective Option B summary. The latter is read from results/option-b-new/summary.json and displays a not-run state before collection. Review.csv contains candidate claims, including rejected candidates, without a publication-decision column; verification_decisions.csv is a separate key for post-review comparison. Reviewers must not consult the raw verification decisions until their ratings are frozen.

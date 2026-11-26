@@ -29,6 +29,7 @@ function setBusy(value) {
   $('analyze-label').textContent = value ? 'جارٍ التحليل…' : 'ابدأ التحليل';
   for (const selector of ['fixture-select', 'strategy', 'seed', 'budget', 'shrink', 'manual-case', 'source-editor', 'trusted-local-code', 'mode-custom', 'mode-fixture', 'load-template', 'load-bug-example', 'import-code', 'code-file', 'case-input', 'pin-witness', 'clear-witness']) $(selector).disabled = value;
   document.querySelectorAll('[data-problem]').forEach(button => button.disabled = value);
+  $('mode-custom').disabled = value || state.customCodeEnabled === false;
 }
 
 function setProblem(id) {
@@ -237,7 +238,23 @@ async function runAnalysis(event) {
 }
 
 
+async function loadOptionBBenchmarks() {
+  const target = $('option-b-benchmark-state'), table = $('option-b-benchmark-table');
+  table.replaceChildren(); target.replaceChildren(node('h2', '', 'تقييم Option B الجديد'));
+  try {
+    const data = await request('/api/option-b/benchmark-summary');
+    if (data.status === 'not_run') {target.append(node('p', 'report-intro', 'لا توجد نتائج منفذة لهذه النسخة بعد. الأرقام التاريخية أعلاه منفصلة.')); return;}
+    target.append(node('p', 'report-intro', `${data.run_count} تشغيل على ${data.corpus_count} ملف حلّ · التحكيم البشري: ${data.human_review}`));
+    const t = node('table', 'results-table'), head = node('thead'), hr = node('tr'), body = node('tbody');
+    for (const label of ['المسألة','الطريقة','كشف الخطأ','اتهام الصحيح','تشخيص مدعوم','تصغير']) hr.append(node('th','',label));
+    head.append(hr); t.append(head);
+    for (const r of data.rows) {const tr = node('tr'); for (const v of [r.problem,r.variant,`${r.buggy_found}/${r.buggy_runs}`,`${r.control_accusations}/${r.control_runs}`,r.specific,r.reduced]) tr.append(node('td','',String(v))); body.append(tr);}
+    t.append(body); table.append(t,node('p','report-note','هذه نتائج تقنية على ملفات مصدر؛ لا تمثل طلاباً مستقلين أو فائدة تعليمية مقاسة.'));
+  } catch(error) {target.append(node('p','error-message',error.message));}
+}
+
 async function loadBenchmarks() {
+  void loadOptionBBenchmarks();
   const target = $('benchmark-state'), table = $('benchmark-table');
   target.replaceChildren(node('p', 'report-intro', 'تحميل بيانات التجارب…')); table.replaceChildren();
   try {
@@ -395,6 +412,8 @@ window.addEventListener('resize', () => state.cy?.resize());
 
 Promise.all([request('/api/health'), request('/api/problems'), request('/api/fixtures')]).then(([health, problems, fixtures]) => {
   state.problems = problems; state.fixtures = fixtures;
+  const tabs = document.querySelector('.problem-tabs'); tabs.replaceChildren();
+  problems.forEach((p,i) => {const button = node('button','problem-tab'); button.type = 'button'; button.dataset.problem = p.id; button.append(node('span','',String(i+1).padStart(2,'0')),document.createTextNode(p.name)); button.addEventListener('click',()=>setProblem(p.id)); tabs.append(button);});
   state.customCodeEnabled = health.custom_code;
   if (!health.custom_code) {
     state.mode = 'fixture';
