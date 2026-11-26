@@ -1,0 +1,15 @@
+# Stable text checkouts; source fingerprints always refer to exact raw bytes.
+* text=auto
+*.py text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.txt text eol=lf
+*.md text eol=lf
+*.bat text eol=crlf
+# Preserve byte-addressed sources and historical artifacts.
+fixtures/**/*.py -text !eol
+benchmarks/core/submissions/*.py -text !eol
+results/** -text !eol
