@@ -15,7 +15,7 @@ async function request(url, options = {}) {
   if (!response.ok) {
     const detail = data.detail;
     const error = new Error(typeof detail === 'string' ? detail : detail?.message || JSON.stringify(detail || data));
-    error.line = detail?.line; error.column = detail?.column; throw error;
+    error.line = detail?.line; error.column = detail?.column; error.status=response.status; throw error;
   }
   return data;
 }
@@ -215,8 +215,24 @@ $('cancel-analysis').addEventListener('click', async () => {
   const id = state.analysisId;
   if (!state.busy || !id) return;
   $('cancel-analysis').disabled = true;
-  try {await request('/api/analysis/'+id+'/cancel',{method:'POST'}); $('status-description').textContent='طُلب إيقاف العامل…';}
-  catch(error) {if(state.busy){showError(error.message); $('cancel-analysis').disabled=false;}}
+  $('status-description').textContent='جارٍ طلب إيقاف التحليل…';
+  const active=()=>state.busy && state.analysisId===id;
+  // The local-session request may still be pending when the user clicks cancel.
+  // Retry only the not-yet-registered response; never claim cancellation on 404.
+  const deadline=Date.now()+10000;
+  while(active()){
+    try {
+      await request('/api/analysis/'+id+'/cancel',{method:'POST'});
+      if(active()) $('status-description').textContent='طُلب إيقاف العامل…';
+      return;
+    } catch(error){
+      if(!active()) return;
+      if(error.status!==404 || Date.now()>=deadline){
+        showError(error.message); $('cancel-analysis').disabled=false; return;
+      }
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+  }
 });
 async function runAnalysis(event) {
   event.preventDefault(); if (state.busy) return; stopPlaying(); showError('');

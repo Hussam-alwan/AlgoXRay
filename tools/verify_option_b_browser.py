@@ -82,13 +82,23 @@ def run(output, port):
                 page.locator("#mode-custom").click()
                 page.locator("#source-editor").fill("import time\ndef solve(x):\n    time.sleep(10)\n    return -1\n")
                 page.locator("#trusted-local-code").check()
-                with page.expect_response(lambda r:r.url==url+"/api/analyze" and r.request.method=="POST",timeout=15000) as received:
-                    page.locator("#analyze-button").click()
+                # Exercise the real race: hold the custom-code session response until
+                # cancellation was requested before the server registered the analysis.
+                held=[]
+                hold=lambda route:held.append(route)
+                page.route(url+"/api/session",hold)
+                with page.expect_response(lambda r:r.url==url+"/api/analyze" and r.request.method=="POST",timeout=20000) as received:
+                    with page.expect_request(url+"/api/session"):
+                        page.locator("#analyze-button").click()
                     page.locator("#cancel-analysis").wait_for(state="visible")
-                    page.wait_for_timeout(350)
-                    page.locator("#cancel-analysis").click()
+                    with page.expect_response(lambda r:r.url.endswith("/cancel") and r.status==404,timeout=5000):
+                        page.locator("#cancel-analysis").click()
+                    assert len(held)==1
+                    with page.expect_response(lambda r:r.url.endswith("/cancel") and r.status==200,timeout=10000):
+                        held[0].continue_()
+                page.unroute(url+"/api/session",hold)
                 cancelled=received.value.json()
-                assert cancelled["status"]=="cancelled" and not cancelled["claims"]
+                assert cancelled["status"]=="cancelled" and not cancelled["claims"],cancelled["status"]
                 page.wait_for_function("!document.querySelector('#analyze-button').disabled")
                 journeys.append("server_side_cancellation")
                 page.locator("#mode-fixture").click()
