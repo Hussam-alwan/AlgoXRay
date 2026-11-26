@@ -18,6 +18,7 @@ from .problem_registry import spec_for
 from .hints import build_hints
 from .localization import rank_observations
 from .spectrum import coverage, rank_spectrum
+from .dependencies import dynamic_dependencies
 from .claim_verifier import verify_claim_links, abstain_on_unsupported
 from .explanation import explanation_cards
 from .paths import RESULTS
@@ -111,6 +112,8 @@ def validate_bundle(bundle):
                 raise ValueError("Diagnostic sample coverage mismatch")
         if bundle.get("suspicion_ranking") != rank_spectrum(samples,bundle["events"]):
             raise ValueError("Suspicion ranking mismatch")
+        if "dynamic_dependencies" in bundle and bundle["dynamic_dependencies"] != (dynamic_dependencies(bundle["submission"]["source"], bundle["events"]) if bundle["trace_status"]=="complete" else []):
+            raise ValueError("Dynamic dependency evidence mismatch")
     if bundle["evidence_level"] == "E3" and (bundle["trace_status"] != "complete" or not events):
         raise ValueError("E3 requires recorded execution")
     json.dumps(bundle, allow_nan=False)
@@ -333,6 +336,7 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
     bundle['explanation_cards'] = explanation_cards(bundle)
     bundle['diagnostic_samples'] = diagnostic_samples if best else []
     bundle['suspicion_ranking'] = rank_spectrum(bundle['diagnostic_samples'],bundle['events'])
+    bundle['dynamic_dependencies'] = dynamic_dependencies(submission.source,bundle['events']) if bundle['trace_status']=='complete' else []
     bundle['evidence_revision'] = 'option-b.2'
     validate_bundle(bundle)
     if persist:

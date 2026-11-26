@@ -354,6 +354,15 @@ function renderDiagnosis() {
     spectrum.append(node('p','','ترتيب اشتباه إحصائي من تشغيلات ناجحة وفاشلة محدودة، وليس إثباتاً للسبب.'));
     for (const row of result.suspicion_ranking) {const b=node('button','secondary-button',`السطر ${row.line} · ${row.failed_covered}/${row.failed_total} فشل · ${row.passed_covered}/${row.passed_total} نجاح`); b.type='button'; b.addEventListener('click',()=>{const i=result.events.findIndex(e=>e.event_id===row.event_id); if(i>=0){state.original=false;state.step=i;stopPlaying();renderStep();}}); spectrum.append(b);}
   }
+  const links = $('dynamic-dependencies'); links.replaceChildren();
+  if(result.dynamic_dependencies?.length){
+    links.append(node('p','','قراءات وكتابات عددية متحققة بين حدثين متتاليين (ليست سبباً مثبتاً).'));
+    for(const link of result.dynamic_dependencies.slice(0,12)){
+      const reads=Object.entries(link.reads).map(([k,v])=>k+'='+v).join(', ');
+      const b=node('button','secondary-button','L'+link.line+': '+reads+' → '+link.write.name+'='+link.write.value); b.type='button';
+      b.addEventListener('click',()=>{const i=result.events.findIndex(e=>e.event_id===link.after_event_id);if(i>=0){state.original=false;state.step=i;stopPlaying();renderStep();}});links.append(b);
+    }
+  }
   $('diagnosis-badge').textContent = supported ? 'موضع مدعوم بالتنفيذ' : 'شاهد مؤكد · افحص التتبع';
   $('diagnosis-text').textContent = supported ? observation.text : 'وجدنا مدخلاً يكشف فشل الحل، لكن لا يوجد دليل كافٍ لتحديد سبب منطقي بعينه في هذا الكود.';
   $('diagnosis-direction').textContent = supported ? (result.hints.find(h => h.tier === 'H4')?.text || 'افتح الحدث وافحص القيم المسجلة.') : 'قارن المتوقع بالناتج وتابع المتغيرات خطوة بخطوة. آخر سطر منفذ ليس بالضرورة سبب الخطأ.';
