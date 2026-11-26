@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import platform
 import sys
+import subprocess
 from collections import Counter
 from importlib.metadata import version
 from itertools import product
@@ -41,10 +42,17 @@ def inventory():
     return rows
 
 def freeze():
-    paths = sorted(p for directory in (ROOT/"backend/src", ROOT/"contracts", HERE)
-                   for p in directory.rglob("*") if p.is_file() and p.suffix in (".py",".json"))
+    tracked_dirty = subprocess.check_output(["git","status","--porcelain","--untracked-files=no"],cwd=ROOT,text=True).strip()
+    if tracked_dirty:
+        raise ValueError("Tracked source is not clean")
+    paths = {p for directory in (ROOT/"backend/src",ROOT/"backend/tests",ROOT/"contracts",ROOT/"fixtures",ROOT/"web",HERE)
+             for p in directory.rglob("*") if p.is_file() and p.suffix in (".py",".json",".html",".js",".css",".txt")}
+    paths.update(ROOT/name for name in ("requirements.lock.txt","backend/pyproject.toml","benchmarks/core/manifest.json",
+          "tools/verify_option_b_browser.py","tools/verify_core_browser.py"))
     rows = inventory()
-    return {"files":{p.relative_to(ROOT).as_posix():digest(p) for p in paths},
+    paths.update(ROOT/r["file"] for r in rows)
+    return {"source_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),
+            "files":{p.relative_to(ROOT).as_posix():digest(p) for p in sorted(paths)},
             "corpus":rows, "policy":load(HERE/"protocol.json"),
             "environment":{"python":platform.python_version(),"platform":platform.platform(),
                            "hypothesis":version("hypothesis"),"networkx":version("networkx")}}
@@ -108,7 +116,7 @@ def run(out, frozen):
                        "programs":len({r["program"] for r in group}),
                        "specific":sum(bool(r.get("specific")) for r in group),
                        "reduced":sum(bool(r.get("strictly_reduced")) for r in group)})
-    dump(out/"summary.json",{"status":"measured","corpus_count":len(frozen["corpus"]),
+    dump(out/"summary.json",{"status":"measured","source_commit":frozen.get("source_commit"),"corpus_count":len(frozen["corpus"]),
                             "run_count":len(rows),"rows":groups,"human_review":"pending"})
 
 def main():

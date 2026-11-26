@@ -43,7 +43,8 @@ function setProblem(id) {
   for (const entry of entries) select.append(new Option(entry.name_ar, entry.id));
   const defaultId = ({dijkstra_v1:'dijkstra_premature_visited',binary_search_v1:'binary_missing_last',max_subarray_v1:'max_subarray_empty_bug'})[id];
   if (entries.some(f => f.id === defaultId)) select.value = defaultId;
-  $('problem-description').textContent = problem().description_ar;
+  $('problem-description').textContent = problem().description_ar + ' · ' + (problem().contract_version || id);
+  if (!entries.length && state.customCodeEnabled) state.mode='custom';
   $('case-input').value = pretty(problem().example);
   syncSourceMode(); renderResult(); showError('');
 }
@@ -129,15 +130,18 @@ function drawArray(input) {
 
 function renderCase() {
   const input = activeCase(); if (!input) return;
-  const graph = state.problem === 'dijkstra_v1';
-  $('graph-container').hidden = !graph; $('array-container').hidden = graph;
-  $('graph-title').textContent = graph ? 'استكشف الغراف' : state.problem === 'max_subarray_v1' ? 'استكشف المصفوفة' : 'استكشف مجال البحث';
-  $('case-size').textContent = graph ? `${input.n} nodes / ${input.edges.length} edges` : `${input.array.length} items${input.target === undefined ? "" : " / target " + input.target}`;
+  const kind=problem()?.visualization;
+  const graph = kind==='graph' && Number.isInteger(input.n) && Array.isArray(input.edges);
+  const array = kind==='array' && Array.isArray(input.array);
+  $('graph-container').hidden = !graph; $('array-container').hidden = !array;
+  $('generic-case').hidden = graph || array; if(!graph && !array) $('generic-case').textContent=pretty(input);
+  $('graph-title').textContent = graph ? 'استكشف الغراف' : array ? 'استكشف المصفوفة' : 'استكشف المدخل (JSON)';
+  $('case-size').textContent = graph ? `${input.n} nodes / ${input.edges.length} edges` : array ? `${input.array.length} items${input.target === undefined ? "" : " / target " + input.target}` : "";
   $('case-json').textContent = pretty(input);
   $('graph-caption').textContent = !state.result?.case ? (state.result?.manual_check ? 'المدخل الذي فُحص' : state.pinned ? 'الشاهد المحفوظ لإعادة الفحص' : 'معاينة · دون نتيجة تحليل') : state.original ? 'الشاهد الأصلي · النتائج والتتبع للحالة المصغرة' : 'شاهد مؤكد · حالة التشغيل المتتبّعة';
   $('show-reduced').classList.toggle('active', !state.original); $('show-original').classList.toggle('active', state.original);
   $('show-original').disabled = !state.result?.original_case;
-  if (graph) drawGraph(input); else drawArray(input);
+  if (graph) drawGraph(input); else if(array) drawArray(input);
 }
 
 function renderStep() {
@@ -221,6 +225,7 @@ async function runAnalysis(event) {
   const seed = Number($('seed').value), budget = Number($('budget').value);
   if (!Number.isInteger(seed) || seed < 0 || seed > 4294967295 || !Number.isInteger(budget) || budget < 1 || budget > 500) {showError('راجع البذرة وميزانية المرشحات.'); return;}
   const custom = state.mode === 'custom', source = editorSource();
+  if (!custom && !fixture()) {showError('لا يوجد مثال مسجل لهذه المسألة. استخدم كودك المحلي إن كان متاحاً.'); return;}
   if (custom && !source.trim()) {showError('الصق كود Python أو افتح ملف .py أولاً.'); $('source-editor').focus(); return;}
   if (custom && new TextEncoder().encode(source).length > 32768) {showError('حجم الكود الأقصى 32 KiB.'); return;}
   if (custom && !$('trusted-local-code').checked) {showError('فعّل تأكيد الكود المحلي الموثوق أسفل المحرر أولاً.'); return;}
@@ -316,7 +321,7 @@ function syncSourceMode() {
   if (custom) {
     $('source-editor').value = state.drafts[state.problem] || '';
     $('editor-filename').textContent = state.filenames[state.problem] || 'submission.py';
-    $('editor-contract').textContent = state.problem === 'max_subarray_v1' ? 'استقبل payload["array"] وأعد أكبر مجموع لمقطع متصل غير فارغ.' : state.problem === 'binary_search_v1'
+    $('editor-contract').textContent = !['max_subarray_v1','binary_search_v1','dijkstra_v1'].includes(state.problem) ? problem().description_ar : state.problem === 'max_subarray_v1' ? 'استقبل payload["array"] وأعد أكبر مجموع لمقطع متصل غير فارغ.' : state.problem === 'binary_search_v1'
       ? 'الدالة solve(payload) تستقبل payload["array"] المرتبة وpayload["target"]، وتعيد فهرساً مطابقاً أو -1. طول المصفوفة 0–32؛ القيم من -20 إلى 20. استخدم return بدلاً من input أو طباعة الجواب.'
       : 'الدالة solve(payload) تستقبل n وedges وsource، وتعيد قائمة المسافات. الغراف موجه بسيط، 2–8 عقد، حتى 20 حافة فريدة دون حلقات، وأوزان صحيحة 1–20. استخدم return؛ المسافة غير القابلة للوصول يجب أن تكون None.';
     updateEditor();
@@ -382,8 +387,8 @@ function loadEditorExample(buggy) {
   if (state.busy) return;
   delete state.originals[state.problem];
   const id = ({binary_search_v1:'binary_missing_last',dijkstra_v1:'dijkstra_premature_visited',max_subarray_v1:'max_subarray_empty_bug'})[state.problem];
-  const example = state.fixtures.find(f => f.id === id)?.source || '';
-  $('source-editor').value = buggy ? example.replace(/\blo\b/g, 'left').replace(/\bhi\b/g, 'right').replace(/\barr\b/g, 'array')
+  const example = state.fixtures.find(f => f.id === id)?.source || state.fixtures.find(f=>f.problem_id===state.problem && f.label==='buggy')?.source || '';
+  $('source-editor').value = !['max_subarray_v1','binary_search_v1','dijkstra_v1'].includes(state.problem) && !buggy ? 'def solve(payload):\n    raise NotImplementedError\n' : buggy ? example.replace(/\blo\b/g, 'left').replace(/\bhi\b/g, 'right').replace(/\barr\b/g, 'array')
     : state.problem === 'max_subarray_v1' ? 'def solve(payload):\n    array = payload["array"]\n    return array[0]\n' : state.problem === 'binary_search_v1' ? 'def solve(payload):\n    array = payload["array"]\n    target = payload["target"]\n    # اكتب خوارزمية البحث هنا\n    return -1\n'
     : 'def solve(payload):\n    n = payload["n"]\n    edges = payload["edges"]\n    source = payload["source"]\n    # اكتب الحل وأعد قائمة المسافات\n    return [None] * n\n';
   state.filenames[state.problem] = buggy ? 'example_with_bug.py' : 'submission.py';
