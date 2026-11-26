@@ -15,6 +15,8 @@ def graph_cases(draw):
 def strategy_for(problem_id):
     if problem_id == "dijkstra_v1":
         return graph_cases()
+    if problem_id != "binary_search_v1":
+        raise ValueError("Unknown problem")
     return st.builds(lambda array, target: {"array": sorted(array), "target": target},
                      st.lists(st.integers(-20, 20), max_size=32), st.integers(-20, 20))
 
@@ -25,4 +27,6 @@ def random_case(problem_id, rng: random.Random):
         pairs = [(u, v) for u in range(n) for v in range(n) if u != v]
         picked = rng.sample(pairs, rng.randint(0, min(20, len(pairs))))
         return {"n": n, "edges": [[u, v, rng.randint(1, 20)] for u, v in picked], "source": rng.randrange(n)}
+    if problem_id != "binary_search_v1":
+        raise ValueError("Unknown problem")
     return {"array": sorted(rng.randint(-20, 20) for _ in range(rng.randint(0, 32))), "target": rng.randint(-20, 20)}
