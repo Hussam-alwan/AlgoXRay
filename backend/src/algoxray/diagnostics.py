@@ -1,5 +1,6 @@
 """Narrow AST/runtime observations. No arbitrary root-cause inference or source whitelist."""
 import ast
+from .invariants import invariant_observation
 
 
 def _bindings(function):
@@ -49,7 +50,9 @@ def custom_observation(bundle, submission):
                     "text":f"أعاد السطر {final['line']} الصفر رغم أن جميع العناصر سالبة. كل مقطع غير فارغ هنا مجموعُه سالب، فلا يمكن أن يكون الصفر جواباً قانونياً.",
                     "direction":"راجع هل تسمح تهيئة المجموع أو تحديثه بمقطع فارغ؛ افحص القيم السابقة قبل تغيير الكود.",
                     "adapter_id":"max_subarray_zero_negative_v1"}
-        return None
+        return invariant_observation(bundle)
+    if bundle["problem_id"] == "dijkstra_v1" and bundle["failure_kind"] == "wrong_answer":
+        return invariant_observation(bundle)
     if bundle["problem_id"] != "binary_search_v1" or bundle["failure_kind"] != "wrong_answer":
         return None
     try:

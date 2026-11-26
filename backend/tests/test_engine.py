@@ -68,8 +68,11 @@ def test_changed_source_disables_adapter(tmp_path):
     p.write_text(original.source, encoding="utf-8")
     sub = local_submission("dijkstra_v1", p)
     r = analyze(sub, Options(), case=PROBLEMS["dijkstra_v1"]["example"], persist=False)
-    assert r["status"] == "witness_found" and r["evidence_level"] == "E2"
-    assert not any(c["kind"] == "source_specific_observation" for c in r["claims"])
+    assert r["status"] == "witness_found"
+    assert r["submission"]["adapter_id"] is None
+    assert not any(c.get("adapter_id") == "dijkstra_seen_v1" for c in r["claims"])
+    # A source-independent mathematical invariant may still be verified.
+    assert all(c.get("adapter_id") in (None,"graph_relaxation_invariant_v1") for c in r["claims"])
 
 
 def test_trace_truncation_keeps_witness_and_abstains():

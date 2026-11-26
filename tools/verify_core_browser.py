@@ -54,7 +54,8 @@ def verify(url, output):
         page.locator("#case-input").fill('{"n":3,"edges":[[0,1,1],[0,2,3],[1,2,1]],"source":0}')
         graph = analyze(page)
         assert graph["witness_explanation"]["vertices"] == [0,1,2]
-        assert graph["diagnosis"]["status"]=="witness_only"
+        assert graph["diagnosis"]["status"]=="supported"
+        assert graph["claims"][-1]["adapter_id"]=="graph_relaxation_invariant_v1"
         assert "1 + 1 = 2" in page.locator("#witness-values").inner_text()
         page.locator("#show-original").click()
         assert page.locator("#step-range").is_disabled()

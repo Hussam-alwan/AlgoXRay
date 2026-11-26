@@ -1,0 +1,3 @@
+# Verified invariant observations (v2)
+Graph relaxation feasibility: for each edge (u,v,w), a finite returned distance to u implies a finite distance to v no greater than d[u]+w. Report an actual violated edge at the recorded solve return. This condition is necessary, not sufficient for shortest-path correctness.
+Maximum subarray: an integer answer must be the sum of some nonempty contiguous segment. For the bounded domain exhaustive enumeration can disprove attainability; a returned sum that is attainable but not maximal need not trigger this rule. A specific returned symptom is not a causal fault. Rules were designed after inspecting the v1 results; reusing the same corpus is exploratory regression, not a new blind holdout.
