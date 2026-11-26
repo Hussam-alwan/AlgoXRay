@@ -69,7 +69,9 @@ def test_max_subarray_api_witness(client):
     assert bundle["witness_explanation"]["sum"] == -2
     assert bundle["evidence_revision"] == "option-b.2"
 
-def test_option_b_summary_not_run(client):
+def test_option_b_summary_not_run(client, monkeypatch, tmp_path):
+    from algoxray import api
+    monkeypatch.setattr(api,"RESULTS",tmp_path)
     assert client.get("/api/option-b/benchmark-summary").json()["status"] == "not_run"
 
 def test_unregistered_problem_rejected(client):
