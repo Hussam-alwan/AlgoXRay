@@ -28,9 +28,10 @@ def build(run, out):
     html=out/"review.html"
     html.write_text(template.replace("__PACKET__",payload),encoding="utf-8")
     shutil.copy2(ROOT/"docs/option_b/HUMAN_REVIEW_PROTOCOL.md",out/"HUMAN_REVIEW_PROTOCOL.md")
+    shutil.copy2(ROOT/"docs/option_b/REVIEW_PORTAL_AR.md",out/"REVIEW_PORTAL_AR.md")
     archive=out/"Independent_Reviewer_Portal.zip"
     with zipfile.ZipFile(archive,"x",compression=zipfile.ZIP_DEFLATED) as z:
-        for name in ("review.html","HUMAN_REVIEW_PROTOCOL.md"): z.write(out/name,name)
+        for name in ("review.html","HUMAN_REVIEW_PROTOCOL.md","REVIEW_PORTAL_AR.md"): z.write(out/name,name)
     with zipfile.ZipFile(archive) as z:
         if z.testzip() is not None: raise ValueError("Archive integrity failure")
     report={"claims":len(claims),"localization":len(locations),"archive":str(archive),"sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),"human_ratings":"pending"}

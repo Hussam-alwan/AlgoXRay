@@ -17,3 +17,5 @@ The measured local research prototype is at [089009d](https://github.com/Hussam-
 See [V2 measured results](option_b/MEASURED_V2.md), [V1 measured results](option_b/MEASURED_V1.md), [reproduction](option_b/REPRODUCE_V2.md) and [independent review protocol](option_b/HUMAN_REVIEW_PROTOCOL.md). Historical artifacts remain unchanged. Raw logs and generated conference materials are local and not submitted to the committee.
 
 External pilot report: [EXTERNAL_PILOT_RESULTS.md](option_b/EXTERNAL_PILOT_RESULTS.md). The pilot is a separate measured dataset; historical and mutant faults are reported separately.
+
+Independent reviewer portals prepared separately for V2 (115 claims, 75 locations) and the external pilot (45 claims, 30 locations), with offline CSV export/import and synthetic browser acceptance. See [Arabic reviewer instructions](option_b/REVIEW_PORTAL_AR.md). No human ratings collected. Reviewer archive must not include the private mapping keys.
