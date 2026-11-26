@@ -1,8 +1,11 @@
 """Legal structural reduction candidates, independent of execution orchestration."""
 from copy import deepcopy
+from . import max_subarray
 
 def smaller_cases(problem_id, case):
-    if problem_id == "dijkstra_v1":
+    if problem_id == max_subarray.ID:
+        yield from max_subarray.smaller(case)
+    elif problem_id == "dijkstra_v1":
         for i in range(len(case["edges"])):
             yield {**case, "edges": case["edges"][:i] + case["edges"][i + 1:]}
         if case["n"] > 2:

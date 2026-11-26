@@ -252,7 +252,7 @@ def analyze(submission, options=None, case=None, persist=True):
                       "line": best["result"].get("exception_line"), "function": best["result"].get("exception_function")} if best else None,
         "evidence_level": "E2" if best else "E0", "trace_status": trace["trace_status"],
         "events": trace.get("events", []), "claims": [], "hints": [],
-        "verification": {"input_valid": best is not None, "oracle_id": "networkx_bellman_ford+independent_floyd" if problem_id == "dijkstra_v1" else "linear_membership_checker",
+        "verification": {"input_valid": best is not None, "oracle_id": {"dijkstra_v1": "networkx_bellman_ford+independent_floyd", "binary_search_v1": "linear_membership_checker", "max_subarray_v1": "exhaustive_segments+kadane"}[problem_id],
                          "replay_attempts": stats["replay_solver_calls"], "replay_matches": replay_matches},
         "reduction": {"before": size(problem_id, first["case"]) if first else None,
                       "after": size(problem_id, best["case"]) if best else None,

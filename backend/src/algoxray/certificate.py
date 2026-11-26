@@ -1,8 +1,11 @@
 """Concrete, input-level evidence. These values do not identify a faulty source line."""
 from collections import deque
+from . import max_subarray
 
 
 def checked_example(problem, case, actual, expected):
+    if problem == max_subarray.ID:
+        return max_subarray.certificate(case, actual)
     if problem == "binary_search_v1":
         array, target = case["array"], case["target"]
         return {"kind": "membership", "target": target, "returned": actual,

@@ -40,7 +40,7 @@ class AnalysisOptions(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    problem_id: Literal["dijkstra_v1", "binary_search_v1"]
+    problem_id: Literal["dijkstra_v1", "binary_search_v1", "max_subarray_v1"]
     fixture_id: str | None = Field(default=None, min_length=1, max_length=100, pattern=r"^[a-z0-9_]+$")
     source: str | None = Field(default=None, min_length=1, max_length=32768)
     trusted_local_code: bool = False

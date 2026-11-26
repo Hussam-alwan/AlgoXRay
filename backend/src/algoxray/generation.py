@@ -1,5 +1,6 @@
 import random
 from hypothesis import strategies as st
+from . import max_subarray
 
 
 @st.composite
@@ -13,6 +14,8 @@ def graph_cases(draw):
 
 
 def strategy_for(problem_id):
+    if problem_id == max_subarray.ID:
+        return max_subarray.strategy()
     if problem_id == "dijkstra_v1":
         return graph_cases()
     if problem_id != "binary_search_v1":
@@ -22,6 +25,8 @@ def strategy_for(problem_id):
 
 
 def random_case(problem_id, rng: random.Random):
+    if problem_id == max_subarray.ID:
+        return max_subarray.random_case(rng)
     if problem_id == "dijkstra_v1":
         n = rng.randint(2, 8)
         pairs = [(u, v) for u in range(n) for v in range(n) if u != v]

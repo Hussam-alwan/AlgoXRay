@@ -40,7 +40,8 @@
     "problem_id": {
       "enum": [
         "dijkstra_v1",
-        "binary_search_v1"
+        "binary_search_v1",
+        "max_subarray_v1"
       ]
     },
     "status": {

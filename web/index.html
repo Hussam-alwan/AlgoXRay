@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#122b36"><title>AlgoX-Ray · مختبر فهم الأخطاء</title>
   <link rel="icon" href="data:,"><link rel="stylesheet" href="/static/style.css">
-  <script src="/static/vendor/cytoscape.min.js" defer></script><link rel="stylesheet" href="/static/custom-code.css?v=2"><script src="/static/app.js?v=option-b-1" defer></script>
+  <script src="/static/vendor/cytoscape.min.js" defer></script><link rel="stylesheet" href="/static/custom-code.css?v=2"><script src="/static/app.js?v=option-b-2" defer></script>
 </head>
 <body>
 <aside class="sidebar">
@@ -24,7 +24,7 @@
   <section id="view-lab" class="view">
     <div class="page-heading"><div><div class="eyebrow">ALGORITHMIC DEBUGGING WORKBENCH</div><h1>افهم أين يفشل الحل<span>.</span></h1><p>اكتشف حالة تكشف الخطأ، تتبّع تنفيذها، وابنِ فهمك خطوة بخطوة.</p></div><a class="quiet-link" href="/docs" target="_blank" rel="noopener">دليل التشغيل <span>↗</span></a></div>
     <form id="analysis-form" class="control-card">
-      <div class="control-top"><div class="problem-tabs" role="group" aria-label="اختيار المسألة"><button type="button" data-problem="dijkstra_v1" class="problem-tab active"><span>01</span>Dijkstra</button><button type="button" data-problem="binary_search_v1" class="problem-tab"><span>02</span>Binary Search</button></div><span class="micro-label" id="problem-description">تحميل عقد المسألة…</span></div>
+      <div class="control-top"><div class="problem-tabs" role="group" aria-label="اختيار المسألة"><button type="button" data-problem="dijkstra_v1" class="problem-tab active"><span>01</span>Dijkstra</button><button type="button" data-problem="binary_search_v1" class="problem-tab"><span>02</span>Binary Search</button><button type="button" data-problem="max_subarray_v1" class="problem-tab"><span>03</span>Maximum Subarray</button></div><span class="micro-label" id="problem-description">تحميل عقد المسألة…</span></div>
       <div class="source-mode" role="group" aria-label="مصدر الكود"><button id="mode-fixture" class="active" type="button" aria-pressed="true">حلول التجربة الجاهزة</button><button id="mode-custom" type="button" aria-pressed="false">⌨ كودي الخاص</button><span>Python · solve(payload)</span></div>
       <section id="custom-source-panel" class="custom-source-panel" hidden aria-label="محرر كودك">
         <div class="editor-heading"><div><strong>اكتب كودك أو الصقه هنا</strong><span id="editor-filename" dir="ltr">submission.py</span></div><div class="editor-actions"><button id="load-template" type="button">قالب الدالة</button><button id="load-bug-example" type="button">مثال فيه خطأ</button><button id="import-code" type="button">فتح ملف .py ↥</button><input id="code-file" type="file" accept=".py,text/x-python" hidden></div></div>

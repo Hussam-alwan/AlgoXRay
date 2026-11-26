@@ -11,6 +11,8 @@ def build_hints(bundle, submission):
     if kind == "wrong_answer" and problem == "dijkstra_v1":
         index = next(i for i, pair in enumerate(zip(actual, expected)) if pair[0] != pair[1])
         text = f"المسافة للعقدة {index} هي {actual[index]} في الحل، و{expected[index]} في المرجع."
+    elif kind == "wrong_answer" and problem == "max_subarray_v1":
+        text = f"أعاد الحل {actual} بينما أكبر مجموع لمقطع متصل غير فارغ هو {expected}."
     elif kind == "wrong_answer":
         text = f"أعاد الحل الفهرس {actual}، لكنه لا يحقق عقد البحث على هذه المصفوفة."
     elif kind == "exception":
@@ -30,6 +32,8 @@ def build_hints(bundle, submission):
         return claims, hints
     question = ("أيّ عقدة تختلف مسافتها عن المرجع؟ هل تستطيع تتبّع طريق يصل إليها من المصدر؟"
                 if problem == "dijkstra_v1" else "أين يظهر الهدف في هذا المدخل، وماذا يعني الفهرس الذي أعاده حلك؟")
+    if problem == "max_subarray_v1":
+        question = "ما المقطع المتصل الذي يحقق أكبر مجموع؟ هل يسمح حلك بمقطع فارغ؟"
     hints.append({"tier": "H2", "claim_ids": [], "text": question, "kind": "educational_question"})
     lines = submission.source.splitlines()
     diagnostic = None

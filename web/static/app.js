@@ -38,7 +38,7 @@ function setProblem(id) {
   const select = $('fixture-select'); select.replaceChildren();
   const entries = state.fixtures.filter(f => f.problem_id === id);
   for (const entry of entries) select.append(new Option(entry.name_ar, entry.id));
-  const defaultId = id === 'dijkstra_v1' ? 'dijkstra_premature_visited' : 'binary_missing_last';
+  const defaultId = ({dijkstra_v1:'dijkstra_premature_visited',binary_search_v1:'binary_missing_last',max_subarray_v1:'max_subarray_empty_bug'})[id];
   if (entries.some(f => f.id === defaultId)) select.value = defaultId;
   $('problem-description').textContent = problem().description_ar;
   $('case-input').value = pretty(problem().example);
@@ -117,6 +117,8 @@ function drawArray(input) {
     if (Number.isInteger(lower) && Number.isInteger(upper) && i >= lower && i <= upper) cell.classList.add('in-range');
     if (known && roles && i === local.mid) cell.classList.add('current');
     if (v === input.target) cell.classList.add('target');
+    const proof = state.original ? null : state.result?.witness_explanation;
+    if (proof?.kind === 'max_subarray' && i >= proof.start && i < proof.end_exclusive) cell.classList.add('in-range');
     cell.append(node('strong', '', String(v)), node('small', '', String(i))); fragment.append(cell);
   });
   $('array-container').replaceChildren(fragment);
@@ -126,8 +128,8 @@ function renderCase() {
   const input = activeCase(); if (!input) return;
   const graph = state.problem === 'dijkstra_v1';
   $('graph-container').hidden = !graph; $('array-container').hidden = graph;
-  $('graph-title').textContent = graph ? 'استكشف الغراف' : 'استكشف مجال البحث';
-  $('case-size').textContent = graph ? `${input.n} nodes / ${input.edges.length} edges` : `${input.array.length} items / target ${input.target}`;
+  $('graph-title').textContent = graph ? 'استكشف الغراف' : state.problem === 'max_subarray_v1' ? 'استكشف المصفوفة' : 'استكشف مجال البحث';
+  $('case-size').textContent = graph ? `${input.n} nodes / ${input.edges.length} edges` : `${input.array.length} items${input.target === undefined ? "" : " / target " + input.target}`;
   $('case-json').textContent = pretty(input);
   $('graph-caption').textContent = !state.result?.case ? (state.result?.manual_check ? 'المدخل الذي فُحص' : state.pinned ? 'الشاهد المحفوظ لإعادة الفحص' : 'معاينة · دون نتيجة تحليل') : state.original ? 'الشاهد الأصلي · النتائج والتتبع للحالة المصغرة' : 'شاهد مؤكد · حالة التشغيل المتتبّعة';
   $('show-reduced').classList.toggle('active', !state.original); $('show-original').classList.toggle('active', state.original);
@@ -285,9 +287,9 @@ function syncSourceMode() {
   if (custom) {
     $('source-editor').value = state.drafts[state.problem] || '';
     $('editor-filename').textContent = state.filenames[state.problem] || 'submission.py';
-    $('editor-contract').textContent = state.problem === 'binary_search_v1'
+    $('editor-contract').textContent = state.problem === 'max_subarray_v1' ? 'استقبل payload["array"] وأعد أكبر مجموع لمقطع متصل غير فارغ.' : state.problem === 'binary_search_v1'
       ? 'الدالة solve(payload) تستقبل payload["array"] المرتبة وpayload["target"]، وتعيد فهرساً مطابقاً أو -1. طول المصفوفة 0–32؛ القيم من -20 إلى 20. استخدم return بدلاً من input أو طباعة الجواب.'
-      : 'الدالة solve(payload) تستقبل n وedges وsource، وتعيد قائمة المسافات. الغراف موجه بسيط، 2–8 عقد، حتى 20 حافة فريدة دون حلقات، وأوزان صحيحة 1–20. استخدم return؛ المسافة غير القابلة للوصول يمكن أن تكون float("inf").';
+      : 'الدالة solve(payload) تستقبل n وedges وsource، وتعيد قائمة المسافات. الغراف موجه بسيط، 2–8 عقد، حتى 20 حافة فريدة دون حلقات، وأوزان صحيحة 1–20. استخدم return؛ المسافة غير القابلة للوصول يجب أن تكون None.';
     updateEditor();
   }
   renderSource(custom ? previewCustom() : fixture());
@@ -336,11 +338,11 @@ function jumpToDiagnosis() {
 function loadEditorExample(buggy) {
   if (state.busy) return;
   delete state.originals[state.problem];
-  const id = state.problem === 'binary_search_v1' ? 'binary_missing_last' : 'dijkstra_premature_visited';
+  const id = ({binary_search_v1:'binary_missing_last',dijkstra_v1:'dijkstra_premature_visited',max_subarray_v1:'max_subarray_empty_bug'})[state.problem];
   const example = state.fixtures.find(f => f.id === id)?.source || '';
   $('source-editor').value = buggy ? example.replace(/\blo\b/g, 'left').replace(/\bhi\b/g, 'right').replace(/\barr\b/g, 'array')
-    : state.problem === 'binary_search_v1' ? 'def solve(payload):\n    array = payload["array"]\n    target = payload["target"]\n    # اكتب خوارزمية البحث هنا\n    return -1\n'
-    : 'def solve(payload):\n    n = payload["n"]\n    edges = payload["edges"]\n    source = payload["source"]\n    # اكتب الحل وأعد قائمة المسافات\n    return [float("inf")] * n\n';
+    : state.problem === 'max_subarray_v1' ? 'def solve(payload):\n    array = payload["array"]\n    return array[0]\n' : state.problem === 'binary_search_v1' ? 'def solve(payload):\n    array = payload["array"]\n    target = payload["target"]\n    # اكتب خوارزمية البحث هنا\n    return -1\n'
+    : 'def solve(payload):\n    n = payload["n"]\n    edges = payload["edges"]\n    source = payload["source"]\n    # اكتب الحل وأعد قائمة المسافات\n    return [None] * n\n';
   state.filenames[state.problem] = buggy ? 'example_with_bug.py' : 'submission.py';
   $('editor-filename').textContent = state.filenames[state.problem];
   saveDraft(); updateEditor(); invalidateResult();
@@ -419,6 +421,9 @@ function renderWitness() {
   } else if (proof?.kind === 'unreachable') {
     detail.textContent = 'تتبع الحواف الموجهة من المصدر يحصر العقد التي يمكن الوصول إليها. العقدة المختلفة خارج هذه المجموعة.';
     values.textContent = 'source ' + proof.source + '  ·  reachable {' + proof.reachable_vertices.join(', ') + '}  ·  target ' + proof.target;
+  } else if (proof?.kind === 'max_subarray') {
+    detail.textContent = 'هذا مقطع متصل غير فارغ يحقق أكبر مجموع وفق مرجعين مستقلين.';
+    values.textContent = proof.segment.join(' + ') + ' = ' + proof.sum + ' · returned ' + proof.returned;
   } else if (proof?.kind === 'membership') {
     detail.textContent = 'قارن الفهرس الذي أعاده الحل بكل مواقع الهدف في الشاهد. يقبل المدقّق أي موقع مطابق.';
     values.textContent = 'target ' + proof.target + '  ·  indices [' + proof.matching_indices.join(', ') + ']  ·  returned ' + proof.returned;

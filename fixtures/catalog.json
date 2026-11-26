@@ -98,5 +98,29 @@
     "original_source_sha256": "b640b4bcb1b2c0f7875de8f13df191f4e61ddf7e6fbdcfc42d477ec60885d3c7",
     "source_url": "https://raw.githubusercontent.com/jkoppel/QuixBugs/4257f44b0ff1181dedaedee6a447e133219fcebf/python_programs/find_in_sorted.py",
     "reviewed_before_evaluation": true
+  },
+  {
+    "id": "max_subarray_correct",
+    "problem_id": "max_subarray_v1",
+    "path": "development/max_subarray_correct.py",
+    "name_ar": "حل صحيح",
+    "label": "control",
+    "origin": "authored_fixture",
+    "split": "development",
+    "sha256": "097e35e5c253e93cdb798ef8858e5aac1fccdb4d265e3899ae63bde8623d5335",
+    "adapter": null,
+    "license": "MIT"
+  },
+  {
+    "id": "max_subarray_empty_bug",
+    "problem_id": "max_subarray_v1",
+    "path": "development/max_subarray_empty_bug.py",
+    "name_ar": "السماح بمقطع فارغ",
+    "label": "buggy",
+    "origin": "authored_fixture",
+    "split": "development",
+    "sha256": "2745c9b89eccd355f326c8338180a2055bfb11038cd6024b5d0b00da1a87611d",
+    "adapter": null,
+    "license": "MIT"
   }
 ]

@@ -3,6 +3,7 @@ from copy import deepcopy
 import math
 
 import networkx as nx
+from . import max_subarray
 
 
 class InvalidCase(ValueError):
@@ -29,7 +30,15 @@ PROBLEMS = {
 }
 
 
+PROBLEMS[max_subarray.ID] = max_subarray.METADATA
+
+
 def validate_case(problem_id, case):
+    if problem_id == max_subarray.ID:
+        try:
+            return max_subarray.validate(case)
+        except ValueError as exc:
+            raise InvalidCase(str(exc)) from exc
     if problem_id not in PROBLEMS:
         raise InvalidCase("Unknown problem")
     if type(case) is not dict:
@@ -83,6 +92,13 @@ def independent_distances(case):
 
 
 def reference(problem_id, case):
+    if problem_id == max_subarray.ID:
+        try:
+            return max_subarray.reference(case)
+        except RuntimeError as exc:
+            raise OracleDisagreement(str(exc)) from exc
+    if problem_id not in PROBLEMS:
+        raise InvalidCase('Unknown problem')
     if problem_id == "binary_search_v1":
         return case["array"].index(case["target"]) if case["target"] in case["array"] else -1
     graph = nx.DiGraph()
@@ -97,6 +113,10 @@ def reference(problem_id, case):
 
 def check_output(problem_id, case, actual, expected):
     """Return None, contract_violation or wrong_answer; never assume text equality."""
+    if problem_id == max_subarray.ID:
+        return max_subarray.check(case, actual, expected)
+    if problem_id not in PROBLEMS:
+        raise InvalidCase("Unknown problem")
     if problem_id == "dijkstra_v1":
         if type(actual) is not list or len(actual) != case["n"]:
             return "contract_violation"
@@ -112,10 +132,16 @@ def check_output(problem_id, case, actual, expected):
 
 
 def size(problem_id, case):
+    if problem_id not in PROBLEMS:
+        raise InvalidCase('Unknown problem')
     return {"vertices": case["n"], "edges": len(case["edges"])} if problem_id == "dijkstra_v1" else {"length": len(case["array"])}
 
 
 def complexity(problem_id, case):
+    if problem_id == max_subarray.ID:
+        return (len(case['array']), sum(abs(v) for v in case['array']))
+    if problem_id not in PROBLEMS:
+        raise InvalidCase('Unknown problem')
     if problem_id == "dijkstra_v1":
         return (len(case["edges"]), case["n"], sum(w for _, _, w in case["edges"]))
     return (len(case["array"]), sum(abs(v) for v in case["array"]) + abs(case["target"]))
