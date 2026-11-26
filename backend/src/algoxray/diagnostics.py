@@ -99,6 +99,8 @@ def custom_observation(bundle, submission):
             continue
         for position, event in enumerate(line_events[1:], 1):
             previous = line_events[position - 1]
+            if event.get("frame_id") != previous.get("frame_id"):
+                continue
             if event["line"] != terminal.lineno or previous["line"] != statement.lineno:
                 continue
             local = event["locals"]

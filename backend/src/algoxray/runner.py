@@ -62,7 +62,7 @@ class Runner:
         self.calls += 1
         start = time.perf_counter()
         try:
-            self.process.stdin.write(json.dumps({"case": case, "trace": trace, "trace_limit": trace_limit, "timeout": self.timeout}) + "\n")
+            self.process.stdin.write(json.dumps({"case": case, "problem_id": self.submission.problem_id, "trace": trace, "trace_limit": trace_limit, "timeout": self.timeout}) + "\n")
             self.process.stdin.flush()
             result = self.messages.get(timeout=self.timeout + 0.15)
             if result.get("status") == "invalid_submission":

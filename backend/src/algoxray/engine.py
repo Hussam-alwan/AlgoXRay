@@ -19,7 +19,7 @@ from .generation import random_case, strategy_for
 from .reduction import smaller_cases as _smaller_cases
 from .hints import build_hints
 from .localization import rank_observations
-from .claim_verifier import verify_claim_links
+from .claim_verifier import verify_claim_links, abstain_on_unsupported
 from .explanation import explanation_cards
 from .paths import RESULTS
 from .problems import (PROBLEMS, OracleDisagreement, check_output, complexity,
@@ -266,6 +266,8 @@ def analyze(submission, options=None, case=None, persist=True):
     bundle["witness_explanation"] = (checked_example(problem_id, best["case"], best["result"]["output"], best["expected"])
                                      if best and best["failure"] == "wrong_answer" else None)
     bundle["claims"], bundle["hints"] = build_hints(bundle, submission)
+    verify_claim_links(bundle)
+    abstain_on_unsupported(bundle)
     if any(c["kind"] == "source_specific_observation" for c in bundle["claims"]):
         bundle["evidence_level"] = "E3"
     bundle["diagnostic_status"] = "supported" if bundle["evidence_level"] == "E3" else "abstained"

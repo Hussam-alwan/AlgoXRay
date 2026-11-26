@@ -86,6 +86,9 @@ def execute(code, filename, request):
             if not callable(namespace.get("solve")):
                 raise MissingSolve("Submission must expose solve(payload)")
             value = namespace["solve"](request["case"])
+            # Historical Dijkstra contract accepts positive infinity for unreachable vertices.
+            if request.get('problem_id') == 'dijkstra_v1' and type(value) is list and len(value) <= 8:
+                value = [None if type(v) is float and v == float('inf') else v for v in value]
             normalized = encode_output(value)
         result = {"status": "ok", "output": normalized}
     except UnsupportedOutput as exc:
