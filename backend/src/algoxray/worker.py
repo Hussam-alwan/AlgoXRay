@@ -39,24 +39,31 @@ def execute(code, filename, request):
     started = time.perf_counter()
     deadline = started + request.get("timeout", 1.0)
     events, trace_bytes = [], 0
+    frames = {}
+    next_frame = 0
     truncated = False
     enabled = request.get("trace", False)
     maximum = min(request.get("trace_limit", 2000), 2000)
     output = LimitedOutput()
 
     def recorder(frame, event, arg):
-        nonlocal trace_bytes, truncated
+        nonlocal trace_bytes, truncated, next_frame
         if frame.f_code.co_filename != filename:
             return None
         if time.perf_counter() > deadline:
             raise ExecutionDeadline("Submission exceeded its execution deadline")
         if enabled and not truncated and frame.f_code.co_name != "<module>" and event in ("call", "line", "return", "exception"):
+            identity = id(frame)
+            if identity not in frames:
+                next_frame += 1
+                frames[identity] = (f"F{next_frame:05d}", frames.get(id(frame.f_back), (None, None))[0])
+            frame_id, parent_frame_id = frames[identity]
             variables = sorted(frame.f_locals.items(), key=lambda pair: (pair[0] not in SELECTED, pair[0]))
             snapshot = {k: safe_value(v) for k, v in variables[:32]
                         if not k.startswith("__") and (k in SELECTED or type(v) in (int, float, bool, str, list, tuple, set, dict, type(None)))}
             entry = {"event_id": f"E{len(events) + 1:05d}", "kind": event, "line": frame.f_lineno,
                      "function": frame.f_code.co_name, "snapshot_timing": "before_line" if event == "line" else event,
-                     "locals": snapshot}
+                     "locals": snapshot, "frame_id": frame_id, "parent_frame_id": parent_frame_id}
             if event == "return" and frame.f_code.co_name == "solve":
                 entry["return_value"] = safe_value(arg)
             if event == "exception":
@@ -66,6 +73,8 @@ def execute(code, filename, request):
                 truncated = True
             else:
                 events.append(entry)
+            if event == "return":
+                frames.pop(identity, None)
         return recorder
 
     previous = sys.gettrace()
