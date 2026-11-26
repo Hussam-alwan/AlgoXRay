@@ -50,7 +50,9 @@ def subarray_observation(bundle,source):
     fn=funcs[0]
     args=fn.args.posonlyargs+fn.args.args
     if len(args)!=1 or fn.args.vararg or fn.args.kwarg or fn.args.kwonlyargs:return None
+    if fn.decorator_list or fn.args.defaults or fn.returns or args[0].annotation:return None
     arg=args[0].arg
+    if e['locals'].get(arg)!=bundle['case']:return None
     body=fn.body
     if body and isinstance(body[0],ast.Expr) and isinstance(body[0].value,ast.Constant) and isinstance(body[0].value.value,str):body=body[1:]
     # Accept only a direct return, or one array alias followed by a return.
