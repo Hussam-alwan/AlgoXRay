@@ -9,6 +9,7 @@ import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from algoxray.tracing import SELECTED, safe_value
+from algoxray.output_codec import encode_output, UnsupportedOutput
 
 
 class ExecutionDeadline(Exception):
@@ -76,9 +77,10 @@ def execute(code, filename, request):
             if not callable(namespace.get("solve")):
                 raise MissingSolve("Submission must expose solve(payload)")
             value = namespace["solve"](request["case"])
-            normalized = ({"invalid_output_type": type(value).__name__}
-                          if type(value) in (tuple, set) else safe_value(value))
+            normalized = encode_output(value)
         result = {"status": "ok", "output": normalized}
+    except UnsupportedOutput as exc:
+        result = {"status": "ok", "output": {"invalid_output_type": str(exc)}}
     except ExecutionDeadline:
         result = {"status": "timeout", "exception_type": "ExecutionDeadline"}
     except MissingSolve as exc:
