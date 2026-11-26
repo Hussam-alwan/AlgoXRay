@@ -14,7 +14,7 @@ from importlib.metadata import version
 
 HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
-V2="09e3920656c8081aaa1fde5ccdfe30430c571e0f"
+V2="2bb68ecd9f94c22a35e7ce26c3c1c618f2fbac7c"
 sys.path.insert(0,str(ROOT/"backend/src"))
 from algoxray.problem_registry import spec_for
 loader=importlib.util.spec_from_file_location("v2_evaluation",ROOT/"benchmarks/option_b/evaluate.py")
