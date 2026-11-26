@@ -1,0 +1,5 @@
+# Independent review rubric
+Review the candidate claim with its source, legal witness, expected/observed result and only the recorded trace. Do not consult verification_decisions.csv or the algorithm's publication flag before locking ratings.
+For each candidate select: supported (all factual components supported), contradicted (at least one contradicted component), unverifiable (insufficient evidence), or unclear (requires clarification). Record exact lines/events and reasons. A recorded symptom is not a causal fault. Separately record pedagogical usefulness, without inferring learner outcomes.
+Have two independent human reviewers where feasible; report counts, agreement and adjudication. Preserve original ratings. Compare candidate factuality before and after verifier and coverage across witnesses. AI review is not human review.
+The review.csv exported by the frozen runner is a starting point, not proof of blindness: raw evidence includes publication decisions, so prepare a separate redacted review packet if necessary. No independent human review has yet been completed.
