@@ -1,0 +1,35 @@
+{
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030
+  ],
+  "max_examples": 100,
+  "max_seconds": 10,
+  "per_case_seconds": 1,
+  "replay_count": 3,
+  "reduction_seconds": 5,
+  "max_reduction_calls": 150,
+  "variants": [
+    {
+      "id": "random",
+      "strategy": "random",
+      "shrink": false,
+      "include_trace": false
+    },
+    {
+      "id": "hypothesis",
+      "strategy": "hypothesis",
+      "shrink": false,
+      "include_trace": false
+    },
+    {
+      "id": "full",
+      "strategy": "hypothesis",
+      "shrink": true,
+      "include_trace": true
+    }
+  ]
+}

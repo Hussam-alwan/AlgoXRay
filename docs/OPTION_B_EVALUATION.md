@@ -10,3 +10,12 @@ Report detection by labeled faulty program, false accusations on correct program
 
 ## Release gate
 Preserve raw evidence and the frozen manifest. Do not fill result tables until execution is authorized. A witness proves a concrete contract violation, not universal correctness or a causal faulty line.
+
+## New runner
+The prospective runner combines the 12 historical corpus programs and 18 new assistant-authored program files (30 distinct implementations if the freeze succeeds). These are not 30 independent human participants or independently sourced student solutions. External review of new labels and further independent recruitment remain pending.
+After authorization, use a fresh directory:
+```sh
+python benchmarks/option_b/evaluate.py freeze --out results/option-b-new
+python benchmarks/option_b/evaluate.py run --out results/option-b-new
+```
+The three paired variants use five declared seeds, giving 450 planned runs. No runs have been executed. The review CSV requires actual independent reviewer judgments.

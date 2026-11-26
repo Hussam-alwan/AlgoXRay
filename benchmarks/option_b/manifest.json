@@ -1,0 +1,182 @@
+[
+  {
+    "id": "max_prefix",
+    "problem": "max_subarray_v1",
+    "label": "correct",
+    "family": "prefix minimum",
+    "file": "submissions/max_prefix.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "max_nested",
+    "problem": "max_subarray_v1",
+    "label": "correct",
+    "family": "nested accumulation",
+    "file": "submissions/max_nested.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "max_divide",
+    "problem": "max_subarray_v1",
+    "label": "correct",
+    "family": "divide and conquer",
+    "file": "submissions/max_divide.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "max_positive_only",
+    "problem": "max_subarray_v1",
+    "label": "buggy",
+    "family": "noncontiguous positives",
+    "file": "submissions/max_positive_only.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "max_prefix_only",
+    "problem": "max_subarray_v1",
+    "label": "buggy",
+    "family": "prefix restriction",
+    "file": "submissions/max_prefix_only.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "max_single",
+    "problem": "max_subarray_v1",
+    "label": "buggy",
+    "family": "single element restriction",
+    "file": "submissions/max_single.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "bin_reverse",
+    "problem": "binary_search_v1",
+    "label": "correct",
+    "family": "reverse enumeration",
+    "file": "submissions/bin_reverse.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "bin_bisect",
+    "problem": "binary_search_v1",
+    "label": "correct",
+    "family": "bisect library",
+    "file": "submissions/bin_bisect.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "bin_two_ends",
+    "problem": "binary_search_v1",
+    "label": "correct",
+    "family": "two-ended scan",
+    "file": "submissions/bin_two_ends.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "bin_first_only",
+    "problem": "binary_search_v1",
+    "label": "buggy",
+    "family": "first position only",
+    "file": "submissions/bin_first_only.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "bin_one_based",
+    "problem": "binary_search_v1",
+    "label": "buggy",
+    "family": "one-based index",
+    "file": "submissions/bin_one_based.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "bin_abs_match",
+    "problem": "binary_search_v1",
+    "label": "buggy",
+    "family": "absolute equality",
+    "file": "submissions/bin_abs_match.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "graph_paths",
+    "problem": "dijkstra_v1",
+    "label": "correct",
+    "family": "simple path enumeration",
+    "file": "submissions/graph_paths.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "graph_queue",
+    "problem": "dijkstra_v1",
+    "label": "correct",
+    "family": "queue relaxation",
+    "file": "submissions/graph_queue.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "graph_matrix",
+    "problem": "dijkstra_v1",
+    "label": "correct",
+    "family": "matrix Floyd-Warshall",
+    "file": "submissions/graph_matrix.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "graph_reverse",
+    "problem": "dijkstra_v1",
+    "label": "buggy",
+    "family": "reverse directed edges",
+    "file": "submissions/graph_reverse.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "graph_max_edge",
+    "problem": "dijkstra_v1",
+    "label": "buggy",
+    "family": "bottleneck instead of sum",
+    "file": "submissions/graph_max_edge.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  },
+  {
+    "id": "graph_direct",
+    "problem": "dijkstra_v1",
+    "label": "buggy",
+    "family": "only direct edges",
+    "file": "submissions/graph_direct.py",
+    "origin": "assistant-authored prospective evaluation",
+    "independent_author": false,
+    "label_review": "pending external review"
+  }
+]
