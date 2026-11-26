@@ -1,5 +1,7 @@
 """Build a local conference draft from a completed, audited frozen v2 run."""
 import argparse
+import base64
+import re
 from collections import Counter
 import csv
 import hashlib
@@ -23,7 +25,7 @@ def sha(path):
 def write(path, value):
     path.write_text(value, encoding="utf-8")
 
-def build(run, job, output):
+def build(run, job, output, replication=None):
     progress=load(job/"progress.json")
     if progress["status"]!="passed" or any(s["status"]!="passed" for s in progress["stages"]):
         raise ValueError("Release gates have not all passed")
@@ -41,6 +43,20 @@ def build(run, job, output):
     for name, expected in freeze["files"].items():
         if sha(ROOT/name)!=expected:
             raise ValueError("Frozen file changed: "+name)
+    replication_note="Fresh-environment replication not supplied to this package."
+    if replication is not None:
+        repeated_freeze=load(replication/"freeze.json")
+        repeated_audit=load(replication/"audit.json")
+        repeated_explanation=load(replication/"explanation-review/report.json")
+        if repeated_freeze["source_commit"]!=commit or repeated_freeze["files"]!=freeze["files"] or repeated_freeze["policy"]!=freeze["policy"] or repeated_freeze["corpus"]!=freeze["corpus"]:
+            raise ValueError("Replication does not match frozen source and protocol")
+        if repeated_audit["audit_errors"] or repeated_explanation["validation_errors"] or repeated_explanation["status"]!="measured":
+            raise ValueError("Replication audit failed")
+        keys=("run_count","witnesses","replay_matches","replay_attempts","specific_observations","strict_reductions","certificate_count","failure_kinds")
+        if any(repeated_audit[k]!=audit[k] for k in keys) or repeated_explanation["diagnostics"]!=explanation["diagnostics"]:
+            raise ValueError("Replication outcomes differ; report differences separately")
+        medians=", ".join(g["variant"]+" "+format(g["median_total_ms"],".2f")+" ms" for g in repeated_audit["groups"])
+        replication_note=(f"A fresh checkout and newly installed environment on the same computer repeated {repeated_audit['run_count']} executions with identical aggregate detection, replay, reduction, certificate and diagnostic counts. Median total latency in the repeat: {medians}. This is same-machine reproduction, not an independent machine study.")
     browser=load(job/"browser/browser.json")
     core=load(job/"browser/core/browser.json")
     if browser["status"]!="passed" or core["page_errors"] or core["external_requests"]:
@@ -100,6 +116,8 @@ Spectrum ranking available for {diag.get('spectrum_available',0)}/{diag.get('wit
 Synthetic tampering: prose {neg.get('prose_rejected',0)}/{neg.get('prose_attempts',0)} rejected; missing events {neg.get('missing_event_rejected',0)}/{neg.get('missing_event_attempts',0)} rejected. These are designed negative controls, not human factuality.
 Automated gates: {tests} tests; {journeys} browser journeys; no release-stage failures in the accepted attempt.
 
+{replication_note}
+
 ## Limits
 The v2 corpus is reused after inspecting v1; this is exploratory regression, not a new held-out evaluation. The 30 files include assistant-authored code, not independent student submissions. Repeated seeds are not participants. Specific source observations may be output symptoms; spectrum ranks are suspicions, not causes. No human annotation, learner outcomes, security sandbox, general root-cause accuracy or cross-tool superiority is claimed. The matched deterministic explainer ablation is not a general LLM comparison. Preserve earlier failed gate logs separately. Author approval and final venue requirements remain open.
 """
@@ -107,24 +125,39 @@ The v2 corpus is reused after inspecting v1; this is exploratory regression, not
     htmlrows="".join("<tr>"+"".join(f"<td>{escape(c)}</td>" for c in row)+"</tr>" for row in rows)
     html=f"""<!doctype html><html lang="en"><meta charset="utf-8"><title>AlgoX-Ray v2</title>
 <style>
-@page{{size:A3 landscape;margin:12mm}}*{{box-sizing:border-box}}body{{font:16px/1.4 Arial,sans-serif;color:#173247;margin:0;background:white}}header{{background:#12354c;color:white;padding:20px 25px}}h1{{font-size:44px;line-height:1;margin:0 0 8px}}h2{{font-size:22px;margin:0 0 7px}}p{{margin:6px 0}}.subtitle{{font-size:22px}}.grid{{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:13px;margin-top:13px;align-items:start}}section{{border-top:5px solid #277f82;background:#f3f6f7;padding:13px;break-inside:avoid}}.wide{{grid-column:1/3}}.flow{{font-weight:bold;color:#17666b}}table{{border-collapse:collapse;width:100%;font-size:13px}}td,th{{border-bottom:1px solid #b5c7cb;text-align:right;padding:5px}}td:first-child,th:first-child{{text-align:left}}img{{width:100%;max-height:475px;object-fit:contain;object-position:top}}.small{{font-size:13px}}footer{{margin-top:13px;border-top:1px solid #b5c7cb;padding-top:8px}}@media print{{*{{print-color-adjust:exact;-webkit-print-color-adjust:exact}}}}
+@page{{size:A3 landscape;margin:12mm}}*{{box-sizing:border-box}}body{{font:16px/1.4 Arial,sans-serif;color:#173247;margin:0;background:white}}header{{background:#12354c;color:white;padding:20px 25px}}h1{{font-size:44px;line-height:1;margin:0 0 8px}}h2{{font-size:22px;margin:0 0 7px}}p{{margin:6px 0}}.subtitle{{font-size:22px}}.grid{{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:13px;margin-top:13px;align-items:start}}section{{border-top:5px solid #277f82;background:#f3f6f7;padding:13px;break-inside:avoid}}.wide{{grid-column:1/3}}.flow{{font-weight:bold;color:#17666b}}table{{border-collapse:collapse;width:100%;font-size:13px}}td,th{{border-bottom:1px solid #b5c7cb;text-align:right;padding:5px}}td:first-child,th:first-child{{text-align:left}}img{{width:100%;max-height:400px;object-fit:contain;object-position:top}}.example{{font:700 24px/1.2 monospace;background:white;padding:10px;border:1px solid #b5c7cb}}.expected{{color:#17666b}}.actual{{color:#a33a29}}.small{{font-size:13px}}footer{{margin-top:13px;border-top:1px solid #b5c7cb;padding-top:8px}}@media print{{*{{print-color-adjust:exact;-webkit-print-color-adjust:exact}}}}
 </style><header><h1>AlgoX-Ray</h1><p class="subtitle">Counterexample-driven debugging with checkable evidence</p><p>ICIPS 2026 · Measured research prototype · {escape(commit[:12])} · Author review draft</p></header>
 <div class="grid">
 <section><h2>Problem & contribution</h2><p>A wrong answer does not identify the cause. Link a legal, replayed counterexample to actual Python events, checkable observations and abstention.</p><p class="flow">Generate → compare → replay → reduce → trace → verify</p></section>
 <section><h2>Three contracts</h2><p>Directed shortest paths · binary-search membership · maximum nonempty subarray.</p><p>Two oracles for graph and subarray; any matching index accepted for search. Persistent or fresh local worker. Cancellation and infrastructure failures are explicit.</p></section>
-<section style="grid-row:1/4;grid-column:3"><h2>Live browser capture</h2><img src="screenshots/max-subarray-desktop.png" alt="Actual maximum-subarray analysis"><p class="small">Browser-tested witness: [-5, −2, −7], expected −2, observed 0; exported evidence included.</p></section>
+<section style="grid-row:1/4;grid-column:3"><h2>Live browser evidence</h2><p class="example">[-5, -2, -7]<br><span class="expected">Expected: -2</span><br><span class="actual">Observed: 0</span></p><img src="screenshots/max-subarray-detail.png" alt="Cropped actual execution showing code, selected array segment and outputs"><p class="small">Actual browser capture, cropped for legibility. Full screenshot and exported evidence included.</p></section>
 <section class="wide"><h2>Measured v2 results</h2><p>{escape(summary_text)}</p><table><thead><tr><th>Variant</th><th>Faulty</th><th>Control accusations</th><th>Discovery ms*</th><th>Total ms</th></tr></thead><tbody>{htmlrows}</tbody></table><p class="small">*Median over successful witness discoveries. Total median over all trials in that arm. Full arm: {reduction} strict reductions; {specific} specific observations. {tests} tests, {journeys} browser journeys passed.</p></section>
-<section><h2>Evidence, not guesses</h2><p>Frame/event IDs, checked mathematical symptoms, bounded arithmetic dependencies, spectrum suspicion ranking. Unsupported specific statements withheld.</p><p>Designed tampering checks: prose {neg.get('prose_rejected',0)}/{neg.get('prose_attempts',0)}; missing event {neg.get('missing_event_rejected',0)}/{neg.get('missing_event_attempts',0)} rejected.</p></section>
+<section><h2>Evidence, not guesses</h2><p>Frame/event IDs, checked mathematical symptoms, spectrum ranks on {diag.get("spectrum_available",0)}/{diag.get("witnesses",0)} witnesses; restricted arithmetic links on {diag.get("arithmetic_links_available",0)}/{diag.get("witnesses",0)}. Unsupported specific statements withheld.</p><p>Designed tampering checks: prose {neg.get('prose_rejected',0)}/{neg.get('prose_attempts',0)}; missing event {neg.get('missing_event_rejected',0)}/{neg.get('missing_event_attempts',0)} rejected.</p></section>
 <section><h2>Limitations</h2><p>Reused partly assistant-authored corpus. No independent learner study, human factuality rating, causal-localization guarantee, hostile-code sandbox, or new held-out test.</p><p class="small">Code Hunt, Python Tutor, ITAP, CodeHelp, Hypothesis and repair research are prior work; integration is not a priority claim.</p></section>
 </div><footer class="small">Artifact: github.com/Hussam-alwan/AlgoXRay/tree/option-b · Frozen manifest, audit, raw runs and browser evidence preserved locally. Confirm venue format and anonymization before submission.</footer></html>"""
     write(output/"poster-v2.html",html)
     with sync_playwright() as p:
         instance=p.chromium.launch(executable_path=available_browser(),headless=True)
         page=instance.new_page(viewport={"width":1536,"height":1080})
+        # Crop the original saved browser capture, without redrawing its content.
+        data=base64.b64encode((images/"max-subarray-desktop.png").read_bytes()).decode("ascii")
+        cropped=page.evaluate("""async (data) => {
+            const img = new Image();
+            img.src = "data:image/png;base64," + data;
+            await img.decode();
+            if (img.naturalWidth!==1440 || img.naturalHeight!==2378) throw Error("Unexpected capture size; inspect before cropping");
+            const c=document.createElement("canvas");
+            c.width=1144; c.height=920;
+            c.getContext("2d").drawImage(img,32,1296,1144,920,0,0,1144,920);
+            return c.toDataURL("image/png").split(",")[1];
+        }""",data)
+        (images/"max-subarray-detail.png").write_bytes(base64.b64decode(cropped))
         page.goto((output/"poster-v2.html").resolve().as_uri(),wait_until="load")
         assert page.locator("img").evaluate("(img) => img.complete && img.naturalWidth > 0")
         page.pdf(path=str(output/"poster-v2.pdf"),prefer_css_page_size=True,print_background=True)
         page.screenshot(path=str(output/"poster-preview.png"),full_page=True)
+        if len(re.findall(rb"/Type\s*/Page\b",(output/"poster-v2.pdf").read_bytes()))!=1:
+            raise ValueError("Poster PDF must be one page")
         instance.close()
 
     by_problem=explanation["by_problem"]
@@ -178,6 +211,8 @@ The browser recorded a maximum-subarray witness [-5,-2,-7]: the empty-segment bu
 The artifact is available at https://github.com/Hussam-alwan/AlgoXRay/tree/option-b. Checkout the exact measured revision above and use the pinned requirements, benchmark protocol, frozen manifest, raw run directory and separate audit. The published branch may advance; the commit, rather than the branch tip, identifies the evaluation.
 
 ## 7. Threats to validity and conclusion
+{replication_note}
+
 The 30 files are not independent student submissions, and 450 executions are not 450 participants. Timeouts depend on execution environment. Detection is bounded and inconclusive is not correctness. Reduction is not guaranteed globally minimal. Specific observations include output symptoms, not validated root causes. The ablation is not a comparison against a general-purpose LLM. No human factuality, educational improvement, superiority, security isolation or first-of-kind claim is established. The results support technical feasibility of a reproducible local evidence workflow. Author review, independent annotation and final venue formatting remain pending.
 
 ## References
@@ -206,6 +241,8 @@ Reviewer 3:
 - **Missing literature / uncited references:** the draft explicitly cites Code Hunt, Python Tutor, ITAP, CodeHelp, CodeAid, Hypothesis, Whyline, spectrum localization, AAAI 2025 repair and MENTOR. Bibliographic formatting still requires author review.
 - **Length and future-work focus:** concise implemented-system manuscript and measured poster prepared. Verify poster-specific page and camera-ready requirements before submission.
 
+{replication_note}
+
 Replace unsupported legacy claims rather than retroactively attributing these new results to the original submission. No independent human review or learner study is claimed.
 """
     write(output/"reviewer-response-v2.md",reviewer)
@@ -224,6 +261,10 @@ Replace unsupported legacy claims rather than retroactively attributing these ne
         shutil.copy2(run/name,output/name)
     shutil.copy2(run/"explanation-review/report.json",output/"explanation-report.json")
     shutil.copy2(job/"progress.json",output/"release-progress.json")
+    if replication is not None:
+        shutil.copy2(replication/"summary.json",output/"replication-summary.json")
+        shutil.copy2(replication/"audit.json",output/"replication-audit.json")
+        shutil.copy2(replication/"explanation-review/report.json",output/"replication-explanation-report.json")
     manifest={str(p.relative_to(output)):sha(p) for p in sorted(output.rglob("*")) if p.is_file()}
     write(output/"SHA256SUMS.json",json.dumps(manifest,indent=2))
     print(json.dumps({"status":"built","source_commit":commit,"tests":tests,"browser_journeys":journeys,"output":str(output)},indent=2))
@@ -233,5 +274,6 @@ if __name__=="__main__":
     parser.add_argument("--input",required=True,type=Path)
     parser.add_argument("--job",required=True,type=Path)
     parser.add_argument("--out",required=True,type=Path)
+    parser.add_argument("--replication",type=Path)
     a=parser.parse_args()
-    build(a.input.resolve(),a.job.resolve(),a.out.resolve())
+    build(a.input.resolve(),a.job.resolve(),a.out.resolve(),a.replication.resolve() if a.replication else None)

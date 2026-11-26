@@ -25,7 +25,7 @@ def make_zip(dest, entries):
 def tree(path, prefix):
     return [(p,prefix+"/"+p.relative_to(path).as_posix()) for p in sorted(path.rglob("*")) if p.is_file()]
 
-def main(run,out,protocol):
+def main(run,out,protocol,conference=None):
     audit=load(run/"audit.json")
     exp=load(run/"explanation-review/report.json")
     freeze=load(run/"freeze.json")
@@ -33,7 +33,7 @@ def main(run,out,protocol):
         raise ValueError("Measured run has audit errors")
     raw=sorted((run/"raw").glob("*.json.gz"))
     if len(raw)!=audit["run_count"]: raise ValueError("Incomplete raw evidence")
-    conference=run/"conference"
+    conference=conference or run/"conference"
     manifest=load(conference/"SHA256SUMS.json")
     for name,expected in manifest.items():
         if digest(conference/name)!=expected: raise ValueError("Conference file altered: "+name)
@@ -63,5 +63,6 @@ if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--input",type=Path,required=True);p.add_argument("--out",type=Path,required=True)
     p.add_argument("--protocol",type=Path,default=Path("docs/option_b/HUMAN_REVIEW_PROTOCOL.md"))
+    p.add_argument("--conference",type=Path)
     a=p.parse_args()
-    main(a.input.resolve(),a.out.resolve(),a.protocol.resolve())
+    main(a.input.resolve(),a.out.resolve(),a.protocol.resolve(),a.conference.resolve() if a.conference else None)
