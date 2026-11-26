@@ -48,15 +48,28 @@ def build(run, job, output, replication=None):
         repeated_freeze=load(replication/"freeze.json")
         repeated_audit=load(replication/"audit.json")
         repeated_explanation=load(replication/"explanation-review/report.json")
-        if repeated_freeze["source_commit"]!=commit or repeated_freeze["files"]!=freeze["files"] or repeated_freeze["policy"]!=freeze["policy"] or repeated_freeze["corpus"]!=freeze["corpus"]:
+        if repeated_freeze["source_commit"]!=commit or repeated_freeze["policy"]!=freeze["policy"] or repeated_freeze["corpus"]!=freeze["corpus"]:
             raise ValueError("Replication does not match frozen source and protocol")
+        differences={name:{"original":freeze["files"].get(name),"repeat":repeated_freeze["files"].get(name)}
+                     for name in set(freeze["files"])|set(repeated_freeze["files"])
+                     if freeze["files"].get(name)!=repeated_freeze["files"].get(name)}
+        # Editable installs regenerate this untracked inventory; do not ignore any code or contract hash.
+        inventory="backend/src/algoxray.egg-info/SOURCES.txt"
+        if set(differences)-{inventory}:
+            raise ValueError("Frozen file hash mismatch: "+str(differences))
+        if differences:
+            import subprocess
+            if subprocess.check_output(["git","ls-files","--",inventory],cwd=ROOT,text=True).strip():
+                raise ValueError("Generated inventory unexpectedly tracked")
+        replication_hash_comparison={"same_source_commit":True,"same_policy":True,"same_corpus":True,
+             "differences":differences,"note":"Only the untracked editable-install SOURCES.txt inventory may differ; all other frozen file hashes must agree."}
         if repeated_audit["audit_errors"] or repeated_explanation["validation_errors"] or repeated_explanation["status"]!="measured":
             raise ValueError("Replication audit failed")
         keys=("run_count","witnesses","replay_matches","replay_attempts","specific_observations","strict_reductions","certificate_count","failure_kinds")
         if any(repeated_audit[k]!=audit[k] for k in keys) or repeated_explanation["diagnostics"]!=explanation["diagnostics"]:
             raise ValueError("Replication outcomes differ; report differences separately")
         medians=", ".join(g["variant"]+" "+format(g["median_total_ms"],".2f")+" ms" for g in repeated_audit["groups"])
-        replication_note=(f"A fresh checkout and newly installed environment on the same computer repeated {repeated_audit['run_count']} executions with identical aggregate detection, replay, reduction, certificate and diagnostic counts. Median total latency in the repeat: {medians}. This is same-machine reproduction, not an independent machine study.")
+        replication_note=(f"A fresh checkout and newly installed environment on the same computer repeated {repeated_audit['run_count']} executions with identical aggregate detection, replay, reduction, certificate and diagnostic counts. Median total latency in the repeat: {medians}. This is same-machine reproduction, not an independent machine study. The only differing frozen file was the generated untracked editable-install source inventory (SOURCES.txt), if present; source, contracts, protocol and corpus hashes agree.")
     browser=load(job/"browser/browser.json")
     core=load(job/"browser/core/browser.json")
     if browser["status"]!="passed" or core["page_errors"] or core["external_requests"]:
@@ -262,6 +275,8 @@ Replace unsupported legacy claims rather than retroactively attributing these ne
     shutil.copy2(run/"explanation-review/report.json",output/"explanation-report.json")
     shutil.copy2(job/"progress.json",output/"release-progress.json")
     if replication is not None:
+        shutil.copy2(replication/"freeze.json",output/"replication-freeze.json")
+        write(output/"replication-hash-comparison.json",json.dumps(replication_hash_comparison,indent=2))
         shutil.copy2(replication/"summary.json",output/"replication-summary.json")
         shutil.copy2(replication/"audit.json",output/"replication-audit.json")
         shutil.copy2(replication/"explanation-review/report.json",output/"replication-explanation-report.json")
