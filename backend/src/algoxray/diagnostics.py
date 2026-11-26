@@ -41,6 +41,15 @@ def custom_observation(bundle, submission):
                     "direction": "افحص قيم المتغيرات في هذا الحدث والمدخل الذي أدى إلى الاستثناء. موضع ظهوره لا يثبت وحده السبب الجذري.",
                     "adapter_id": "python_exception_location_v1"}
         return None
+    if bundle["problem_id"] == "max_subarray_v1" and bundle["failure_kind"] == "wrong_answer":
+        values = bundle["case"]["array"]
+        final = events[-1] if events else {}
+        if max(values) < 0 and bundle["observed_output"] == 0 and final.get("kind") == "return" and final.get("function") == "solve" and type(final.get("return_value")) is int and final["return_value"] == 0:
+            return {"event_ids":[final["event_id"]],"source_lines":[final["line"]],
+                    "text":f"أعاد السطر {final['line']} الصفر رغم أن جميع العناصر سالبة. كل مقطع غير فارغ هنا مجموعُه سالب، فلا يمكن أن يكون الصفر جواباً قانونياً.",
+                    "direction":"راجع هل تسمح تهيئة المجموع أو تحديثه بمقطع فارغ؛ افحص القيم السابقة قبل تغيير الكود.",
+                    "adapter_id":"max_subarray_zero_negative_v1"}
+        return None
     if bundle["problem_id"] != "binary_search_v1" or bundle["failure_kind"] != "wrong_answer":
         return None
     try:

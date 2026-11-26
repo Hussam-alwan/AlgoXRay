@@ -17,6 +17,7 @@ from . import __version__
 from .problem_registry import spec_for
 from .hints import build_hints
 from .localization import rank_observations
+from .spectrum import coverage, rank_spectrum
 from .claim_verifier import verify_claim_links, abstain_on_unsupported
 from .explanation import explanation_cards
 from .paths import RESULTS
@@ -46,12 +47,13 @@ class Options:
     trace_limit: int = 2000
     replay_count: int = 3
     fresh_process: bool = False
+    diagnostic_samples: int = 0
 
     def __post_init__(self):
         if self.strategy not in ("hypothesis", "random"):
             raise ValueError("Unknown generation strategy")
         for field, lo, hi in (("seed", 0, 2**32 - 1), ("max_examples", 1, 500),
-                              ("max_reduction_calls", 1, 500), ("trace_limit", 1, 2000), ("replay_count", 2, 5)):
+                              ("max_reduction_calls", 1, 500), ("trace_limit", 1, 2000), ("replay_count", 2, 5), ("diagnostic_samples", 0, 4)):
             val = getattr(self, field)
             if type(val) is not int or not lo <= val <= hi:
                 raise ValueError("Invalid option: " + field)
@@ -92,7 +94,7 @@ def validate_bundle(bundle):
         verify = bundle["verification"]
         if not verify["input_valid"] or verify["replay_matches"] != verify["replay_attempts"] or verify["replay_attempts"] < 2:
             raise ValueError("Unverified witness")
-    if bundle.get("evidence_revision") == "option-b.1":
+    if bundle.get("evidence_revision") in {"option-b.1","option-b.2"}:
         line_count = len(bundle["submission"]["source"].splitlines())
         if any(type(e.get("line")) is not int or not 1 <= e["line"] <= line_count for e in bundle["events"]):
             raise ValueError("Trace refers to a missing source line")
@@ -101,6 +103,14 @@ def validate_bundle(bundle):
             raise ValueError("Ranked observations differ from verified claim references")
         if bundle.get("explanation_cards") != explanation_cards(bundle):
             raise ValueError("Explanation cards differ from verified claims")
+    if bundle.get("evidence_revision") == "option-b.2":
+        samples = bundle.get("diagnostic_samples",[])
+        for sample in samples:
+            source_events = bundle["events"] if sample.get("witness") else sample["events"]
+            if sample["lines"] != coverage(source_events):
+                raise ValueError("Diagnostic sample coverage mismatch")
+        if bundle.get("suspicion_ranking") != rank_spectrum(samples,bundle["events"]):
+            raise ValueError("Suspicion ranking mismatch")
     if bundle["evidence_level"] == "E3" and (bundle["trace_status"] != "complete" or not events):
         raise ValueError("E3 requires recorded execution")
     json.dumps(bundle, allow_nan=False)
@@ -214,6 +224,8 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
             stats["post_discovery_ms"] = round((time.perf_counter() - first_at) * 1000, 4)
         trace = {"events": [], "trace_status": "not_run"}
         replay_matches = 0
+        diagnostic_samples = []
+        stats["diagnostic_solver_calls"] = 0
         replay_started = time.perf_counter()
         try:
             if best:
@@ -236,8 +248,31 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
                         traced_failure = trace["status"] if trace["status"] != "ok" else spec.check(best["case"], trace.get("output"), best["expected"])
                         if _fingerprint(trace, traced_failure) != best["fingerprint"]:
                             trace = {"events": [], "trace_status": "failed"}
+            if best and trace["trace_status"] == "complete" and options.diagnostic_samples:
+                diagnostic_samples.append({"case":deepcopy(best["case"]),"outcome":"fail","lines":coverage(trace["events"]),"witness":True})
+                seen = {json.dumps(best["case"],sort_keys=True)}
+                candidates = [a["case"] for a in attempts if a["status"]=="pass"][:8]
+                candidates += [spec.random_case(rng) for _ in range(8)]
+                for candidate in candidates[:12]:
+                    if len(diagnostic_samples)-1 >= options.diagnostic_samples: break
+                    key=json.dumps(candidate,sort_keys=True)
+                    if key in seen: continue
+                    seen.add(key)
+                    expected=spec.reference(candidate)
+                    ordinary=runner.run(candidate)
+                    stats["diagnostic_solver_calls"]+=1
+                    failure=ordinary["status"] if ordinary["status"]!="ok" else spec.check(candidate,ordinary.get("output"),expected)
+                    outcome="fail" if failure else "pass"
+                    if failure and not any(s["outcome"]=="pass" for s in diagnostic_samples): continue
+                    recorded=runner.run(candidate,trace=True,trace_limit=options.trace_limit)
+                    stats["diagnostic_solver_calls"]+=1
+                    recorded_failure=recorded["status"] if recorded["status"]!="ok" else spec.check(candidate,recorded.get("output"),expected)
+                    if recorded["trace_status"]=="complete" and _fingerprint(ordinary,failure)==_fingerprint(recorded,recorded_failure):
+                        diagnostic_samples.append({"case":candidate,"outcome":outcome,"lines":coverage(recorded["events"]),
+                                                   "expected":expected,"observed":ordinary.get("output"),"failure_kind":failure,"events":[{"line":v["line"],"kind":v["kind"],"event_id":v["event_id"]} for v in recorded["events"]]})
         except AnalysisCancelled:
             status, best, stop_reason = 'cancelled', None, 'user_cancelled'
+            diagnostic_samples = []
             trace = {'events': [], 'trace_status': 'not_run'}
         except InvalidSubmission as exc:
             trace = {"events": [], "trace_status": "failed"}
@@ -296,7 +331,9 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
     verify_claim_links(bundle)
     bundle['ranked_observations'] = rank_observations(bundle)
     bundle['explanation_cards'] = explanation_cards(bundle)
-    bundle['evidence_revision'] = 'option-b.1'
+    bundle['diagnostic_samples'] = diagnostic_samples if best else []
+    bundle['suspicion_ranking'] = rank_spectrum(bundle['diagnostic_samples'],bundle['events'])
+    bundle['evidence_revision'] = 'option-b.2'
     validate_bundle(bundle)
     if persist:
         directory = RESULTS / "runs" / run_id

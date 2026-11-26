@@ -69,7 +69,7 @@ def build_hints(bundle, submission):
         hints.extend([{"tier": "H3", "claim_ids": ["C2"], "event_ids": [event["event_id"]],
                        "text": text, "kind": "source_specific_observation"},
                       {"tier": "H4", "claim_ids": ["C2"], "text": direction, "kind": "conceptual_direction"}])
-    if not diagnostic and submission.origin == "reviewed_local_file":
+    if not diagnostic and (submission.origin == "reviewed_local_file" or problem == "max_subarray_v1"):
         observation = custom_observation(bundle, submission)
         if observation:
             _append_observation(claims, hints, observation)

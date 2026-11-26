@@ -38,6 +38,7 @@ class AnalysisOptions(BaseModel):
     trace_limit: int = Field(default=2000, ge=1, le=2000)
     replay_count: int = Field(default=3, ge=2, le=5)
     fresh_process: bool = False
+    diagnostic_samples: int = Field(default=0, ge=0, le=4)
 
 
 class AnalyzeRequest(BaseModel):

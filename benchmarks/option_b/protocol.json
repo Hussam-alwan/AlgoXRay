@@ -29,7 +29,8 @@
       "id": "full",
       "strategy": "hypothesis",
       "shrink": true,
-      "include_trace": true
+      "include_trace": true,
+      "diagnostic_samples": 3
     }
   ]
 }

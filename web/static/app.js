@@ -29,7 +29,7 @@ function setBusy(value) {
   $('analyze-button').disabled = value;
   $('analyze-button').classList.toggle('busy', value);
   $('analyze-label').textContent = value ? 'جارٍ التحليل…' : 'ابدأ التحليل';
-  for (const selector of ['fixture-select', 'strategy', 'seed', 'budget', 'shrink', 'manual-case', 'source-editor', 'trusted-local-code', 'mode-custom', 'mode-fixture', 'load-template', 'load-bug-example', 'import-code', 'code-file', 'case-input', 'pin-witness', 'clear-witness']) $(selector).disabled = value;
+  for (const selector of ['fixture-select', 'strategy', 'seed', 'budget', 'shrink', 'manual-case', 'source-editor', 'trusted-local-code', 'mode-custom', 'mode-fixture', 'load-template', 'load-bug-example', 'import-code', 'code-file', 'case-input', 'pin-witness', 'clear-witness', 'fresh-process']) $(selector).disabled = value;
   document.querySelectorAll('[data-problem]').forEach(button => button.disabled = value);
   $('mode-custom').disabled = value || state.customCodeEnabled === false;
 }
@@ -230,7 +230,7 @@ async function runAnalysis(event) {
   const id = Array.from(crypto.getRandomValues(new Uint8Array(16)), n=>n.toString(16).padStart(2,'0')).join('');
   state.analysisId = id;
   try {
-    const payload = {analysis_id: id, problem_id: state.problem, options: {seed, strategy: $('strategy').value, max_examples: budget, shrink: $('shrink').checked}, case: manual};
+    const payload = {analysis_id: id, problem_id: state.problem, options: {seed, strategy: $('strategy').value, max_examples: budget, shrink: $('shrink').checked, diagnostic_samples: 3, fresh_process: $('fresh-process').checked}, case: manual};
     const headers = {'Content-Type': 'application/json'};
     if (custom) {
       const session = await request('/api/session');
@@ -349,6 +349,11 @@ function renderDiagnosis() {
     }); ranked.append(button);
   }
   if (ranked.children.length) ranked.prepend(node('p', '', 'مواضع مرتبطة بالدليل، وليست إثباتاً لسبب الخطأ.'));
+  const spectrum = $('suspicion-ranking'); spectrum.replaceChildren();
+  if (result.suspicion_ranking?.length) {
+    spectrum.append(node('p','','ترتيب اشتباه إحصائي من تشغيلات ناجحة وفاشلة محدودة، وليس إثباتاً للسبب.'));
+    for (const row of result.suspicion_ranking) {const b=node('button','secondary-button',`السطر ${row.line} · ${row.failed_covered}/${row.failed_total} فشل · ${row.passed_covered}/${row.passed_total} نجاح`); b.type='button'; b.addEventListener('click',()=>{const i=result.events.findIndex(e=>e.event_id===row.event_id); if(i>=0){state.original=false;state.step=i;stopPlaying();renderStep();}}); spectrum.append(b);}
+  }
   $('diagnosis-badge').textContent = supported ? 'موضع مدعوم بالتنفيذ' : 'شاهد مؤكد · افحص التتبع';
   $('diagnosis-text').textContent = supported ? observation.text : 'وجدنا مدخلاً يكشف فشل الحل، لكن لا يوجد دليل كافٍ لتحديد سبب منطقي بعينه في هذا الكود.';
   $('diagnosis-direction').textContent = supported ? (result.hints.find(h => h.tier === 'H4')?.text || 'افتح الحدث وافحص القيم المسجلة.') : 'قارن المتوقع بالناتج وتابع المتغيرات خطوة بخطوة. آخر سطر منفذ ليس بالضرورة سبب الخطأ.';

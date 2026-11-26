@@ -19,6 +19,11 @@ def semantic_observation_valid(bundle, claim):
     rule = claim.get("adapter_id")
     case = bundle["case"]
     actual = bundle["observed_output"]
+    if rule == "max_subarray_zero_negative_v1" and len(linked)==1:
+        e=linked[0]
+        return (bundle["problem_id"]=="max_subarray_v1" and bundle["failure_kind"]=="wrong_answer"
+                and max(case["array"])<0 and type(actual) is int and actual==0
+                and e["kind"]=="return" and e["function"]=="solve" and type(e.get("return_value")) is int and e["return_value"]==0)
     if rule == "python_exception_location_v1" and len(linked) == 1:
         e, exc = linked[0], bundle["exception"]
         return e["kind"] == "exception" and all(e.get(k) == exc.get(v) for k,v in

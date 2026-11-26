@@ -67,7 +67,7 @@ def test_max_subarray_api_witness(client):
     bundle = response.json()
     assert bundle["failure_kind"] == "wrong_answer"
     assert bundle["witness_explanation"]["sum"] == -2
-    assert bundle["evidence_revision"] == "option-b.1"
+    assert bundle["evidence_revision"] == "option-b.2"
 
 def test_option_b_summary_not_run(client):
     assert client.get("/api/option-b/benchmark-summary").json()["status"] == "not_run"
