@@ -126,6 +126,100 @@ The v2 corpus is reused after inspecting v1; this is exploratory regression, not
         page.pdf(path=str(output/"poster-v2.pdf"),prefer_css_page_size=True,print_background=True)
         page.screenshot(path=str(output/"poster-preview.png"),full_page=True)
         instance.close()
+
+    by_problem=explanation["by_problem"]
+    problem_table="| Contract | Full witnesses | Specific observations | Spectrum available | Arithmetic links |\n|---|---:|---:|---:|---:|\n"+"\n".join(
+        f"| {k} | {v.get('witnesses',0)} | {v.get('specific',0)} | {v.get('spectrum_available',0)} | {v.get('arithmetic_links_available',0)} |" for k,v in by_problem.items())
+    ablation_table="| Context | Witnesses | Candidate claims | Published | Rejected | Specific coverage |\n|---|---:|---:|---:|---:|---:|\n"+"\n".join(
+        f"| {k} | {v.get('witnesses',0)} | {v.get('candidate_claims',0)} | {v.get('published_claims',0)} | {v.get('rejected_claims',0)} | {v.get('specific_coverage',0)} |" for k,v in explanation["arms"].items())
+    manuscript=f"""# AlgoX-Ray: Counterexample-Driven Visual Debugging and Evidence-Grounded Hints for Algorithmic Problem Solving
+**Measured v2 author-review draft — not venue-approved camera-ready.**
+
+## Abstract
+Algorithmic judges can show a wrong output without explaining why it occurs. AlgoX-Ray combines bounded legal input generation, reference comparison, replay, structural reduction, recorded Python execution and verified educational observations. Three problem contracts cover directed shortest paths, binary-search membership and maximum nonempty subarray. {summary_text} The full arm strictly reduced {reduction} witnesses and provided {specific} source-specific observations. The study establishes bounded technical feasibility on a reused, partly assistant-authored corpus, not general diagnostic accuracy or learning benefit.
+
+## 1. Motivation and research questions
+The question is whether an inspectable record connects a reproducible contract violation to execution-level observations that can be checked independently of a language model. RQ1 examines bounded witness discovery and control accusations. RQ2 examines reduction and replay consistency. RQ3 examines availability of source-specific evidence, abstention, and robustness against designed claim tampering. Human factuality and instructional value require separate evaluation and remain open.
+
+## 2. Related work
+Code Hunt uses generated counterexamples as clues [1]; Python Tutor visualizes execution [2]; ITAP generates hints from solution spaces [3]. CodeHelp [4] and CodeAid [5] investigate guarded programming assistance. Hypothesis incorporates structure-preserving reduction via generation [6]. Whyline explains output using execution information [7]. Spectrum-based ranking, including Ochiai, is established fault-localization work [8]. Counterexample-guided repair and MENTOR combine fault localization and LLM repair [9,10]. The contribution here is the integration of bounded witness search and inspectable narrow evidence checks with educational abstention; neither counterexample generation, spectrum scoring nor general tracing is claimed as new. Repair success rates and witness-discovery rates measure different outcomes.
+
+## 3. System
+Each registered problem declares legal inputs, a generator, a reducer, reference and acceptance checker. Directed graphs have 2–8 vertices with positive weights; Bellman–Ford is checked against Floyd–Warshall. Sorted arrays have up to 32 entries, and any index matching the target is legal. Maximum subarray requires a nonempty contiguous segment, with bounded exhaustive enumeration cross-checked by Kadane. Oracle disagreement and worker failures do not accuse a submission.
+
+A local trusted-code child worker runs candidates with deadlines and records wrong answers, contract violations, exceptions and timeouts distinctly. A persistent worker starts a fresh namespace per case; optional fresh process per case also discards imported module state. Neither constitutes a hostile-code sandbox. Cancellation stops the server-side worker. A candidate must reproduce the same failure fingerprint; best-effort reduction preserves the failure signature. Final replay and traced replay must agree before evidence is promoted.
+
+An evidence bundle binds source SHA-256, original and reduced input, observed and expected outputs, replay counts, frame and event identifiers, trace snapshots and claims. A verifier checks source-bound adapter predicates or narrow mathematical symptoms. Examples include a violated graph edge relaxation inequality and a returned zero when every admissible nonempty segment is negative. These observations identify symptoms, not necessarily the faulty statement. Arithmetic dependencies are restricted to observed consecutive same-frame integer assignments; no general dynamic slicing claim is made. Ochiai-style ranks use bounded passing/failing samples and represent suspicion only. Unsupported specific observations are withheld. Deterministic explanation text is regenerated from checked facts; no external AI provider is necessary.
+
+## 4. Evaluation protocol
+The frozen revision is {commit}. The corpus consists of {summary['corpus_count']} distinct program files, including historical fixtures and 18 additional assistant-authored implementations. The labels have not been independently reviewed. Five seeds are paired across random discovery, Hypothesis discovery and the full Hypothesis/reduction/trace arm. The first two disable reduction and tracing. V2 was developed after inspecting v1, so repeating the corpus is exploratory regression, not held-out confirmation. All runs are counted; discovery latency is conditional on successful discovery, and total latency includes all outcomes. Raw evidence, exact file hashes, environment and protocol are retained.
+
+## 5. Results
+{table}
+
+{summary_text}
+The full arm strictly reduced {reduction} witnesses and produced {specific} specific observations. V1 on the same corpus had 59/75 strict reductions and 20/75 specific observations; differences are descriptive, not an independent validation of generalization.
+
+{problem_table}
+
+The same conservative deterministic explainer was evaluated on matched witnesses under three evidence masks. Source-only abstains from execution claims by design; witness-only has no trace-specific evidence.
+
+{ablation_table}
+
+Designed negative controls rejected {neg.get('prose_rejected',0)}/{neg.get('prose_attempts',0)} fabricated prose attempts and {neg.get('missing_event_rejected',0)}/{neg.get('missing_event_attempts',0)} missing-event claims. These are artificial integrity probes, not estimates of natural claim factuality. The review packet contains {explanation['review_items']} unique items; independent ratings have not been collected.
+
+## 6. Live demonstration and reproducibility
+The browser recorded a maximum-subarray witness [-5,-2,-7]: the empty-segment bug returns 0, but the legal optimum is -2. The interface displays the recorded trace, expected output, optimal segment and downloadable bundle. Another journey shows the graph path certificate, and a binary-search journey repairs a solution against a pinned witness. Browser verification also covers source hash round-trip, server-side cancellation, package review and mobile layout. The accepted gate records {tests} passing tests and {journeys} browser journeys.
+
+![Recorded maximum-subarray interface](screenshots/max-subarray-desktop.png)
+
+![Recorded graph analysis](screenshots/core-graph-trace.jpg)
+
+The artifact is available at https://github.com/Hussam-alwan/AlgoXRay/tree/option-b. Checkout the exact measured revision above and use the pinned requirements, benchmark protocol, frozen manifest, raw run directory and separate audit. The published branch may advance; the commit, rather than the branch tip, identifies the evaluation.
+
+## 7. Threats to validity and conclusion
+The 30 files are not independent student submissions, and 450 executions are not 450 participants. Timeouts depend on execution environment. Detection is bounded and inconclusive is not correctness. Reduction is not guaranteed globally minimal. Specific observations include output symptoms, not validated root causes. The ablation is not a comparison against a general-purpose LLM. No human factuality, educational improvement, superiority, security isolation or first-of-kind claim is established. The results support technical feasibility of a reproducible local evidence workflow. Author review, independent annotation and final venue formatting remain pending.
+
+## References
+[1] Tillmann et al. Code Hunt: Searching for Secret Code for Fun (2014). https://www.microsoft.com/en-us/research/publication/code-hunt-searching-for-secret-code-for-fun/
+[2] Guo. Online Python Tutor (SIGCSE 2013). https://research.google/pubs/online-python-tutor-embeddable-web-based-program-visualization-for-cs-education/
+[3] Rivers and Koedinger. Data-Driven Hint Generation in Vast Solution Spaces (2017). https://www.krivers.net/research.html
+[4] Liffiton et al. CodeHelp (2023). https://arxiv.org/abs/2308.06921
+[5] CodeAid (CHI 2024). https://doi.org/10.1145/3613904.3642773
+[6] MacIver and Donaldson. Test-case Reduction via Test-case Generation (ECOOP 2020). https://doi.org/10.4230/LIPIcs.ECOOP.2020.13
+[7] Ko and Myers. Debugging Reinvented (ICSE 2008). https://doi.org/10.1145/1368088.1368130
+[8] Abreu, Zoeteweij and van Gemund. On the Accuracy of Spectrum-based Fault Localization (2007). https://doi.org/10.1109/TAICPART.2007.4344104
+[9] Orvalho et al. Counterexample Guided Program Repair Using Zero-Shot Learning and MaxSAT-based Fault Localization (AAAI 2025). https://doi.org/10.1609/AAAI.V39I1.32046
+[10] Orvalho, Janota and Manquinho. MENTOR (JSS 2026). https://doi.org/10.1016/j.jss.2025.112690
+"""
+    write(output/"manuscript-v2.md",manuscript)
+    reviewer=f"""# Paper 20 — measured response draft
+For author approval only; not sent.
+
+Reviewer 1: thank you for the poster recommendation. The artifact now has a verified live demonstration and measured poster draft.
+
+Reviewer 3:
+- **Single problem and authored bug:** three bounded problem contracts and {summary['corpus_count']} files evaluated. {summary_text} The corpus remains partly assistant-authored; an independent student corpus has not been collected.
+- **Generator tailored to bug:** legal general-purpose random and Hypothesis generation are separate paired arms; the full arm enables reduction and trace. Both successful and unsuccessful outcomes are retained.
+- **Actual execution trace:** recorded Python frames, line/call/return/exception events, source hashes, replay, and evidence export. Added narrow invariant observations, arithmetic read/write links and spectrum ranking; no arbitrary causal diagnosis claim.
+- **Screenshots and artifact:** {tests} tests and {journeys} browser journeys passed on {commit}. Actual captures and exports are included. Confirm anonymization and artifact permissions before sharing.
+- **Missing literature / uncited references:** the draft explicitly cites Code Hunt, Python Tutor, ITAP, CodeHelp, CodeAid, Hypothesis, Whyline, spectrum localization, AAAI 2025 repair and MENTOR. Bibliographic formatting still requires author review.
+- **Length and future-work focus:** concise implemented-system manuscript and measured poster prepared. Verify poster-specific page and camera-ready requirements before submission.
+
+Replace unsupported legacy claims rather than retroactively attributing these new results to the original submission. No independent human review or learner study is claimed.
+"""
+    write(output/"reviewer-response-v2.md",reviewer)
+    demo=f"""# عرض AlgoX-Ray (خمس دقائق)
+0:00–0:40: اشرح الفرق بين كشف خطأ وتحديد سببه.
+0:40–1:50: اعرض شاهد Dijkstra، الكلفة المتوقعة والمرصودة والأحداث الفعلية.
+1:50–2:40: افتح Binary Search، اختر ملاحظة مرتبطة بحدث، وعدّل الحل وافحص الشاهد نفسه.
+2:40–3:35: Maximum Subarray بالمدخل [-5,-2,-7]؛ المتوقع -2 والمرصود 0 في رحلة المتصفح المحفوظة.
+3:35–4:20: اعرض إلغاء التنفيذ، تصدير الدليل، ومراجعة عقد مسألة.
+4:20–5:00: {summary['run_count']} تشغيل على {summary['corpus_count']} ملفاً، كشف {total['buggy_found']}/{total['buggy_runs']}، اتهامات الصحيح {total['control_accusations']}/{total['control_runs']}، الملاحظات المحددة {specific} في المسار الكامل. لا تدّع دقة السبب الجذري أو وجود تقييم بشري.
+الإصدار المقاس: {commit}.
+"""
+    write(output/"demo-v2-ar.md",demo)
+
     for name in ("freeze.json","summary.json","audit.json","runs.csv"):
         shutil.copy2(run/name,output/name)
     shutil.copy2(run/"explanation-review/report.json",output/"explanation-report.json")
