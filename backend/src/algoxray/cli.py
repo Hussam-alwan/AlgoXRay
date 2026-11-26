@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 from .engine import Options, analyze
-from .problems import PROBLEMS
+from .problem_registry import REGISTRY
 from .registry import fixture_cards, get_submission, local_submission
 
 
@@ -17,7 +17,7 @@ def main(argv=None):
     server = commands.add_parser("serve", help="Start the loopback-only UI")
     server.add_argument("--port", type=int, default=8000)
     command = commands.add_parser("analyze", help="Analyze reviewed local Python code")
-    command.add_argument("--problem", choices=list(PROBLEMS), required=True)
+    command.add_argument("--problem", choices=list(REGISTRY), required=True)
     source = command.add_mutually_exclusive_group(required=True)
     source.add_argument("--fixture")
     source.add_argument("--submission", type=Path)

@@ -66,7 +66,9 @@ def abstain_on_unsupported(bundle):
             valid = False
         if not valid:
             rejected.add(claim["claim_id"])
+    rejected_candidates = [{**c, "verification_status": "rejected"} for c in bundle["claims"] if c["claim_id"] in rejected]
     bundle["claims"] = [c for c in bundle["claims"] if c["claim_id"] not in rejected]
     bundle["hints"] = [h for h in bundle["hints"] if not rejected.intersection(h["claim_ids"])]
-    bundle["claim_verification"] = {"rejected_ids": sorted(rejected), "method": "rule_predicates_v1"}
+    bundle["claim_verification"] = {"rejected_ids": sorted(rejected), "method": "rule_predicates_v1",
+                                    "rejected_candidates": rejected_candidates}
     return bundle

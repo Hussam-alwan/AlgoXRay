@@ -19,7 +19,8 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from . import __version__
 from .engine import Options, analyze
 from .paths import RESULTS, ROOT, WEB
-from .problems import InvalidCase, PROBLEMS
+from .problems import InvalidCase
+from .problem_registry import REGISTRY
 from .registry import fixture_cards, get_submission, local_submission
 
 
@@ -40,7 +41,7 @@ class AnalysisOptions(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    problem_id: Literal["dijkstra_v1", "binary_search_v1", "max_subarray_v1"]
+    problem_id: str = Field(min_length=1, max_length=100)
     fixture_id: str | None = Field(default=None, min_length=1, max_length=100, pattern=r"^[a-z0-9_]+$")
     source: str | None = Field(default=None, min_length=1, max_length=32768)
     trusted_local_code: bool = False
@@ -49,6 +50,8 @@ class AnalyzeRequest(BaseModel):
 
     @model_validator(mode="after")
     def exactly_one_source(self):
+        if self.problem_id not in REGISTRY:
+            raise ValueError('Unknown problem')
         if (self.fixture_id is None) == (self.source is None):
             raise ValueError("Choose exactly one of fixture_id or source")
         return self
@@ -114,12 +117,12 @@ async def local_boundary(request: Request, call_next):
 @app.get("/api/health")
 def health():
     return {"status": "ready", "version": __version__, "execution_mode": "local_trusted" if CUSTOM_CODE_ENABLED else "catalog_only",
-            "problems": len(PROBLEMS), "custom_code": CUSTOM_CODE_ENABLED, "hypothesis": version("hypothesis"), "networkx": version("networkx")}
+            "problems": len(REGISTRY), "custom_code": CUSTOM_CODE_ENABLED, "hypothesis": version("hypothesis"), "networkx": version("networkx")}
 
 
 @app.get("/api/problems")
 def problems():
-    return list(PROBLEMS.values())
+    return [spec.metadata for spec in REGISTRY.values()]
 
 
 @app.get("/api/fixtures")
@@ -171,6 +174,12 @@ def benchmark_summary():
         return json.loads(path.read_text(encoding="utf-8"))
     path = RESULTS / "summary.json"
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"status": "not_run", "rows": []}
+
+
+@app.get("/api/option-b/benchmark-summary")
+def option_b_benchmark_summary():
+    path = RESULTS / "option-b-new" / "summary.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {"status": "not_run", "rows": []}
 
 
 @app.get("/api/contract")

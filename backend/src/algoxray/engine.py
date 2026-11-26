@@ -14,16 +14,13 @@ from hypothesis import Phase, find, settings
 from hypothesis.errors import NoSuchExample
 
 from . import __version__
-from .certificate import checked_example
-from .generation import random_case, strategy_for
-from .reduction import smaller_cases as _smaller_cases
+from .problem_registry import spec_for
 from .hints import build_hints
 from .localization import rank_observations
 from .claim_verifier import verify_claim_links, abstain_on_unsupported
 from .explanation import explanation_cards
 from .paths import RESULTS
-from .problems import (PROBLEMS, OracleDisagreement, check_output, complexity,
-                       reference, size, validate_case)
+from .problems import OracleDisagreement
 from .runner import InvalidSubmission, Runner
 
 
@@ -103,10 +100,9 @@ def validate_bundle(bundle):
 def analyze(submission, options=None, case=None, persist=True):
     options = options or Options()
     problem_id = submission.problem_id
-    if problem_id not in PROBLEMS:
-        raise ValueError("Unknown problem")
+    spec = spec_for(problem_id)
     if case is not None:
-        case = validate_case(problem_id, case)
+        case = spec.validate(case)
     started = time.perf_counter()
     stats = {"discovery_candidates": 0, "post_discovery_candidates": 0, "verification_solver_calls": 0,
              "replay_solver_calls": 0, "trace_solver_calls": 0, "flaky_candidates": 0,
@@ -131,10 +127,10 @@ def analyze(submission, options=None, case=None, persist=True):
                 if stats["post_discovery_candidates"] >= options.max_reduction_calls or now - first_at >= options.reduction_seconds:
                     raise BudgetStop()
                 stats["post_discovery_candidates"] += 1
-            candidate = validate_case(problem_id, candidate)
-            expected = reference(problem_id, candidate)
+            candidate = spec.validate(candidate)
+            expected = spec.reference(candidate)
             result = runner.run(candidate)
-            failure = result["status"] if result["status"] != "ok" else check_output(problem_id, candidate, result.get("output"), expected)
+            failure = result["status"] if result["status"] != "ok" else spec.check(candidate, result.get("output"), expected)
             attempts.append({"phase": phase, "case": candidate, "status": failure or "pass",
                              "elapsed_ms": result["elapsed_ms"]})
             if phase == "manual":
@@ -149,7 +145,7 @@ def analyze(submission, options=None, case=None, persist=True):
             for _ in range(options.replay_count - 1):
                 repeated = runner.run(candidate)
                 stats["verification_solver_calls"] += 1
-                repeated_failure = repeated["status"] if repeated["status"] != "ok" else check_output(problem_id, candidate, repeated.get("output"), expected)
+                repeated_failure = repeated["status"] if repeated["status"] != "ok" else spec.check(candidate, repeated.get("output"), expected)
                 if _fingerprint(repeated, repeated_failure) != fingerprint:
                     stats["flaky_candidates"] += 1
                     return False
@@ -162,7 +158,7 @@ def analyze(submission, options=None, case=None, persist=True):
                 target_signature = signature
                 if not options.shrink and case is None:
                     raise DiscoveryComplete()
-            elif complexity(problem_id, candidate) < complexity(problem_id, best["case"]):
+            elif spec.complexity(candidate) < spec.complexity(best["case"]):
                 best = record
             return True
 
@@ -173,23 +169,23 @@ def analyze(submission, options=None, case=None, persist=True):
             elif options.strategy == "hypothesis":
                 phases = [Phase.generate] + ([Phase.shrink] if options.shrink else [])
                 try:
-                    find(strategy_for(problem_id), lambda c: evaluate(c, "discovery" if first is None else "reduction"),
+                    find(spec.strategy(), lambda c: evaluate(c, "discovery" if first is None else "reduction"),
                          settings=settings(max_examples=options.max_examples, database=None, deadline=None,
                                            phases=phases, report_multiple_bugs=False), random=rng)
                 except NoSuchExample:
                     pass
             else:
                 while first is None:
-                    evaluate(random_case(problem_id, rng), "discovery")
+                    evaluate(spec.random_case(rng), "discovery")
             if first and options.shrink and (options.strategy == "random" or case is not None):
                 while True:
-                    previous = complexity(problem_id, best["case"])
-                    for candidate in _smaller_cases(problem_id, best["case"]):
-                        if complexity(problem_id, candidate) < complexity(problem_id, best["case"]):
+                    previous = spec.complexity(best["case"])
+                    for candidate in spec.smaller(best["case"]):
+                        if spec.complexity(candidate) < spec.complexity(best["case"]):
                             evaluate(candidate, "reduction")
-                            if complexity(problem_id, best["case"]) < previous:
+                            if spec.complexity(best["case"]) < previous:
                                 break
-                    if complexity(problem_id, best["case"]) == previous:
+                    if spec.complexity(best["case"]) == previous:
                         break
         except DiscoveryComplete:
             stop_reason = "first_verified_witness"
@@ -211,7 +207,7 @@ def analyze(submission, options=None, case=None, persist=True):
                 for _ in range(options.replay_count):
                     repeated = runner.run(best["case"])
                     stats["replay_solver_calls"] += 1
-                    repeated_failure = repeated["status"] if repeated["status"] != "ok" else check_output(problem_id, best["case"], repeated.get("output"), best["expected"])
+                    repeated_failure = repeated["status"] if repeated["status"] != "ok" else spec.check(best["case"], repeated.get("output"), best["expected"])
                     replay_matches += _fingerprint(repeated, repeated_failure) == best["fingerprint"]
                 stats["replay_ms"] = round((time.perf_counter() - replay_started) * 1000, 4)
                 if replay_matches != options.replay_count:
@@ -224,7 +220,7 @@ def analyze(submission, options=None, case=None, persist=True):
                         trace = runner.run(best["case"], trace=True, trace_limit=options.trace_limit)
                         stats["trace_solver_calls"] += 1
                         stats["trace_ms"] = round((time.perf_counter() - trace_started) * 1000, 4)
-                        traced_failure = trace["status"] if trace["status"] != "ok" else check_output(problem_id, best["case"], trace.get("output"), best["expected"])
+                        traced_failure = trace["status"] if trace["status"] != "ok" else spec.check(best["case"], trace.get("output"), best["expected"])
                         if _fingerprint(trace, traced_failure) != best["fingerprint"]:
                             trace = {"events": [], "trace_status": "failed"}
         except InvalidSubmission as exc:
@@ -252,10 +248,10 @@ def analyze(submission, options=None, case=None, persist=True):
                       "line": best["result"].get("exception_line"), "function": best["result"].get("exception_function")} if best else None,
         "evidence_level": "E2" if best else "E0", "trace_status": trace["trace_status"],
         "events": trace.get("events", []), "claims": [], "hints": [],
-        "verification": {"input_valid": best is not None, "oracle_id": {"dijkstra_v1": "networkx_bellman_ford+independent_floyd", "binary_search_v1": "linear_membership_checker", "max_subarray_v1": "exhaustive_segments+kadane"}[problem_id],
+        "verification": {"input_valid": best is not None, "oracle_id": spec.oracle_id,
                          "replay_attempts": stats["replay_solver_calls"], "replay_matches": replay_matches},
-        "reduction": {"before": size(problem_id, first["case"]) if first else None,
-                      "after": size(problem_id, best["case"]) if best else None,
+        "reduction": {"before": spec.size(first["case"]) if first else None,
+                      "after": spec.size(best["case"]) if best else None,
                       "failure_preserved": best is not None,
                       "method": ("hypothesis" if options.strategy == "hypothesis" and case is None else "greedy_structure") if options.shrink else "disabled"},
         "statistics": stats, "attempts": attempts, "stop_reason": stop_reason, "error": error,
@@ -263,7 +259,7 @@ def analyze(submission, options=None, case=None, persist=True):
                      "hypothesis": version("hypothesis"), "networkx": version("networkx")},
     }
     bundle["manual_check"] = manual_check
-    bundle["witness_explanation"] = (checked_example(problem_id, best["case"], best["result"]["output"], best["expected"])
+    bundle["witness_explanation"] = (spec.certificate(best["case"], best["result"]["output"], best["expected"])
                                      if best and best["failure"] == "wrong_answer" else None)
     bundle["claims"], bundle["hints"] = build_hints(bundle, submission)
     verify_claim_links(bundle)

@@ -62,7 +62,7 @@ def run(out, frozen):
     raw=out/"raw"
     raw.mkdir(exist_ok=False)
     policy=frozen["policy"]
-    rows,review=[],[]
+    rows,review,decisions=[],[],[]
     for item,seed in product(frozen["corpus"],policy["seeds"]):
         variants=policy["variants"]
         offset=policy["seeds"].index(seed)%len(variants)
@@ -81,9 +81,12 @@ def run(out, frozen):
                     row["strictly_reduced"]=complexity(item["problem"],bundle["case"])<complexity(item["problem"],bundle["original_case"])
                     row["specific"]=bundle["diagnostic_status"]=="supported"
                     row["rejected"]=len(bundle.get("claim_verification",{}).get("rejected_ids",[]))
-                for claim in bundle["claims"]:
+                rejected = bundle.get("claim_verification",{}).get("rejected_candidates",[])
+                for claim in bundle["claims"] + rejected:
                     review.append({"run":ident,"claim":claim["claim_id"],"text":claim["text"],
                                    "events":"|".join(claim["event_ids"]),"verdict":"","reviewer":"","reason":""})
+                    decisions.append({"run":ident,"claim":claim["claim_id"],
+                                      "published":claim.get("verification_status")!="rejected"})
             except Exception as exc:
                 row.update(status="internal_error",error=f"{type(exc).__name__}: {exc}")
                 bundle={"error":row["error"]}
@@ -92,6 +95,7 @@ def run(out, frozen):
             rows.append(row)
     write_csv(out/"runs.csv",rows)
     write_csv(out/"review.csv",review)
+    write_csv(out/"verification_decisions.csv",decisions)
     groups=[]
     for problem,variant in product(sorted({r["problem"] for r in rows}),policy["variants"]):
         group=[r for r in rows if r["problem"]==problem and r["variant"]==variant["id"]]
