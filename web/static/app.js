@@ -190,7 +190,7 @@ function renderHints() {
 function renderResult() {
   const result = state.result, found = result?.status === 'witness_found';
   $('status-banner').className = 'status-banner' + (found ? ' found' : result ? ' inconclusive' : '');
-  $('status-title').textContent = found ? ({wrong_answer: 'وجدنا حالة تؤكد اختلاف النتيجة', exception: 'وجدنا حالة يتوقف عليها الحل', timeout: 'وجدنا حالة تتجاوز مهلة التشغيل', contract_violation: 'وجدنا خرجاً يخالف عقد المسألة'}[result.failure_kind]) : result ? (result.status === 'cancelled' ? 'أُلغي التحليل' : result.status === 'inconclusive' ? 'لم نجد خطأ ضمن الميزانية' : 'تعذر استكمال التحقق') : 'جاهز لاكتشاف حالة الفشل';
+  $('status-title').textContent = found ? ({wrong_answer: 'وجدنا حالة تؤكد اختلاف النتيجة', exception: 'وجدنا حالة يتوقف عليها الحل', timeout: 'وجدنا حالة تتجاوز مهلة التشغيل', contract_violation: 'وجدنا خرجاً يخالف عقد المسألة'}[result.failure_kind]) : result ? (result.status === 'cancelled' ? 'أُلغي التحليل' : result.status === 'infrastructure_error' ? 'تعطل عامل التنفيذ — لا حكم على الحل' : result.status === 'inconclusive' ? 'لم نجد خطأ ضمن الميزانية' : 'تعذر استكمال التحقق') : 'جاهز لاكتشاف حالة الفشل';
   $('status-description').textContent = found ? `أعيد الفشل ${result.verification.replay_matches} مرات من ${result.verification.replay_attempts}. يمكنك الآن فحص الحالة والتنقل في تنفيذها.` : result ? (result.status === 'cancelled' ? 'أوقف العامل ولم يصدر حكم على الحل.' : result.error || 'هذه نتيجة بحث محدود؛ لا تمثل إثباتاً لصحة الحل.') : 'اختر حلاً ثم ابدأ التحليل. الرسم الحالي معاينة للمدخل التوضيحي فقط.';
   $('status-symbol').textContent = found ? '↳' : result ? '◷' : '◌';
   $('run-label').textContent = result ? 'RUN ' + result.run_id.slice(-10).toUpperCase() : 'NO RUN YET';

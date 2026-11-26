@@ -23,7 +23,7 @@ from .claim_verifier import verify_claim_links, abstain_on_unsupported, verify_p
 from .explanation import explanation_cards
 from .paths import RESULTS
 from .problems import OracleDisagreement
-from .runner import InvalidSubmission, Runner, AnalysisCancelled
+from .runner import InvalidSubmission, Runner, AnalysisCancelled, WorkerFailure
 
 
 class DiscoveryComplete(BaseException):
@@ -243,6 +243,9 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
         except OracleDisagreement as exc:
             status, error = "oracle_disagreement", str(exc)
             best = None
+        except WorkerFailure as exc:
+            status, error, best = "infrastructure_error", str(exc), None
+            stop_reason = "worker_failure"
         except InvalidSubmission as exc:
             status, error = "invalid_submission", str(exc)
             best = None
@@ -312,7 +315,7 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
                 stop_reason = "trace_infrastructure_failure"
             else:
                 best = None
-                status, error = "invalid_submission", str(exc)
+                status, error = ("infrastructure_error" if isinstance(exc,WorkerFailure) else "invalid_submission"), str(exc)
                 stop_reason = "verification_infrastructure_failure"
         stats.setdefault("replay_ms", 0.0)
         stats.setdefault("trace_ms", 0.0)

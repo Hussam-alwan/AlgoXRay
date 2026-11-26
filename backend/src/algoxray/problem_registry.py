@@ -17,6 +17,13 @@ class ProblemSpec:
     random_case: Callable
     smaller: Callable
     certificate: Callable
+    visualization: str = 'json'
+
+    def public_metadata(self):
+        return {**self.metadata, 'oracle_id':self.oracle_id, 'contract_version':self.metadata['id'],
+                'visualization':self.visualization,
+                'capabilities':{'random_generation':True,'hypothesis_generation':True,'legal_reduction':True,
+                                'reference_check':True,'python_line_trace':True,'hostile_code_sandbox':False}}
 
 def legacy(problem_id, oracle_id):
     return ProblemSpec(problems.PROBLEMS[problem_id], oracle_id,
@@ -28,7 +35,7 @@ def legacy(problem_id, oracle_id):
         partial(generation.strategy_for,problem_id),
         partial(generation.random_case,problem_id),
         partial(reduction.smaller_cases,problem_id),
-        partial(certificate.checked_example,problem_id))
+        partial(certificate.checked_example,problem_id), 'graph' if problem_id=='dijkstra_v1' else 'array')
 
 REGISTRY = {
     "dijkstra_v1":legacy("dijkstra_v1","networkx_bellman_ford+independent_floyd"),
@@ -38,7 +45,7 @@ REGISTRY = {
         partial(problems.reference,max_subarray.ID),
         max_subarray.check,lambda c:(len(c["array"]),sum(abs(v) for v in c["array"])),
         lambda c:{"length":len(c["array"])},max_subarray.strategy,max_subarray.random_case,
-        max_subarray.smaller,lambda c,a,e:max_subarray.certificate(c,a))
+        max_subarray.smaller,lambda c,a,e:max_subarray.certificate(c,a),'array')
 }
 
 def spec_for(problem_id):

@@ -14,6 +14,11 @@ class InvalidSubmission(ValueError):
     pass
 
 
+class WorkerFailure(InvalidSubmission):
+    """Execution infrastructure failure, not evidence about a solution."""
+    pass
+
+
 class AnalysisCancelled(BaseException):
     pass
 
@@ -82,10 +87,13 @@ class Runner:
             hello = self._receive(5)
         except queue.Empty:
             self.close()
-            raise InvalidSubmission("Worker startup timed out")
-        if not hello.get("ready") or hello.get("source_sha256") != self.submission.sha256:
+            raise WorkerFailure("Worker startup timed out")
+        if hello.get("ready") is False:
             self.close()
-            raise InvalidSubmission(hello.get("message", "Source changed or worker failed to start"))
+            raise InvalidSubmission(hello.get("message", "Source could not be compiled"))
+        if hello.get("ready") is not True or hello.get("source_sha256") != self.submission.sha256:
+            self.close()
+            raise WorkerFailure("Source identity mismatch or worker handshake failed")
 
     def run(self, case, trace=False, trace_limit=2000):
         self.check_cancel()
@@ -95,7 +103,7 @@ class Runner:
                 self._start()
             except OSError as exc:
                 self.close()
-                raise InvalidSubmission('Worker startup failed') from exc
+                raise WorkerFailure('Worker startup failed') from exc
         self.calls += 1
         start = time.perf_counter()
         try:
@@ -106,7 +114,7 @@ class Runner:
                 raise InvalidSubmission(result.get("message", "Invalid submission"))
             if "worker_exited" in result or "protocol_error" in result or result.get("status") == "worker_error":
                 self.close()
-                raise InvalidSubmission("Worker protocol failed")
+                raise WorkerFailure("Worker protocol failed")
             elapsed = result.get("elapsed_ms")
             if (result.get("status") not in {"ok","contract_violation","timeout","exception"}
                     or type(elapsed) not in (int,float) or not math.isfinite(elapsed) or elapsed < 0
@@ -114,7 +122,7 @@ class Runner:
                     or result.get("trace_status") not in {"complete","truncated","not_run","failed"}
                     or (result["status"] == "ok" and "output" not in result)):
                 self.close()
-                raise InvalidSubmission("Invalid worker response")
+                raise WorkerFailure("Invalid worker response")
             self.check_cancel()
             if self.fresh_process:
                 self.close()
@@ -126,7 +134,7 @@ class Runner:
                     "elapsed_ms": round((time.perf_counter() - start) * 1000, 4)}
         except (BrokenPipeError, OSError) as exc:
             self.close()
-            raise InvalidSubmission(str(exc)) from exc
+            raise WorkerFailure(str(exc)) from exc
 
     def close(self):
         process, self.process = self.process, None

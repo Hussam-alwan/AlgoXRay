@@ -50,7 +50,8 @@
         "inconclusive",
         "invalid_submission",
         "oracle_disagreement",
-        "cancelled"
+        "cancelled",
+        "infrastructure_error"
       ]
     },
     "failure_kind": {

@@ -91,7 +91,7 @@ def execute(code, filename, request):
                 value = [None if type(v) is float and v == float('inf') else v for v in value]
             normalized = encode_output(value)
         result = {"status": "ok", "output": normalized}
-    except UnsupportedOutput as exc:
+    except (UnsupportedOutput, OutputLimit) as exc:
         result = {"status": "contract_violation", "message": str(exc)}
     except ExecutionDeadline:
         result = {"status": "timeout", "exception_type": "ExecutionDeadline"}

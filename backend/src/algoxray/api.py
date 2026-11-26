@@ -136,7 +136,7 @@ def health():
 
 @app.get("/api/problems")
 def problems():
-    return [spec.metadata for spec in REGISTRY.values()]
+    return [spec.public_metadata() for spec in REGISTRY.values()]
 
 
 @app.post("/api/packages/review")
