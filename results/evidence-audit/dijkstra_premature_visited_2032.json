@@ -1,0 +1,4935 @@
+{
+  "schema_version": 1,
+  "run_id": "20261126T073902_469185d6e2",
+  "created_at": "2026-11-26T07:39:02.616094+00:00",
+  "problem_id": "dijkstra_v1",
+  "status": "witness_found",
+  "failure_kind": "wrong_answer",
+  "execution_mode": "local_trusted",
+  "seed": 2032,
+  "strategy": "hypothesis",
+  "options": {
+    "seed": 2032,
+    "strategy": "hypothesis",
+    "max_examples": 100,
+    "max_seconds": 10.0,
+    "per_case_seconds": 1.0,
+    "shrink": true,
+    "max_reduction_calls": 150,
+    "reduction_seconds": 5.0,
+    "include_trace": true,
+    "trace_limit": 2000,
+    "replay_count": 3
+  },
+  "submission": {
+    "fixture_id": "dijkstra_premature_visited",
+    "source_sha256": "6f4d1d5adc87ef5868a6a9daedf02ca0709982a66600e820be5effb7b319b7e4",
+    "source": "\"\"\"Authored defective fixture: marking a vertex seen on insertion.\"\"\"\nfrom heapq import heappop, heappush\n\n\ndef solve(payload):\n    adj = [[] for _ in range(payload['n'])]\n    for u, v, w in payload['edges']:\n        adj[u].append((v, w))\n    dist = [float('inf')] * payload['n']\n    dist[payload['source']] = 0\n    seen = {payload['source']}\n    heap = [(0, payload['source'])]\n    while heap:\n        d, u = heappop(heap)\n        for v, w in adj[u]:\n            if v in seen:\n                continue\n            if d + w < dist[v]:\n                dist[v] = d + w\n                seen.add(v)\n                heappush(heap, (dist[v], v))\n    return dist\n",
+    "origin": "authored_fixture",
+    "split": "development",
+    "adapter_id": "dijkstra_seen_v1",
+    "filename": "dijkstra_premature_visited.py"
+  },
+  "case": {
+    "n": 4,
+    "edges": [
+      [
+        0,
+        2,
+        3
+      ],
+      [
+        0,
+        3,
+        1
+      ],
+      [
+        3,
+        2,
+        1
+      ]
+    ],
+    "source": 0
+  },
+  "original_case": {
+    "n": 4,
+    "edges": [
+      [
+        3,
+        1,
+        10
+      ],
+      [
+        3,
+        2,
+        6
+      ],
+      [
+        0,
+        1,
+        4
+      ],
+      [
+        2,
+        3,
+        9
+      ],
+      [
+        0,
+        3,
+        20
+      ],
+      [
+        1,
+        3,
+        5
+      ],
+      [
+        2,
+        1,
+        7
+      ]
+    ],
+    "source": 0
+  },
+  "observed_output": [
+    0,
+    null,
+    3,
+    1
+  ],
+  "expected_output": [
+    0,
+    null,
+    2,
+    1
+  ],
+  "exception": {
+    "type": null,
+    "message": null
+  },
+  "evidence_level": "E3",
+  "trace_status": "complete",
+  "events": [
+    {
+      "event_id": "E00001",
+      "kind": "call",
+      "line": 5,
+      "function": "solve",
+      "snapshot_timing": "call",
+      "locals": {}
+    },
+    {
+      "event_id": "E00002",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00003",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00004",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00005",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00006",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00007",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00008",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3
+      }
+    },
+    {
+      "event_id": "E00009",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3
+      }
+    },
+    {
+      "event_id": "E00010",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00011",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00012",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00013",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00014",
+      "kind": "line",
+      "line": 9,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00015",
+      "kind": "line",
+      "line": 10,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "event_id": "E00016",
+      "kind": "line",
+      "line": 11,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "event_id": "E00017",
+      "kind": "line",
+      "line": 12,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ]
+      }
+    },
+    {
+      "event_id": "E00018",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [
+          [
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "event_id": "E00019",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [
+          [
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "event_id": "E00020",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00021",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00022",
+      "kind": "line",
+      "line": 18,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00023",
+      "kind": "line",
+      "line": 19,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3,
+        "dist": [
+          0,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00024",
+      "kind": "line",
+      "line": 20,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3,
+        "dist": [
+          0,
+          null,
+          3,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00025",
+      "kind": "line",
+      "line": 21,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3,
+        "dist": [
+          0,
+          null,
+          3,
+          null
+        ],
+        "seen": [
+          0,
+          2
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00026",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 2,
+        "w": 3,
+        "dist": [
+          0,
+          null,
+          3,
+          null
+        ],
+        "seen": [
+          0,
+          2
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00027",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          null
+        ],
+        "seen": [
+          0,
+          2
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00028",
+      "kind": "line",
+      "line": 18,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          null
+        ],
+        "seen": [
+          0,
+          2
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00029",
+      "kind": "line",
+      "line": 19,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          null
+        ],
+        "seen": [
+          0,
+          2
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00030",
+      "kind": "line",
+      "line": 20,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00031",
+      "kind": "line",
+      "line": 21,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00032",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00033",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00034",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00035",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00036",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00037",
+      "kind": "line",
+      "line": 17,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00038",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00039",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00040",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [
+          [
+            3,
+            2
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00041",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 2,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00042",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 2,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00043",
+      "kind": "line",
+      "line": 22,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 2,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00044",
+      "kind": "return",
+      "line": 22,
+      "function": "solve",
+      "snapshot_timing": "return",
+      "locals": {
+        "u": 2,
+        "v": 2,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          3,
+          1
+        ],
+        "seen": [
+          0,
+          2,
+          3
+        ],
+        "heap": [],
+        "d": 3
+      }
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C1",
+      "kind": "wrong_answer",
+      "text": "المسافة للعقدة 2 هي 3 في الحل، و2 في المرجع.",
+      "event_ids": [],
+      "evidence_refs": [
+        "observed_output",
+        "expected_output",
+        "verification",
+        "case"
+      ],
+      "verification_status": "verified"
+    },
+    {
+      "claim_id": "C2",
+      "kind": "source_specific_observation",
+      "text": "عند فحص الحافة 3 → 2، تجاوز شرط الزيارة تحسيناً من 3 إلى 2.",
+      "event_ids": [
+        "E00037"
+      ],
+      "evidence_refs": [
+        "case",
+        "observed_output",
+        "expected_output"
+      ],
+      "verification_status": "verified",
+      "adapter_id": "dijkstra_seen_v1"
+    }
+  ],
+  "hints": [
+    {
+      "tier": "H1",
+      "claim_ids": [
+        "C1"
+      ],
+      "text": "المسافة للعقدة 2 هي 3 في الحل، و2 في المرجع.",
+      "kind": "observation"
+    },
+    {
+      "tier": "H2",
+      "claim_ids": [],
+      "text": "هل تتغير المسافة بعد إدراج العقدة في قائمة الانتظار؟ تأمل الفرق بين اكتشاف عقدة وتثبيت مسافتها.",
+      "kind": "educational_question"
+    },
+    {
+      "tier": "H3",
+      "claim_ids": [
+        "C2"
+      ],
+      "event_ids": [
+        "E00037"
+      ],
+      "text": "عند فحص الحافة 3 → 2، تجاوز شرط الزيارة تحسيناً من 3 إلى 2.",
+      "kind": "source_specific_observation"
+    },
+    {
+      "tier": "H4",
+      "claim_ids": [
+        "C2"
+      ],
+      "text": "راجع اللحظة التي تمنع عندها تحديث مسافة عقدة اكتُشفت سابقاً.",
+      "kind": "conceptual_direction"
+    }
+  ],
+  "verification": {
+    "input_valid": true,
+    "oracle_id": "networkx_bellman_ford+independent_floyd",
+    "replay_attempts": 3,
+    "replay_matches": 3
+  },
+  "reduction": {
+    "before": {
+      "vertices": 4,
+      "edges": 7
+    },
+    "after": {
+      "vertices": 4,
+      "edges": 3
+    },
+    "failure_preserved": true,
+    "method": "hypothesis"
+  },
+  "statistics": {
+    "discovery_candidates": 19,
+    "post_discovery_candidates": 128,
+    "verification_solver_calls": 40,
+    "replay_solver_calls": 3,
+    "trace_solver_calls": 1,
+    "flaky_candidates": 0,
+    "discovery_ms": 102.442,
+    "post_discovery_ms": 335.793,
+    "total_solver_calls": 191,
+    "worker_startups": 1,
+    "elapsed_ms": 440.0972
+  },
+  "attempts": [
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 1.3614
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 5,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0695
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 5,
+        "edges": [],
+        "source": 3
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0605
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 5,
+        "edges": [
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.066
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 5,
+        "edges": [
+          [
+            4,
+            2,
+            10
+          ],
+          [
+            2,
+            1,
+            17
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0612
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 7,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0658
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 6,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0608
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 6,
+        "edges": [
+          [
+            2,
+            1,
+            2
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0679
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 7,
+        "edges": [],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0624
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 7,
+        "edges": [
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0674
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 7,
+        "edges": [
+          [
+            4,
+            3,
+            18
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0622
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            0,
+            1,
+            18
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0626
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 6,
+        "edges": [],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0599
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0541
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 5,
+        "edges": [
+          [
+            2,
+            1,
+            16
+          ],
+          [
+            3,
+            0,
+            4
+          ],
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            4,
+            0,
+            2
+          ],
+          [
+            1,
+            0,
+            12
+          ]
+        ],
+        "source": 2
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0723
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            0,
+            1,
+            16
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0604
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            1,
+            0,
+            14
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0568
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            3,
+            1,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            3,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "source": 2
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0758
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            3,
+            1,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            3,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0803
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            3,
+            1,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            3,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0844
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            3,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0632
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            3,
+            0,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0621
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            5
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            3,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1016
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            3,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0843
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0676
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            3,
+            0,
+            3
+          ],
+          [
+            2,
+            3,
+            7
+          ],
+          [
+            0,
+            3,
+            8
+          ],
+          [
+            1,
+            0,
+            11
+          ],
+          [
+            3,
+            1,
+            3
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0956
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0701
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            1,
+            10
+          ],
+          [
+            0,
+            3,
+            18
+          ],
+          [
+            2,
+            0,
+            6
+          ],
+          [
+            3,
+            1,
+            20
+          ],
+          [
+            3,
+            0,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0805
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0667
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            3,
+            0,
+            6
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0721
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0679
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0719
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            2,
+            3,
+            9
+          ],
+          [
+            1,
+            2,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1101
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0681
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            3,
+            0,
+            15
+          ],
+          [
+            2,
+            0,
+            17
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.07
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0655
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            3,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.077
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            3,
+            10
+          ],
+          [
+            2,
+            3,
+            18
+          ],
+          [
+            1,
+            3,
+            6
+          ],
+          [
+            3,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0817
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            3,
+            10
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0758
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            3,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.073
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            3,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0714
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0768
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0796
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            1,
+            3,
+            13
+          ],
+          [
+            3,
+            0,
+            6
+          ],
+          [
+            3,
+            1,
+            3
+          ],
+          [
+            1,
+            2,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1001
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1128
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0816
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            1,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0967
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            2,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.094
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            5
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0919
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1083
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            0,
+            3,
+            20
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0939
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.099
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0844
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0915
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0822
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0764
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1011
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            6
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0738
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0829
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1174
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0762
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.083
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0787
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0863
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0651
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            1,
+            0,
+            10
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0692
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0771
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0926
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.085
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0954
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0859
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0932
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0856
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            3
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0694
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            3
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0743
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0725
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0761
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.09
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0822
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0802
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0752
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0888
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.072
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0785
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0775
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0759
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0653
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0857
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0745
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0814
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0867
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            13
+          ],
+          [
+            3,
+            2,
+            11
+          ],
+          [
+            2,
+            3,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0881
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0802
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0842
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0863
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.08
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0813
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.08
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0818
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0853
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            10
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0844
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0894
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            2
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0892
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            5
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0874
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0693
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.08
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            1,
+            0,
+            3
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0685
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0803
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0745
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            9
+          ],
+          [
+            2,
+            3,
+            13
+          ],
+          [
+            1,
+            0,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.128
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0818
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0761
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1017
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0861
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0816
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0781
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.067
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0763
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0823
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1237
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0806
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            1,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0754
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0883
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            2
+          ],
+          [
+            0,
+            3,
+            2
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0914
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            2
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0718
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            0,
+            3,
+            2
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0694
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.077
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            4
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0872
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            0,
+            2,
+            4
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.082
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            1,
+            0,
+            3
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.072
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0708
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            1,
+            10
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0834
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            2
+          ],
+          [
+            0,
+            1,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0869
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0782
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0701
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1612
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0666
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [],
+        "source": 2
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0789
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.076
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0759
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0753
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 3
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1138
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            11
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0812
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0777
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0738
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0704
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            0,
+            3,
+            1
+          ],
+          [
+            3,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0799
+    }
+  ],
+  "stop_reason": "search_exhausted",
+  "error": null,
+  "versions": {
+    "algoxray": "0.1.0",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "hypothesis": "6.170.17",
+    "networkx": "3.7"
+  },
+  "diagnostic_status": "supported"
+}

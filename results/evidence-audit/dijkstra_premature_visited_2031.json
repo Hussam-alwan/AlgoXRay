@@ -1,0 +1,10131 @@
+{
+  "schema_version": 1,
+  "run_id": "20261126T073901_7f66b4b818",
+  "created_at": "2026-11-26T07:39:01.840290+00:00",
+  "problem_id": "dijkstra_v1",
+  "status": "witness_found",
+  "failure_kind": "wrong_answer",
+  "execution_mode": "local_trusted",
+  "seed": 2031,
+  "strategy": "hypothesis",
+  "options": {
+    "seed": 2031,
+    "strategy": "hypothesis",
+    "max_examples": 100,
+    "max_seconds": 10.0,
+    "per_case_seconds": 1.0,
+    "shrink": true,
+    "max_reduction_calls": 150,
+    "reduction_seconds": 5.0,
+    "include_trace": true,
+    "trace_limit": 2000,
+    "replay_count": 3
+  },
+  "submission": {
+    "fixture_id": "dijkstra_premature_visited",
+    "source_sha256": "6f4d1d5adc87ef5868a6a9daedf02ca0709982a66600e820be5effb7b319b7e4",
+    "source": "\"\"\"Authored defective fixture: marking a vertex seen on insertion.\"\"\"\nfrom heapq import heappop, heappush\n\n\ndef solve(payload):\n    adj = [[] for _ in range(payload['n'])]\n    for u, v, w in payload['edges']:\n        adj[u].append((v, w))\n    dist = [float('inf')] * payload['n']\n    dist[payload['source']] = 0\n    seen = {payload['source']}\n    heap = [(0, payload['source'])]\n    while heap:\n        d, u = heappop(heap)\n        for v, w in adj[u]:\n            if v in seen:\n                continue\n            if d + w < dist[v]:\n                dist[v] = d + w\n                seen.add(v)\n                heappush(heap, (dist[v], v))\n    return dist\n",
+    "origin": "authored_fixture",
+    "split": "development",
+    "adapter_id": "dijkstra_seen_v1",
+    "filename": "dijkstra_premature_visited.py"
+  },
+  "case": {
+    "n": 8,
+    "edges": [
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        3,
+        1
+      ],
+      [
+        1,
+        7,
+        1
+      ],
+      [
+        3,
+        6,
+        3
+      ],
+      [
+        4,
+        6,
+        1
+      ],
+      [
+        7,
+        4,
+        1
+      ]
+    ],
+    "source": 0
+  },
+  "original_case": {
+    "n": 8,
+    "edges": [
+      [
+        3,
+        6,
+        20
+      ],
+      [
+        0,
+        2,
+        12
+      ],
+      [
+        4,
+        6,
+        16
+      ],
+      [
+        6,
+        0,
+        16
+      ],
+      [
+        7,
+        4,
+        13
+      ],
+      [
+        6,
+        1,
+        2
+      ],
+      [
+        7,
+        6,
+        2
+      ],
+      [
+        1,
+        3,
+        2
+      ],
+      [
+        5,
+        0,
+        20
+      ],
+      [
+        5,
+        1,
+        10
+      ],
+      [
+        1,
+        7,
+        10
+      ],
+      [
+        2,
+        3,
+        17
+      ],
+      [
+        4,
+        3,
+        15
+      ],
+      [
+        6,
+        2,
+        20
+      ],
+      [
+        3,
+        0,
+        13
+      ],
+      [
+        1,
+        6,
+        12
+      ],
+      [
+        7,
+        3,
+        20
+      ]
+    ],
+    "source": 1
+  },
+  "observed_output": [
+    0,
+    1,
+    null,
+    2,
+    3,
+    null,
+    5,
+    2
+  ],
+  "expected_output": [
+    0,
+    1,
+    null,
+    2,
+    3,
+    null,
+    4,
+    2
+  ],
+  "exception": {
+    "type": null,
+    "message": null
+  },
+  "evidence_level": "E3",
+  "trace_status": "complete",
+  "events": [
+    {
+      "event_id": "E00001",
+      "kind": "call",
+      "line": 5,
+      "function": "solve",
+      "snapshot_timing": "call",
+      "locals": {}
+    },
+    {
+      "event_id": "E00002",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00003",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00004",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00005",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00006",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00007",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00008",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00009",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00010",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00011",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00012",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00013",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00014",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00015",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00016",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00017",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00018",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3
+      }
+    },
+    {
+      "event_id": "E00019",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3
+      }
+    },
+    {
+      "event_id": "E00020",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 6,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00021",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 6,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00022",
+      "kind": "line",
+      "line": 8,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00023",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00024",
+      "kind": "line",
+      "line": 9,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1
+      }
+    },
+    {
+      "event_id": "E00025",
+      "kind": "line",
+      "line": 10,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "event_id": "E00026",
+      "kind": "line",
+      "line": 11,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    },
+    {
+      "event_id": "E00027",
+      "kind": "line",
+      "line": 12,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ]
+      }
+    },
+    {
+      "event_id": "E00028",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [
+          [
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "event_id": "E00029",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [
+          [
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "event_id": "E00030",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00031",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00032",
+      "kind": "line",
+      "line": 18,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00033",
+      "kind": "line",
+      "line": 19,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00034",
+      "kind": "line",
+      "line": 20,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00035",
+      "kind": "line",
+      "line": 21,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00036",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [
+          [
+            1,
+            1
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00037",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [
+          [
+            1,
+            1
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00038",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [
+          [
+            1,
+            1
+          ]
+        ],
+        "d": 0
+      }
+    },
+    {
+      "event_id": "E00039",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 1,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00040",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00041",
+      "kind": "line",
+      "line": 18,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00042",
+      "kind": "line",
+      "line": 19,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00043",
+      "kind": "line",
+      "line": 20,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1
+        ],
+        "heap": [],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00044",
+      "kind": "line",
+      "line": 21,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1,
+          3
+        ],
+        "heap": [],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00045",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 3,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1,
+          3
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00046",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1,
+          3
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00047",
+      "kind": "line",
+      "line": 18,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1,
+          3
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00048",
+      "kind": "line",
+      "line": 19,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null
+        ],
+        "seen": [
+          0,
+          1,
+          3
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00049",
+      "kind": "line",
+      "line": 20,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00050",
+      "kind": "line",
+      "line": 21,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00051",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00052",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00053",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 1
+      }
+    },
+    {
+      "event_id": "E00054",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 7,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00055",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00056",
+      "kind": "line",
+      "line": 18,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00057",
+      "kind": "line",
+      "line": 19,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00058",
+      "kind": "line",
+      "line": 20,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00059",
+      "kind": "line",
+      "line": 21,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00060",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ],
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00061",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ],
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00062",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 3,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            2,
+            7
+          ],
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00063",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 6,
+        "w": 3,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00064",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00065",
+      "kind": "line",
+      "line": 18,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00066",
+      "kind": "line",
+      "line": 19,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          null,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00067",
+      "kind": "line",
+      "line": 20,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00068",
+      "kind": "line",
+      "line": 21,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00069",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            3,
+            4
+          ],
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00070",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            3,
+            4
+          ],
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00071",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 7,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            3,
+            4
+          ],
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 2
+      }
+    },
+    {
+      "event_id": "E00072",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 4,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00073",
+      "kind": "line",
+      "line": 16,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00074",
+      "kind": "line",
+      "line": 17,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00075",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00076",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00077",
+      "kind": "line",
+      "line": 14,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 4,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [
+          [
+            5,
+            6
+          ]
+        ],
+        "d": 3
+      }
+    },
+    {
+      "event_id": "E00078",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 6,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [],
+        "d": 5
+      }
+    },
+    {
+      "event_id": "E00079",
+      "kind": "line",
+      "line": 13,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 6,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [],
+        "d": 5
+      }
+    },
+    {
+      "event_id": "E00080",
+      "kind": "line",
+      "line": 22,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 6,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [],
+        "d": 5
+      }
+    },
+    {
+      "event_id": "E00081",
+      "kind": "return",
+      "line": 22,
+      "function": "solve",
+      "snapshot_timing": "return",
+      "locals": {
+        "u": 6,
+        "v": 6,
+        "w": 1,
+        "dist": [
+          0,
+          1,
+          null,
+          2,
+          3,
+          null,
+          5,
+          2
+        ],
+        "seen": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          7
+        ],
+        "heap": [],
+        "d": 5
+      }
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C1",
+      "kind": "wrong_answer",
+      "text": "المسافة للعقدة 6 هي 5 في الحل، و4 في المرجع.",
+      "event_ids": [],
+      "evidence_refs": [
+        "observed_output",
+        "expected_output",
+        "verification",
+        "case"
+      ],
+      "verification_status": "verified"
+    },
+    {
+      "claim_id": "C2",
+      "kind": "source_specific_observation",
+      "text": "عند فحص الحافة 4 → 6، تجاوز شرط الزيارة تحسيناً من 5 إلى 4.",
+      "event_ids": [
+        "E00074"
+      ],
+      "evidence_refs": [
+        "case",
+        "observed_output",
+        "expected_output"
+      ],
+      "verification_status": "verified",
+      "adapter_id": "dijkstra_seen_v1"
+    }
+  ],
+  "hints": [
+    {
+      "tier": "H1",
+      "claim_ids": [
+        "C1"
+      ],
+      "text": "المسافة للعقدة 6 هي 5 في الحل، و4 في المرجع.",
+      "kind": "observation"
+    },
+    {
+      "tier": "H2",
+      "claim_ids": [],
+      "text": "هل تتغير المسافة بعد إدراج العقدة في قائمة الانتظار؟ تأمل الفرق بين اكتشاف عقدة وتثبيت مسافتها.",
+      "kind": "educational_question"
+    },
+    {
+      "tier": "H3",
+      "claim_ids": [
+        "C2"
+      ],
+      "event_ids": [
+        "E00074"
+      ],
+      "text": "عند فحص الحافة 4 → 6، تجاوز شرط الزيارة تحسيناً من 5 إلى 4.",
+      "kind": "source_specific_observation"
+    },
+    {
+      "tier": "H4",
+      "claim_ids": [
+        "C2"
+      ],
+      "text": "راجع اللحظة التي تمنع عندها تحديث مسافة عقدة اكتُشفت سابقاً.",
+      "kind": "conceptual_direction"
+    }
+  ],
+  "verification": {
+    "input_valid": true,
+    "oracle_id": "networkx_bellman_ford+independent_floyd",
+    "replay_attempts": 3,
+    "replay_matches": 3
+  },
+  "reduction": {
+    "before": {
+      "vertices": 8,
+      "edges": 17
+    },
+    "after": {
+      "vertices": 8,
+      "edges": 6
+    },
+    "failure_preserved": true,
+    "method": "hypothesis"
+  },
+  "statistics": {
+    "discovery_candidates": 20,
+    "post_discovery_candidates": 150,
+    "verification_solver_calls": 94,
+    "replay_solver_calls": 3,
+    "trace_solver_calls": 1,
+    "flaky_candidates": 0,
+    "discovery_ms": 107.9119,
+    "post_discovery_ms": 467.9938,
+    "total_solver_calls": 268,
+    "worker_startups": 1,
+    "elapsed_ms": 578.6362
+  },
+  "attempts": [
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 1.3043
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 8,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0664
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 4,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0643
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 3,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0607
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            2,
+            1,
+            15
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0569
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0766
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            2,
+            1
+          ],
+          [
+            1,
+            5,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0638
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 7,
+        "edges": [],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0618
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 3,
+        "edges": [],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0557
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0542
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 4,
+        "edges": [],
+        "source": 2
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0571
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            1,
+            2,
+            19
+          ]
+        ],
+        "source": 2
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0583
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 4,
+        "edges": [
+          [
+            1,
+            2,
+            19
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0709
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            0,
+            1,
+            19
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0648
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 6,
+        "edges": [
+          [
+            5,
+            3,
+            15
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ],
+        "source": 5
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0709
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 6,
+        "edges": [
+          [
+            5,
+            3,
+            15
+          ],
+          [
+            5,
+            1,
+            8
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0614
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            1,
+            0,
+            3
+          ],
+          [
+            0,
+            1,
+            5
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0651
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            1,
+            0,
+            3
+          ],
+          [
+            0,
+            1,
+            5
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0625
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            1,
+            0,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0553
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            7,
+            3,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1155
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            7,
+            3,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1057
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            7,
+            3,
+            20
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1091
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            1,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            7,
+            3,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1128
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            7,
+            3,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1078
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            7,
+            3,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1137
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            7,
+            3,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.11
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1118
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            12
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1095
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            1,
+            6,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1069
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1045
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            13
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1025
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            3,
+            0,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1021
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1038
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1031
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            6,
+            2,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1002
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.114
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            15
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0981
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            4,
+            3,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1073
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1116
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            17
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1292
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            2,
+            3,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0958
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0975
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0939
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0986
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            0,
+            1,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0905
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0874
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1263
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            5,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1029
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0973
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0907
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0987
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            2
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0862
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.098
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            2
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1173
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1106
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            2
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0717
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1635
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            13
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0676
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0984
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            16
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.108
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1046
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            16
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0735
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1726
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            12
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0667
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0982
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0643
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0959
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [],
+        "source": 1
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0713
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            10
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1004
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            0,
+            1,
+            20
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0599
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0955
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0991
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0805
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0764
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0802
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            13
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0873
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            13
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0962
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1501
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0843
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0883
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1042
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0773
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0892
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1597
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0908
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0823
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0764
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0811
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0623
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0575
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.08
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0749
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0724
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0843
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            7,
+            6,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0959
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            6,
+            1,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0911
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1036
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0754
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0707
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0809
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.087
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0905
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0718
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1316
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0783
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0723
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0869
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1392
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0842
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            5,
+            0,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0717
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0911
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0946
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0743
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            6,
+            0,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0872
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0923
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0875
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0839
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0855
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0879
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0842
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0823
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0589
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0808
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0648
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0793
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0793
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            1,
+            13
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0771
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0704
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0674
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0624
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0659
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            0,
+            1,
+            9
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0691
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0615
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0793
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0706
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0675
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            2,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0617
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0875
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0932
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.099
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 2,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0594
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            1,
+            6,
+            12
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0837
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0926
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            3,
+            0,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0821
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            0,
+            6
+          ],
+          [
+            7,
+            5,
+            11
+          ],
+          [
+            4,
+            3,
+            14
+          ],
+          [
+            5,
+            7,
+            17
+          ],
+          [
+            1,
+            2,
+            6
+          ],
+          [
+            5,
+            1,
+            1
+          ],
+          [
+            5,
+            2,
+            9
+          ],
+          [
+            7,
+            2,
+            9
+          ],
+          [
+            4,
+            2,
+            15
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1073
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0853
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0816
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            6,
+            2
+          ],
+          [
+            6,
+            0,
+            2
+          ],
+          [
+            0,
+            3,
+            2
+          ],
+          [
+            5,
+            7,
+            6
+          ],
+          [
+            3,
+            2,
+            4
+          ],
+          [
+            1,
+            4,
+            16
+          ],
+          [
+            6,
+            7,
+            20
+          ],
+          [
+            4,
+            5,
+            4
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1113
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            6,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0798
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            3,
+            2,
+            11
+          ],
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            7,
+            3,
+            11
+          ],
+          [
+            1,
+            2,
+            2
+          ],
+          [
+            6,
+            0,
+            7
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1101
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1507
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            2,
+            3,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0837
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            3,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0853
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            4,
+            5,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0894
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            5,
+            4,
+            6
+          ],
+          [
+            1,
+            0,
+            2
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0885
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            20
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0796
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            1
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1398
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            4
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0964
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            2
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0863
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            3,
+            6,
+            3
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0854
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0884
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0812
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1072
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            1,
+            4,
+            3
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0962
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            0,
+            3,
+            3
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0896
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            1,
+            7,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0797
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0779
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1024
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ],
+          [
+            0,
+            2,
+            1
+          ],
+          [
+            0,
+            3,
+            3
+          ],
+          [
+            4,
+            6,
+            1
+          ],
+          [
+            7,
+            4,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0837
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 8,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            3,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0807
+    }
+  ],
+  "stop_reason": "reduction_budget_exhausted",
+  "error": null,
+  "versions": {
+    "algoxray": "0.1.0",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "hypothesis": "6.170.17",
+    "networkx": "3.7"
+  },
+  "diagnostic_status": "supported"
+}

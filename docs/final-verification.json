@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "raw_bundles_validated": 320,
+  "evaluated_source_hash_matches": true,
+  "live_api_status": "witness_found",
+  "poster_self_contained_image": true,
+  "source_sha256": "cff4e82bd46badc850eca72cf08fc90a9a5c1c70e0561d00ec2d9ee64c9dba9c"
+}

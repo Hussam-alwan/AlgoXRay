@@ -1,0 +1,242 @@
+{
+  "release": "0.2.0",
+  "status": "measured",
+  "created_at": "2026-11-26T12:16:46.028425+00:00",
+  "total_runs": 480,
+  "fixture_count": 12,
+  "codebase_sha256": "1fe1dda00536a3317ff6f4d8a77c1f2c1f33357ea0242cfb99e0b84bb3cd8c78",
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "processor": "Intel64 Family 6 Model 165 Stepping 2, GenuineIntel",
+    "hypothesis": "6.170.17",
+    "networkx": "3.7"
+  },
+  "rows": [
+    {
+      "problem_id": "binary_search_v1",
+      "strategy": "random",
+      "buggy_found": 60,
+      "buggy_runs": 60,
+      "control_accusations": 0,
+      "control_runs": 60,
+      "median_discovery_ms": 80.2972,
+      "discovery_ms": {
+        "n": 60,
+        "p25": 78.70172500000001,
+        "median": 80.2972,
+        "p75": 3074.4588249999997,
+        "min": 74.3358,
+        "max": 3091.7676
+      },
+      "statuses": {
+        "witness_found": 60,
+        "inconclusive": 60
+      },
+      "kinds": {
+        "timeout": 16,
+        "exception": 4,
+        "wrong_answer": 40
+      }
+    },
+    {
+      "problem_id": "binary_search_v1",
+      "strategy": "hypothesis",
+      "buggy_found": 60,
+      "buggy_runs": 60,
+      "control_accusations": 0,
+      "control_runs": 60,
+      "median_discovery_ms": 81.9277,
+      "discovery_ms": {
+        "n": 60,
+        "p25": 79.133275,
+        "median": 81.9277,
+        "p75": 93.447725,
+        "min": 74.5977,
+        "max": 510.0714
+      },
+      "statuses": {
+        "witness_found": 60,
+        "inconclusive": 60
+      },
+      "kinds": {
+        "exception": 20,
+        "wrong_answer": 40
+      }
+    },
+    {
+      "problem_id": "dijkstra_v1",
+      "strategy": "random",
+      "buggy_found": 60,
+      "buggy_runs": 60,
+      "control_accusations": 0,
+      "control_runs": 60,
+      "median_discovery_ms": 78.3922,
+      "discovery_ms": {
+        "n": 60,
+        "p25": 77.31909999999999,
+        "median": 78.3922,
+        "p75": 80.4862,
+        "min": 73.5453,
+        "max": 98.8923
+      },
+      "statuses": {
+        "witness_found": 60,
+        "inconclusive": 60
+      },
+      "kinds": {
+        "wrong_answer": 60
+      }
+    },
+    {
+      "problem_id": "dijkstra_v1",
+      "strategy": "hypothesis",
+      "buggy_found": 60,
+      "buggy_runs": 60,
+      "control_accusations": 0,
+      "control_runs": 60,
+      "median_discovery_ms": 98.18745000000001,
+      "discovery_ms": {
+        "n": 60,
+        "p25": 93.054775,
+        "median": 98.18745000000001,
+        "p75": 112.53032499999999,
+        "min": 78.2636,
+        "max": 144.0814
+      },
+      "statuses": {
+        "witness_found": 60,
+        "inconclusive": 60
+      },
+      "kinds": {
+        "wrong_answer": 60
+      }
+    }
+  ],
+  "programs": [
+    {
+      "id": "qb_find_first_in_sorted_buggy",
+      "label": "buggy",
+      "trials": 40,
+      "found": 40,
+      "audit_witnesses": 4,
+      "specific": 2
+    },
+    {
+      "id": "qb_find_first_in_sorted_correct",
+      "label": "correct",
+      "trials": 40,
+      "found": 0,
+      "audit_witnesses": 0,
+      "specific": 0
+    },
+    {
+      "id": "qb_shortest_path_lengths_buggy",
+      "label": "buggy",
+      "trials": 40,
+      "found": 40,
+      "audit_witnesses": 4,
+      "specific": 0
+    },
+    {
+      "id": "qb_shortest_path_lengths_correct",
+      "label": "correct",
+      "trials": 40,
+      "found": 0,
+      "audit_witnesses": 0,
+      "specific": 0
+    },
+    {
+      "id": "insertion_point",
+      "label": "buggy",
+      "trials": 40,
+      "found": 40,
+      "audit_witnesses": 4,
+      "specific": 4
+    },
+    {
+      "id": "unique_match",
+      "label": "buggy",
+      "trials": 40,
+      "found": 40,
+      "audit_witnesses": 4,
+      "specific": 0
+    },
+    {
+      "id": "recursive_window",
+      "label": "correct",
+      "trials": 40,
+      "found": 0,
+      "audit_witnesses": 0,
+      "specific": 0
+    },
+    {
+      "id": "last_occurrence",
+      "label": "correct",
+      "trials": 40,
+      "found": 0,
+      "audit_witnesses": 0,
+      "specific": 0
+    },
+    {
+      "id": "hop_count",
+      "label": "buggy",
+      "trials": 40,
+      "found": 40,
+      "audit_witnesses": 4,
+      "specific": 0
+    },
+    {
+      "id": "single_pass",
+      "label": "buggy",
+      "trials": 40,
+      "found": 40,
+      "audit_witnesses": 4,
+      "specific": 0
+    },
+    {
+      "id": "dense_minimum",
+      "label": "correct",
+      "trials": 40,
+      "found": 0,
+      "audit_witnesses": 0,
+      "specific": 0
+    },
+    {
+      "id": "synchronous_relax",
+      "label": "correct",
+      "trials": 40,
+      "found": 0,
+      "audit_witnesses": 0,
+      "specific": 0
+    }
+  ],
+  "errors": 0,
+  "audit": {
+    "runs": 48,
+    "witnesses": 24,
+    "specific": 6,
+    "abstained": 18,
+    "reason_counts": {
+      "trace_truncated": 3,
+      "no_supported_pattern": 15
+    },
+    "replay_matches": 72,
+    "replay_attempts": 72,
+    "sizes_reduced": 19,
+    "trace_valid": 24,
+    "certificates": 20,
+    "certificates_verified": 20,
+    "claims": {
+      "verified": 30
+    },
+    "rules": {
+      "python_exception_location_v1": 2,
+      "python_returned_index_v1": 4
+    },
+    "trace_status": {
+      "truncated": 3,
+      "complete": 21
+    }
+  }
+}

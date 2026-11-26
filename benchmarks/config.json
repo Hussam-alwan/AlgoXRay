@@ -1,0 +1,49 @@
+{
+  "protocol_version": 1,
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    2035,
+    2036,
+    2037,
+    2038,
+    2039,
+    2040,
+    2041,
+    2042,
+    2043,
+    2044,
+    2045
+  ],
+  "fixtures": [
+    "binary_correct",
+    "binary_missing_last",
+    "dijkstra_correct",
+    "dijkstra_premature_visited",
+    "binary_wrong_direction",
+    "dijkstra_edge_only",
+    "dijkstra_reversed_edges",
+    "quixbugs_find_in_sorted"
+  ],
+  "strategies": [
+    "random",
+    "hypothesis"
+  ],
+  "max_examples": 100,
+  "max_seconds": 5.0,
+  "replay_count": 3,
+  "include_trace": false,
+  "shrink": false,
+  "notes": [
+    "All sources were available to the developer; this is not a blinded generalization study.",
+    "Discovery budget applies before the first confirmed witness; post-discovery confirmations are recorded separately.",
+    "Seed repetitions are repeated trials, not additional independent programs."
+  ]
+}

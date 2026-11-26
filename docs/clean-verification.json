@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "created_at": "2026-11-26T07:45:36.967171+00:00",
+  "method": "Fresh virtual environment on the same Windows machine; not an independent-machine replication",
+  "python_environment": ".venv-verify-20261126T074445",
+  "checks": [
+    {
+      "step": 1,
+      "exit_code": 0
+    },
+    {
+      "step": 2,
+      "exit_code": 0
+    },
+    {
+      "step": 3,
+      "exit_code": 0
+    },
+    {
+      "step": 4,
+      "exit_code": 0
+    }
+  ]
+}

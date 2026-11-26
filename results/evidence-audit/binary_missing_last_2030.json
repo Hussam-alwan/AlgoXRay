@@ -1,0 +1,277 @@
+{
+  "schema_version": 1,
+  "run_id": "20261126T073906_73b2914aae",
+  "created_at": "2026-11-26T07:39:06.155076+00:00",
+  "problem_id": "binary_search_v1",
+  "status": "witness_found",
+  "failure_kind": "wrong_answer",
+  "execution_mode": "local_trusted",
+  "seed": 2030,
+  "strategy": "hypothesis",
+  "options": {
+    "seed": 2030,
+    "strategy": "hypothesis",
+    "max_examples": 100,
+    "max_seconds": 10.0,
+    "per_case_seconds": 1.0,
+    "shrink": true,
+    "max_reduction_calls": 150,
+    "reduction_seconds": 5.0,
+    "include_trace": true,
+    "trace_limit": 2000,
+    "replay_count": 3
+  },
+  "submission": {
+    "fixture_id": "binary_missing_last",
+    "source_sha256": "d119b0a867cc57af38c12a744dada7ac8a01556a4ebc01acab32f4fa75c12504",
+    "source": "\"\"\"Authored defective fixture: misses a final singleton interval.\"\"\"\n\n\ndef solve(payload):\n    arr, target = payload['array'], payload['target']\n    lo, hi = 0, len(arr) - 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target:\n            return mid\n        if arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n",
+    "origin": "authored_fixture",
+    "split": "development",
+    "adapter_id": "binary_last_v1",
+    "filename": "binary_missing_last.py"
+  },
+  "case": {
+    "array": [
+      0
+    ],
+    "target": 0
+  },
+  "original_case": {
+    "array": [
+      0
+    ],
+    "target": 0
+  },
+  "observed_output": -1,
+  "expected_output": 0,
+  "exception": {
+    "type": null,
+    "message": null
+  },
+  "evidence_level": "E3",
+  "trace_status": "complete",
+  "events": [
+    {
+      "event_id": "E00001",
+      "kind": "call",
+      "line": 4,
+      "function": "solve",
+      "snapshot_timing": "call",
+      "locals": {}
+    },
+    {
+      "event_id": "E00002",
+      "kind": "line",
+      "line": 5,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {}
+    },
+    {
+      "event_id": "E00003",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "arr": [
+          0
+        ],
+        "target": 0
+      }
+    },
+    {
+      "event_id": "E00004",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "arr": [
+          0
+        ],
+        "target": 0,
+        "lo": 0,
+        "hi": 0
+      }
+    },
+    {
+      "event_id": "E00005",
+      "kind": "line",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "arr": [
+          0
+        ],
+        "target": 0,
+        "lo": 0,
+        "hi": 0
+      }
+    },
+    {
+      "event_id": "E00006",
+      "kind": "return",
+      "line": 15,
+      "function": "solve",
+      "snapshot_timing": "return",
+      "locals": {
+        "arr": [
+          0
+        ],
+        "target": 0,
+        "lo": 0,
+        "hi": 0
+      }
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C1",
+      "kind": "wrong_answer",
+      "text": "أعاد الحل الفهرس -1، لكنه لا يحقق عقد البحث على هذه المصفوفة.",
+      "event_ids": [],
+      "evidence_refs": [
+        "observed_output",
+        "expected_output",
+        "verification",
+        "case"
+      ],
+      "verification_status": "verified"
+    },
+    {
+      "claim_id": "C2",
+      "kind": "source_specific_observation",
+      "text": "وصل الحل إلى إرجاع -1 مع بقاء العنصر المطابق في الفهرس 0 داخل المجال الأخير.",
+      "event_ids": [
+        "E00005"
+      ],
+      "evidence_refs": [
+        "case",
+        "observed_output",
+        "expected_output"
+      ],
+      "verification_status": "verified",
+      "adapter_id": "binary_last_v1"
+    }
+  ],
+  "hints": [
+    {
+      "tier": "H1",
+      "claim_ids": [
+        "C1"
+      ],
+      "text": "أعاد الحل الفهرس -1، لكنه لا يحقق عقد البحث على هذه المصفوفة.",
+      "kind": "observation"
+    },
+    {
+      "tier": "H2",
+      "claim_ids": [],
+      "text": "ما الذي يحدث عندما يتبقى عنصر واحد داخل مجال البحث؟",
+      "kind": "educational_question"
+    },
+    {
+      "tier": "H3",
+      "claim_ids": [
+        "C2"
+      ],
+      "event_ids": [
+        "E00005"
+      ],
+      "text": "وصل الحل إلى إرجاع -1 مع بقاء العنصر المطابق في الفهرس 0 داخل المجال الأخير.",
+      "kind": "source_specific_observation"
+    },
+    {
+      "tier": "H4",
+      "claim_ids": [
+        "C2"
+      ],
+      "text": "راجع شرط استمرار البحث عندما يتساوى الحدّان، مع الحفاظ على إنهاء الحلقة.",
+      "kind": "conceptual_direction"
+    }
+  ],
+  "verification": {
+    "input_valid": true,
+    "oracle_id": "linear_membership_checker",
+    "replay_attempts": 3,
+    "replay_matches": 3
+  },
+  "reduction": {
+    "before": {
+      "length": 1
+    },
+    "after": {
+      "length": 1
+    },
+    "failure_preserved": true,
+    "method": "hypothesis"
+  },
+  "statistics": {
+    "discovery_candidates": 2,
+    "post_discovery_candidates": 2,
+    "verification_solver_calls": 6,
+    "replay_solver_calls": 3,
+    "trace_solver_calls": 1,
+    "flaky_candidates": 0,
+    "discovery_ms": 99.9024,
+    "post_discovery_ms": 7.0542,
+    "total_solver_calls": 14,
+    "worker_startups": 1,
+    "elapsed_ms": 107.8816
+  },
+  "attempts": [
+    {
+      "phase": "discovery",
+      "case": {
+        "array": [],
+        "target": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.1118
+    },
+    {
+      "phase": "discovery",
+      "case": {
+        "array": [
+          0
+        ],
+        "target": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0579
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "array": [
+          0
+        ],
+        "target": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0472
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "array": [
+          0
+        ],
+        "target": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0625
+    }
+  ],
+  "stop_reason": "search_exhausted",
+  "error": null,
+  "versions": {
+    "algoxray": "0.1.0",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "hypothesis": "6.170.17",
+    "networkx": "3.7"
+  },
+  "diagnostic_status": "supported"
+}

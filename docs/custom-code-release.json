@@ -1,0 +1,27 @@
+{
+  "status": "deployed_and_observed",
+  "tests_passed": 62,
+  "custom_browser_journeys": 14,
+  "original_browser_journeys": 12,
+  "live": {
+    "status": "passed",
+    "url": "http://127.0.0.1:8000",
+    "custom_code": true,
+    "actual": -1,
+    "expected": 0,
+    "supported_condition_line": 6,
+    "page_errors": [],
+    "screenshot": "docs\\screenshots\\custom-code-live.jpg"
+  },
+  "source_hashes": {
+    "backend/src/algoxray/api.py": "6c9a408213640620943779fc53811d58a35896470f4917dc0721b6c814a71631",
+    "backend/src/algoxray/engine.py": "c3fed2c9206c17271cd86fb2f945bfc486c7ccb44aa75fa156af22e8ccfa19e3",
+    "backend/src/algoxray/worker.py": "44d540fb7fa1e5b8d9d572fbe6cf7f6b954aef44f11e194ac4aaa358d9eb4089",
+    "backend/src/algoxray/diagnostics.py": "8690e8673ee4d2328d9e286171787d214b006950830f20335b55f120785a6aa3",
+    "backend/src/algoxray/hints.py": "9e25deff12d0d9416b972965f212fc280aa3a5edea1de523134705d3e2e53fe6",
+    "web/index.html": "857fb90a3af8dbc5d65ea034066e772bb54992b301ca858ed2c8bb2f8e48d1e0",
+    "web/static/app.js": "60f13a636f173d3fd77fdfdc7746295624fbd438ae34781ad6042f744e8aeede",
+    "web/static/custom-code.css": "c18d721023155e40ce1362df58ba7a1ff577bb4a307f03ac18f9a86cb6de515e"
+  },
+  "historical_benchmark_remeasured": false
+}

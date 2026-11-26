@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "run_id": "20261126T121806_73df6c7161",
+  "created_at": "2026-11-26T12:18:06.014667+00:00",
+  "problem_id": "binary_search_v1",
+  "status": "witness_found",
+  "failure_kind": "wrong_answer",
+  "execution_mode": "local_trusted",
+  "seed": 2026,
+  "strategy": "manual",
+  "options": {
+    "seed": 2026,
+    "strategy": "hypothesis",
+    "max_examples": 100,
+    "max_seconds": 10,
+    "per_case_seconds": 1,
+    "shrink": false,
+    "max_reduction_calls": 150,
+    "reduction_seconds": 5,
+    "include_trace": true,
+    "trace_limit": 2000,
+    "replay_count": 3
+  },
+  "submission": {
+    "fixture_id": "local_1da5ed7513a0",
+    "source_sha256": "1da5ed7513a01510b7e58ff2fba0d0ff1081d97ffaad0493ce026f273afe4ac2",
+    "source": "﻿def solve(data):\r\n    candidate = 0\r\n    return candidate\r\n",
+    "origin": "reviewed_local_file",
+    "split": "local",
+    "adapter_id": null,
+    "filename": "submission.py"
+  },
+  "case": {
+    "array": [
+      1,
+      7,
+      7
+    ],
+    "target": 7
+  },
+  "original_case": {
+    "array": [
+      1,
+      7,
+      7
+    ],
+    "target": 7
+  },
+  "observed_output": 0,
+  "expected_output": 1,
+  "exception": {
+    "type": null,
+    "message": null,
+    "line": null,
+    "function": null
+  },
+  "evidence_level": "E3",
+  "trace_status": "complete",
+  "events": [
+    {
+      "event_id": "E00001",
+      "kind": "call",
+      "line": 1,
+      "function": "solve",
+      "snapshot_timing": "call",
+      "locals": {
+        "data": {
+          "array": [
+            1,
+            7,
+            7
+          ],
+          "target": 7
+        }
+      }
+    },
+    {
+      "event_id": "E00002",
+      "kind": "line",
+      "line": 2,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "data": {
+          "array": [
+            1,
+            7,
+            7
+          ],
+          "target": 7
+        }
+      }
+    },
+    {
+      "event_id": "E00003",
+      "kind": "line",
+      "line": 3,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "candidate": 0,
+        "data": {
+          "array": [
+            1,
+            7,
+            7
+          ],
+          "target": 7
+        }
+      }
+    },
+    {
+      "event_id": "E00004",
+      "kind": "return",
+      "line": 3,
+      "function": "solve",
+      "snapshot_timing": "return",
+      "locals": {
+        "candidate": 0,
+        "data": {
+          "array": [
+            1,
+            7,
+            7
+          ],
+          "target": 7
+        }
+      },
+      "return_value": 0
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C1",
+      "kind": "wrong_answer",
+      "text": "أعاد الحل الفهرس 0، لكنه لا يحقق عقد البحث على هذه المصفوفة.",
+      "event_ids": [],
+      "evidence_refs": [
+        "observed_output",
+        "expected_output",
+        "verification",
+        "case"
+      ],
+      "verification_status": "verified"
+    },
+    {
+      "claim_id": "C2",
+      "kind": "source_specific_observation",
+      "text": "أعاد السطر 3 قيمة candidate وهي 0. القيمة عند الفهرس 0 هي 1 والهدف 7.",
+      "event_ids": [
+        "E00004"
+      ],
+      "source_lines": [
+        3
+      ],
+      "trace_roles": null,
+      "evidence_refs": [
+        "case",
+        "observed_output",
+        "expected_output",
+        "exception"
+      ],
+      "verification_status": "verified",
+      "adapter_id": "python_returned_index_v1"
+    }
+  ],
+  "hints": [
+    {
+      "tier": "H1",
+      "claim_ids": [
+        "C1"
+      ],
+      "text": "أعاد الحل الفهرس 0، لكنه لا يحقق عقد البحث على هذه المصفوفة.",
+      "kind": "observation"
+    },
+    {
+      "tier": "H2",
+      "claim_ids": [],
+      "text": "أين يظهر الهدف في هذا المدخل، وماذا يعني الفهرس الذي أعاده حلك؟",
+      "kind": "educational_question"
+    },
+    {
+      "tier": "H3",
+      "claim_ids": [
+        "C2"
+      ],
+      "event_ids": [
+        "E00004"
+      ],
+      "text": "أعاد السطر 3 قيمة candidate وهي 0. القيمة عند الفهرس 0 هي 1 والهدف 7.",
+      "kind": "source_specific_observation"
+    },
+    {
+      "tier": "H4",
+      "claim_ids": [
+        "C2"
+      ],
+      "text": "تتبّع كيف اختير هذا الفهرس، وافحص شرط التطابق قبل إرجاعه.",
+      "kind": "conceptual_direction"
+    }
+  ],
+  "verification": {
+    "input_valid": true,
+    "oracle_id": "linear_membership_checker",
+    "replay_attempts": 3,
+    "replay_matches": 3
+  },
+  "reduction": {
+    "before": {
+      "length": 3
+    },
+    "after": {
+      "length": 3
+    },
+    "failure_preserved": true,
+    "method": "disabled"
+  },
+  "statistics": {
+    "discovery_candidates": 1,
+    "post_discovery_candidates": 0,
+    "verification_solver_calls": 2,
+    "replay_solver_calls": 3,
+    "trace_solver_calls": 1,
+    "flaky_candidates": 0,
+    "discovery_ms": 88.7526,
+    "post_discovery_ms": 0.0063,
+    "replay_ms": 0.42,
+    "trace_ms": 0.349,
+    "total_solver_calls": 7,
+    "worker_startups": 1,
+    "elapsed_ms": 89.5592
+  },
+  "attempts": [
+    {
+      "phase": "manual",
+      "case": {
+        "array": [
+          1,
+          7,
+          7
+        ],
+        "target": 7
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0976
+    }
+  ],
+  "stop_reason": "manual_case_checked",
+  "error": null,
+  "versions": {
+    "algoxray": "0.2.0",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "hypothesis": "6.170.17",
+    "networkx": "3.7"
+  },
+  "manual_check": {
+    "case": {
+      "array": [
+        1,
+        7,
+        7
+      ],
+      "target": 7
+    },
+    "status": "wrong_answer",
+    "observed": 0,
+    "expected": 1
+  },
+  "witness_explanation": {
+    "kind": "membership",
+    "target": 7,
+    "returned": 0,
+    "matching_indices": [
+      1,
+      2
+    ],
+    "returned_value": 1
+  },
+  "diagnostic_status": "supported",
+  "diagnosis": {
+    "status": "supported",
+    "text": "أعاد السطر 3 قيمة candidate وهي 0. القيمة عند الفهرس 0 هي 1 والهدف 7.",
+    "event_ids": [
+      "E00004"
+    ],
+    "source_lines": [
+      3
+    ],
+    "trace_roles": null
+  }
+}

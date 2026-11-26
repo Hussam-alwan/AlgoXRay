@@ -1,0 +1,555 @@
+{
+  "created_at": "2026-11-26T07:39:07.402879+00:00",
+  "runs": 20,
+  "witnesses": 20,
+  "claims_checked": 40,
+  "claims_supported": 40,
+  "diagnostic_runs": 20,
+  "complete_traces": 20,
+  "replay_matches": 60,
+  "replay_attempts": 60,
+  "method": "Automated consistency and arithmetic/source-predicate checks on two supported authored fixtures",
+  "not_established": "Independent human factuality, general diagnosis accuracy, causality, or learning benefit",
+  "records": [
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2026,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 3,
+        "edges": 5
+      },
+      "after": {
+        "vertices": 3,
+        "edges": 3
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2026.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2027,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 6,
+        "edges": 16
+      },
+      "after": {
+        "vertices": 6,
+        "edges": 4
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2027.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2028,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 8,
+        "edges": 19
+      },
+      "after": {
+        "vertices": 8,
+        "edges": 4
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2028.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2029,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 5,
+        "edges": 20
+      },
+      "after": {
+        "vertices": 5,
+        "edges": 3
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2029.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2030,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 5,
+        "edges": 14
+      },
+      "after": {
+        "vertices": 5,
+        "edges": 3
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2030.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2031,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 8,
+        "edges": 17
+      },
+      "after": {
+        "vertices": 8,
+        "edges": 6
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2031.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2032,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 4,
+        "edges": 7
+      },
+      "after": {
+        "vertices": 4,
+        "edges": 3
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2032.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2033,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 6,
+        "edges": 20
+      },
+      "after": {
+        "vertices": 6,
+        "edges": 3
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2033.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2034,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 5,
+        "edges": 16
+      },
+      "after": {
+        "vertices": 5,
+        "edges": 4
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2034.json"
+    },
+    {
+      "fixture_id": "dijkstra_premature_visited",
+      "seed": 2035,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "vertices": 4,
+        "edges": 11
+      },
+      "after": {
+        "vertices": 4,
+        "edges": 3
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\dijkstra_premature_visited_2035.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2026,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2026.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2027,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2027.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2028,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2028.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2029,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2029.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2030,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2030.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2031,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2031.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2032,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2032.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2033,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2033.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2034,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2034.json"
+    },
+    {
+      "fixture_id": "binary_missing_last",
+      "seed": 2035,
+      "status": "witness_found",
+      "trace_status": "complete",
+      "diagnostic_status": "supported",
+      "before": {
+        "length": 1
+      },
+      "after": {
+        "length": 1
+      },
+      "replay_matches": 3,
+      "replay_attempts": 3,
+      "checks": [
+        {
+          "claim_id": "C1",
+          "supported_by_predicate": true
+        },
+        {
+          "claim_id": "C2",
+          "supported_by_predicate": true
+        }
+      ],
+      "raw_file": "results\\evidence-audit\\binary_missing_last_2035.json"
+    }
+  ]
+}

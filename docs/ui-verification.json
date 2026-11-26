@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "journeys": [
+    "offline_load",
+    "generated_dijkstra",
+    "trace_navigation",
+    "source_bound_hint",
+    "json_export",
+    "original_view",
+    "binary_singleton",
+    "duplicate_control",
+    "invalid_json",
+    "mobile_layout",
+    "guide",
+    "benchmark_view"
+  ],
+  "viewport_desktop": [
+    1440,
+    1100
+  ],
+  "viewport_mobile": [
+    390,
+    844
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "browser": "158.0.4370.33",
+  "url": "http://127.0.0.1:8787"
+}

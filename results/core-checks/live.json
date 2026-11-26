@@ -1,0 +1,15 @@
+{
+  "health": {
+    "status": "ready",
+    "version": "0.2.0",
+    "execution_mode": "local_trusted",
+    "problems": 2,
+    "custom_code": true,
+    "hypothesis": "6.170.17",
+    "networkx": "3.7"
+  },
+  "benchmark_sha": "1fe1dda00536a3317ff6f4d8a77c1f2c1f33357ea0242cfb99e0b84bb3cd8c78",
+  "benchmark_runs": 480,
+  "url": "http://127.0.0.1:8000",
+  "status": "passed"
+}

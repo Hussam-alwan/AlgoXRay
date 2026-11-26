@@ -1,0 +1,695 @@
+{
+  "schema_version": 1,
+  "run_id": "20261126T121804_69c9e350a9",
+  "created_at": "2026-11-26T12:18:04.215011+00:00",
+  "problem_id": "dijkstra_v1",
+  "status": "witness_found",
+  "failure_kind": "wrong_answer",
+  "execution_mode": "local_trusted",
+  "seed": 2026,
+  "strategy": "manual",
+  "options": {
+    "seed": 2026,
+    "strategy": "hypothesis",
+    "max_examples": 100,
+    "max_seconds": 10,
+    "per_case_seconds": 1,
+    "shrink": true,
+    "max_reduction_calls": 150,
+    "reduction_seconds": 5,
+    "include_trace": true,
+    "trace_limit": 2000,
+    "replay_count": 3
+  },
+  "submission": {
+    "fixture_id": "local_42884b67c001",
+    "source_sha256": "42884b67c0015cc8e1d95a8e502dd77550dcc5298e18a6c2d6c5e30b4912095a",
+    "source": "def solve(payload):\n    out = [None] * payload[\"n\"]\n    out[payload[\"source\"]] = 0\n    for u, v, w in payload[\"edges\"]:\n        if u == payload[\"source\"]:\n            out[v] = w\n    return out\n",
+    "origin": "reviewed_local_file",
+    "split": "local",
+    "adapter_id": null,
+    "filename": "submission.py"
+  },
+  "case": {
+    "n": 3,
+    "edges": [
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        2,
+        1
+      ]
+    ],
+    "source": 0
+  },
+  "original_case": {
+    "n": 3,
+    "edges": [
+      [
+        0,
+        1,
+        1
+      ],
+      [
+        0,
+        2,
+        3
+      ],
+      [
+        1,
+        2,
+        1
+      ]
+    ],
+    "source": 0
+  },
+  "observed_output": [
+    0,
+    1,
+    null
+  ],
+  "expected_output": [
+    0,
+    1,
+    2
+  ],
+  "exception": {
+    "type": null,
+    "message": null,
+    "line": null,
+    "function": null
+  },
+  "evidence_level": "E2",
+  "trace_status": "complete",
+  "events": [
+    {
+      "event_id": "E00001",
+      "kind": "call",
+      "line": 1,
+      "function": "solve",
+      "snapshot_timing": "call",
+      "locals": {
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00002",
+      "kind": "line",
+      "line": 2,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00003",
+      "kind": "line",
+      "line": 3,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "out": [
+          null,
+          null,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00004",
+      "kind": "line",
+      "line": 4,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "out": [
+          0,
+          null,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00005",
+      "kind": "line",
+      "line": 5,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "out": [
+          0,
+          null,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00006",
+      "kind": "line",
+      "line": 6,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "out": [
+          0,
+          null,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00007",
+      "kind": "line",
+      "line": 4,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 0,
+        "v": 1,
+        "w": 1,
+        "out": [
+          0,
+          1,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00008",
+      "kind": "line",
+      "line": 5,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 2,
+        "w": 1,
+        "out": [
+          0,
+          1,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00009",
+      "kind": "line",
+      "line": 4,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 2,
+        "w": 1,
+        "out": [
+          0,
+          1,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00010",
+      "kind": "line",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "before_line",
+      "locals": {
+        "u": 1,
+        "v": 2,
+        "w": 1,
+        "out": [
+          0,
+          1,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      }
+    },
+    {
+      "event_id": "E00011",
+      "kind": "return",
+      "line": 7,
+      "function": "solve",
+      "snapshot_timing": "return",
+      "locals": {
+        "u": 1,
+        "v": 2,
+        "w": 1,
+        "out": [
+          0,
+          1,
+          null
+        ],
+        "payload": {
+          "n": 3,
+          "edges": [
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              2,
+              1
+            ]
+          ],
+          "source": 0
+        }
+      },
+      "return_value": [
+        0,
+        1,
+        null
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "C1",
+      "kind": "wrong_answer",
+      "text": "المسافة للعقدة 2 هي None في الحل، و2 في المرجع.",
+      "event_ids": [],
+      "evidence_refs": [
+        "observed_output",
+        "expected_output",
+        "verification",
+        "case"
+      ],
+      "verification_status": "verified"
+    }
+  ],
+  "hints": [
+    {
+      "tier": "H1",
+      "claim_ids": [
+        "C1"
+      ],
+      "text": "المسافة للعقدة 2 هي None في الحل، و2 في المرجع.",
+      "kind": "observation"
+    },
+    {
+      "tier": "H2",
+      "claim_ids": [],
+      "text": "أيّ عقدة تختلف مسافتها عن المرجع؟ هل تستطيع تتبّع طريق يصل إليها من المصدر؟",
+      "kind": "educational_question"
+    }
+  ],
+  "verification": {
+    "input_valid": true,
+    "oracle_id": "networkx_bellman_ford+independent_floyd",
+    "replay_attempts": 3,
+    "replay_matches": 3
+  },
+  "reduction": {
+    "before": {
+      "vertices": 3,
+      "edges": 3
+    },
+    "after": {
+      "vertices": 3,
+      "edges": 2
+    },
+    "failure_preserved": true,
+    "method": "greedy_structure"
+  },
+  "statistics": {
+    "discovery_candidates": 1,
+    "post_discovery_candidates": 6,
+    "verification_solver_calls": 4,
+    "replay_solver_calls": 3,
+    "trace_solver_calls": 1,
+    "flaky_candidates": 0,
+    "discovery_ms": 87.5886,
+    "post_discovery_ms": 1.6305,
+    "replay_ms": 0.4188,
+    "trace_ms": 0.4971,
+    "total_solver_calls": 15,
+    "worker_startups": 1,
+    "elapsed_ms": 90.1578
+  },
+  "attempts": [
+    {
+      "phase": "manual",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.1591
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            0,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.052
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "wrong_answer",
+      "elapsed_ms": 0.0471
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            1,
+            2,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0408
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 3,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "source": 0
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0407
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 2,
+        "source": 0,
+        "edges": []
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0392
+    },
+    {
+      "phase": "reduction",
+      "case": {
+        "n": 2,
+        "source": 0,
+        "edges": [
+          [
+            0,
+            1,
+            1
+          ]
+        ]
+      },
+      "status": "pass",
+      "elapsed_ms": 0.0397
+    }
+  ],
+  "stop_reason": "manual_case_checked",
+  "error": null,
+  "versions": {
+    "algoxray": "0.2.0",
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "hypothesis": "6.170.17",
+    "networkx": "3.7"
+  },
+  "manual_check": {
+    "case": {
+      "n": 3,
+      "edges": [
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          0,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          1
+        ]
+      ],
+      "source": 0
+    },
+    "status": "wrong_answer",
+    "observed": [
+      0,
+      1,
+      3
+    ],
+    "expected": [
+      0,
+      1,
+      2
+    ]
+  },
+  "witness_explanation": {
+    "kind": "shortest_path",
+    "source": 0,
+    "target": 2,
+    "vertices": [
+      0,
+      1,
+      2
+    ],
+    "weights": [
+      1,
+      1
+    ],
+    "cost": 2,
+    "returned": null
+  },
+  "diagnostic_status": "abstained",
+  "diagnosis": {
+    "status": "witness_only",
+    "text": null,
+    "event_ids": [],
+    "source_lines": [],
+    "trace_roles": null
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:algoxray:evidence:v1",
+  "title": "AlgoX-Ray Evidence Bundle v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "created_at",
+    "problem_id",
+    "status",
+    "failure_kind",
+    "execution_mode",
+    "seed",
+    "strategy",
+    "submission",
+    "case",
+    "evidence_level",
+    "trace_status",
+    "events",
+    "claims",
+    "hints",
+    "verification",
+    "statistics",
+    "versions",
+    "reduction",
+    "attempts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 5
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "problem_id": {
+      "enum": [
+        "dijkstra_v1",
+        "binary_search_v1"
+      ]
+    },
+    "status": {
+      "enum": [
+        "witness_found",
+        "inconclusive",
+        "invalid_submission",
+        "oracle_disagreement"
+      ]
+    },
+    "failure_kind": {
+      "enum": [
+        null,
+        "wrong_answer",
+        "exception",
+        "timeout",
+        "contract_violation"
+      ]
+    },
+    "execution_mode": {
+      "const": "local_trusted"
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "strategy": {
+      "enum": [
+        "hypothesis",
+        "random",
+        "manual"
+      ]
+    },
+    "submission": {
+      "type": "object",
+      "required": [
+        "fixture_id",
+        "source_sha256",
+        "source",
+        "origin"
+      ],
+      "properties": {
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source": {
+          "type": "string"
+        }
+      }
+    },
+    "case": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "evidence_level": {
+      "enum": [
+        "E0",
+        "E2",
+        "E3"
+      ]
+    },
+    "trace_status": {
+      "enum": [
+        "not_run",
+        "complete",
+        "truncated",
+        "unsupported",
+        "failed"
+      ]
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "event_id",
+          "kind",
+          "line",
+          "locals",
+          "snapshot_timing"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "call",
+              "line",
+              "return",
+              "exception"
+            ]
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "function": {
+            "type": "string"
+          },
+          "snapshot_timing": {
+            "type": "string"
+          },
+          "locals": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "kind",
+          "text",
+          "event_ids",
+          "evidence_refs",
+          "verification_status"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verification_status": {
+            "const": "verified"
+          }
+        }
+      }
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "tier",
+          "claim_ids",
+          "text"
+        ],
+        "properties": {
+          "tier": {
+            "enum": [
+              "H1",
+              "H2",
+              "H3",
+              "H4"
+            ]
+          },
+          "claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object"
+    },
+    "statistics": {
+      "type": "object"
+    },
+    "versions": {
+      "type": "object"
+    },
+    "reduction": {
+      "type": "object"
+    },
+    "attempts": {
+      "type": "array"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "witness_found"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "case": {
+            "type": "object"
+          },
+          "evidence_level": {
+            "enum": [
+              "E2",
+              "E3"
+            ]
+          },
+          "claims": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "copied_to": "release-clean",
+  "started_at": "2026-11-26T12:16:47.728574+00:00",
+  "checks": [
+    {
+      "name": "setup",
+      "exit": 0
+    },
+    {
+      "name": "pip-check",
+      "exit": 0
+    },
+    {
+      "name": "clean-import",
+      "exit": 0
+    },
+    {
+      "name": "clean-pytest",
+      "exit": 0
+    },
+    {
+      "name": "browser-legacy",
+      "exit": 0
+    },
+    {
+      "name": "browser-editor",
+      "exit": 0
+    },
+    {
+      "name": "browser-core-clean",
+      "exit": 0
+    },
+    {
+      "name": "replay-clean",
+      "exit": 0
+    }
+  ],
+  "finished_at": "2026-11-26T12:18:08.945322+00:00",
+  "status": "passed"
+}

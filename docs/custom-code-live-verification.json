@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "url": "http://127.0.0.1:8000",
+  "custom_code": true,
+  "actual": -1,
+  "expected": 0,
+  "supported_condition_line": 6,
+  "page_errors": [],
+  "screenshot": "docs\\screenshots\\custom-code-live.jpg"
+}

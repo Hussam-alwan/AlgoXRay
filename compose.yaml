@@ -1,0 +1,21 @@
+services:
+  algoxray:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ALGOXRAY_CUSTOM_CODE: "0"
+      ALGOXRAY_ALLOWED_HOSTS: "${ALGOXRAY_ALLOWED_HOSTS:-localhost,127.0.0.1}"
+    restart: unless-stopped
+    init: true
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 128
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+      - /app/results/runs:rw,noexec,nosuid,uid=10001,gid=10001,size=128m

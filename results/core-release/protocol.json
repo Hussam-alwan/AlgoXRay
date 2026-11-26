@@ -1,0 +1,14 @@
+{
+  "version": "core-0.2",
+  "scope": "Fresh reviewed submissions through the local-file path, outside the teaching catalog. Release and protocol are fingerprinted before acquiring or running the corpus.",
+  "sources": "Original purpose-written evaluation programs, selected public licensed implementations, and separately identified contract adapters. Never count seeds, copied versions, or students as independent programs.",
+  "seeds": [3026,3027,3028,3029,3030,3031,3032,3033,3034,3035,3036,3037,3038,3039,3040,3041,3042,3043,3044,3045],
+  "strategies": ["random","hypothesis"],
+  "max_examples": 100, "max_seconds": 5, "per_case_seconds": 1, "replay_count": 3,
+  "discovery": "Single worker per run; alternate arm order by seed; stop on first confirmed witness. Both arms disable shrinking and tracing. Distinct distributions over the same legal domain.",
+  "audit_seeds": [3026,3027], "reduction_seconds": 5, "max_reduction_calls": 150,
+  "audit": "Run both arms for every program on the two fixed audit seeds, including controls and misses. Enable trace and reduction. Check references, trace provenance, claims, certificates, and abstentions. Report every failure.",
+  "timing": "Discovery includes startup through first verified witness. Post-discovery includes reduction/confirmations. Final replay and trace timed separately. Report successful-only discovery quartiles; report misses and all denominators.",
+  "exclusions": "Record unlicensed, unmappable or uncertain-labelled programs separately before running. Never remove an unfavourable result. Human participation and perceived usefulness reported separately.",
+  "hardware": "Same Windows host, CPU and interpreter for both arms, sequential trials. Fresh worker namespace each candidate."
+}

@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "journeys": [
+    "local_trust_gate",
+    "pasted_code_to_specific_observation",
+    "diagnostic_event_navigation",
+    "custom_evidence_export",
+    "edit_invalidates_old_evidence_and_correct_solution",
+    "unknown_logic_abstention",
+    "syntax_error_line",
+    "runtime_exception_exact_line",
+    "file_import_and_renamed_variables",
+    "per_problem_draft_retention",
+    "generated_counterexample_for_pasted_source",
+    "source_rendered_as_text",
+    "file_size_limit",
+    "mobile_editor_layout"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "browser": "158.0.4370.33",
+  "url": "http://127.0.0.1:8789",
+  "exported_evidence": "results\\custom-code-browser-evidence.json"
+}
