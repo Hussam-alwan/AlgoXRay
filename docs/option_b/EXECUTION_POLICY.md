@@ -1,0 +1,3 @@
+# Execution policy (new revision)
+Cancellation uses a per-analysis random capability, a cooperative parent polling loop, and the existing process-tree termination path. Cancelled analyses do not assert a witness or retain claims. The UI requests server cancellation, not simply aborting the HTTP request. A finished analysis cannot be cancelled retroactively.
+The explicit fresh_process option restarts a worker per case and avoids retained Python module state. The default persistent mode keeps a fresh submission namespace only; it is not process isolation. Neither mode isolates the filesystem, network, or adversarial code. The fresh mode is more expensive and should be reported separately in comparisons.

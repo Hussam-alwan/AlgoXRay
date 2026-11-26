@@ -21,7 +21,7 @@ from .claim_verifier import verify_claim_links, abstain_on_unsupported
 from .explanation import explanation_cards
 from .paths import RESULTS
 from .problems import OracleDisagreement
-from .runner import InvalidSubmission, Runner
+from .runner import InvalidSubmission, Runner, AnalysisCancelled
 
 
 class DiscoveryComplete(BaseException):
@@ -45,6 +45,7 @@ class Options:
     include_trace: bool = True
     trace_limit: int = 2000
     replay_count: int = 3
+    fresh_process: bool = False
 
     def __post_init__(self):
         if self.strategy not in ("hypothesis", "random"):
@@ -58,7 +59,7 @@ class Options:
             val = getattr(self, field)
             if type(val) not in (int, float) or not lo <= val <= hi:
                 raise ValueError("Invalid option: " + field)
-        if type(self.shrink) is not bool or type(self.include_trace) is not bool:
+        if any(type(v) is not bool for v in (self.shrink,self.include_trace,self.fresh_process)):
             raise ValueError("Boolean options required")
 
 
@@ -106,7 +107,7 @@ def validate_bundle(bundle):
     return bundle
 
 
-def analyze(submission, options=None, case=None, persist=True):
+def analyze(submission, options=None, case=None, persist=True, cancel=None):
     options = options or Options()
     problem_id = submission.problem_id
     spec = spec_for(problem_id)
@@ -124,9 +125,10 @@ def analyze(submission, options=None, case=None, persist=True):
     target_signature = None
     first_at = None
     rng = random.Random(options.seed)
-    with Runner(submission, options.per_case_seconds) as runner:
+    with Runner(submission, options.per_case_seconds, cancel=cancel, fresh_process=options.fresh_process) as runner:
         def evaluate(candidate, phase):
             nonlocal first, best, first_at, target_signature, manual_check
+            runner.check_cancel()
             now = time.perf_counter()
             if first is None:
                 if stats["discovery_candidates"] >= options.max_examples or now - started >= options.max_seconds:
@@ -196,6 +198,8 @@ def analyze(submission, options=None, case=None, persist=True):
                                 break
                     if spec.complexity(best["case"]) == previous:
                         break
+        except AnalysisCancelled:
+            status, best, stop_reason = 'cancelled', None, 'user_cancelled'
         except DiscoveryComplete:
             stop_reason = "first_verified_witness"
         except BudgetStop:
@@ -232,6 +236,9 @@ def analyze(submission, options=None, case=None, persist=True):
                         traced_failure = trace["status"] if trace["status"] != "ok" else spec.check(best["case"], trace.get("output"), best["expected"])
                         if _fingerprint(trace, traced_failure) != best["fingerprint"]:
                             trace = {"events": [], "trace_status": "failed"}
+        except AnalysisCancelled:
+            status, best, stop_reason = 'cancelled', None, 'user_cancelled'
+            trace = {'events': [], 'trace_status': 'not_run'}
         except InvalidSubmission as exc:
             trace = {"events": [], "trace_status": "failed"}
             if status == "witness_found":
@@ -271,7 +278,8 @@ def analyze(submission, options=None, case=None, persist=True):
         "versions": {"algoxray": __version__, "python": sys.version.split()[0], "platform": platform.platform(),
                      "hypothesis": version("hypothesis"), "networkx": version("networkx")},
     }
-    bundle["manual_check"] = manual_check
+    bundle["execution_policy"] = "fresh_process_per_case" if options.fresh_process else "persistent_worker_fresh_namespace"
+    bundle["manual_check"] = manual_check if status != "cancelled" else None
     bundle["witness_explanation"] = (spec.certificate(best["case"], best["result"]["output"], best["expected"])
                                      if best and best["failure"] == "wrong_answer" else None)
     bundle["claims"], bundle["hints"] = build_hints(bundle, submission)

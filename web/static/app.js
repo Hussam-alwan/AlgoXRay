@@ -24,6 +24,8 @@ function showError(message) { $('error-message').textContent = message; $('error
 function stopPlaying() { clearInterval(state.timer); state.timer = null; $('play-steps').textContent = '▶ تشغيل'; }
 function setBusy(value) {
   state.busy = value;
+  $('cancel-analysis').hidden = !value;
+  $('cancel-analysis').disabled = !value;
   $('analyze-button').disabled = value;
   $('analyze-button').classList.toggle('busy', value);
   $('analyze-label').textContent = value ? 'جارٍ التحليل…' : 'ابدأ التحليل';
@@ -188,8 +190,8 @@ function renderHints() {
 function renderResult() {
   const result = state.result, found = result?.status === 'witness_found';
   $('status-banner').className = 'status-banner' + (found ? ' found' : result ? ' inconclusive' : '');
-  $('status-title').textContent = found ? ({wrong_answer: 'وجدنا حالة تؤكد اختلاف النتيجة', exception: 'وجدنا حالة يتوقف عليها الحل', timeout: 'وجدنا حالة تتجاوز مهلة التشغيل', contract_violation: 'وجدنا خرجاً يخالف عقد المسألة'}[result.failure_kind]) : result ? (result.status === 'inconclusive' ? 'لم نجد خطأ ضمن الميزانية' : 'تعذر استكمال التحقق') : 'جاهز لاكتشاف حالة الفشل';
-  $('status-description').textContent = found ? `أعيد الفشل ${result.verification.replay_matches} مرات من ${result.verification.replay_attempts}. يمكنك الآن فحص الحالة والتنقل في تنفيذها.` : result ? (result.error || 'هذه نتيجة بحث محدود؛ لا تمثل إثباتاً لصحة الحل.') : 'اختر حلاً ثم ابدأ التحليل. الرسم الحالي معاينة للمدخل التوضيحي فقط.';
+  $('status-title').textContent = found ? ({wrong_answer: 'وجدنا حالة تؤكد اختلاف النتيجة', exception: 'وجدنا حالة يتوقف عليها الحل', timeout: 'وجدنا حالة تتجاوز مهلة التشغيل', contract_violation: 'وجدنا خرجاً يخالف عقد المسألة'}[result.failure_kind]) : result ? (result.status === 'cancelled' ? 'أُلغي التحليل' : result.status === 'inconclusive' ? 'لم نجد خطأ ضمن الميزانية' : 'تعذر استكمال التحقق') : 'جاهز لاكتشاف حالة الفشل';
+  $('status-description').textContent = found ? `أعيد الفشل ${result.verification.replay_matches} مرات من ${result.verification.replay_attempts}. يمكنك الآن فحص الحالة والتنقل في تنفيذها.` : result ? (result.status === 'cancelled' ? 'أوقف العامل ولم يصدر حكم على الحل.' : result.error || 'هذه نتيجة بحث محدود؛ لا تمثل إثباتاً لصحة الحل.') : 'اختر حلاً ثم ابدأ التحليل. الرسم الحالي معاينة للمدخل التوضيحي فقط.';
   $('status-symbol').textContent = found ? '↳' : result ? '◷' : '◌';
   $('run-label').textContent = result ? 'RUN ' + result.run_id.slice(-10).toUpperCase() : 'NO RUN YET';
   $('run-label').title = result?.run_id || '';
@@ -205,6 +207,13 @@ function renderResult() {
   renderHints(); renderStep(); renderDiagnosis(); renderWitness();
 }
 
+$('cancel-analysis').addEventListener('click', async () => {
+  const id = state.analysisId;
+  if (!state.busy || !id) return;
+  $('cancel-analysis').disabled = true;
+  try {await request('/api/analysis/'+id+'/cancel',{method:'POST'}); $('status-description').textContent='طُلب إيقاف العامل…';}
+  catch(error) {if(state.busy){showError(error.message); $('cancel-analysis').disabled=false;}}
+});
 async function runAnalysis(event) {
   event.preventDefault(); if (state.busy) return; stopPlaying(); showError('');
   let manual = null;
@@ -218,8 +227,10 @@ async function runAnalysis(event) {
   state.result = null; state.step = 0; state.revealed = 0; state.original = false; renderResult();
   setBusy(true); $('status-title').textContent = 'جارٍ البحث والتحقق من الشاهد…'; $('status-description').textContent = 'التصغير وإعادة التشغيل والتتبع مراحل حقيقية وقد تستغرق بعض الوقت.';
   const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 75000);
+  const id = Array.from(crypto.getRandomValues(new Uint8Array(16)), n=>n.toString(16).padStart(2,'0')).join('');
+  state.analysisId = id;
   try {
-    const payload = {problem_id: state.problem, options: {seed, strategy: $('strategy').value, max_examples: budget, shrink: $('shrink').checked}, case: manual};
+    const payload = {analysis_id: id, problem_id: state.problem, options: {seed, strategy: $('strategy').value, max_examples: budget, shrink: $('shrink').checked}, case: manual};
     const headers = {'Content-Type': 'application/json'};
     if (custom) {
       const session = await request('/api/session');
@@ -234,7 +245,7 @@ async function runAnalysis(event) {
   } catch (error) {
     renderResult(); showError(error.name === 'AbortError' ? 'انتهت مهلة انتظار الواجهة. تحقق من سجل المحرك قبل بدء تحليل آخر.' : 'تعذر التحليل: ' + error.message + (error.line ? ' — السطر ' + error.line : ''));
     if (error.line && custom) {renderSource({source, filename: state.filenames[state.problem] || 'submission.py'}); jumpToEditorLine(error.line);}
-  } finally {clearTimeout(timer); setBusy(false);}
+  } finally {clearTimeout(timer); state.analysisId = null; setBusy(false);}
 }
 
 

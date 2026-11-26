@@ -49,7 +49,8 @@
         "witness_found",
         "inconclusive",
         "invalid_submission",
-        "oracle_disagreement"
+        "oracle_disagreement",
+        "cancelled"
       ]
     },
     "failure_kind": {
@@ -291,6 +292,12 @@
           "event_ids"
         ]
       }
+    },
+    "execution_policy": {
+      "enum": [
+        "fresh_process_per_case",
+        "persistent_worker_fresh_namespace"
+      ]
     }
   },
   "allOf": [

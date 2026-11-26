@@ -14,15 +14,38 @@ class InvalidSubmission(ValueError):
     pass
 
 
+class AnalysisCancelled(BaseException):
+    pass
+
+
 class Runner:
     """Persistent worker, fresh submission namespace per case, hard parent timeout."""
-    def __init__(self, submission, timeout=1.0):
+    def __init__(self, submission, timeout=1.0, cancel=None, fresh_process=False):
         self.submission = submission
         self.timeout = timeout
         self.process = None
         self.messages = None
         self.calls = 0
         self.startups = 0
+        self.cancel = cancel
+        self.fresh_process = fresh_process
+
+    def check_cancel(self):
+        if self.cancel is not None and self.cancel.is_set():
+            self.close()
+            raise AnalysisCancelled()
+
+    def _receive(self, seconds):
+        deadline = time.monotonic() + seconds
+        while True:
+            self.check_cancel()
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise queue.Empty()
+            try:
+                return self.messages.get(timeout=min(remaining, 0.05))
+            except queue.Empty:
+                continue
 
     def _start(self):
         allowed = {"PATH", "SYSTEMROOT", "WINDIR", "TEMP", "TMP", "LANG", "LC_ALL"}
@@ -56,7 +79,7 @@ class Runner:
 
         threading.Thread(target=reader, daemon=True).start()
         try:
-            hello = messages.get(timeout=5)
+            hello = self._receive(5)
         except queue.Empty:
             self.close()
             raise InvalidSubmission("Worker startup timed out")
@@ -65,7 +88,8 @@ class Runner:
             raise InvalidSubmission(hello.get("message", "Source changed or worker failed to start"))
 
     def run(self, case, trace=False, trace_limit=2000):
-        if self.process is None or self.process.poll() is not None:
+        self.check_cancel()
+        if self.fresh_process or self.process is None or self.process.poll() is not None:
             self.close()
             try:
                 self._start()
@@ -77,7 +101,7 @@ class Runner:
         try:
             self.process.stdin.write(json.dumps({"case": case, "problem_id": self.submission.problem_id, "trace": trace, "trace_limit": trace_limit, "timeout": self.timeout}) + "\n")
             self.process.stdin.flush()
-            result = self.messages.get(timeout=self.timeout + 0.15)
+            result = self._receive(self.timeout + 0.15)
             if result.get("status") == "invalid_submission":
                 raise InvalidSubmission(result.get("message", "Invalid submission"))
             if "worker_exited" in result or "protocol_error" in result or result.get("status") == "worker_error":
@@ -91,6 +115,9 @@ class Runner:
                     or (result["status"] == "ok" and "output" not in result)):
                 self.close()
                 raise InvalidSubmission("Invalid worker response")
+            self.check_cancel()
+            if self.fresh_process:
+                self.close()
             return result
         except queue.Empty:
             self.close()
