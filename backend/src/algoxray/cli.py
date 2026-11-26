@@ -14,6 +14,9 @@ def main(argv=None):
     replay = commands.add_parser("replay", help="Replay the witness from a reviewed local evidence bundle")
     replay.add_argument("bundle", type=Path)
     replay.add_argument("--trusted-local-file", action="store_true")
+    author = commands.add_parser("review-package", help="Review a registered package using independent JSON controls")
+    author.add_argument("--problem", choices=list(REGISTRY), required=True)
+    author.add_argument("--controls", type=Path, required=True)
     server = commands.add_parser("serve", help="Start the loopback-only UI")
     server.add_argument("--port", type=int, default=8000)
     command = commands.add_parser("analyze", help="Analyze reviewed local Python code")
@@ -29,6 +32,8 @@ def main(argv=None):
     command.add_argument("--max-seconds", type=float, default=10)
     command.add_argument("--no-shrink", action="store_true")
     command.add_argument("--no-trace", action="store_true")
+    command.add_argument("--fresh-process", action="store_true")
+    command.add_argument("--diagnostic-samples",type=int,default=0)
     command.add_argument("--output", type=Path)
     command.add_argument("--summary", action="store_true")
     args = parser.parse_args(argv)
@@ -45,6 +50,12 @@ def main(argv=None):
             parser.error(str(exc))
         print(json.dumps(outcome, indent=2))
         return 0 if outcome["matched"] else 1
+    if args.command == "review-package":
+        from .package_review import review_package
+        try: result=review_package(args.problem,json.loads(args.controls.read_text(encoding="utf-8-sig")))
+        except (OSError,ValueError) as exc: parser.error(str(exc))
+        print(json.dumps(result,indent=2,ensure_ascii=True))
+        return 0 if result["status"]=="checks_passed" else 1
     if args.command == "serve":
         import uvicorn
         uvicorn.run("algoxray.api:app", host="127.0.0.1", port=args.port)
@@ -58,7 +69,8 @@ def main(argv=None):
         case = json.loads(args.case.read_text(encoding="utf-8-sig")) if args.case else None
         result = analyze(sub, Options(seed=args.seed, strategy=args.strategy, max_examples=args.max_examples,
                                       max_seconds=args.max_seconds, shrink=not args.no_shrink,
-                                      include_trace=not args.no_trace), case=case)
+                                      include_trace=not args.no_trace, fresh_process=args.fresh_process,
+                                      diagnostic_samples=args.diagnostic_samples), case=case)
     except (ValueError, OSError) as exc:
         parser.error(str(exc))
     if args.output:

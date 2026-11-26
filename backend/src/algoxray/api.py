@@ -21,6 +21,7 @@ from .engine import Options, analyze
 from .paths import RESULTS, ROOT, WEB
 from .problems import InvalidCase
 from .problem_registry import REGISTRY
+from .package_review import review_package
 from .registry import fixture_cards, get_submission, local_submission
 
 
@@ -39,6 +40,14 @@ class AnalysisOptions(BaseModel):
     replay_count: int = Field(default=3, ge=2, le=5)
     fresh_process: bool = False
     diagnostic_samples: int = Field(default=0, ge=0, le=4)
+
+
+class PackageReviewRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    problem_id: str = Field(min_length=1, max_length=100)
+    controls: list[dict] = Field(min_length=1, max_length=20)
+    seed: int = Field(default=2026, ge=0, le=2**32-1)
+    sample_count: int = Field(default=12, ge=1, le=40)
 
 
 class AnalyzeRequest(BaseModel):
@@ -130,6 +139,17 @@ def problems():
     return [spec.metadata for spec in REGISTRY.values()]
 
 
+@app.post("/api/packages/review")
+def package_review(body: PackageReviewRequest, request: Request):
+    require_loopback(request)
+    if not secrets.compare_digest(request.headers.get("x-algoxray-token",""),custom_code_token):
+        raise HTTPException(403, "Local author session required")
+    try:
+        return review_package(body.problem_id,body.controls,body.seed,body.sample_count)
+    except ValueError as exc:
+        raise HTTPException(422,str(exc)) from exc
+
+
 @app.get("/api/fixtures")
 def fixtures(problem_id: str | None = None):
     return fixture_cards(problem_id)
@@ -199,9 +219,10 @@ def benchmark_summary():
 
 
 @app.get("/api/option-b/benchmark-summary")
-def option_b_benchmark_summary():
-    path = RESULTS / "option-b-new" / "summary.json"
-    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {"status": "not_run", "rows": []}
+def option_b_benchmark_summary(revision: Literal["v1","v2"] = "v1"):
+    path = RESULTS / ("option-b-new" if revision=="v1" else "option-b-v2") / "summary.json"
+    result = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {"status": "not_run", "rows": []}
+    return {**result,"revision":revision}
 
 
 @app.get("/api/contract")

@@ -249,11 +249,11 @@ async function runAnalysis(event) {
 }
 
 
-async function loadOptionBBenchmarks() {
-  const target = $('option-b-benchmark-state'), table = $('option-b-benchmark-table');
-  table.replaceChildren(); target.replaceChildren(node('h2', '', 'تقييم Option B الجديد'));
+async function loadOptionBBenchmarks(revision='v1') {
+  const target = $(revision==='v1'?'option-b-benchmark-state':'option-b-v2-state'), table = $(revision==='v1'?'option-b-benchmark-table':'option-b-v2-table');
+  table.replaceChildren(); target.replaceChildren(node('h2', '', 'تقييم Option B · '+revision));
   try {
-    const data = await request('/api/option-b/benchmark-summary');
+    const data = await request('/api/option-b/benchmark-summary?revision='+revision);
     if (data.status === 'not_run') {target.append(node('p', 'report-intro', 'لا توجد نتائج منفذة لهذه النسخة بعد. الأرقام التاريخية أعلاه منفصلة.')); return;}
     target.append(node('p', 'report-intro', `${data.run_count} تشغيل على ${data.corpus_count} ملف حلّ · التحكيم البشري: ${data.human_review}`));
     const t = node('table', 'results-table'), head = node('thead'), hr = node('tr'), body = node('tbody');
@@ -265,7 +265,8 @@ async function loadOptionBBenchmarks() {
 }
 
 async function loadBenchmarks() {
-  void loadOptionBBenchmarks();
+  void loadOptionBBenchmarks('v1');
+  void loadOptionBBenchmarks('v2');
   const target = $('benchmark-state'), table = $('benchmark-table');
   target.replaceChildren(node('p', 'report-intro', 'تحميل بيانات التجارب…')); table.replaceChildren();
   try {
@@ -437,6 +438,9 @@ window.addEventListener('resize', () => state.cy?.resize());
 
 Promise.all([request('/api/health'), request('/api/problems'), request('/api/fixtures')]).then(([health, problems, fixtures]) => {
   state.problems = problems; state.fixtures = fixtures;
+  $('author-nav').hidden = !health.custom_code;
+  $('author-problem').replaceChildren(...problems.map(p=>new Option(p.name,p.id)));
+  updateAuthorContract();
   const tabs = document.querySelector('.problem-tabs'); tabs.replaceChildren();
   problems.forEach((p,i) => {const button = node('button','problem-tab'); button.type = 'button'; button.dataset.problem = p.id; button.append(node('span','',String(i+1).padStart(2,'0')),document.createTextNode(p.name)); button.addEventListener('click',()=>setProblem(p.id)); tabs.append(button);});
   state.customCodeEnabled = health.custom_code;
@@ -499,4 +503,23 @@ $('clear-witness').addEventListener('click', () => {
   $('case-input-label').hidden = true;
   $('shrink').checked = true;
   invalidateResult();
+});
+
+function updateAuthorContract(){
+  const p=state.problems.find(p=>p.id===$('author-problem').value);
+  if(!p) return;
+  $('author-contract').textContent=p.description_ar+' · '+p.id;
+  $('author-controls').value=pretty([{case:p.example,expected:null}]);
+  $('author-result').textContent='Enter an independently known expected answer before running.';
+}
+$('author-problem').addEventListener('change',updateAuthorContract);
+$('author-form').addEventListener('submit',async e=>{
+  e.preventDefault(); $('author-run').disabled=true; $('author-result').textContent='Checking…';
+  try{
+    const controls=JSON.parse($('author-controls').value);
+    const session=await request('/api/session');
+    const report=await request('/api/packages/review',{method:'POST',headers:{'Content-Type':'application/json','X-AlgoXRay-Token':session.custom_code_token},body:JSON.stringify({problem_id:$('author-problem').value,controls})});
+    $('author-result').textContent=pretty(report);
+  }catch(error){$('author-result').textContent=error.message;}
+  finally{$('author-run').disabled=false;}
 });
