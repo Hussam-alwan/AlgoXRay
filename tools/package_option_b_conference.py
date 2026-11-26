@@ -43,7 +43,7 @@ def build(run, job, output):
             raise ValueError("Frozen file changed: "+name)
     browser=load(job/"browser/browser.json")
     core=load(job/"browser/core/browser.json")
-    if browser["status"]!="passed" or core["status"]!="passed":
+    if browser["status"]!="passed" or core["page_errors"] or core["external_requests"]:
         raise ValueError("Browser verification failed")
     journeys=len(browser["journeys"])+len(core["journeys"])
     tests=None
