@@ -18,6 +18,8 @@ from .certificate import checked_example
 from .generation import random_case, strategy_for
 from .reduction import smaller_cases as _smaller_cases
 from .hints import build_hints
+from .localization import rank_observations
+from .claim_verifier import verify_claim_links
 from .paths import RESULTS
 from .problems import (PROBLEMS, OracleDisagreement, check_output, complexity,
                        reference, size, validate_case)
@@ -266,6 +268,8 @@ def analyze(submission, options=None, case=None, persist=True):
                            "event_ids": observation["event_ids"] if observation else [],
                            "source_lines": observation.get("source_lines", []) if observation else [],
                            "trace_roles": observation.get("trace_roles") if observation else None}
+    verify_claim_links(bundle)
+    bundle['ranked_observations'] = rank_observations(bundle)
     validate_bundle(bundle)
     if persist:
         directory = RESULTS / "runs" / run_id
