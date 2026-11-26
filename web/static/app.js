@@ -142,7 +142,7 @@ function renderStep() {
   for (const id of ['previous-step', 'next-step', 'play-steps', 'step-range']) $(id).disabled = !events.length || state.original;
   $('previous-step').disabled ||= state.step === 0;
   $('next-step').disabled ||= state.step === events.length - 1;
-  $('step-description').textContent = state.original ? 'عد إلى الحالة المصغرة لمشاهدة تنفيذها الفعلي.' : event ? `السطر ${event.line} · ${event.function} · ${event.kind === 'line' ? 'الحالة قبل التنفيذ' : event.kind}` : 'لا يوجد تتبع مسجّل لهذا التشغيل.';
+  $('step-description').textContent = state.original ? 'عد إلى الحالة المصغرة لمشاهدة تنفيذها الفعلي.' : event ? `السطر ${event.line} · ${event.function} · ${event.frame_id || '—'}${event.parent_frame_id ? ' ← ' + event.parent_frame_id : ''} · ${event.kind === 'line' ? 'الحالة قبل التنفيذ' : event.kind}` : 'لا يوجد تتبع مسجّل لهذا التشغيل.';
   $('code-container').querySelectorAll('.current').forEach(line => line.classList.remove('current'));
   if (event) {
     const row = $('code-container').querySelector(`[data-line="${event.line}"]`);
@@ -241,7 +241,7 @@ async function loadBenchmarks() {
   try {
     const data = await request('/api/benchmark-summary');
     if (data.status === 'not_run') {target.replaceChildren(node('h2', '', 'لم تُشغّل التجارب بعد'), node('p', 'report-intro', 'شغّل benchmarks/run.py لحفظ نتائج فعلية. لن تظهر أرقام تقديرية مكان البيانات.')); return;}
-    target.replaceChildren(node('h2', '', data.release ? 'تقييم الإصدار ' + data.release : 'تقييم تاريخي محفوظ'), node('p', 'report-intro', `${data.total_runs} تشغيل على ${data.fixture_count} حلول، ببذور وإعدادات محفوظة.`), node('p', 'report-caption', `Python ${data.environment.python} / ${data.created_at} / ${data.codebase_sha256.slice(0, 12)}`));
+    target.replaceChildren(node('h2', '', data.release ? 'تقييم تاريخي محفوظ · ' + data.release : 'تقييم تاريخي محفوظ'), node('p', 'report-intro', `${data.total_runs} تشغيل على ${data.fixture_count} حلول، ببذور وإعدادات محفوظة.`), node('p', 'report-caption', `Python ${data.environment.python} / ${data.created_at} / ${data.codebase_sha256.slice(0, 12)}`));
     const t = node('table', 'results-table'), head = node('thead'), header = node('tr');
     for (const label of ['المسألة', 'الطريقة', 'اكتشاف الأخطاء', 'اتهام الصحيح', 'وسيط الاكتشاف']) header.append(node('th', '', label)); head.append(header); t.append(head);
     const body = node('tbody');
@@ -310,6 +310,15 @@ function renderDiagnosis() {
   $('diagnosis-summary').hidden = !found;
   if (!found) return;
   const observation = result.diagnosis, supported = observation?.status === 'supported';
+  const ranked = $('ranked-observations'); ranked.replaceChildren();
+  for (const item of result.ranked_observations || []) {
+    const button = node('button', 'secondary-button', `السطر ${item.line} · ملاحظة مسجلة (${item.event_ids.length})`);
+    button.type = 'button'; button.addEventListener('click', () => {
+      const index = result.events.findIndex(e => e.event_id === item.event_ids[0]);
+      if (index >= 0) { state.original = false; state.step = index; stopPlaying(); renderStep(); }
+    }); ranked.append(button);
+  }
+  if (ranked.children.length) ranked.prepend(node('p', '', 'مواضع مرتبطة بالدليل، وليست إثباتاً لسبب الخطأ.'));
   $('diagnosis-badge').textContent = supported ? 'موضع مدعوم بالتنفيذ' : 'شاهد مؤكد · افحص التتبع';
   $('diagnosis-text').textContent = supported ? observation.text : 'وجدنا مدخلاً يكشف فشل الحل، لكن لا يوجد دليل كافٍ لتحديد سبب منطقي بعينه في هذا الكود.';
   $('diagnosis-direction').textContent = supported ? (result.hints.find(h => h.tier === 'H4')?.text || 'افتح الحدث وافحص القيم المسجلة.') : 'قارن المتوقع بالناتج وتابع المتغيرات خطوة بخطوة. آخر سطر منفذ ليس بالضرورة سبب الخطأ.';

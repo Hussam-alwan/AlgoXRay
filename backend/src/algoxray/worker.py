@@ -89,7 +89,7 @@ def execute(code, filename, request):
             normalized = encode_output(value)
         result = {"status": "ok", "output": normalized}
     except UnsupportedOutput as exc:
-        result = {"status": "ok", "output": {"invalid_output_type": str(exc)}}
+        result = {"status": "contract_violation", "message": str(exc)}
     except ExecutionDeadline:
         result = {"status": "timeout", "exception_type": "ExecutionDeadline"}
     except MissingSolve as exc:

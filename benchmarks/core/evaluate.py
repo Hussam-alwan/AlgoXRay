@@ -32,7 +32,8 @@ def write(path, data):
 def code_identity():
     patterns = ["backend/src/algoxray/*.py", "backend/pyproject.toml", "requirements.lock.txt",
                 "web/*.html", "web/static/**/*.js", "web/static/**/*.css", "contracts/*.json",
-                "fixtures/catalog.json", "fixtures/**/*.py", "benchmarks/core/protocol.json", "benchmarks/core/evaluate.py"]
+                "fixtures/catalog.json", "fixtures/**/*.py", "benchmarks/core/protocol.json", "benchmarks/core/evaluate.py", "benchmarks/core/manifest.json",
+                "benchmarks/core/submissions/*.py"]
     files = {p.relative_to(ROOT).as_posix(): digest(p.read_bytes()) for pattern in patterns for p in ROOT.glob(pattern)}
     return files, digest(json.dumps(files, sort_keys=True, separators=(",", ":")).encode())
 

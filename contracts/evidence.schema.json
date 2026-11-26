@@ -148,6 +148,16 @@
           },
           "locals": {
             "type": "object"
+          },
+          "frame_id": {
+            "type": "string",
+            "pattern": "^F[0-9]+$"
+          },
+          "parent_frame_id": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         }
       }
@@ -236,6 +246,50 @@
     },
     "attempts": {
       "type": "array"
+    },
+    "evidence_revision": {
+      "type": "string"
+    },
+    "ranked_observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "line",
+          "event_ids",
+          "basis",
+          "causal_fault_proven"
+        ],
+        "properties": {
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "basis": {
+            "const": "verified_observation"
+          },
+          "causal_fault_proven": {
+            "const": false
+          }
+        }
+      }
+    },
+    "explanation_cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "text",
+          "event_ids"
+        ]
+      }
     }
   },
   "allOf": [

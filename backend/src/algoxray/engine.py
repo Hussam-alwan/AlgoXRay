@@ -20,6 +20,7 @@ from .reduction import smaller_cases as _smaller_cases
 from .hints import build_hints
 from .localization import rank_observations
 from .claim_verifier import verify_claim_links
+from .explanation import explanation_cards
 from .paths import RESULTS
 from .problems import (PROBLEMS, OracleDisagreement, check_output, complexity,
                        reference, size, validate_case)
@@ -205,26 +206,32 @@ def analyze(submission, options=None, case=None, persist=True):
         trace = {"events": [], "trace_status": "not_run"}
         replay_matches = 0
         replay_started = time.perf_counter()
-        if best:
-            for _ in range(options.replay_count):
-                repeated = runner.run(best["case"])
-                stats["replay_solver_calls"] += 1
-                repeated_failure = repeated["status"] if repeated["status"] != "ok" else check_output(problem_id, best["case"], repeated.get("output"), best["expected"])
-                replay_matches += _fingerprint(repeated, repeated_failure) == best["fingerprint"]
-            stats["replay_ms"] = round((time.perf_counter() - replay_started) * 1000, 4)
-            if replay_matches != options.replay_count:
-                best = None
-                stop_reason = "unstable_replay"
-            else:
-                status = "witness_found"
-                if options.include_trace:
-                    trace_started = time.perf_counter()
-                    trace = runner.run(best["case"], trace=True, trace_limit=options.trace_limit)
-                    stats["trace_solver_calls"] += 1
-                    stats["trace_ms"] = round((time.perf_counter() - trace_started) * 1000, 4)
-                    traced_failure = trace["status"] if trace["status"] != "ok" else check_output(problem_id, best["case"], trace.get("output"), best["expected"])
-                    if _fingerprint(trace, traced_failure) != best["fingerprint"]:
-                        trace = {"events": [], "trace_status": "failed"}
+        try:
+            if best:
+                for _ in range(options.replay_count):
+                    repeated = runner.run(best["case"])
+                    stats["replay_solver_calls"] += 1
+                    repeated_failure = repeated["status"] if repeated["status"] != "ok" else check_output(problem_id, best["case"], repeated.get("output"), best["expected"])
+                    replay_matches += _fingerprint(repeated, repeated_failure) == best["fingerprint"]
+                stats["replay_ms"] = round((time.perf_counter() - replay_started) * 1000, 4)
+                if replay_matches != options.replay_count:
+                    best = None
+                    stop_reason = "unstable_replay"
+                else:
+                    status = "witness_found"
+                    if options.include_trace:
+                        trace_started = time.perf_counter()
+                        trace = runner.run(best["case"], trace=True, trace_limit=options.trace_limit)
+                        stats["trace_solver_calls"] += 1
+                        stats["trace_ms"] = round((time.perf_counter() - trace_started) * 1000, 4)
+                        traced_failure = trace["status"] if trace["status"] != "ok" else check_output(problem_id, best["case"], trace.get("output"), best["expected"])
+                        if _fingerprint(trace, traced_failure) != best["fingerprint"]:
+                            trace = {"events": [], "trace_status": "failed"}
+        except InvalidSubmission as exc:
+            best = None
+            status, error = "invalid_submission", str(exc)
+            trace = {"events": [], "trace_status": "failed"}
+            stop_reason = "verification_infrastructure_failure"
         stats.setdefault("replay_ms", 0.0)
         stats.setdefault("trace_ms", 0.0)
         stats.update({"total_solver_calls": runner.calls, "worker_startups": runner.startups,
@@ -270,6 +277,8 @@ def analyze(submission, options=None, case=None, persist=True):
                            "trace_roles": observation.get("trace_roles") if observation else None}
     verify_claim_links(bundle)
     bundle['ranked_observations'] = rank_observations(bundle)
+    bundle['explanation_cards'] = explanation_cards(bundle)
+    bundle['evidence_revision'] = 'option-b.1'
     validate_bundle(bundle)
     if persist:
         directory = RESULTS / "runs" / run_id
