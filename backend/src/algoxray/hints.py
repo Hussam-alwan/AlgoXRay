@@ -1,6 +1,7 @@
 """Source-hash-gated adapters; generic mismatch evidence always remains separate."""
 from .problems import PROBLEMS
 from .diagnostics import custom_observation
+from .diagnostic_v3 import new_observation
 
 
 def build_hints(bundle, submission):
@@ -73,6 +74,10 @@ def build_hints(bundle, submission):
         observation = custom_observation(bundle, submission)
         if observation:
             _append_observation(claims, hints, observation)
+    if len(claims)==1:
+        observation=new_observation(bundle,submission.source)
+        if observation:
+            _append_observation(claims,hints,observation)
     return claims, hints
 
 

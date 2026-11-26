@@ -19,6 +19,10 @@ def semantic_observation_valid(bundle, claim):
     rule = claim.get("adapter_id")
     case = bundle["case"]
     actual = bundle["observed_output"]
+    if rule in {"graph_unattainable_cost_v3","subarray_restricted_candidates_v3"} and len(linked)==1:
+        from .diagnostic_v3 import new_observation
+        candidate=new_observation(bundle,bundle["submission"]["source"])
+        return bool(candidate and candidate["adapter_id"]==rule and candidate["event_ids"]==claim["event_ids"] and candidate["source_lines"]==claim["source_lines"] and candidate["text"]==claim["text"])
     if rule in {"graph_relaxation_invariant_v1","subarray_attainability_invariant_v1"} and len(linked)==1:
         from .invariants import invariant_observation
         candidate=invariant_observation(bundle)

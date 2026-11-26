@@ -95,7 +95,7 @@ def validate_bundle(bundle):
         verify = bundle["verification"]
         if not verify["input_valid"] or verify["replay_matches"] != verify["replay_attempts"] or verify["replay_attempts"] < 2:
             raise ValueError("Unverified witness")
-    if bundle.get("evidence_revision") in {"option-b.1","option-b.2"}:
+    if bundle.get("evidence_revision") in {"option-b.1","option-b.2","option-b.3"}:
         line_count = len(bundle["submission"]["source"].splitlines())
         if any(type(e.get("line")) is not int or not 1 <= e["line"] <= line_count for e in bundle["events"]):
             raise ValueError("Trace refers to a missing source line")
@@ -104,7 +104,7 @@ def validate_bundle(bundle):
             raise ValueError("Ranked observations differ from verified claim references")
         if bundle.get("explanation_cards") != explanation_cards(bundle):
             raise ValueError("Explanation cards differ from verified claims")
-    if bundle.get("evidence_revision") == "option-b.2":
+    if bundle.get("evidence_revision") in {"option-b.2","option-b.3"}:
         verify_published_claims(bundle)
         samples = bundle.get("diagnostic_samples",[])
         if len(samples)>5:
@@ -351,6 +351,7 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
     bundle["manual_check"] = manual_check if status != "cancelled" else None
     bundle["witness_explanation"] = (spec.certificate(best["case"], best["result"]["output"], best["expected"])
                                      if best and best["failure"] == "wrong_answer" else None)
+    bundle["evidence_revision"] = "option-b.3"
     bundle["claims"], bundle["hints"] = build_hints(bundle, submission)
     abstain_on_unsupported(bundle)
     if any(c["kind"] == "source_specific_observation" for c in bundle["claims"]):
@@ -368,7 +369,7 @@ def analyze(submission, options=None, case=None, persist=True, cancel=None):
     bundle['diagnostic_samples'] = diagnostic_samples if best else []
     bundle['suspicion_ranking'] = rank_spectrum(bundle['diagnostic_samples'],bundle['events'])
     bundle['dynamic_dependencies'] = dynamic_dependencies(submission.source,bundle['events']) if bundle['trace_status']=='complete' else []
-    bundle['evidence_revision'] = 'option-b.2'
+    bundle['evidence_revision'] = 'option-b.3'
     validate_bundle(bundle)
     if persist:
         directory = RESULTS / "runs" / run_id
