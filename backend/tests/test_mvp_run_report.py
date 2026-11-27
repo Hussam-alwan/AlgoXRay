@@ -61,3 +61,22 @@ def test_call_budget_checked_before_launch():
     with pytest.raises(BudgetExhausted,match="physical_execution_budget_exhausted"):
         ledger.execute(fake,"student",CORRECT,"3\n")
     assert len(ledger.workers)==1
+
+
+def test_worker_start_failure_and_execution_timeout_are_distinct_in_report():
+    from algoxray.v4_observation import benchmark_source
+
+    results = iter((
+        {"status": "infrastructure_error", "detail": "benchmark_worker_startup_timeout", "cleanup_confirmed": True},
+        {"status": "timeout", "basis": "host_benchmark_wall_clock", "startup_ms": 120, "cleanup_confirmed": True},
+    ))
+    result = benchmark_source(CORRECT, [{"size": None, "case": None, "stdin": "2\n"}], repeats=2,
+                              run=lambda *args, **kwargs: next(results))
+    first, second = result["run_report"]["workers"]
+    assert first["status"] == "infrastructure_error" and first["detail"] == "benchmark_worker_startup_timeout"
+    assert "timeout_basis" not in first and "startup_ms" not in first
+    assert second["status"] == "timeout" and second["timeout_basis"] == "host_benchmark_wall_clock"
+    assert second["startup_ms"] == 120 and second["cleanup_confirmed"] is True
+    point = result["points"][0]
+    assert point["summary"]["timeouts"] == 1 and point["summary"]["wall_ns"] is None
+    assert point["correctness"] == "not_evaluated_or_inconclusive"

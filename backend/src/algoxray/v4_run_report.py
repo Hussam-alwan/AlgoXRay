@@ -51,6 +51,12 @@ class RunLedger:
             r=run(source,stdin,**kwargs)
             row.update(status=r.get("status","unknown"),cleanup_confirmed=r.get("cleanup_confirmed"),
                        image_id=r.get("image_id"),host_elapsed_ms=r.get("elapsed_ms"))
+            if type(r.get("detail")) is str:
+                row["detail"]=r["detail"]
+            if row["status"]=="timeout" and type(r.get("basis")) is str:
+                row["timeout_basis"]=r["basis"]
+            if type(r.get("startup_ms")) in (int,float):
+                row["startup_ms"]=r["startup_ms"]
             return r
         except Exception:
             row["status"]="worker_call_failed";raise

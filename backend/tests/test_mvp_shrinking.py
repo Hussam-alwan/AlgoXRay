@@ -54,3 +54,55 @@ def test_wrong_answer_does_not_shrink_to_exception():
     r=analyze_package(P,"bad",case={"n":3,"a":[7,7,7]},reduce_calls=32,run=run)
     assert r["status"]=="observed_mismatch" and r["kind"]=="wrong_answer"
     assert r["witness"]["case"]["n"]==3
+
+
+def test_repeat_shrink_keeps_required_preceding_case():
+    manifest = {
+        "schema_version": 2, "id": "preceding_case", "title": "Echo cases",
+        "statement": "Read T numbers and echo each one.",
+        "fields": [{"name": "n", "kind": "int", "min": 0, "max": 9}],
+        "lines": [["n"]], "output": "tokens", "repeat": {"min": 1, "max": 5},
+    }
+    package = {
+        "manifest": manifest, "reference": "ref",
+        "controls": [
+            {"case": {"t": 1, "cases": [{"n": 7}]}, "expected": "7"},
+            {"case": {"t": 1, "cases": [{"n": 9}]}, "expected": "9"},
+        ],
+    }
+    original = {"t": 5, "cases": [{"n": n} for n in (3, 9, 7, 4, 5)]}
+
+    def run(source, stdin, trace_limit):
+        count, *values = map(int, stdin.split())
+        assert count == len(values)
+        output = values.copy()
+        if source == "bad":
+            for index, (before, current) in enumerate(zip(values, values[1:]), start=1):
+                if (before, current) == (9, 7):
+                    output[index] = 0
+        return {"status": "ok", "stdout": "\n".join(map(str, output)), "events": []}
+
+    result = analyze_package(package, "bad", case=original, reduce_calls=32, run=run)
+    assert result["status"] == "observed_mismatch" and result["kind"] == "wrong_answer"
+    assert result["original_case"] == original
+    assert result["witness"]["case"] == {"t": 2, "cases": [{"n": 9}, {"n": 7}]}
+    reduction = result["reduction"]
+    assert reduction["original_replay_count"] == reduction["reduced_replay_count"] == 3
+    assert all(serialize(manifest, step["case"]) == step["stdin"] for step in reduction["accepted"])
+
+
+def test_shrinking_ends_with_best_verified_case_when_probe_budget_runs_out():
+    original = {"n": 8, "a": [0, 0, 0, 7, 7, 7, 0, 0]}
+
+    def run(source, stdin, trace_limit):
+        n, *values = map(int, stdin.split())
+        assert n == len(values)
+        total = sum(values) - (source == "bad" and values.count(7) >= 3)
+        return {"status": "ok", "stdout": str(total), "events": []}
+
+    result = analyze_package(P, "bad", case=original, reduce_calls=3, run=run)
+    reduction = result["reduction"]
+    assert result["status"] == "observed_mismatch"
+    assert reduction["stop_reason"] == "budget_exhausted" and reduction["probes"] == 3
+    assert 3 <= result["witness"]["case"]["n"] < original["n"]
+    assert reduction["reduced_replay_count"] == 3

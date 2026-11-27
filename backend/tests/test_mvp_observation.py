@@ -67,6 +67,50 @@ def test_bad_sizes_and_timeout_retention():
     r=benchmark_source("good",inputs,repeats=3,size_field="n",run=fake,cancel=cancel)
     assert r["stop_reason"]=="cancelled" and r["physical_executions"]==0
 
+
+def test_scaling_either_matrix_dimension_preserves_the_other_bound():
+    matrix = {
+        "id": "scale_matrix", "title": "Matrix scaling", "statement": "Read an r by c matrix.",
+        "fields": [
+            {"name": "r", "kind": "int", "min": 1, "max": 4},
+            {"name": "c", "kind": "int", "min": 1, "max": 4},
+            {"name": "a", "kind": "matrix", "min": 0, "max": 9, "rows_from": "r", "cols_from": "c"},
+        ],
+        "lines": [["r", "c"], ["a"]], "output": "tokens",
+    }
+    for dimension, other in (("r", "c"), ("c", "r")):
+        manifest = {**matrix, "fields": [
+            {**field, "min": 2, "max": 2} if field["name"] == other else field
+            for field in matrix["fields"]
+        ]}
+        points = generated_size_inputs(manifest, dimension, [1, 2, 4], 2026)
+        assert [p["case"][dimension] for p in points] == [1, 2, 4]
+        for p in points:
+            case = p["case"]
+            assert case[other] == 2 and p["stdin"] == serialize(manifest, case)
+            assert len(case["a"]) == case["r"] and all(len(row) == case["c"] for row in case["a"])
+
+
+def test_growth_abstains_for_narrow_range_and_unstable_measurements():
+    narrow = generated_size_inputs(M, "n", [4, 5, 6], 2026)
+    result = benchmark_source("good", narrow, repeats=3, package=P, size_field="n", run=fake)
+    assert result["growth"]["status"] == "insufficient_size_range"
+
+    sizes = generated_size_inputs(M, "n", [4, 8, 16], 2026)
+    calls = 0
+
+    def noisy(source, stdin, **kwargs):
+        nonlocal calls
+        measurement = fake(source, stdin, **kwargs)
+        calls += 1
+        if calls % 3 == 0:
+            measurement["profile"]["execution_wall_ns"] *= 3
+        return measurement
+
+    result = benchmark_source("good", sizes, repeats=3, size_field="n", run=noisy)
+    assert result["growth"]["status"] == "incomplete_noisy_or_incorrect"
+    assert all(len(p["runs"]) == p["summary"]["completed"] == 3 for p in result["points"])
+
 def test_manual_api_requires_review(monkeypatch):
     from fastapi import FastAPI
     from fastapi.testclient import TestClient
