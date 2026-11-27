@@ -157,14 +157,19 @@ def equal(m,a,b):
     except (ValueError,InvalidOperation):return False
 
 def validate_package(p):
-    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt","provenance","intake"}: raise ValueError("Expected manifest,reference,controls")
+    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt","provenance","intake","checker"}: raise ValueError("Expected manifest,reference,controls")
     m=validate_manifest(p["manifest"])
+    if "checker" in p:
+        from .v4_checker import validate_checker,semantic_answer
+        validate_checker(m,p["checker"])
     if type(p["reference"]) is not str or not 1<=len(p["reference"].encode())<=MAX_SOURCE: raise ValueError("Invalid reference")
     if "reference_alt" in p and (type(p["reference_alt"]) is not str or not 1<=len(p["reference_alt"].encode())<=MAX_SOURCE or p["reference_alt"]==p["reference"]):raise ValueError("Alternative reference must be distinct and bounded")
     if type(p["controls"]) is not list or not 2<=len(p["controls"])<=8: raise ValueError("Supply 2–8 independently known controls")
     for c in p["controls"]:
         if type(c) is not dict or set(c)!={"case","expected"} or type(c["expected"]) is not str or len(c["expected"])>8192: raise ValueError("Invalid control")
         serialize(m,c["case"])
+        if "checker" in p and semantic_answer(m,p["checker"],c["case"],c["expected"])["status"]!="accepted":
+            raise ValueError("Control violates semantic checker")
     if len({digest(c["case"]) for c in p["controls"]})!=len(p["controls"]): raise ValueError("Duplicate controls")
     if "intake" in p:
         from .v4_intake import validate_intake

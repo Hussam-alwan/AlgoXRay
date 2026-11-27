@@ -3,6 +3,7 @@ import time
 from .v4_contracts import validate_package,serialize,generate,smaller,equal,digest,complexity
 from .v4_isolation import execute_stdio
 from .v4_shrinking import failure_signature
+from .v4_checker import judge_output
 from .v4_graph import observed_graph
 from .v4_profiling import attach_profile
 from .v4_loop_observations import with_loops
@@ -12,24 +13,29 @@ from .v4_cfg import output_chain
 from .v4_guidance import hypothesis_cases,suggestions,classify_probe
 from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_facts,ProviderError,bounded_propose
 
-def oracle(p,stdin,run,trace_limit=0):
+def oracle(p,stdin,run,trace_limit=0,*,case=None):
     first=run(p["reference"],stdin,trace_limit)
     if first["status"]!="ok":return first
+    if "checker" in p:
+        judgment=judge_output(p,case,first.get("stdout"),first.get("stdout"))
+        if judgment["status"]!="accepted":
+            return {"status":"oracle_disagreement","primary":first,"judgment":judgment}
+        first={**first,"judgment":judgment}
     for c in p["controls"]:
-        if serialize(p["manifest"],c["case"])==stdin and not equal(p["manifest"],first["stdout"],c["expected"]):
+        if serialize(p["manifest"],c["case"])==stdin and judge_output(p,c["case"],first.get("stdout"),c["expected"])["status"]!="accepted":
             return {"status":"oracle_disagreement","primary":first,"known_expected":c["expected"]}
     if "reference_alt" not in p:return first
     second=run(p["reference_alt"],stdin,0)
     if second["status"]=="cancelled":return second
-    if second["status"]!="ok" or not equal(p["manifest"],first["stdout"],second["stdout"]):
+    if second["status"]!="ok" or judge_output(p,case,second.get("stdout"),first.get("stdout"))["status"]!="accepted":
         return {"status":"oracle_disagreement","primary":first,"alternative":second}
     return {**first,"alternative_agreed":True}
 
 def review(p,run=execute_stdio):
     validate_package(p);m=p["manifest"];checks=[]
     for c in p["controls"]:
-        r=oracle(p,serialize(m,c["case"]),lambda src,stdin,limit:run(src,stdin,trace_limit=limit))
-        checks.append({"case":c["case"],"status":r["status"],"matches":r["status"]=="ok" and equal(m,r["stdout"],c["expected"])})
+        r=oracle(p,serialize(m,c["case"]),lambda src,stdin,limit:run(src,stdin,trace_limit=limit),case=c["case"])
+        checks.append({"case":c["case"],"status":r["status"],"matches":r["status"]=="ok" and judge_output(p,c["case"],r["stdout"],c["expected"])["status"]=="accepted"})
     return {"passed":all(x["matches"] for x in checks),"checks":checks,"limitation":"Finite owner-supplied controls, not proof of reference correctness."}
 
 def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provider=None,run=execute_stdio,cancel=None,generator="boundary_random",guided=False,spectrum=False):
@@ -48,16 +54,19 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provide
         attempts+=1
         stdin=serialize(m,c)
         if cancel is not None and cancel.is_set():return {"kind":"cancelled","case":c,"stdin":stdin}
-        ref=oracle(p,stdin,invoke,trace_limit)
+        ref=oracle(p,stdin,invoke,trace_limit,case=c)
         if ref["status"]=="cancelled":return {"kind":"cancelled","case":c,"stdin":stdin}
         if ref["status"]!="ok": return {"kind":"oracle_unavailable","case":c,"stdin":stdin,"reference":ref}
         actual=invoke(source,stdin,trace_limit)
         status=actual["status"]
+        judgment=None
         if status=="cancelled":kind="cancelled"
-        elif status=="ok": kind="match" if equal(m,actual["stdout"],ref["stdout"]) else "wrong_answer"
+        elif status=="ok":
+            judgment=judge_output(p,c,actual.get("stdout"),ref.get("stdout"))
+            kind={"accepted":"match","rejected":"wrong_answer","unavailable":"oracle_unavailable"}[judgment["status"]]
         elif status=="exception": kind="exception"
         else: kind="inconclusive"
-        return {"kind":kind,"case":c,"stdin":stdin,"student":actual,"reference":ref}
+        return {"kind":kind,"case":c,"stdin":stdin,"student":actual,"reference":ref,"judgment":judgment}
     cases=[case] if case is not None else [c["case"] for c in p["controls"]]+list(hypothesis_cases(m,seed,count) if generator=="hypothesis" else generate(m,seed,count))
     seen=set();found=None;inconclusive=0
     for c in cases:

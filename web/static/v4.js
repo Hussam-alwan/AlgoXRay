@@ -11,7 +11,7 @@ async function refreshModels(){const h=await api("/api/v4/health");msg("health",
 $("refresh-models").onclick=()=>refreshModels().catch(e=>msg("health",e.message));
 $("model").onchange=()=>{$("cloud-consent").checked=false;refreshModels().catch(e=>msg("health",e.message))};
 
-function setBusy(value){busy=value;for(const id of ["observe-run","plain-benchmark","scaling-benchmark","manual-stdin","manual-expected","sample-reviewed","sample-comparison","size-field","size-values","timing-repetitions","timing-seconds","prepare-statement","statement","statement-kind","manual-samples","draft-schema","problem-url","approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
+function setBusy(value){busy=value;for(const id of ["candidate","patch-reviewed","package","reviewed","trusted","packages","demo","generator","guided","spectrum","count","reduce-count","observe-run","plain-benchmark","scaling-benchmark","manual-stdin","manual-expected","sample-reviewed","sample-comparison","size-field","size-values","timing-repetitions","timing-seconds","prepare-statement","statement","statement-kind","manual-samples","draft-schema","problem-url","approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
 async function packages(selected){const p=await api("/api/v4/packages");$("packages").replaceChildren();for(const x of p){const opt=document.createElement("option");opt.value=x.key;opt.textContent=x.manifest.title+" · "+x.key.slice(0,8);$("packages").append(opt)}if(selected)$("packages").value=selected;}
 function loadDemo(){activeIntake=null;preparedStatement=null;$("intake-review").hidden=true;$("manual-samples").value="";activeDemo=$("demo").value;const d=demos[activeDemo];if(!d)return;$("package").value=JSON.stringify(d.package,null,2);$("statement").value=d.package.manifest.statement;$("source").value=d.mutant;$("reviewed").checked=false;$("trusted").checked=false;msg("approval","مسودة مثال؛ يجب المراجعة قبل الاعتماد.");}
 $("load").onclick=loadDemo;
@@ -47,11 +47,11 @@ function show(){
  const w=result.witness;const manual=result.status==="manual_observation";
  $("results").hidden=false;$("benchmark-results").hidden=true;
  $("reference").disabled=manual;$("cmp-reference").closest("div").hidden=manual;
- $("expected").previousElementSibling.textContent=manual?"خرج عينة معلوم (إن روجع)":"المرجع";
+ $("expected").previousElementSibling.textContent=manual?"خرج عينة معلوم (إن روجع)":w.judgment?.reference_output_is_example?"مثال خرج مقبول (ليس الوحيد)":"المرجع";
  $("actual").previousElementSibling.textContent=manual?"خرج البرنامج":"الطالب";
  msg("stdin",w.stdin);msg("expected",manual?(result.judgment.expected??"لا يوجد مرجع متحقق"):w.reference.stdout);msg("actual",w.student.stdout||w.student.detail||w.student.status);
  if(manual)msg("result-title","ملاحظة تنفيذ مستقل — "+result.kind+" · "+result.judgment.status);
- msg("scope",result.scope+" | replay: "+result.replay_count+" | trace: "+w.student.trace_status+" | AI: "+result.ai_status+" · "+(result.ai_model||""));
+ msg("scope",result.scope+(w.judgment?" | "+JSON.stringify(w.judgment):"")+" | replay: "+result.replay_count+" | trace: "+w.student.trace_status+" | AI: "+result.ai_status+" · "+(result.ai_model||""));
  const reduction=result.reduction;
  $("reduction-panel").hidden=!reduction;
  if(reduction){
@@ -222,9 +222,21 @@ for(const kind of ["pointerup","pointercancel","lostpointercapture"])$("graph").
 $("student").onclick=()=>{side="student";index=0;profileSelection=null;render()};$("reference").onclick=()=>{side="reference";index=0;profileSelection=null;render()};$("prev").onclick=()=>{index--;render()};$("next").onclick=()=>{index++;render()};$("slider").oninput=()=>{index=Number($("slider").value);render()};$("export").onclick=()=>{if(!result)return;const u=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download="algoxray-v4-evidence.json";a.click();URL.revokeObjectURL(u)};
 (async()=>{try{token=(await api("/api/session")).custom_code_token;await refreshModels();demos=await (await fetch("/static/v4-demos.json")).json();loadDemo();await packages()}catch(e){msg("health",e.message)}})();
 
-function repairBody(){return {package_key:result.package_sha256,source:result.student_source,case:result.witness.case}}
+function repairBody(){return {package_key:result.package_sha256,source:result.student_source,case:result.witness.case,original_case:result.original_case||null}}
 $("propose").onclick=async()=>{if(busy||!result)return;setBusy(true);msg("patch-status","Generating a proposal using the selected model...");try{const r=await api("/api/v4/repair/propose",{...repairBody(),...aiOptions()});$("candidate").value=r.candidate;$("patch-reviewed").checked=false;msg("patch-status",r.status+" — "+r.rationale);msg("patch-diff",r.diff||"")}catch(e){msg("patch-status",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};
-$("verify-patch").onclick=async()=>{if(busy||!result)return;setBusy(true);msg("patch-status","Testing candidate against witness and regression cases...");try{const r=await api("/api/v4/repair/verify",{...repairBody(),candidate:$("candidate").value,reviewed:$("patch-reviewed").checked});msg("patch-status",JSON.stringify(r,null,2));await refreshRepairs()}catch(e){msg("patch-status",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};
+$("verify-patch").onclick=async()=>{
+ if(busy||!result)return;
+ setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;
+ msg("patch-status","Testing candidate against original and reduced witnesses and regression cases...");
+ const candidate=$("candidate").value;
+ try{
+  const r=await api("/api/v4/repair/verify",{...repairBody(),candidate,reviewed:$("patch-reviewed").checked,analysis_id:analysisId});
+  if(r.analysis_id!==analysisId||candidate!==$("candidate").value)return;
+  msg("patch-status",JSON.stringify(r,null,2));await refreshRepairs()
+ }catch(e){msg("patch-status",e.message)}
+ finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}
+};
+$("candidate").addEventListener("input",()=>{$("patch-reviewed").checked=false;msg("patch-status","");msg("patch-diff","")});
 
 async function refreshRepairs(){
  if(!result)return;

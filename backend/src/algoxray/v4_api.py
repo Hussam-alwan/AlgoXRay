@@ -13,6 +13,7 @@ from .v4_groq import status as groq_status
 from .v4_authoring import import_problem,draft_reference
 from .v4_contracts import serialize,equal
 from .v4_engine import oracle
+from .v4_checker import judge_output
 from .v4_isolation import execute_stdio
 from .v4_graph import observed_graph
 from .v4_profiling import attach_profile
@@ -52,6 +53,8 @@ class Repair(BaseModel):
     package_key:str
     source:str=Field(min_length=1,max_length=32768)
     case:dict
+    original_case:dict|None=None
+    analysis_id:str|None=Field(default=None,pattern=r"^[a-f0-9]{32}$")
     candidate:str|None=Field(default=None,min_length=1,max_length=32768)
     reviewed:bool=False
     model:str="qwen2.5-coder:7b"
@@ -225,11 +228,18 @@ def router_for(require_loopback,token):
         guard(request)
         if not body.reviewed or body.candidate is None:raise HTTPException(403,"Review candidate before execution")
         if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
+        c=threading.Event()
+        if body.analysis_id:
+            with active_lock:active[body.analysis_id]=c
         try:
-            result=verify_repair(store.load(body.package_key),body.source,body.candidate,body.case)
-            return {**result,"history_key":repairs.save(body.package_key,body.source,body.candidate,result)}
+            result=verify_repair(store.load(body.package_key),body.source,body.candidate,body.case,
+                                 original_case=body.original_case,cancel=c)
+            return {**result,"history_key":repairs.save(body.package_key,body.source,body.candidate,result),"analysis_id":body.analysis_id}
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
-        finally:lock.release()
+        finally:
+            if body.analysis_id:
+                with active_lock:active.pop(body.analysis_id,None)
+            lock.release()
     def local_observation(body,request,action):
         guard(request)
         if not body.trusted_local_source:raise HTTPException(403,"Confirm local source review")
@@ -312,13 +322,14 @@ def router_for(require_loopback,token):
             stdin=serialize(p["manifest"],case)
             def run(src,stdin,limit):
                 return execute_stdio(src,stdin,trace_limit=limit,cancel=c)
-            ref=oracle(p,stdin,run,256)
+            ref=oracle(p,stdin,run,256,case=case)
             if ref["status"]=="cancelled":return {"status":"cancelled"}
             if ref["status"]!="ok":return {"status":"oracle_unavailable","reference":ref}
             student=run(body.source,stdin,256)
             if student["status"]=="cancelled":return {"status":"cancelled"}
-            matches=student["status"]=="ok" and equal(p["manifest"],student["stdout"],ref["stdout"])
-            witness=dict(case=case,stdin=stdin,student=student,reference=ref)
+            judgment=judge_output(p,case,student.get("stdout"),ref.get("stdout")) if student["status"]=="ok" else None
+            matches=judgment is not None and judgment["status"]=="accepted"
+            witness=dict(case=case,stdin=stdin,student=student,reference=ref,judgment=judgment,kind="wrong_answer" if judgment and judgment["status"]=="rejected" else "observation")
             diagnosis=diagnose_execution(p,body.source,witness,provider,cancel=c)
             if c.is_set():return {"status":"cancelled"}
             from .v4_localization import localize
@@ -326,7 +337,7 @@ def router_for(require_loopback,token):
             from .v4_cfg import output_chain
             student_graph["output_chain"]=output_chain(body.source,student,student_graph)
             progress=execution_diagnostics(body.source,student)
-            return dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "output_difference",
+            return dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "oracle_unavailable" if judgment and judgment["status"]=="unavailable" else "output_difference",
                 package_sha256=body.package_key,student_source=body.source,reference_source=p["reference"],
                 witness=witness,replay_count=0,attempts=1,
                 student_graph=student_graph,

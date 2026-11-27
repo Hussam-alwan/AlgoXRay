@@ -115,6 +115,7 @@ def empirical_exponent(points,repeats):
 def benchmark_source(source,inputs,*,repeats=3,seconds=1.0,seed=2026,package=None,
                      size_field=None,run=execute_stdio,cancel=None,total_seconds=90):
     from .v4_engine import oracle
+    from .v4_checker import judge_output
     if type(repeats) is not int or not 1<=repeats<=5:raise ValueError("Choose 1..5 repetitions")
     if type(inputs) is not list or not 1<=len(inputs)<=5:raise ValueError("Choose 1..5 inputs")
     for row in inputs:validate_text(source,row["stdin"])
@@ -130,7 +131,7 @@ def benchmark_source(source,inputs,*,repeats=3,seconds=1.0,seed=2026,package=Non
     for row in inputs:
         stop=stopped() or "completed"
         if stop!="completed":break
-        ref=oracle(package,row["stdin"],invoke) if package else None
+        ref=oracle(package,row["stdin"],invoke,case=row["case"]) if package else None
         expected=ref.get("stdout") if ref and ref["status"]=="ok" else None
         runs=[]
         for _ in range(repeats):
@@ -140,7 +141,8 @@ def benchmark_source(source,inputs,*,repeats=3,seconds=1.0,seed=2026,package=Non
             if result["status"]=="cancelled":
                 stop="cancelled";break
             valid=profile.get("method")=="uninstrumented_execution" and result["status"]=="ok"
-            match=equal(package["manifest"],result["stdout"],expected) if valid and expected is not None else None
+            judgment=judge_output(package,row["case"],result.get("stdout"),expected) if valid and expected is not None else None
+            match={"accepted":True,"rejected":False,"unavailable":None}[judgment["status"]] if judgment else None
             runs.append({"status":result["status"] if valid or result["status"]!="ok" else "measurement_unavailable",
                          "wall_ns":profile.get("execution_wall_ns") if valid else None,
                          "cpu_ns":profile.get("execution_cpu_ns") if valid else None,

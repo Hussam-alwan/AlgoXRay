@@ -223,6 +223,7 @@ def capabilities():
                   "list_flags":["sorted","unique"],"scalar_relation_ops":sorted(OPS),
                   "relations":"Earlier integer compared to later integer; conservative constructible intervals.",
                   "generation":["boundary_random","hypothesis"],"shrinking":"Validate every candidate."},
+            "semantic_checkers":[{"kind":"two_sum_indices","version":1,"scope":"Single body, two distinct indices summing to target or explicit no-solution token; owner review required."}],
             "unsupported":["nested repeats","cross-case aggregate constraints","arbitrary predicates",
-                           "graph/tree invariants","interactive problems","semantic output checkers"],
+                           "graph/tree invariants","interactive problems","arbitrary semantic checker code"],
             "review_required":True}

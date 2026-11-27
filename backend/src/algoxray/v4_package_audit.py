@@ -2,6 +2,7 @@
 import hashlib,itertools,time
 from .v4_contracts import validate_package,validate_case,serialize,digest,equal,dimension
 from .v4_engine import oracle
+from .v4_checker import judge_output
 from .v4_isolation import execute_stdio
 
 def small_cases(m,limit):
@@ -58,9 +59,9 @@ def audit_package(p,limit=16,run=execute_stdio):
         if key in seen:continue
         if len(checks)>=limit or time.monotonic()-start>45:timed_out=True;break
         seen.add(key);stdin=serialize(m,case)
-        result=oracle(p,stdin,lambda src,text,trace:run(src,text,trace_limit=trace))
+        result=oracle(p,stdin,lambda src,text,trace:run(src,text,trace_limit=trace),case=case)
         known=next((c["expected"] for c in p["controls"] if c["case"]==case),None)
-        match=result["status"]=="ok" and (known is None or equal(m,result["stdout"],known))
+        match=result["status"]=="ok" and (known is None or judge_output(p,case,result["stdout"],known)["status"]=="accepted")
         checks.append({"case":case,"status":result["status"],"agreed":match})
         if not match:break
     passed=bool(checks) and all(c["agreed"] for c in checks)

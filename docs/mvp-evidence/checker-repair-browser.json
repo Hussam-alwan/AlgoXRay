@@ -1,0 +1,336 @@
+{
+  "status": "passed",
+  "checks": [
+    "distinct_valid_reference_outputs_approved",
+    "different_valid_solution_not_accused",
+    "semantic_rejection_and_reduction",
+    "both_witnesses_and_suite_identity",
+    "candidate_edit_invalidates_old_repair"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Synthetic fixture, local Docker, simulated owner review. Not a benchmark.",
+  "original_case": {
+    "n": 4,
+    "k": 5,
+    "a": [
+      1,
+      4,
+      2,
+      3
+    ]
+  },
+  "reduced_case": {
+    "n": 2,
+    "k": 0,
+    "a": [
+      2,
+      3
+    ]
+  },
+  "judgment": {
+    "authority": "owner_reviewed_semantic_checker",
+    "policy": "two_sum_indices",
+    "version": 1,
+    "reference_output_is_example": true,
+    "status": "rejected",
+    "reason": "indices_not_distinct"
+  },
+  "repair": {
+    "version": 2,
+    "seed": 2027,
+    "package_sha256": "4a207c8b7241aa36ebe583b4fae84f7b9e01b572a4629461c17170fc0be9d1dd",
+    "original_sha256": "b616c0ffd4b13e29d7effe6b3621306465e7be873158d06c67684007c8491c7a",
+    "candidate_sha256": "12cfa559ff6cb82e1618d31f8c4c67c1886e65c5627620258d73053e3e2dad73",
+    "suite_sha256": "71237151a1cfef2e4848db140f9199d24e142ad333090617dea5731bbe184a70",
+    "suite_name": "witnesses_owner_controls_generated_regression",
+    "planned_cases": 7,
+    "witness_reproductions": [
+      {
+        "kind": "witness",
+        "case": {
+          "n": 2,
+          "k": 0,
+          "a": [
+            2,
+            3
+          ]
+        },
+        "status": "reproduced",
+        "failure_signature": {
+          "kind": "wrong_answer"
+        },
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "rejected",
+          "reason": "indices_not_distinct"
+        },
+        "expected": "NONE\n",
+        "actual": "1 1\n"
+      },
+      {
+        "kind": "original_witness",
+        "case": {
+          "n": 4,
+          "k": 5,
+          "a": [
+            1,
+            4,
+            2,
+            3
+          ]
+        },
+        "status": "reproduced",
+        "failure_signature": {
+          "kind": "wrong_answer"
+        },
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "rejected",
+          "reason": "indices_not_distinct"
+        },
+        "expected": "3 4\n",
+        "actual": "1 1\n"
+      }
+    ],
+    "scope": "Finite reviewed-reference regression cases; generated cases are not an independent research holdout. Original is unchanged.",
+    "status": "passed_named_tests",
+    "checks": [
+      {
+        "kind": "witness",
+        "case": {
+          "n": 2,
+          "k": 0,
+          "a": [
+            2,
+            3
+          ]
+        },
+        "labels": [
+          "witness"
+        ],
+        "status": "match",
+        "expected": "NONE\n",
+        "actual": "NONE\n",
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "accepted",
+          "reason": "no_pair_exists"
+        }
+      },
+      {
+        "kind": "original_witness",
+        "case": {
+          "n": 4,
+          "k": 5,
+          "a": [
+            1,
+            4,
+            2,
+            3
+          ]
+        },
+        "labels": [
+          "original_witness",
+          "owner_control"
+        ],
+        "status": "match",
+        "expected": "3 4\n",
+        "actual": "1 2\n",
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "accepted",
+          "reason": "valid_distinct_pair",
+          "indices": [
+            0,
+            1
+          ],
+          "values": [
+            1,
+            4
+          ],
+          "target": 5
+        }
+      },
+      {
+        "kind": "owner_control",
+        "case": {
+          "n": 2,
+          "k": 20,
+          "a": [
+            0,
+            1
+          ]
+        },
+        "labels": [
+          "owner_control"
+        ],
+        "status": "match",
+        "expected": "NONE\n",
+        "actual": "NONE\n",
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "accepted",
+          "reason": "no_pair_exists"
+        }
+      },
+      {
+        "kind": "generated_regression",
+        "case": {
+          "n": 2,
+          "k": 0,
+          "a": [
+            0,
+            0
+          ]
+        },
+        "labels": [
+          "generated_regression"
+        ],
+        "status": "match",
+        "expected": "1 2\n",
+        "actual": "1 2\n",
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "accepted",
+          "reason": "valid_distinct_pair",
+          "indices": [
+            0,
+            1
+          ],
+          "values": [
+            0,
+            0
+          ],
+          "target": 0
+        }
+      },
+      {
+        "kind": "generated_regression",
+        "case": {
+          "n": 6,
+          "k": 20,
+          "a": [
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ]
+        },
+        "labels": [
+          "generated_regression"
+        ],
+        "status": "match",
+        "expected": "NONE\n",
+        "actual": "NONE\n",
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "accepted",
+          "reason": "no_pair_exists"
+        }
+      },
+      {
+        "kind": "generated_regression",
+        "case": {
+          "n": 6,
+          "k": 0,
+          "a": [
+            9,
+            9,
+            9,
+            0,
+            9,
+            0
+          ]
+        },
+        "labels": [
+          "generated_regression"
+        ],
+        "status": "match",
+        "expected": "4 6\n",
+        "actual": "4 6\n",
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "accepted",
+          "reason": "valid_distinct_pair",
+          "indices": [
+            3,
+            5
+          ],
+          "values": [
+            0,
+            0
+          ],
+          "target": 0
+        }
+      },
+      {
+        "kind": "generated_regression",
+        "case": {
+          "n": 6,
+          "k": 20,
+          "a": [
+            9,
+            0,
+            2,
+            9,
+            9,
+            9
+          ]
+        },
+        "labels": [
+          "generated_regression"
+        ],
+        "status": "match",
+        "expected": "NONE\n",
+        "actual": "NONE\n",
+        "execution_status": "ok",
+        "judgment": {
+          "authority": "owner_reviewed_semantic_checker",
+          "policy": "two_sum_indices",
+          "version": 1,
+          "reference_output_is_example": true,
+          "status": "accepted",
+          "reason": "no_pair_exists"
+        }
+      }
+    ],
+    "executions": 23,
+    "history_key": "41f7037fc14b1c23ba30a366a9fa56d39047a7ff2f923397efa3c3b2a73f6ff6",
+    "analysis_id": "4a30db2bd43a4b7cbab34d09594b0537"
+  }
+}
