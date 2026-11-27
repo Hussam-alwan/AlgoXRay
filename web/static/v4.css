@@ -11,3 +11,5 @@ main{grid-template-columns:minmax(0,1fr)}.panel,#profiling{min-width:0}
 #execution-summary,#ai-state{line-height:1.7}
 
 #benchmark-chart{min-width:0;max-width:100%;overflow:hidden}#benchmark-chart svg{min-width:0;max-width:100%;height:auto}#benchmark-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}#benchmark-table th,#benchmark-table td{padding:8px;border-bottom:1px solid #40516a;white-space:nowrap}#size-field,#size-values{max-width:100%;background:#0b1220;color:#e2e8f0;border:1px solid #40516a;border-radius:7px;padding:7px}details{margin:12px 0}details summary{cursor:pointer;margin-bottom:8px}
+
+#ast-tree{max-height:440px;overflow:auto;direction:ltr;border:1px solid #40516a;border-radius:8px;padding:8px}#ast-tree ul{list-style:none;padding-left:14px;margin:2px 0;border-left:1px solid #40516a}#ast-tree li{margin:4px 0}#ast-tree details{margin:2px 0 2px 10px}#ast-tree summary{font-size:12px;color:#94a3b8;margin:0}.ast-node{max-width:100%;overflow-wrap:anywhere;text-align:left;padding:3px 7px;font:12px monospace}#localization-rows,#bounds-findings{max-height:420px;overflow:auto}

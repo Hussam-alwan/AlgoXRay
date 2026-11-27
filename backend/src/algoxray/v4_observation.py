@@ -47,13 +47,17 @@ def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
                     input_validity="not_verified_against_problem",general_correctness_claim=False)
     graph=with_loops(attach_profile(observed_graph(result.get("events",[]),source),result),source,result)
     graph["output_chain"]=output_chain(source,result,graph)
+    from .v4_localization import localize
+    progress=execution_diagnostics(source,result)
+    localization=localize(source,{"student":result},graph,diagnostics=progress)
+
     return {"status":"cancelled" if status=="cancelled" else "manual_observation",
             "kind":outcome,"judgment":judgment,"source_sha256":sha(source),"student_source":source,
             "mode":mode,"witness":{"stdin":stdin,"case":None,"student":result,
                      "reference":{"status":"not_run","stdout":"","events":[],"trace_status":"not_run"}},
             "reference_source":"","student_graph":graph,
             "reference_graph":observed_graph([],""),
-            "execution_diagnostics":execution_diagnostics(source,result),
+            "execution_diagnostics":progress,"evidence_localization":localization,
             "replay_count":0,"attempts":1,"ai_status":"disabled",
             "scope":"One manually supplied input; legality and general correctness not verified. No reference program ran. Sample comparison, if requested and reviewed, is an observation only."}
 

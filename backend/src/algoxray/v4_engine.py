@@ -168,7 +168,10 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provide
     student_graph=with_loops(attach_profile(observed_graph(student_events,source),witness["student"]),source,witness["student"]);reference_graph=with_loops(attach_profile(observed_graph(reference_events,p["reference"]),witness["reference"]),p["reference"],witness["reference"])
     student_graph["output_chain"]=output_chain(source,witness["student"],student_graph)
     reference_graph["output_chain"]=output_chain(p["reference"],witness["reference"],reference_graph)
+    from .v4_localization import localize
+    localization=localize(source,witness,student_graph,ranking)
+
     return {"status":"observed_mismatch","kind":witness["kind"],"package_sha256":digest(p),"original_case":original["case"],"original_witness":original,"reduction":reduction,"executions":executions,"witness":witness,
             "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":student_graph,"reference_graph":reference_graph,
-            **diagnosis,"generator":generator,"guidance":guidance,"suspiciousness":ranking,"elapsed_ms":round((time.monotonic()-start)*1000,2),
+            **diagnosis,"evidence_localization":localization,"generator":generator,"guidance":guidance,"suspiciousness":ranking,"elapsed_ms":round((time.monotonic()-start)*1000,2),
             "scope":"Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."}

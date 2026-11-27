@@ -41,7 +41,7 @@ $("cancel").onclick=async()=>{const id=analysisId;if(!id)return;for(let i=0;i<12
 function show(){
  $("repair-panel").hidden=result.status!=="observed_mismatch";
  msg("result-title",result.status==="profiled_execution"?"3. قياس تنفيذ واحد · "+result.kind:"3. الشاهد وأدلة التنفيذ");
- profileSelection=null;$("candidate").value="";$("patch-reviewed").checked=false;
+ profileSelection=null;$("ast-tree").dataset.sourceKey="";$("candidate").value="";$("patch-reviewed").checked=false;
  for(const id of ["patch-status","patch-diff","repair-history-view"])msg(id,"");
  if(result.package_sha256)refreshRepairs().catch(()=>{});
  const w=result.witness;const manual=result.status==="manual_observation";
@@ -60,7 +60,7 @@ function show(){
    msg("reduction-best",w.stdin);
    msg("reduction-evidence",JSON.stringify({signature:reduction.signature,accepted_steps:reduction.accepted.length,original_replays:reduction.original_replay_count||0,reduced_replays:reduction.reduced_replay_count,stop:reduction.stop_reason,scope:reduction.scope},null,2));
  }
- setupComparison();showRanking();render();showExecutionDiagnostics();showAI();
+ setupComparison();showRanking();render();showExecutionDiagnostics();showAI();showLocalization();
 }
 function jumpToEvidence(line,eventId,endLine=line){
  side="student";const events=result.witness.student.events||[];
@@ -211,7 +211,7 @@ function render(){
   b.onclick=()=>{const first=loop.body_event_ids?.[0]||loop.header_event_ids?.[0];const pos=events.findIndex(e=>e.event_id===first);if(pos>=0){index=pos;render()}};$("loops").append(b);
  }
  if(!$("loops").children.length)msg("loops","لا توجد حلقات مدعومة مرصودة في هذا الجزء من التتبع.");
- renderProfile();msg("output-chain",JSON.stringify(g.output_chain||{},null,2));msg("static-cfg",JSON.stringify(g.static_cfg||{},null,2));
+ renderProfile();msg("output-chain",JSON.stringify(g.output_chain||{},null,2));msg("static-cfg",JSON.stringify(g.static_cfg||{},null,2));renderAst(g,events);
 }
 for(const id of ["graph-frame","graph-kind","graph-layout"])$(id).onchange=()=>{if(result)render()};
 let graphDrag=null;
@@ -353,3 +353,67 @@ $("benchmark-export").onclick=()=>{
  const url=URL.createObjectURL(new Blob([JSON.stringify(benchmarkResult,null,2)],{type:"application/json"}));
  const a=document.createElement("a");a.href=url;a.download="algoxray-benchmark.json";a.click();URL.revokeObjectURL(url);
 };
+
+function showLocalization(){
+ const view=$("localization-rows"),bounds=$("bounds-findings");view.replaceChildren();bounds.replaceChildren();
+ const loc=result?.evidence_localization||{};
+ msg("localization-scope",loc.scope||"لا تتوفر أدلة كافية لترشيح موضع.");
+ const effect=loc.effect_site;
+ msg("effect-site",effect?"موضع ظهور الأثر: L"+effect.line+" · "+effect.kind:"لم يحدد موضع ظهور الأثر من اللقطات.");
+ for(const row of loc.ranked||[]){
+  const div=document.createElement("div");div.className="diagnostic-card";
+  const button=document.createElement("button");button.textContent="L"+row.line+" · "+row.score.toFixed(3)+" · suspected";
+  button.onclick=()=>jumpToEvidence(row.line,row.event_ids?.[0]);div.append(button);
+  for(const signal of row.signals){
+   const p=document.createElement("p");p.textContent=signal.kind+" (+"+signal.weight+"): "+signal.detail;div.append(p);
+  }view.append(div);
+ }
+ if(!view.children.length)msg("localization-rows","لا يوجد ترشيح مسند كافٍ؛ قد يكون الشرط أو الكود المفقود سبباً محتملاً.");
+ for(const finding of loc.loop_bounds||[]){
+  const div=document.createElement("div");div.className="diagnostic-card";
+  const b=document.createElement("button");b.textContent="L"+finding.line+" · "+finding.range_source;
+  b.onclick=()=>jumpToEvidence(finding.line,finding.header_event_id);div.append(b);
+  const p=document.createElement("p");p.textContent=finding.array+" length "+finding.array_length+
+   " · recorded read indices "+JSON.stringify(finding.observed_read_indices)+" · omitted "+JSON.stringify(finding.omitted_indices);div.append(p);
+  const h=document.createElement("p");h.textContent=finding.hypothesis;div.append(h);bounds.append(div);
+ }
+}
+function renderAst(g,events){
+ const tree=g.structure,view=$("ast-tree");
+ if(!tree){view.replaceChildren();msg("ast-scope","No source structure");return}
+ const key=side+":"+tree.source_sha256;
+ if(view.dataset.sourceKey===key)return;
+ view.dataset.sourceKey=key;view.replaceChildren();
+ msg("ast-scope",tree.status+" · "+tree.nodes.length+" nodes · "+tree.scope);
+ const children=new Map(),nodes=new Map();
+ for(const n of tree.nodes){
+  nodes.set(n.id,n);
+  const list=children.get(n.parent_id)||[];list.push(n);children.set(n.parent_id,list);
+ }
+ const eventLinks=tree.event_links||[];
+ function branch(parent){
+  const ul=document.createElement("ul");
+  for(const n of children.get(parent)||[]){
+   const li=document.createElement("li"),b=document.createElement("button");
+   b.type="button";b.className="ast-node";b.textContent=n.label+(n.source_span?" · L"+n.source_span.line+":"+n.source_span.column_utf8:"");
+   b.title=n.preview||n.kind;
+   if(n.source_span){
+    const link=eventLinks.find(e=>e.candidate_node_ids.includes(n.id));
+    b.onclick=()=>{
+     profileSelection={line:n.source_span.line,end_line:n.source_span.end_line};
+     if(link){const pos=events.findIndex(e=>e.event_id===link.event_id);if(pos>=0)index=pos}
+     render();$("code").scrollIntoView({block:"center"});
+     msg("ast-scope",tree.status+" · "+n.id+" · "+(link?link.association+" / "+link.event_id:"Static node; no recorded event association."));
+    };
+   }else b.disabled=true;
+   li.append(b);
+   if(children.has(n.id)){
+    const details=document.createElement("details"),summary=document.createElement("summary");
+    summary.textContent="children ("+children.get(n.id).length+")";details.open=n.depth<2;
+    details.append(summary,branch(n.id));li.append(details);
+   }ul.append(li);
+  }
+  return ul;
+ }
+ view.append(branch(null));
+}

@@ -1,0 +1,1163 @@
+{
+  "status": "passed",
+  "checks": [
+    "observed_bounds_and_effect_source_link",
+    "ast_to_recorded_source_event",
+    "ast_student_reference_source_identity",
+    "evidence_export",
+    "mobile_width"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Synthetic development fixture, not localization accuracy evaluation.",
+  "source": "n=int(input())\na=list(map(int,input().split()))\ntotal=0\nfor i in range(n-1):\n    total += a[i]\nprint(total)\n",
+  "witness": {
+    "n": 4,
+    "a": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "expected": "10\n",
+  "actual": "6\n",
+  "source_structure": {
+    "version": 1,
+    "language": "python",
+    "source_sha256": "31cabb2d15ff9b737326204b3f8d856a48b026e04c3cf403e53af0859782d7d8",
+    "status": "complete",
+    "nodes": [
+      {
+        "id": "N1",
+        "parent_id": null,
+        "field": "root",
+        "position": null,
+        "depth": 0,
+        "scope_id": "N1",
+        "kind": "Module",
+        "label": "Module",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N2",
+        "parent_id": "N1",
+        "field": "body",
+        "position": 0,
+        "depth": 1,
+        "scope_id": "N1",
+        "kind": "Assign",
+        "label": "Assign",
+        "category": "statement",
+        "source_span": {
+          "line": 1,
+          "column_utf8": 0,
+          "end_line": 1,
+          "end_column_utf8": 14
+        },
+        "preview": "n=int(input())"
+      },
+      {
+        "id": "N3",
+        "parent_id": "N2",
+        "field": "targets",
+        "position": 0,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name n",
+        "category": "expression",
+        "source_span": {
+          "line": 1,
+          "column_utf8": 0,
+          "end_line": 1,
+          "end_column_utf8": 1
+        },
+        "preview": "n"
+      },
+      {
+        "id": "N4",
+        "parent_id": "N3",
+        "field": "ctx",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Store",
+        "label": "Store",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N5",
+        "parent_id": "N2",
+        "field": "value",
+        "position": null,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 1,
+          "column_utf8": 2,
+          "end_line": 1,
+          "end_column_utf8": 14
+        },
+        "preview": "int(input())"
+      },
+      {
+        "id": "N6",
+        "parent_id": "N5",
+        "field": "func",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name int",
+        "category": "expression",
+        "source_span": {
+          "line": 1,
+          "column_utf8": 2,
+          "end_line": 1,
+          "end_column_utf8": 5
+        },
+        "preview": "int"
+      },
+      {
+        "id": "N7",
+        "parent_id": "N6",
+        "field": "ctx",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N8",
+        "parent_id": "N5",
+        "field": "args",
+        "position": 0,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 1,
+          "column_utf8": 6,
+          "end_line": 1,
+          "end_column_utf8": 13
+        },
+        "preview": "input()"
+      },
+      {
+        "id": "N9",
+        "parent_id": "N8",
+        "field": "func",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name input",
+        "category": "expression",
+        "source_span": {
+          "line": 1,
+          "column_utf8": 6,
+          "end_line": 1,
+          "end_column_utf8": 11
+        },
+        "preview": "input"
+      },
+      {
+        "id": "N10",
+        "parent_id": "N9",
+        "field": "ctx",
+        "position": null,
+        "depth": 5,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N11",
+        "parent_id": "N1",
+        "field": "body",
+        "position": 1,
+        "depth": 1,
+        "scope_id": "N1",
+        "kind": "Assign",
+        "label": "Assign",
+        "category": "statement",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 0,
+          "end_line": 2,
+          "end_column_utf8": 32
+        },
+        "preview": "a=list(map(int,input().split()))"
+      },
+      {
+        "id": "N12",
+        "parent_id": "N11",
+        "field": "targets",
+        "position": 0,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name a",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 0,
+          "end_line": 2,
+          "end_column_utf8": 1
+        },
+        "preview": "a"
+      },
+      {
+        "id": "N13",
+        "parent_id": "N12",
+        "field": "ctx",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Store",
+        "label": "Store",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N14",
+        "parent_id": "N11",
+        "field": "value",
+        "position": null,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 2,
+          "end_line": 2,
+          "end_column_utf8": 32
+        },
+        "preview": "list(map(int,input().split()))"
+      },
+      {
+        "id": "N15",
+        "parent_id": "N14",
+        "field": "func",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name list",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 2,
+          "end_line": 2,
+          "end_column_utf8": 6
+        },
+        "preview": "list"
+      },
+      {
+        "id": "N16",
+        "parent_id": "N15",
+        "field": "ctx",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N17",
+        "parent_id": "N14",
+        "field": "args",
+        "position": 0,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 7,
+          "end_line": 2,
+          "end_column_utf8": 31
+        },
+        "preview": "map(int,input().split())"
+      },
+      {
+        "id": "N18",
+        "parent_id": "N17",
+        "field": "func",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name map",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 7,
+          "end_line": 2,
+          "end_column_utf8": 10
+        },
+        "preview": "map"
+      },
+      {
+        "id": "N19",
+        "parent_id": "N18",
+        "field": "ctx",
+        "position": null,
+        "depth": 5,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N20",
+        "parent_id": "N17",
+        "field": "args",
+        "position": 0,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name int",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 11,
+          "end_line": 2,
+          "end_column_utf8": 14
+        },
+        "preview": "int"
+      },
+      {
+        "id": "N21",
+        "parent_id": "N20",
+        "field": "ctx",
+        "position": null,
+        "depth": 5,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N22",
+        "parent_id": "N17",
+        "field": "args",
+        "position": 1,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 15,
+          "end_line": 2,
+          "end_column_utf8": 30
+        },
+        "preview": "input().split()"
+      },
+      {
+        "id": "N23",
+        "parent_id": "N22",
+        "field": "func",
+        "position": null,
+        "depth": 5,
+        "scope_id": "N1",
+        "kind": "Attribute",
+        "label": "Attribute .split",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 15,
+          "end_line": 2,
+          "end_column_utf8": 28
+        },
+        "preview": "input().split"
+      },
+      {
+        "id": "N24",
+        "parent_id": "N23",
+        "field": "value",
+        "position": null,
+        "depth": 6,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 15,
+          "end_line": 2,
+          "end_column_utf8": 22
+        },
+        "preview": "input()"
+      },
+      {
+        "id": "N25",
+        "parent_id": "N24",
+        "field": "func",
+        "position": null,
+        "depth": 7,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name input",
+        "category": "expression",
+        "source_span": {
+          "line": 2,
+          "column_utf8": 15,
+          "end_line": 2,
+          "end_column_utf8": 20
+        },
+        "preview": "input"
+      },
+      {
+        "id": "N26",
+        "parent_id": "N25",
+        "field": "ctx",
+        "position": null,
+        "depth": 8,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N27",
+        "parent_id": "N23",
+        "field": "ctx",
+        "position": null,
+        "depth": 6,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N28",
+        "parent_id": "N1",
+        "field": "body",
+        "position": 2,
+        "depth": 1,
+        "scope_id": "N1",
+        "kind": "Assign",
+        "label": "Assign",
+        "category": "statement",
+        "source_span": {
+          "line": 3,
+          "column_utf8": 0,
+          "end_line": 3,
+          "end_column_utf8": 7
+        },
+        "preview": "total=0"
+      },
+      {
+        "id": "N29",
+        "parent_id": "N28",
+        "field": "targets",
+        "position": 0,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name total",
+        "category": "expression",
+        "source_span": {
+          "line": 3,
+          "column_utf8": 0,
+          "end_line": 3,
+          "end_column_utf8": 5
+        },
+        "preview": "total"
+      },
+      {
+        "id": "N30",
+        "parent_id": "N29",
+        "field": "ctx",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Store",
+        "label": "Store",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N31",
+        "parent_id": "N28",
+        "field": "value",
+        "position": null,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Constant",
+        "label": "Constant",
+        "category": "expression",
+        "source_span": {
+          "line": 3,
+          "column_utf8": 6,
+          "end_line": 3,
+          "end_column_utf8": 7
+        },
+        "preview": "0"
+      },
+      {
+        "id": "N32",
+        "parent_id": "N1",
+        "field": "body",
+        "position": 3,
+        "depth": 1,
+        "scope_id": "N1",
+        "kind": "For",
+        "label": "For",
+        "category": "statement",
+        "source_span": {
+          "line": 4,
+          "column_utf8": 0,
+          "end_line": 5,
+          "end_column_utf8": 17
+        }
+      },
+      {
+        "id": "N33",
+        "parent_id": "N32",
+        "field": "target",
+        "position": null,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name i",
+        "category": "expression",
+        "source_span": {
+          "line": 4,
+          "column_utf8": 4,
+          "end_line": 4,
+          "end_column_utf8": 5
+        },
+        "preview": "i"
+      },
+      {
+        "id": "N34",
+        "parent_id": "N33",
+        "field": "ctx",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Store",
+        "label": "Store",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N35",
+        "parent_id": "N32",
+        "field": "iter",
+        "position": null,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 4,
+          "column_utf8": 9,
+          "end_line": 4,
+          "end_column_utf8": 19
+        },
+        "preview": "range(n-1)"
+      },
+      {
+        "id": "N36",
+        "parent_id": "N35",
+        "field": "func",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name range",
+        "category": "expression",
+        "source_span": {
+          "line": 4,
+          "column_utf8": 9,
+          "end_line": 4,
+          "end_column_utf8": 14
+        },
+        "preview": "range"
+      },
+      {
+        "id": "N37",
+        "parent_id": "N36",
+        "field": "ctx",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N38",
+        "parent_id": "N35",
+        "field": "args",
+        "position": 0,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "BinOp",
+        "label": "BinOp",
+        "category": "expression",
+        "source_span": {
+          "line": 4,
+          "column_utf8": 15,
+          "end_line": 4,
+          "end_column_utf8": 18
+        },
+        "preview": "n-1"
+      },
+      {
+        "id": "N39",
+        "parent_id": "N38",
+        "field": "left",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name n",
+        "category": "expression",
+        "source_span": {
+          "line": 4,
+          "column_utf8": 15,
+          "end_line": 4,
+          "end_column_utf8": 16
+        },
+        "preview": "n"
+      },
+      {
+        "id": "N40",
+        "parent_id": "N39",
+        "field": "ctx",
+        "position": null,
+        "depth": 5,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N41",
+        "parent_id": "N38",
+        "field": "op",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Sub",
+        "label": "Sub",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N42",
+        "parent_id": "N38",
+        "field": "right",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Constant",
+        "label": "Constant",
+        "category": "expression",
+        "source_span": {
+          "line": 4,
+          "column_utf8": 17,
+          "end_line": 4,
+          "end_column_utf8": 18
+        },
+        "preview": "1"
+      },
+      {
+        "id": "N43",
+        "parent_id": "N32",
+        "field": "body",
+        "position": 0,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "AugAssign",
+        "label": "AugAssign",
+        "category": "statement",
+        "source_span": {
+          "line": 5,
+          "column_utf8": 4,
+          "end_line": 5,
+          "end_column_utf8": 17
+        },
+        "preview": "total += a[i]"
+      },
+      {
+        "id": "N44",
+        "parent_id": "N43",
+        "field": "target",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name total",
+        "category": "expression",
+        "source_span": {
+          "line": 5,
+          "column_utf8": 4,
+          "end_line": 5,
+          "end_column_utf8": 9
+        },
+        "preview": "total"
+      },
+      {
+        "id": "N45",
+        "parent_id": "N44",
+        "field": "ctx",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Store",
+        "label": "Store",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N46",
+        "parent_id": "N43",
+        "field": "op",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Add",
+        "label": "Add",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N47",
+        "parent_id": "N43",
+        "field": "value",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Subscript",
+        "label": "Subscript",
+        "category": "expression",
+        "source_span": {
+          "line": 5,
+          "column_utf8": 13,
+          "end_line": 5,
+          "end_column_utf8": 17
+        },
+        "preview": "a[i]"
+      },
+      {
+        "id": "N48",
+        "parent_id": "N47",
+        "field": "value",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name a",
+        "category": "expression",
+        "source_span": {
+          "line": 5,
+          "column_utf8": 13,
+          "end_line": 5,
+          "end_column_utf8": 14
+        },
+        "preview": "a"
+      },
+      {
+        "id": "N49",
+        "parent_id": "N48",
+        "field": "ctx",
+        "position": null,
+        "depth": 5,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N50",
+        "parent_id": "N47",
+        "field": "slice",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name i",
+        "category": "expression",
+        "source_span": {
+          "line": 5,
+          "column_utf8": 15,
+          "end_line": 5,
+          "end_column_utf8": 16
+        },
+        "preview": "i"
+      },
+      {
+        "id": "N51",
+        "parent_id": "N50",
+        "field": "ctx",
+        "position": null,
+        "depth": 5,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N52",
+        "parent_id": "N47",
+        "field": "ctx",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N53",
+        "parent_id": "N1",
+        "field": "body",
+        "position": 4,
+        "depth": 1,
+        "scope_id": "N1",
+        "kind": "Expr",
+        "label": "Expr",
+        "category": "statement",
+        "source_span": {
+          "line": 6,
+          "column_utf8": 0,
+          "end_line": 6,
+          "end_column_utf8": 12
+        },
+        "preview": "print(total)"
+      },
+      {
+        "id": "N54",
+        "parent_id": "N53",
+        "field": "value",
+        "position": null,
+        "depth": 2,
+        "scope_id": "N1",
+        "kind": "Call",
+        "label": "Call",
+        "category": "expression",
+        "source_span": {
+          "line": 6,
+          "column_utf8": 0,
+          "end_line": 6,
+          "end_column_utf8": 12
+        },
+        "preview": "print(total)"
+      },
+      {
+        "id": "N55",
+        "parent_id": "N54",
+        "field": "func",
+        "position": null,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name print",
+        "category": "expression",
+        "source_span": {
+          "line": 6,
+          "column_utf8": 0,
+          "end_line": 6,
+          "end_column_utf8": 5
+        },
+        "preview": "print"
+      },
+      {
+        "id": "N56",
+        "parent_id": "N55",
+        "field": "ctx",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      },
+      {
+        "id": "N57",
+        "parent_id": "N54",
+        "field": "args",
+        "position": 0,
+        "depth": 3,
+        "scope_id": "N1",
+        "kind": "Name",
+        "label": "Name total",
+        "category": "expression",
+        "source_span": {
+          "line": 6,
+          "column_utf8": 6,
+          "end_line": 6,
+          "end_column_utf8": 11
+        },
+        "preview": "total"
+      },
+      {
+        "id": "N58",
+        "parent_id": "N57",
+        "field": "ctx",
+        "position": null,
+        "depth": 4,
+        "scope_id": "N1",
+        "kind": "Load",
+        "label": "Load",
+        "category": "structure",
+        "source_span": null
+      }
+    ],
+    "event_links": [
+      {
+        "event_id": "E1",
+        "frame_id": "F1",
+        "line": 0,
+        "event_kind": "call",
+        "candidate_node_ids": [],
+        "association": "unmapped",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E2",
+        "frame_id": "F1",
+        "line": 1,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N2"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E3",
+        "frame_id": "F1",
+        "line": 2,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N11"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E4",
+        "frame_id": "F1",
+        "line": 3,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N28"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E5",
+        "frame_id": "F1",
+        "line": 4,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N32"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E6",
+        "frame_id": "F1",
+        "line": 5,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N43"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E7",
+        "frame_id": "F1",
+        "line": 4,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N32"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E8",
+        "frame_id": "F1",
+        "line": 5,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N43"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E9",
+        "frame_id": "F1",
+        "line": 4,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N32"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E10",
+        "frame_id": "F1",
+        "line": 5,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N43"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E11",
+        "frame_id": "F1",
+        "line": 4,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N32"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E12",
+        "frame_id": "F1",
+        "line": 6,
+        "event_kind": "line",
+        "candidate_node_ids": [
+          "N53"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      },
+      {
+        "event_id": "E13",
+        "frame_id": "F1",
+        "line": 6,
+        "event_kind": "return",
+        "candidate_node_ids": [
+          "N53"
+        ],
+        "association": "statement_start",
+        "expression_execution_proven": false
+      }
+    ],
+    "unsupported": [],
+    "scope": "Syntactic AST projection; columns are UTF-8 byte offsets, end exclusive. Event links are source-line associations, not proof of expression execution."
+  },
+  "localization": {
+    "status": "candidate_locations",
+    "source_sha256": "31cabb2d15ff9b737326204b3f8d856a48b026e04c3cf403e53af0859782d7d8",
+    "effect_site": {
+      "line": 6,
+      "event_id": "E12",
+      "kind": "output_snapshot_compatible",
+      "causal_verified": false
+    },
+    "ranked": [
+      {
+        "line": 4,
+        "score": 2.5,
+        "signals": [
+          {
+            "kind": "range_index_omission",
+            "weight": 2.5,
+            "event_ids": [
+              "E5",
+              "E6",
+              "E8",
+              "E10"
+            ],
+            "detail": "Recomputed range omits some list indices; task requirement must be checked."
+          }
+        ],
+        "event_ids": [
+          "E5",
+          "E6",
+          "E8",
+          "E10"
+        ],
+        "status": "suspected_location",
+        "causal_verified": false
+      }
+    ],
+    "loop_bounds": [
+      {
+        "kind": "range_skips_array_indices",
+        "line": 4,
+        "end_line": 5,
+        "frame_id": "F1",
+        "header_event_id": "E5",
+        "array": "a",
+        "array_length": 4,
+        "range_source": "range(n-1)",
+        "computed_indices": [
+          0,
+          1,
+          2
+        ],
+        "observed_read_indices": [
+          0,
+          1,
+          2
+        ],
+        "omitted_indices": [
+          3
+        ],
+        "event_ids": [
+          "E5",
+          "E6",
+          "E8",
+          "E10"
+        ],
+        "status": "snapshot_compatible_range_and_recorded_reads",
+        "hypothesis": "Check whether the task requires processing the omitted indices. Skipping them is not inherently erroneous.",
+        "causal_verified": false
+      }
+    ],
+    "trace_status": "complete",
+    "causal_fault_proven": false,
+    "scope": "Heuristic evidence ranking, not calibrated probability or root-cause proof. Unrecorded code or missing conditions may be responsible; no unique line is guaranteed."
+  }
+}

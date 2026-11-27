@@ -1,6 +1,7 @@
 """Generic observed graph, no algorithm-specific branches or invented events."""
 from .v4_dataflow import relations
 from .v4_cfg import static_cfg
+from .v4_source_structure import source_structure
 
 def observed_graph(events,source=None):
     nodes,edges,changes,prior={}, {}, [], {}
@@ -30,4 +31,4 @@ def observed_graph(events,source=None):
                     changes.append({"frame_id":ev["frame_id"],"name":k,"before":values[k],"after":v,"before_event_id":before,"after_event_id":ev["event_id"]})
         prior[ev["frame_id"]]=(ev["event_id"],ev["locals"])
     return {"kind":"observed_execution_not_static_cfg","nodes":list(nodes.values()),"edges":list(edges.values()),"changes":changes,"frames":list(frames.values()),"timeline":timeline,
-            "relations":relations(source,events) if source is not None else {"data":[],"control":[],"def_use":[]},"static_cfg":static_cfg(source) if source is not None else None,"causal_fault_proven":False}
+            "relations":relations(source,events) if source is not None else {"data":[],"control":[],"def_use":[]},"static_cfg":static_cfg(source) if source is not None else None,"structure":source_structure(source,events) if source is not None else None,"causal_fault_proven":False}

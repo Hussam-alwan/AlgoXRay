@@ -20,7 +20,7 @@ MAX_SOURCE = 32768
 MAX_INPUT = 16384
 # A static bootstrap, never interpolated with user source. No host bind mounts.
 GUEST = PROFILE_BOOTSTRAP + r'''
-import contextlib, hashlib, io, json, sys, time
+import contextlib, hashlib, io, json, sys, time, math, itertools
 req = json.loads(sys.stdin.readline())
 src = req["source"]
 mode = req.get("mode", "trace_profile")
@@ -41,9 +41,20 @@ class Output(io.StringIO):
 def snap(v,depth=0):
     if type(v) is int and v.bit_length() <= 256: return v
     if type(v) is bool or v is None: return v
+    if type(v) is float:
+        return v if math.isfinite(v) else {"unavailable":True,"kind":"nonfinite_float"}
     if type(v) is str and len(v) <= 160: return v
-    if depth<2 and type(v) in (list, tuple) and len(v) <= 24 and all(type(x) in (int,bool,str,type(None),list,tuple) for x in v):
-        return [snap(x,depth+1) for x in v]
+    if depth<2 and type(v) in (list,tuple):
+        if len(v)<=24 and all(type(x) in (int,bool,float,str,type(None),list,tuple) for x in v):
+            return [snap(x,depth+1) for x in v]
+        return {"kind":"list" if type(v) is list else "tuple","size":len(v),
+                "items":[snap(x,depth+1) for x in v[:24]],"truncated":len(v)>24}
+    if depth<2 and type(v) is dict:
+        return {"kind":"dict","size":len(v),"entries":[{"key":snap(k,depth+1),"value":snap(x,depth+1)}
+                for k,x in itertools.islice(v.items(),24)],"truncated":len(v)>24}
+    if depth<2 and type(v) in (set,frozenset):
+        return {"kind":"set","size":len(v),"items":[snap(x,depth+1) for x in itertools.islice(v,24)],
+                "truncated":len(v)>24,"order":"unspecified"}
     return {"unavailable": True}
 def trace(f, kind, arg):
     global counter, truncated, trace_bytes
@@ -65,7 +76,10 @@ def trace(f, kind, arg):
         ev = {"event_id":"E"+str(len(events)+1),"frame_id":frame,"parent_frame_id":parent,
               "line":f.f_lineno,"kind":kind,"function":f.f_code.co_name,
               "snapshot_timing":"before_line" if kind=="line" else kind,
-              "locals":{k:snap(v) for k,v in [(k,v) for k,v in f.f_locals.items() if not k.startswith("__") and type(v) in (int,bool,str,list,tuple,type(None))][:32]}}
+              "locals":{k:snap(v) for k,v in [(k,v) for k,v in f.f_locals.items() if not k.startswith("__") and type(v) in (int,bool,float,str,list,tuple,dict,set,frozenset,type(None))][:32]}}
+        ev["snapshot_meta"]={"captured_locals":len(ev["locals"]),
+                             "omitted_locals":sum(not k.startswith("__") for k in f.f_locals)-len(ev["locals"]),
+                             "max_collection_items":24,"max_collection_depth":2}
         if f.f_code.co_name!="<module>":
             ev["globals"]={k:snap(f.f_globals[k]) for k in f.f_code.co_names[:24] if k in f.f_globals and type(f.f_globals[k]) in (int,bool,str,type(None))}
         if kind == "exception": ev["exception_type"] = arg[0].__name__
