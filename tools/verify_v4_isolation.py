@@ -16,6 +16,8 @@ def main():
       "output_limit":("print('a'*9000)","","output_limit",None),
       "memory":("try:\n x=bytearray(256*1024*1024)\n print('unexpected')\nexcept MemoryError:\n print('blocked')","","ok","blocked"),
       "host_wall_clock":("import time\ntime.sleep(25)","","timeout",None),
+      "dedicated_image":("import os\nprint('clean' if not os.path.exists('/app/fixtures') else 'unexpected')","","ok","clean"),
+      "capabilities":("p=open('/proc/self/status').read()\ncap=next(x.split()[1] for x in p.splitlines() if x.startswith('CapEff:'))\npriv=next(x.split()[1] for x in p.splitlines() if x.startswith('NoNewPrivs:'))\nprint(int(cap,16),priv)","","ok","0 1"),
     }
     report={}
     for name,(source,stdin,status,stdout) in probes.items():

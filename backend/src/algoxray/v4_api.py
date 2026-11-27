@@ -1,5 +1,5 @@
 """Opt-in loopback author workbench; no public or automatic AI-code execution."""
-import secrets, threading
+import os, secrets, threading
 from fastapi import APIRouter,HTTPException,Request
 from pydantic import BaseModel,ConfigDict,Field
 from .paths import ROOT
@@ -35,7 +35,7 @@ class Run(BaseModel):
 
 def router_for(require_loopback,token):
     router=APIRouter(prefix="/api/v4");lock=threading.Lock();active={};active_lock=threading.Lock()
-    store=PackageStore(ROOT/"results"/"v4-packages")
+    store=PackageStore(os.getenv("ALGOXRAY_V4_PACKAGE_STORE") or ROOT/"results"/"v4-packages")
     def guard(request):
         require_loopback(request)
         if not secrets.compare_digest(request.headers.get("x-algoxray-token",""),token):raise HTTPException(403,"Local author session required")
