@@ -46,6 +46,8 @@ class Run(BaseModel):
     use_ai:bool=False
     model:str="qwen2.5-coder:7b"
     cloud_consent:bool=False
+    generator:str="boundary_random"
+    guided:bool=False
     count:int=Field(default=6,ge=1,le=12)
     seed:int=Field(default=2026,ge=0,le=2**32-1)
     case:dict|None=None
@@ -139,7 +141,7 @@ def router_for(require_loopback,token):
             with active_lock:active[body.analysis_id]=c
         try:
             p=store.load(body.package_key)
-            return analyze_package(p,body.source,count=body.count,seed=body.seed,case=body.case,provider=provider,cancel=c)
+            return analyze_package(p,body.source,count=body.count,seed=body.seed,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:
