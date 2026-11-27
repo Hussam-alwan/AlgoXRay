@@ -48,6 +48,17 @@ def validate_manifest(m):
     if flat!=list(prior): raise ValueError("Lines must list every field exactly once in field order")
     for row in lines:
         if any(prior[n]["kind"]=="matrix" for n in row) and len(row)!=1:raise ValueError("Matrix must occupy its own line group")
+    # Worst-case encoded size: do not admit a grammar that can generate oversized inputs.
+    total=0
+    for f in m["fields"]:
+        width=max(len(str(f["min"])),len(str(f["max"])))+1
+        if f["kind"]=="int":total+=width
+        elif f["kind"]=="word":total+=f["max"]+1
+        elif f["kind"]=="ints":total+=width*(f["length"] if "length" in f else prior[f["length_from"]]["max"])
+        else:
+            sizes=[f[a] if a in f else prior[f[a+"_from"]]["max"] for a in ("rows","cols")]
+            total+=width*sizes[0]*sizes[1]
+    if total>MAX_INPUT:raise ValueError("Maximum input size exceeds worker budget")
     return m
 
 def dimension(f,axis,c):return f[axis] if axis in f else c[f[axis+"_from"]]

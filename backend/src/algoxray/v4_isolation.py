@@ -92,7 +92,7 @@ def configured_image():
     if path.is_file():
         data=json.loads(path.read_text(encoding="utf-8"))
         return data["image_id"]
-    return IMAGE
+    raise ValueError("Dedicated V4 worker missing; run tools/prepare_v4_worker.py")
 
 def docker_command(name, image):
     if not re.fullmatch(r"sha256:[0-9a-f]{64}", image):
@@ -112,7 +112,8 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
     if type(seconds) not in (float,int) or not 0.05 <= seconds <= 3 or type(trace_limit) is not int or not 0 <= trace_limit <= 256:
         raise ValueError("Invalid execution budget")
     name = "algoxray-v4-" + uuid.uuid4().hex
-    cmd = docker_command(name,image or configured_image())
+    try:cmd = docker_command(name,image or configured_image())
+    except (OSError,ValueError,KeyError):return {"status":"infrastructure_error","detail":"dedicated_worker_unconfigured","events":[],"trace_trust":"guest_observation_not_authenticated"}
     req = json.dumps({"source":source,"stdin":stdin,"seconds":seconds,"trace_limit":trace_limit},ensure_ascii=True).encode()+b"\n"
     started=time.monotonic()
     result={"status":"infrastructure_error"}

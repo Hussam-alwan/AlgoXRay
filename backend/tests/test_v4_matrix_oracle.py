@@ -16,3 +16,7 @@ def test_matrix_reference_disagreement():
         return {"status":"ok","stdout":str(sum(map(int,stdin.split()[2:])) if src=="ref" else 0),"events":[]}
     assert not review(p,run=run)["passed"]
     assert analyze_package(p,"student",case=CASE,run=run)["status"]=="oracle_unavailable"
+
+def test_manifest_rejects_worst_case_worker_overflow():
+    m={**M,"fields":[{"name":"a","kind":"matrix","min":-10**15,"max":10**15,"rows":32,"cols":32}],"lines":[["a"]]}
+    with pytest.raises(ValueError,match="Maximum input"):validate_manifest(m)
