@@ -23,7 +23,9 @@ GUEST = PROFILE_BOOTSTRAP + r'''
 import contextlib, hashlib, io, json, sys, time
 req = json.loads(sys.stdin.readline())
 src = req["source"]
-profiler = ExecutionProfiler(src, req["trace_limit"] > 0)
+mode = req.get("mode", "trace_profile")
+instrumented = mode == "trace_profile"
+profiler = ExecutionProfiler(src, instrumented and req["trace_limit"] > 0)
 events = []
 frames = {}
 counter = 0
@@ -77,26 +79,48 @@ def trace(f, kind, arg):
 out,err = Output(),Output()
 original = sys.stdin
 status, detail = "ok",None
+exit_code = 0
+failure_location = None
 execution_start_wall,execution_start_cpu=time.perf_counter_ns(),time.process_time_ns()
 try:
     code = compile(src,"submission.py","exec")
-    sys.stdin = io.StringIO(req["stdin"])
+    sys.stdin = io.TextIOWrapper(io.BytesIO(req["stdin"].encode("utf-8")), encoding="utf-8", newline=None)
     with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-        sys.settrace(trace)
+        if instrumented:
+            sys.settrace(trace)
         exec(code,{"__name__":"__main__","__file__":"submission.py"})
 except Deadline: status = "timeout"
 except Limit: status = "output_limit"
 except SystemExit as exc:
-    if exc.code not in (None,0): status,detail="exception","SystemExit"
-except BaseException as exc: status,detail="exception",type(exc).__name__
+    if exc.code not in (None,0):
+        status,detail="exception","SystemExit"
+        exit_code=exc.code if type(exc.code) is int and -2147483648<=exc.code<=2147483647 else 1
+except BaseException as exc:
+    status,detail="exception",type(exc).__name__
+    exit_code=1
+    if isinstance(exc, SyntaxError):
+        failure_location={"line":exc.lineno,"column":exc.offset}
+    else:
+        tb=exc.__traceback__
+        while tb is not None:
+            if tb.tb_frame.f_code.co_filename=="submission.py":
+                failure_location={"line":tb.tb_lineno,"function":tb.tb_frame.f_code.co_name}
+            tb=tb.tb_next
 finally:
     sys.settrace(None)
     sys.stdin=original
 execution_wall_ns=time.perf_counter_ns()-execution_start_wall
 execution_cpu_ns=time.process_time_ns()-execution_start_cpu
-print(json.dumps({"status":status,"detail":detail,"stdout":out.getvalue(),"stderr":err.getvalue(),
-    "profile":profiler.report(status,execution_wall_ns,execution_cpu_ns),
-    "events":events,"trace_status":"truncated" if truncated else "complete"},ensure_ascii=True,allow_nan=False))
+# This is an observation, not an independent deadline enforcement mechanism.
+# The host still terminates the worker at its wall-clock ceiling.
+if not instrumented and status=="ok" and execution_wall_ns>req["seconds"]*1e9:
+    status="timeout"
+profile=profiler.report(status,execution_wall_ns,execution_cpu_ns)
+if not instrumented:
+    profile.update(method="uninstrumented_execution",scope="Compile and execution inside guest, without trace/profile callbacks. Not judge runtime.")
+print(json.dumps({"status":status,"detail":detail,"exit_code":exit_code,"failure_location":failure_location,
+    "stdout":out.getvalue(),"stderr":err.getvalue(),"mode":mode,
+    "profile":profile,"events":events,"trace_status":("disabled" if not instrumented else "truncated" if truncated else "complete")},ensure_ascii=True,allow_nan=False))
 '''
 def configured_image():
     value=os.getenv("ALGOXRAY_V4_IMAGE")
@@ -117,17 +141,21 @@ def docker_command(name, image):
             "--tmpfs","/tmp:rw,noexec,nosuid,nodev,size=8m","--log-driver","none",
             "--no-healthcheck","--workdir","/tmp","--entrypoint","python",image,"-I","-B","-c",GUEST]
 
-def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, cancel=None):
+def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, cancel=None, mode="trace_profile"):
     if type(source) is not str or not 0 < len(source.encode("utf-8")) <= MAX_SOURCE:
         raise ValueError("Source size outside supported bounds")
     if type(stdin) is not str or len(stdin.encode("utf-8")) > MAX_INPUT:
         raise ValueError("Input size outside supported bounds")
     if type(seconds) not in (float,int) or not 0.05 <= seconds <= 3 or type(trace_limit) is not int or not 0 <= trace_limit <= 256:
         raise ValueError("Invalid execution budget")
+    if mode not in ("trace_profile","benchmark_uninstrumented"):
+        raise ValueError("Unsupported execution mode")
+    if mode=="benchmark_uninstrumented" and trace_limit!=0:
+        raise ValueError("Uninstrumented mode requires trace_limit=0")
     name = "algoxray-v4-" + uuid.uuid4().hex
     try:cmd = docker_command(name,image or configured_image())
     except (OSError,ValueError,KeyError):return {"status":"infrastructure_error","detail":"dedicated_worker_unconfigured","events":[],"trace_trust":"guest_observation_not_authenticated"}
-    req = json.dumps({"source":source,"stdin":stdin,"seconds":seconds,"trace_limit":trace_limit},ensure_ascii=True).encode()+b"\n"
+    req = json.dumps({"source":source,"stdin":stdin,"seconds":seconds,"trace_limit":trace_limit,"mode":mode},ensure_ascii=True).encode()+b"\n"
     started=time.monotonic()
     result={"status":"infrastructure_error"}
     proc=None
@@ -166,7 +194,7 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
                     data=json.loads(buffers[0])
                     if type(data) is not dict or data.get("status") not in ("ok","timeout","output_limit","exception") or type(data.get("stdout")) is not str or type(data.get("events")) is not list:
                         raise ValueError("Invalid guest response")
-                    result={k:data[k] for k in ("status","detail","stdout","stderr","events","trace_status","profile") if k in data}
+                    result={k:data[k] for k in ("status","detail","stdout","stderr","events","trace_status","profile","exit_code","failure_location","mode") if k in data}
                 except (ValueError,UnicodeError): result={"status":"infrastructure_error","detail":"invalid_guest_protocol"}
     except OSError: result={"status":"infrastructure_error","detail":"docker_unavailable"}
     finally:
@@ -185,6 +213,6 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
     if not cleanup_ok: result={"status":"infrastructure_error","detail":"container_cleanup_unconfirmed"}
     result.update(image_id=cmd[cmd.index("--entrypoint")+2],source_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   input_sha256=hashlib.sha256(stdin.encode()).hexdigest(),
-                  elapsed_ms=round((time.monotonic()-started)*1000,2),
+                  elapsed_ms=round((time.monotonic()-started)*1000,2), requested_mode=mode, host_wall_limit_seconds=seconds+8,
                   trace_trust="guest_observation_not_authenticated",cleanup_confirmed=cleanup_ok)
     return result
