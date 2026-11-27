@@ -70,8 +70,9 @@ def test(url,out):
         assert page.locator("#matrix-view td").count()>0
         assert page.locator("#cmp-student-code .active").count()==1
         assert page.locator("#cmp-reference-code .active").count()==1
-        page.locator("#cmp-reference").fill("1")
-        assert page.locator("#cmp-student").input_value()=="0"
+        student_step=page.locator("#cmp-student").input_value()
+        page.locator("#cmp-reference").fill(str(int(page.locator("#cmp-reference").get_attribute("max"))))
+        assert page.locator("#cmp-student").input_value()==student_step
         checks.append("independent_side_by_side_trace_and_array")
         assert "restricted_syntactic_cfg" in page.locator("#static-cfg").inner_text()
         checks.append("static_cfg_separate")
