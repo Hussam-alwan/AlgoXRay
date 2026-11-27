@@ -1,0 +1,26 @@
+{
+  "consent_denied": {
+    "passed": true,
+    "http": 403
+  },
+  "gemini-4-hydrogen": {
+    "passed": false,
+    "http": 422,
+    "status": null,
+    "detail": "Unsupported or invalid draft; use manual authoring",
+    "model": null,
+    "manifest": {},
+    "usage": null,
+    "elapsed_s": 3.36
+  },
+  "gemini-3.8-flash": {
+    "passed": false,
+    "http": 422,
+    "status": null,
+    "detail": "gemini_timeout_or_network",
+    "model": null,
+    "manifest": {},
+    "usage": null,
+    "elapsed_s": 90.45
+  }
+}

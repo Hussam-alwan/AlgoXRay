@@ -1,0 +1,12 @@
+{
+  "status": "reference_unreviewed",
+  "proposal": {
+    "reference": "n = int(input())\nprint(2 * n)",
+    "rationale": "The task is straightforward: read a single integer n (1-9) from standard input and output twice its value. The minimal Python code reads the integer, multiplies by 2, and prints the result. No additional validation is required beyond the given constraints.",
+    "status": "reference_unreviewed",
+    "executed": false,
+    "warning": "Review source and constraints; supply independently known controls and optionally a second independently reviewed reference."
+  },
+  "ast_matches_known_reference": true,
+  "controls_passed": true
+}

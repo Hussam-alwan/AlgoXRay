@@ -1,0 +1,46 @@
+{
+  "family": "quicksort",
+  "role": "control",
+  "package_sha256": "ff59d36658fe56893f68d3311f2827724d10070a1087bd5e87e435101444ce26",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "n": 1,
+          "a": [
+            0
+          ]
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "n": 4,
+          "a": [
+            2,
+            1,
+            2,
+            0
+          ]
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 7,
+  "result": {
+    "status": "no_witness_found",
+    "attempts": 4,
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "scope": "Bounded tests only; correctness not proven."
+  }
+}

@@ -1,0 +1,190 @@
+[
+  {
+    "model": "openai/gpt-oss-120b",
+    "scope": "one synthetic development bug, not independent accuracy",
+    "diagnosis_status": "unavailable_or_invalid",
+    "diagnosis_error": "invalid_fact_schema",
+    "hypotheses": [],
+    "facts": [],
+    "diagnosis_usage": {
+      "prompt_tokens": 881,
+      "completion_tokens": 336,
+      "total_tokens": 1217,
+      "elapsed_ms": 2250.0
+    },
+    "witness_reproduced": true,
+    "repair_status": "needs_manual_review",
+    "repair_usage": {
+      "prompt_tokens": 317,
+      "completion_tokens": 208,
+      "total_tokens": 525,
+      "elapsed_ms": 1109.0
+    },
+    "seconds": 8.19
+  },
+  {
+    "model": "inclusionai/ling-3.2-flash:free",
+    "scope": "one synthetic development bug, not independent accuracy",
+    "diagnosis_status": "ok",
+    "diagnosis_error": null,
+    "hypotheses": [
+      {
+        "text": "Line 3 computes sum(a[:-1]); the slice drops the last element, so it sums [1, 2] = 3 instead of all of a = [1, 2, 3] = 6.",
+        "event_ids": [
+          "E4",
+          "E5"
+        ],
+        "line": 3,
+        "status": "hypothesis",
+        "causal_verified": false
+      },
+      {
+        "text": "The negative slice bound -1 excludes exactly one element; replacing a[:-1] with a (or a[:]) would include all n = 3 inputs and yield the expected 6.",
+        "event_ids": [
+          "E3",
+          "E4",
+          "E5"
+        ],
+        "line": 3,
+        "status": "hypothesis",
+        "causal_verified": false
+      },
+      {
+        "text": "Input parsing is not the cause: n is read as 3 and a holds exactly the three supplied integers, so the discrepancy originates at the print/sum line, not at lines 1-2.",
+        "event_ids": [
+          "E2",
+          "E3",
+          "E4"
+        ],
+        "line": 2,
+        "status": "hypothesis",
+        "causal_verified": false
+      }
+    ],
+    "facts": [
+      {
+        "event_id": "E3",
+        "variable": "n",
+        "value": 3,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E4",
+        "variable": "a",
+        "value": "[1, 2, 3]",
+        "status": "unsupported",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E5",
+        "variable": "n",
+        "value": 3,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E5",
+        "variable": "a",
+        "value": "[1, 2, 3]",
+        "status": "unsupported",
+        "causal_verified": false
+      }
+    ],
+    "diagnosis_usage": {
+      "prompt_tokens": 670,
+      "completion_tokens": 1445,
+      "total_tokens": 2115,
+      "elapsed_ms": 13797.0
+    },
+    "witness_reproduced": true,
+    "repair_status": "unavailable_or_invalid",
+    "repair_error": "ProviderError:openrouter_quota_or_rate_limit",
+    "seconds": 19.38
+  },
+  {
+    "model": "gemini-4-hydrogen",
+    "scope": "one synthetic development bug, not independent accuracy",
+    "diagnosis_status": "unavailable_or_invalid",
+    "diagnosis_error": "gemini_server_error",
+    "hypotheses": [],
+    "facts": [],
+    "diagnosis_usage": {},
+    "witness_reproduced": true,
+    "repair_status": "passed_named_tests",
+    "repair_usage": {
+      "promptTokenCount": 411,
+      "candidatesTokenCount": 105,
+      "totalTokenCount": 1545,
+      "thoughtsTokenCount": 1029,
+      "elapsed_ms": 22109.0
+    },
+    "seconds": 37.89
+  },
+  {
+    "model": "qwen2.5-coder:7b",
+    "scope": "one synthetic development bug, not independent accuracy",
+    "diagnosis_status": "ok",
+    "diagnosis_error": null,
+    "hypotheses": [
+      {
+        "text": "The code is intended to read an integer n and then n integers, and print their sum. However, the code is printing the sum of all integers except the last one.",
+        "event_ids": [
+          "E4",
+          "E5"
+        ],
+        "line": 3,
+        "status": "hypothesis",
+        "causal_verified": false
+      },
+      {
+        "text": "The issue might be in the line where the sum is calculated. The code is summing up all elements except the last one, which is not the intended behavior.",
+        "event_ids": [
+          "E4",
+          "E5"
+        ],
+        "line": 3,
+        "status": "hypothesis",
+        "causal_verified": false
+      },
+      {
+        "text": "The code is correctly reading the input values, but there might be an error in the logic that calculates the sum.",
+        "event_ids": [
+          "E4",
+          "E5"
+        ],
+        "line": 3,
+        "status": "hypothesis",
+        "causal_verified": false
+      }
+    ],
+    "facts": [
+      {
+        "event_id": "E1",
+        "variable": "n",
+        "value": 3,
+        "status": "unsupported",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E1",
+        "variable": "a",
+        "value": "[1, 2, 3]",
+        "status": "unsupported",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E5",
+        "variable": "sum(a[:-1])",
+        "value": 3,
+        "status": "unsupported",
+        "causal_verified": false
+      }
+    ],
+    "diagnosis_usage": {},
+    "witness_reproduced": true,
+    "repair_status": "passed_named_tests",
+    "repair_usage": {},
+    "seconds": 20.22
+  }
+]

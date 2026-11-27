@@ -1,0 +1,1971 @@
+{
+  "family": "longest_common_subsequence",
+  "role": "fault",
+  "package_sha256": "4c150f8f137ab7713166d57b5b5ddfa7f6928fa13ae3dc7ce9e73a9b0a25cb61",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "a": "A",
+          "b": "B"
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "a": "AAA",
+          "b": "A"
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 6,
+  "result": {
+    "status": "observed_mismatch",
+    "kind": "wrong_answer",
+    "package_sha256": "4c150f8f137ab7713166d57b5b5ddfa7f6928fa13ae3dc7ce9e73a9b0a25cb61",
+    "original_case": {
+      "a": "AAA",
+      "b": "A"
+    },
+    "witness": {
+      "kind": "wrong_answer",
+      "case": {
+        "a": "AAA",
+        "b": "A"
+      },
+      "stdin": "AAA\nA\n",
+      "student": {
+        "status": "ok",
+        "detail": null,
+        "stdout": "3\n",
+        "stderr": "",
+        "events": [
+          {
+            "event_id": "E1",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 0,
+            "kind": "call",
+            "function": "<module>",
+            "snapshot_timing": "call",
+            "locals": {}
+          },
+          {
+            "event_id": "E2",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 1,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E3",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 15,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E4",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 16,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA"
+            }
+          },
+          {
+            "event_id": "E5",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 17,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            }
+          },
+          {
+            "event_id": "E6",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 1,
+            "kind": "call",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "call",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E7",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E8",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 5,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E9",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E10",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 1,
+            "kind": "call",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "call",
+            "locals": {
+              "a": "AA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E11",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 2,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E12",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 5,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E13",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 6,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E14",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 1,
+            "kind": "call",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "call",
+            "locals": {
+              "a": "A",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E15",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 2,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "A",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E16",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 5,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "A",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E17",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 6,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "A",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E18",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 1,
+            "kind": "call",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "call",
+            "locals": {
+              "a": "",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E19",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E20",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 3,
+            "kind": "line",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E21",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 3,
+            "kind": "return",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "return",
+            "locals": {
+              "a": "",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E22",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 6,
+            "kind": "return",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "return",
+            "locals": {
+              "a": "A",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E23",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 6,
+            "kind": "return",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "return",
+            "locals": {
+              "a": "AA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E24",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "return",
+            "function": "longest_common_subsequence",
+            "snapshot_timing": "return",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E25",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 17,
+            "kind": "return",
+            "function": "<module>",
+            "snapshot_timing": "return",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            }
+          }
+        ],
+        "trace_status": "complete",
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "source_sha256": "a0648b977cece0cf575ff2d6875ed474cd61f629184b498358d5f6b9b4096190",
+        "input_sha256": "fe8be6ca75dae8b498e5ed7623fb4a3ac219d9a4418b0fab80c43963a5b22a35",
+        "elapsed_ms": 750.0,
+        "trace_trust": "guest_observation_not_authenticated",
+        "cleanup_confirmed": true
+      },
+      "reference": {
+        "status": "ok",
+        "detail": null,
+        "stdout": "1\n",
+        "stderr": "",
+        "events": [
+          {
+            "event_id": "E1",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 0,
+            "kind": "call",
+            "function": "<module>",
+            "snapshot_timing": "call",
+            "locals": {}
+          },
+          {
+            "event_id": "E2",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 1,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E3",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A"
+            }
+          },
+          {
+            "event_id": "E4",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "_": 0
+            }
+          },
+          {
+            "event_id": "E5",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "_": 1
+            }
+          },
+          {
+            "event_id": "E6",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "_": 2
+            }
+          },
+          {
+            "event_id": "E7",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "_": 3
+            }
+          },
+          {
+            "event_id": "E8",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 3,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            }
+          },
+          {
+            "event_id": "E9",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 4,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 1,
+              "x": "A"
+            }
+          },
+          {
+            "event_id": "E10",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 5,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 1,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E11",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 4,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 1,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E12",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 3,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 1,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E13",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 4,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 2,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E14",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 5,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 2,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E15",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 4,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 2,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E16",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 3,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 2,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E17",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 4,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 3,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E18",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 5,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "i": 3,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E19",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 4,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "i": 3,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E20",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 3,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "i": 3,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E21",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 6,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "i": 3,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          },
+          {
+            "event_id": "E22",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 6,
+            "kind": "return",
+            "function": "<module>",
+            "snapshot_timing": "return",
+            "locals": {
+              "a": "AAA",
+              "b": "A",
+              "dp": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ],
+              "i": 3,
+              "x": "A",
+              "j": 1,
+              "y": "A"
+            }
+          }
+        ],
+        "trace_status": "complete",
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "source_sha256": "52795c1447e4845ebb3cc762d89aebf1e820f1870309e61f98641809da31f244",
+        "input_sha256": "fe8be6ca75dae8b498e5ed7623fb4a3ac219d9a4418b0fab80c43963a5b22a35",
+        "elapsed_ms": 688.0,
+        "trace_trust": "guest_observation_not_authenticated",
+        "cleanup_confirmed": true,
+        "alternative_agreed": true
+      }
+    },
+    "reference_source": "a=input();b=input()\ndp=[[0]*(len(b)+1) for _ in range(len(a)+1)]\nfor i,x in enumerate(a,1):\n    for j,y in enumerate(b,1):\n        dp[i][j]=dp[i-1][j-1]+1 if x==y else max(dp[i-1][j],dp[i][j-1])\nprint(dp[-1][-1])\n",
+    "student_source": "def longest_common_subsequence(a, b):\n    if not a or not b:\n        return ''\n\n    elif a[0] == b[0]:\n        return a[0] + longest_common_subsequence(a[1:], b)\n\n    else:\n        return max(\n            longest_common_subsequence(a, b[1:]),\n            longest_common_subsequence(a[1:], b),\n            key=len\n        )\n\na=input()\nb=input()\nprint(len(longest_common_subsequence(a,b)))\n",
+    "replay_count": 3,
+    "attempts": 8,
+    "student_graph": {
+      "kind": "observed_execution_not_static_cfg",
+      "nodes": [
+        {
+          "id": "F1:0",
+          "line": 0,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E1"
+          ]
+        },
+        {
+          "id": "F1:1",
+          "line": 1,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E2"
+          ]
+        },
+        {
+          "id": "F1:15",
+          "line": 15,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E3"
+          ]
+        },
+        {
+          "id": "F1:16",
+          "line": 16,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E4"
+          ]
+        },
+        {
+          "id": "F1:17",
+          "line": 17,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E5",
+            "E25"
+          ]
+        },
+        {
+          "id": "F2:1",
+          "line": 1,
+          "frame_id": "F2",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E6"
+          ]
+        },
+        {
+          "id": "F2:2",
+          "line": 2,
+          "frame_id": "F2",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E7"
+          ]
+        },
+        {
+          "id": "F2:5",
+          "line": 5,
+          "frame_id": "F2",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E8"
+          ]
+        },
+        {
+          "id": "F2:6",
+          "line": 6,
+          "frame_id": "F2",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E9",
+            "E24"
+          ]
+        },
+        {
+          "id": "F3:1",
+          "line": 1,
+          "frame_id": "F3",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E10"
+          ]
+        },
+        {
+          "id": "F3:2",
+          "line": 2,
+          "frame_id": "F3",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E11"
+          ]
+        },
+        {
+          "id": "F3:5",
+          "line": 5,
+          "frame_id": "F3",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E12"
+          ]
+        },
+        {
+          "id": "F3:6",
+          "line": 6,
+          "frame_id": "F3",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E13",
+            "E23"
+          ]
+        },
+        {
+          "id": "F4:1",
+          "line": 1,
+          "frame_id": "F4",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E14"
+          ]
+        },
+        {
+          "id": "F4:2",
+          "line": 2,
+          "frame_id": "F4",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E15"
+          ]
+        },
+        {
+          "id": "F4:5",
+          "line": 5,
+          "frame_id": "F4",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E16"
+          ]
+        },
+        {
+          "id": "F4:6",
+          "line": 6,
+          "frame_id": "F4",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E17",
+            "E22"
+          ]
+        },
+        {
+          "id": "F5:1",
+          "line": 1,
+          "frame_id": "F5",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E18"
+          ]
+        },
+        {
+          "id": "F5:2",
+          "line": 2,
+          "frame_id": "F5",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E19"
+          ]
+        },
+        {
+          "id": "F5:3",
+          "line": 3,
+          "frame_id": "F5",
+          "function": "longest_common_subsequence",
+          "event_ids": [
+            "E20",
+            "E21"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "from": "F1:0",
+          "to": "F1:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E1",
+              "E2"
+            ]
+          ]
+        },
+        {
+          "from": "F1:1",
+          "to": "F1:15",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E2",
+              "E3"
+            ]
+          ]
+        },
+        {
+          "from": "F1:15",
+          "to": "F1:16",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E3",
+              "E4"
+            ]
+          ]
+        },
+        {
+          "from": "F1:16",
+          "to": "F1:17",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E4",
+              "E5"
+            ]
+          ]
+        },
+        {
+          "from": "F1:17",
+          "to": "F2:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E5",
+              "E6"
+            ]
+          ]
+        },
+        {
+          "from": "F2:1",
+          "to": "F2:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E6",
+              "E7"
+            ]
+          ]
+        },
+        {
+          "from": "F2:2",
+          "to": "F2:5",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E7",
+              "E8"
+            ]
+          ]
+        },
+        {
+          "from": "F2:5",
+          "to": "F2:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E8",
+              "E9"
+            ]
+          ]
+        },
+        {
+          "from": "F2:6",
+          "to": "F3:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E9",
+              "E10"
+            ]
+          ]
+        },
+        {
+          "from": "F3:1",
+          "to": "F3:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E10",
+              "E11"
+            ]
+          ]
+        },
+        {
+          "from": "F3:2",
+          "to": "F3:5",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E11",
+              "E12"
+            ]
+          ]
+        },
+        {
+          "from": "F3:5",
+          "to": "F3:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E12",
+              "E13"
+            ]
+          ]
+        },
+        {
+          "from": "F3:6",
+          "to": "F4:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E13",
+              "E14"
+            ]
+          ]
+        },
+        {
+          "from": "F4:1",
+          "to": "F4:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E14",
+              "E15"
+            ]
+          ]
+        },
+        {
+          "from": "F4:2",
+          "to": "F4:5",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E15",
+              "E16"
+            ]
+          ]
+        },
+        {
+          "from": "F4:5",
+          "to": "F4:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E16",
+              "E17"
+            ]
+          ]
+        },
+        {
+          "from": "F4:6",
+          "to": "F5:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E17",
+              "E18"
+            ]
+          ]
+        },
+        {
+          "from": "F5:1",
+          "to": "F5:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E18",
+              "E19"
+            ]
+          ]
+        },
+        {
+          "from": "F5:2",
+          "to": "F5:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E19",
+              "E20"
+            ]
+          ]
+        },
+        {
+          "from": "F5:3",
+          "to": "F5:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E20",
+              "E21"
+            ]
+          ]
+        },
+        {
+          "from": "F5:3",
+          "to": "F4:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E21",
+              "E22"
+            ]
+          ]
+        },
+        {
+          "from": "F4:6",
+          "to": "F3:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E22",
+              "E23"
+            ]
+          ]
+        },
+        {
+          "from": "F3:6",
+          "to": "F2:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E23",
+              "E24"
+            ]
+          ]
+        },
+        {
+          "from": "F2:6",
+          "to": "F1:17",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E24",
+              "E25"
+            ]
+          ]
+        }
+      ],
+      "changes": [],
+      "frames": [],
+      "timeline": [],
+      "relations": {
+        "data": [],
+        "control": [],
+        "def_use": []
+      },
+      "causal_fault_proven": false
+    },
+    "reference_graph": {
+      "kind": "observed_execution_not_static_cfg",
+      "nodes": [
+        {
+          "id": "F1:0",
+          "line": 0,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E1"
+          ]
+        },
+        {
+          "id": "F1:1",
+          "line": 1,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E2"
+          ]
+        },
+        {
+          "id": "F1:2",
+          "line": 2,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E3",
+            "E4",
+            "E5",
+            "E6",
+            "E7"
+          ]
+        },
+        {
+          "id": "F1:3",
+          "line": 3,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E8",
+            "E12",
+            "E16",
+            "E20"
+          ]
+        },
+        {
+          "id": "F1:4",
+          "line": 4,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E9",
+            "E11",
+            "E13",
+            "E15",
+            "E17",
+            "E19"
+          ]
+        },
+        {
+          "id": "F1:5",
+          "line": 5,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E10",
+            "E14",
+            "E18"
+          ]
+        },
+        {
+          "id": "F1:6",
+          "line": 6,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E21",
+            "E22"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "from": "F1:0",
+          "to": "F1:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E1",
+              "E2"
+            ]
+          ]
+        },
+        {
+          "from": "F1:1",
+          "to": "F1:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E2",
+              "E3"
+            ]
+          ]
+        },
+        {
+          "from": "F1:2",
+          "to": "F1:2",
+          "count": 4,
+          "event_pairs": [
+            [
+              "E3",
+              "E4"
+            ],
+            [
+              "E4",
+              "E5"
+            ],
+            [
+              "E5",
+              "E6"
+            ],
+            [
+              "E6",
+              "E7"
+            ]
+          ]
+        },
+        {
+          "from": "F1:2",
+          "to": "F1:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E7",
+              "E8"
+            ]
+          ]
+        },
+        {
+          "from": "F1:3",
+          "to": "F1:4",
+          "count": 3,
+          "event_pairs": [
+            [
+              "E8",
+              "E9"
+            ],
+            [
+              "E12",
+              "E13"
+            ],
+            [
+              "E16",
+              "E17"
+            ]
+          ]
+        },
+        {
+          "from": "F1:4",
+          "to": "F1:5",
+          "count": 3,
+          "event_pairs": [
+            [
+              "E9",
+              "E10"
+            ],
+            [
+              "E13",
+              "E14"
+            ],
+            [
+              "E17",
+              "E18"
+            ]
+          ]
+        },
+        {
+          "from": "F1:5",
+          "to": "F1:4",
+          "count": 3,
+          "event_pairs": [
+            [
+              "E10",
+              "E11"
+            ],
+            [
+              "E14",
+              "E15"
+            ],
+            [
+              "E18",
+              "E19"
+            ]
+          ]
+        },
+        {
+          "from": "F1:4",
+          "to": "F1:3",
+          "count": 3,
+          "event_pairs": [
+            [
+              "E11",
+              "E12"
+            ],
+            [
+              "E15",
+              "E16"
+            ],
+            [
+              "E19",
+              "E20"
+            ]
+          ]
+        },
+        {
+          "from": "F1:3",
+          "to": "F1:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E20",
+              "E21"
+            ]
+          ]
+        },
+        {
+          "from": "F1:6",
+          "to": "F1:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E21",
+              "E22"
+            ]
+          ]
+        }
+      ],
+      "changes": [
+        {
+          "frame_id": "F1",
+          "name": "_",
+          "before": 0,
+          "after": 1,
+          "before_event_id": "E4",
+          "after_event_id": "E5"
+        },
+        {
+          "frame_id": "F1",
+          "name": "_",
+          "before": 1,
+          "after": 2,
+          "before_event_id": "E5",
+          "after_event_id": "E6"
+        },
+        {
+          "frame_id": "F1",
+          "name": "_",
+          "before": 2,
+          "after": 3,
+          "before_event_id": "E6",
+          "after_event_id": "E7"
+        },
+        {
+          "frame_id": "F1",
+          "name": "dp",
+          "before": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "after": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "before_event_id": "E10",
+          "after_event_id": "E11"
+        },
+        {
+          "frame_id": "F1",
+          "name": "i",
+          "before": 1,
+          "after": 2,
+          "before_event_id": "E12",
+          "after_event_id": "E13"
+        },
+        {
+          "frame_id": "F1",
+          "name": "dp",
+          "before": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "after": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "before_event_id": "E14",
+          "after_event_id": "E15"
+        },
+        {
+          "frame_id": "F1",
+          "name": "i",
+          "before": 2,
+          "after": 3,
+          "before_event_id": "E16",
+          "after_event_id": "E17"
+        },
+        {
+          "frame_id": "F1",
+          "name": "dp",
+          "before": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "after": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "before_event_id": "E18",
+          "after_event_id": "E19"
+        }
+      ],
+      "frames": [],
+      "timeline": [],
+      "relations": {
+        "data": [],
+        "control": [],
+        "def_use": []
+      },
+      "causal_fault_proven": false
+    },
+    "hypotheses": [],
+    "ai_facts": [],
+    "ai_status": "disabled",
+    "ai_model": null,
+    "ai_usage": {},
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "suspiciousness": {
+      "status": "observed_spectrum",
+      "ranked": [
+        {
+          "line": 6,
+          "ochiai": 1.0,
+          "failing_coverage": 1,
+          "passing_coverage": 0
+        },
+        {
+          "line": 1,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 2,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 3,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 5,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 15,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 16,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 17,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        }
+      ],
+      "passing_count": 2,
+      "scope": "One failing trace and bounded passing traces of the same source. Coverage correlation, not root cause."
+    },
+    "ai_error": null,
+    "elapsed_ms": 14843.0,
+    "scope": "Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."
+  }
+}

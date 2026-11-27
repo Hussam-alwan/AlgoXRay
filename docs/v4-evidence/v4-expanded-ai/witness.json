@@ -1,0 +1,23 @@
+{
+  "status": "ok",
+  "lines": [
+    2
+  ],
+  "top1_known_line": false,
+  "top3_known_line": false,
+  "facts": [],
+  "supported_fact_count": 0,
+  "usage": {
+    "prompt_tokens": 484,
+    "completion_tokens": 87,
+    "total_tokens": 571,
+    "elapsed_ms": 2172.0
+  },
+  "seconds": 2.17,
+  "raw": {
+    "suspected_lines": [
+      2
+    ],
+    "facts": []
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "consent_denied": {
+    "passed": true,
+    "http": 403
+  },
+  "gemini-4-hydrogen": {
+    "passed": true,
+    "http": 200,
+    "status": "draft_unreviewed",
+    "detail": null,
+    "model": "gemini-4-hydrogen",
+    "manifest": {
+      "id": "twice_n",
+      "title": "Twice n",
+      "statement": "Read one integer n (1 <= n <= 9) on one line and print twice n as one integer.",
+      "fields": [
+        {
+          "name": "n",
+          "kind": "int",
+          "min": 1,
+          "max": 9
+        }
+      ],
+      "lines": [
+        [
+          "n"
+        ]
+      ],
+      "output": "tokens"
+    },
+    "usage": {
+      "promptTokenCount": 1040,
+      "candidatesTokenCount": 83,
+      "totalTokenCount": 1420,
+      "thoughtsTokenCount": 297,
+      "elapsed_ms": 40469.0
+    },
+    "elapsed_s": 40.5
+  },
+  "gemini-3.8-flash": {
+    "passed": false,
+    "http": 422,
+    "status": null,
+    "detail": "gemini_timeout_or_network",
+    "model": null,
+    "manifest": {},
+    "usage": null,
+    "elapsed_s": 90.39
+  }
+}

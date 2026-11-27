@@ -1,0 +1,475 @@
+{
+  "status": "observed_mismatch",
+  "kind": "wrong_answer",
+  "package_sha256": "4f481ac695f547a3812bf4be1e379d2d6f7ae842008b437adce47880837017af",
+  "original_case": {
+    "n": 3,
+    "a": [
+      1,
+      2,
+      3
+    ]
+  },
+  "witness": {
+    "kind": "wrong_answer",
+    "case": {
+      "n": 1,
+      "a": [
+        1
+      ]
+    },
+    "stdin": "1\n1\n",
+    "student": {
+      "status": "ok",
+      "detail": null,
+      "stdout": "0\n",
+      "stderr": "",
+      "events": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 0,
+          "kind": "call",
+          "function": "<module>",
+          "snapshot_timing": "call",
+          "locals": {}
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 1,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {}
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 2,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1
+          }
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        },
+        {
+          "event_id": "E5",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "return",
+          "function": "<module>",
+          "snapshot_timing": "return",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        }
+      ],
+      "trace_status": "complete",
+      "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+      "source_sha256": "bde69859f535ecabf66c31ba2f89ce89a85fb43ae6799fc6b68b20a83f23c026",
+      "input_sha256": "ad0fadf63cc7cd779ce475e345bf4063565b63a3c2efef1eebc89790aaa6acba",
+      "elapsed_ms": 562,
+      "trace_trust": "guest_observation_not_authenticated",
+      "cleanup_confirmed": true
+    },
+    "reference": {
+      "status": "ok",
+      "detail": null,
+      "stdout": "1\n",
+      "stderr": "",
+      "events": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 0,
+          "kind": "call",
+          "function": "<module>",
+          "snapshot_timing": "call",
+          "locals": {}
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 1,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {}
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 2,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1
+          }
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        },
+        {
+          "event_id": "E5",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "return",
+          "function": "<module>",
+          "snapshot_timing": "return",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        }
+      ],
+      "trace_status": "complete",
+      "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+      "source_sha256": "d24dbde5166576a5c70c442c847e30e06d4445164e0956b03332f6ef79ec1a59",
+      "input_sha256": "ad0fadf63cc7cd779ce475e345bf4063565b63a3c2efef1eebc89790aaa6acba",
+      "elapsed_ms": 547,
+      "trace_trust": "guest_observation_not_authenticated",
+      "cleanup_confirmed": true
+    }
+  },
+  "reference_source": "n=int(input())\na=list(map(int,input().split()))\nprint(sum(a))\n",
+  "student_source": "n=int(input())\na=list(map(int,input().split()))\nprint(sum(a[:-1]))\n",
+  "replay_count": 3,
+  "attempts": 5,
+  "student_graph": {
+    "kind": "observed_execution_not_static_cfg",
+    "nodes": [
+      {
+        "id": "F1:0",
+        "line": 0,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E1"
+        ]
+      },
+      {
+        "id": "F1:1",
+        "line": 1,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E2"
+        ]
+      },
+      {
+        "id": "F1:2",
+        "line": 2,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E3"
+        ]
+      },
+      {
+        "id": "F1:3",
+        "line": 3,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E4",
+          "E5"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "F1:0",
+        "to": "F1:1",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E1",
+            "E2"
+          ]
+        ]
+      },
+      {
+        "from": "F1:1",
+        "to": "F1:2",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E2",
+            "E3"
+          ]
+        ]
+      },
+      {
+        "from": "F1:2",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E3",
+            "E4"
+          ]
+        ]
+      },
+      {
+        "from": "F1:3",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E4",
+            "E5"
+          ]
+        ]
+      }
+    ],
+    "changes": [],
+    "frames": [],
+    "timeline": [],
+    "relations": {
+      "data": [],
+      "control": [],
+      "def_use": []
+    },
+    "static_cfg": {
+      "status": "restricted_syntactic_cfg",
+      "nodes": [
+        {
+          "id": "module:1",
+          "line": 1,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:2",
+          "line": 2,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:3",
+          "line": 3,
+          "scope": "module",
+          "kind": "Expr"
+        }
+      ],
+      "edges": [
+        {
+          "from": "module:1",
+          "to": "module:2",
+          "kind": "next"
+        },
+        {
+          "from": "module:2",
+          "to": "module:3",
+          "kind": "next"
+        }
+      ],
+      "unsupported": [],
+      "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+    },
+    "causal_fault_proven": false,
+    "output_chain": {
+      "status": "unsupported",
+      "links": []
+    }
+  },
+  "reference_graph": {
+    "kind": "observed_execution_not_static_cfg",
+    "nodes": [
+      {
+        "id": "F1:0",
+        "line": 0,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E1"
+        ]
+      },
+      {
+        "id": "F1:1",
+        "line": 1,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E2"
+        ]
+      },
+      {
+        "id": "F1:2",
+        "line": 2,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E3"
+        ]
+      },
+      {
+        "id": "F1:3",
+        "line": 3,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E4",
+          "E5"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "F1:0",
+        "to": "F1:1",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E1",
+            "E2"
+          ]
+        ]
+      },
+      {
+        "from": "F1:1",
+        "to": "F1:2",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E2",
+            "E3"
+          ]
+        ]
+      },
+      {
+        "from": "F1:2",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E3",
+            "E4"
+          ]
+        ]
+      },
+      {
+        "from": "F1:3",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E4",
+            "E5"
+          ]
+        ]
+      }
+    ],
+    "changes": [],
+    "frames": [],
+    "timeline": [],
+    "relations": {
+      "data": [],
+      "control": [],
+      "def_use": []
+    },
+    "static_cfg": {
+      "status": "restricted_syntactic_cfg",
+      "nodes": [
+        {
+          "id": "module:1",
+          "line": 1,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:2",
+          "line": 2,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:3",
+          "line": 3,
+          "scope": "module",
+          "kind": "Expr"
+        }
+      ],
+      "edges": [
+        {
+          "from": "module:1",
+          "to": "module:2",
+          "kind": "next"
+        },
+        {
+          "from": "module:2",
+          "to": "module:3",
+          "kind": "next"
+        }
+      ],
+      "unsupported": [],
+      "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+    },
+    "causal_fault_proven": false,
+    "output_chain": {
+      "status": "unsupported",
+      "links": []
+    }
+  },
+  "hypotheses": [],
+  "ai_facts": [],
+  "ai_status": "disabled",
+  "ai_model": null,
+  "ai_usage": {},
+  "generator": "boundary_random",
+  "guidance": {
+    "status": "disabled",
+    "rejected": 0,
+    "probes": []
+  },
+  "suspiciousness": {
+    "status": "disabled",
+    "ranked": []
+  },
+  "ai_error": null,
+  "elapsed_ms": 5422,
+  "scope": "Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."
+}

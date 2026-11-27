@@ -1,0 +1,30 @@
+{
+  "status": "ok",
+  "lines": [
+    2,
+    3
+  ],
+  "facts": [
+    {
+      "event_id": "E3",
+      "variable": "n",
+      "value": 3,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E4",
+      "variable": "n",
+      "value": 3,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 773,
+    "completion_tokens": 199,
+    "total_tokens": 972,
+    "elapsed_ms": 2391.0
+  },
+  "scope": "Delayed retry after local budget cap; original failed arm preserved"
+}

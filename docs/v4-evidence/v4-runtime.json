@@ -1,0 +1,6 @@
+{
+  "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+  "tag": "algoxray-v4-worker:local",
+  "source": "docker/v4-worker/Dockerfile",
+  "scope": "local dedicated worker, public security not certified"
+}

@@ -1,0 +1,49 @@
+{
+  "family": "kth",
+  "role": "control",
+  "package_sha256": "698ba65cf6834670a8f16c96575ba4a1a2f70c2195b7551eb989684da4193057",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "a": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "k": 3
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "a": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "k": 3
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 12,
+  "result": {
+    "status": "no_witness_found",
+    "attempts": 5,
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "scope": "Bounded tests only; correctness not proven."
+  }
+}

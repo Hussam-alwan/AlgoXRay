@@ -1,0 +1,37 @@
+{
+  "family": "sieve",
+  "role": "control",
+  "package_sha256": "46e6b5c2e8ce6059d1abd545be5577706512ea9874e07c13e7285ce51936f44a",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "n": 1
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "n": 10
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 4,
+  "result": {
+    "status": "no_witness_found",
+    "attempts": 4,
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "scope": "Bounded tests only; correctness not proven."
+  }
+}
