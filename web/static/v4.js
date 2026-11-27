@@ -86,7 +86,7 @@ function profileRows(){
 function renderProfile(){
  const p=result[side+"_graph"].profile||{status:"unavailable"};
  const ns=n=>Number.isFinite(n)?(n/1e6).toFixed(3):"—";
- msg("profile-summary",(side==="student"?"الطالب":"المرجع")+" · "+p.status+" · زمن التنفيذ "+ns(p.execution_wall_ns)+" ms · CPU "+ns(p.execution_cpu_ns)+" ms · كلفة أداة التتبع "+ns(p.callback_wall_ns)+" ms · تشغيل الحاوية والاتصال "+(result.witness[side].elapsed_ms??"—")+" ms");
+ msg("profile-summary",(side==="student"?"الطالب":"المرجع")+" · "+p.status+" · زمن التنفيذ "+ns(p.execution_wall_ns)+" ms · CPU "+ns(p.execution_cpu_ns)+" ms · كلفة أداة التتبع "+ns(p.callback_wall_ns)+" ms · زمن الطلب مع الحاوية "+(result.witness[side].elapsed_ms??"—")+" ms");
  const tbody=$("profile-table").tBodies[0];tbody.replaceChildren();
  const rows=profileRows(),key=$("profile-cost").value+"_"+$("profile-clock").value+"_ns",peak=Math.max(0,...rows.map(r=>r[key]||0));
  for(const row of rows){

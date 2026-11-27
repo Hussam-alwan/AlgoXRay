@@ -4,7 +4,7 @@ from contextlib import closing
 from dataclasses import dataclass,field
 from pathlib import Path
 from .paths import ROOT
-from .v4_provider import ProviderError,TASKS,MAX_REQUEST,MAX_RESPONSE,LOCK
+from .v4_provider import ProviderError,TASKS,MAX_REQUEST,MAX_RESPONSE,LOCK,validated_result
 
 MODELS=("gemini-4-hydrogen","gemini-3.8-flash")
 DEFAULT_LEDGER=ROOT/"results"/"v4-gemini-attempts.sqlite3"
@@ -88,7 +88,7 @@ class GeminiProvider:
                 raw_text="".join(p.get("text","") for p in candidate["content"]["parts"] if not p.get("thought"))
                 result=json.loads(raw_text)
                 if type(result) is not dict:raise ValueError()
-                return result
+                return validated_result(result,schema)
             except (ValueError,KeyError,IndexError,TypeError):raise ProviderError("invalid_model_json") from None
         finally:LOCK.release()
 

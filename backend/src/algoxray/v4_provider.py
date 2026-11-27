@@ -1,13 +1,24 @@
 """Local-first structured inference. No provider executes code or approves contracts."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import json
 import threading
 import time
 import urllib.request
 import urllib.error
+import uuid
 from typing import Protocol
+from jsonschema import Draft202012Validator, ValidationError, SchemaError
 
 class ProviderError(RuntimeError): pass
+
+def validated_result(result, schema):
+    if type(result) is not dict:
+        raise ProviderError("invalid_model_json")
+    try:
+        Draft202012Validator(schema).validate(result)
+    except (ValidationError, SchemaError):
+        raise ProviderError("invalid_model_schema") from None
+    return result
 def bounded_propose(provider,task,data,schema,cancel=None,deadline=105):
     """Abandon an in-flight call locally; transport may still finish/consume quota.
     The underlying provider lock remains held until its request ends.
@@ -48,7 +59,9 @@ class OllamaProvider:
     model: str="qwen2.5-coder:7b"
     timeout: float=90.0
     context: int=4096
+    usage: dict=field(default_factory=dict, init=False, compare=False)
     def propose(self,task,data,schema):
+        self.usage.clear()
         if task not in TASKS: raise ProviderError("unsupported_task")
         if self.model not in ("qwen2.5-coder:7b","qwen2.5-coder:3b"):
             raise ProviderError("unsupported_local_model")
@@ -60,6 +73,8 @@ class OllamaProvider:
         raw=json.dumps(payload,ensure_ascii=False,allow_nan=False).encode()
         if len(raw)>MAX_REQUEST: raise ProviderError("request_too_large")
         if not LOCK.acquire(blocking=False): raise ProviderError("model_busy")
+        started=time.monotonic()
+        self.usage["request_id"]=uuid.uuid4().hex
         try:
             # Disable proxies and redirects: this provider never sends data to a cloud host.
             class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -70,12 +85,18 @@ class OllamaProvider:
                 with opener.open(request,timeout=self.timeout) as response:
                     content=response.read(MAX_RESPONSE+1)
                 if len(content)>MAX_RESPONSE: raise ProviderError("response_too_large")
-                result=json.loads(json.loads(content)["message"]["content"])
-                if type(result) is not dict: raise ValueError()
-                return result
+                envelope=json.loads(content)
+                self.usage.update({k:v for k,v in envelope.items() if k in
+                    ("total_duration","load_duration","prompt_eval_count","prompt_eval_duration","eval_count","eval_duration") and type(v) is int and v>=0})
+                if envelope.get("done") is False or envelope.get("done_reason")=="length":
+                    raise ProviderError("local_model_incomplete_response")
+                result=json.loads(envelope["message"]["content"])
+                return validated_result(result,schema)
             except (OSError,urllib.error.URLError): raise ProviderError("local_model_unavailable") from None
             except (ValueError,KeyError,TypeError): raise ProviderError("invalid_model_json") from None
-        finally: LOCK.release()
+        finally:
+            self.usage["elapsed_ms"]=round((time.monotonic()-started)*1000,2)
+            LOCK.release()
 
 def model_health():
     try:

@@ -2,7 +2,7 @@
 import json,os,sqlite3,time,urllib.request,urllib.error
 from dataclasses import dataclass,field
 from .paths import ROOT
-from .v4_provider import ProviderError,TASKS,MAX_REQUEST,MAX_RESPONSE,LOCK
+from .v4_provider import ProviderError,TASKS,MAX_REQUEST,MAX_RESPONSE,LOCK,validated_result
 from .v4_gemini import Ledger,NoRedirect
 
 MODEL="inclusionai/ling-3.2-flash:free"
@@ -56,7 +56,7 @@ class OpenRouterProvider:
                 self.usage["elapsed_ms"]=round((time.monotonic()-started)*1000,2)
                 result=json.loads(c["message"]["content"])
                 if type(result) is not dict:raise ValueError()
-                return result
+                return validated_result(result,schema)
             except (ValueError,KeyError,IndexError,TypeError):raise ProviderError("invalid_model_json") from None
         finally:LOCK.release()
 
