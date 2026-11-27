@@ -18,6 +18,9 @@ from .v4_graph import observed_graph
 from .v4_profiling import attach_profile
 from .v4_cache import CACHE
 from .v4_qwen_cloud import status as qwen_status
+from .v4_draft_review import review_draft,field_schema
+from .v4_package_audit import audit_package
+from .v4_loop_observations import with_loops
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
@@ -48,6 +51,8 @@ class Approve(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package:dict
     owner_reviewed:bool=False
+class Audit(Approve):
+    max_cases:int=Field(default=16,ge=2,le=32)
 class Run(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package_key:str
@@ -90,16 +95,22 @@ def router_for(require_loopback,token):
     def draft(body:Draft,request:Request):
         guard(request)
         schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kind":{"type":"string","enum":["int","word","ints","matrix"]},"min":{"type":"integer"},"max":{"type":"integer"},"alphabet":{"type":"string"},"length":{"type":"integer"},"length_from":{"type":"string"},"rows":{"type":"integer"},"rows_from":{"type":"string"},"cols":{"type":"integer"},"cols_from":{"type":"string"}},"required":["name","kind","min","max"],"additionalProperties":False}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"type":"string","enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
-        instructions='Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. matrix fields have min,max, rows or rows_from, cols or cols_from (1..32 per dimension); matrix must occupy its own line group. lines is a list of rows of field names in original order. Example for one integer n between 1 and 9: fields=[{"name":"n","kind":"int","min":1,"max":9}], lines=[["n"]], output="tokens". Omit irrelevant optional fields: alphabet only for word; length or length_from only for ints; rows/cols dimensions only for matrix. id must be lowercase ASCII letters/digits/underscore. Never invent constraints.'
+        schema["properties"]["manifest"]["properties"]["fields"]["items"]=field_schema()
+        schema["properties"]["evidence"]={"type":"array","maxItems":48,"items":{"type":"object","properties":{"field":{"type":"string"},"attribute":{"type":"string","enum":["min","max","alphabet","length","length_from","rows","rows_from","cols","cols_from"]},"quote":{"type":"string","minLength":1,"maxLength":600}},"required":["field","attribute","quote"],"additionalProperties":False}}
+        schema["properties"]["unresolved"]={"type":"array","maxItems":16,"items":{"type":"string","minLength":1,"maxLength":400}}
+        schema["required"]=["manifest","evidence","unresolved"]
+        instructions='Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. matrix fields have min,max, rows or rows_from, cols or cols_from (1..32 per dimension); matrix must occupy its own line group. lines is a list of rows of field names in original order. Example for one integer n between 1 and 9: fields=[{"name":"n","kind":"int","min":1,"max":9}], lines=[["n"]], output="tokens". Omit irrelevant optional fields: alphabet only for word; length or length_from only for ints; rows/cols dimensions only for matrix. id must be lowercase ASCII letters/digits/underscore. Never invent constraints. A list whose size is an earlier input variable MUST use length_from, never a fixed length. For example: fields=[{"name":"size","kind":"int","min":1,"max":20},{"name":"values","kind":"ints","min":0,"max":1000,"length_from":"size"}], lines=[["size"],["values"]]. For every numeric bound, alphabet and size dependency return an evidence entry {field,attribute,quote} with an exact quotation from the supplied statement. List unrepresentable or ambiguous requirements in unresolved. Do not replace original large limits with convenient smaller ones.'
+        r=None
         try:
             provider=select_provider(body.model,body.cloud_consent,body.use_cache)
             r=provider.propose("contract_draft",{"statement":body.statement,"grammar":instructions},schema)
-            if set(r)!={"manifest"}:raise ValueError("Invalid draft envelope")
+            if not {"manifest"}<=set(r)<={"manifest","evidence","unresolved"}:raise ValueError("Invalid draft envelope")
             if type(r["manifest"]) is not dict:raise ValueError("Invalid manifest")
             m=validate_manifest({**r["manifest"],"statement":body.statement})
-            return {"status":"draft_unreviewed","manifest":m,"model":body.model,"usage":getattr(provider,"usage",{}),"warning":"Check against original problem; supply independently reviewed reference and controls."}
+            constraint_review=review_draft(body.statement,m,r.get("evidence",[]),r.get("unresolved",[]))
+            return {"status":"draft_unreviewed","manifest":m,"provenance":constraint_review["provenance"],"constraint_review":constraint_review,"model":body.model,"usage":getattr(provider,"usage",{}),"warning":"Check against original problem; supply independently reviewed reference and controls."}
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
-        except (ValueError,TypeError,KeyError):raise HTTPException(422,"Unsupported or invalid draft; use manual authoring")
+        except (ValueError,TypeError,KeyError) as exc:raise HTTPException(422,{"message":"Unsupported or invalid draft; review and edit manually","reason":str(exc)[:160],"draft":r if type(r) is dict else None}) from None
     @router.post("/packages/import")
     def problem_import(body:ImportProblem,request:Request):
         guard(request)
@@ -111,6 +122,14 @@ def router_for(require_loopback,token):
         try:return draft_reference(select_provider(body.model,body.cloud_consent,body.use_cache),body.manifest)
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
         except ValueError as exc:raise HTTPException(422,str(exc)) from None
+    @router.post("/packages/audit")
+    def package_audit(body:Audit,request:Request):
+        guard(request)
+        if not body.owner_reviewed:raise HTTPException(403,"Review references before audit execution")
+        if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
+        try:return audit_package(body.package,body.max_cases)
+        except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
+        finally:lock.release()
     @router.post("/packages/approve")
     def approve(body:Approve,request:Request):
         guard(request)
@@ -199,8 +218,8 @@ def router_for(require_loopback,token):
             return dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "output_difference",
                 package_sha256=body.package_key,student_source=body.source,reference_source=p["reference"],
                 witness=dict(case=case,stdin=stdin,student=student,reference=ref),replay_count=0,attempts=1,
-                student_graph=attach_profile(observed_graph(student.get("events",[]),body.source),student),
-                reference_graph=attach_profile(observed_graph(ref.get("events",[]),p["reference"]),ref),
+                student_graph=with_loops(attach_profile(observed_graph(student.get("events",[]),body.source),student),body.source,student),
+                reference_graph=with_loops(attach_profile(observed_graph(ref.get("events",[]),p["reference"]),ref),p["reference"],ref),
                 hypotheses=[],ai_facts=[],ai_status="disabled",
                 scope="One instrumented input, no search or replay claim. Timing is not judge runtime or complexity proof.")
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc

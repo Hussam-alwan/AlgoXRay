@@ -66,6 +66,23 @@ def test(url,out):
             page.locator("#approve").click()
         assert response.value.status==403
         checks.append("review_required")
+        with page.expect_response(lambda r:r.url.endswith("/packages/audit"),timeout=10000) as response:
+            page.locator("#audit-reference").click()
+        assert response.value.status==403
+        checks.append("reference_audit_review_required")
+        original_package=page.locator("#package").input_value()
+        audit_package=json.loads(original_package)
+        audit_package["reference_alt"]="import sys\nvalues=list(map(int,sys.stdin.read().split()))\nprint(sum(values[1:]))"
+        page.locator("#package").fill(json.dumps(audit_package))
+        page.locator("#reviewed").check()
+        with page.expect_response(lambda r:r.url.endswith("/packages/audit"),timeout=60000) as response:
+            page.locator("#audit-reference").click()
+        audited=response.value.json()
+        assert audited["status"]=="bounded_reference_agreement",audited
+        assert all(x["agreed"] for x in audited["checks"])
+        checks.append("distinct_reference_audit")
+        page.locator("#package").fill(original_package)
+
         page.locator("#reviewed").check()
         with page.expect_response(lambda r:r.url.endswith("/packages/approve"),timeout=35000) as response:
             page.locator("#approve").click()
@@ -140,6 +157,21 @@ def test(url,out):
         page.locator("#slider").fill(str(pos))
         assert "f" in page.locator("#stack").inner_text()
         checks.append("correct_code_profile_recursion_and_call_stack")
+        frame_id=events[pos]["frame_id"]
+        page.locator("#graph-frame").select_option(frame_id)
+        page.locator("#graph-kind").select_option("line")
+        assert page.locator("#graph .node").count()>0
+        assert all(frame_id in x for x in page.locator("#graph .node").all_text_contents())
+        page.locator("#graph-layout").select_option("compact")
+        assert page.locator("#graph svg").get_attribute("viewBox").split()[2]=="680"
+        assert page.locator("#previous-locals").inner_text()
+        page.locator("#graph .node").last.click()
+        assert page.locator("#code .active").count()==1
+        page.locator("#graph-frame").select_option("all")
+        page.locator("#graph-kind").select_option("all")
+        page.locator("#graph-layout").select_option("timeline")
+        checks.append("graph_frame_event_layout_and_snapshot_controls")
+
         page.locator("#profiling").screenshot(path=str(out/"profile-table.png"))
         page.set_viewport_size({"width":390,"height":844})
         assert page.evaluate("document.body.scrollWidth")<=390
@@ -155,6 +187,11 @@ def test(url,out):
         partial=response.value.json()
         assert partial["witness"]["student"]["trace_status"]=="truncated"
         assert partial["witness"]["student"]["profile"]["status"]=="complete"
+        loops=partial["student_graph"]["loop_summary"]["loops"]
+        assert any(x.get("observed_body_entries",0)>0 and x["status"]=="observed_partial_trace" for x in loops)
+        assert page.locator("#loops").inner_text()
+        checks.append("loop_observations_disclose_partial_counts")
+
         checks.append("complete_timing_with_truncated_visual_trace")
         page.locator("#source").fill("while True: pass")
         with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=35000) as response:

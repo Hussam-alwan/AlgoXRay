@@ -1,5 +1,7 @@
 """Declarative, bounded stdin grammar; packages are data, not host plugins."""
-import hashlib,json,random,re
+import hashlib,json,random,re,math
+from collections import Counter
+from decimal import Decimal, InvalidOperation, localcontext
 from pathlib import Path
 from .v4_isolation import MAX_INPUT,MAX_SOURCE
 
@@ -7,12 +9,17 @@ def digest(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode()).hexdigest()
 
 def validate_manifest(m):
-    if type(m) is not dict or set(m)!={"id","title","statement","fields","lines","output"}:
+    if type(m) is not dict or not {"id","title","statement","fields","lines","output"}<=set(m)<={"id","title","statement","fields","lines","output","tolerance"}:
         raise ValueError("Expected id,title,statement,fields,lines,output")
     if type(m["id"]) is not str or not re.fullmatch("[a-z0-9_]{1,60}",m["id"]): raise ValueError("Invalid id")
     for k,cap in (("title",120),("statement",8000)):
         if type(m[k]) is not str or not 1<=len(m[k])<=cap: raise ValueError("Invalid "+k)
-    if m["output"] not in ("tokens","exact"): raise ValueError("Unsupported output policy")
+    if m["output"] not in ("tokens","exact","unordered_tokens","float_tokens"): raise ValueError("Unsupported output policy")
+    if m["output"]=="float_tokens":
+        tolerance=m.get("tolerance")
+        if type(tolerance) is not dict or set(tolerance)!={"abs","rel"} or any(type(v) not in (int,float) or not math.isfinite(v) or not 0<=v<=.01 for v in tolerance.values()):
+            raise ValueError("Supply explicit finite abs/rel tolerances in [0,.01]")
+    elif "tolerance" in m:raise ValueError("Tolerance is only supported by float_tokens")
     if type(m["fields"]) is not list or not 1<=len(m["fields"])<=16: raise ValueError("Invalid fields")
     prior={}
     for f in m["fields"]:
@@ -22,14 +29,14 @@ def validate_manifest(m):
         if k=="int":
             if set(f)!=base or type(f["min"]) is not int or type(f["max"]) is not int or not -10**15<=f["min"]<=f["max"]<=10**15: raise ValueError("Invalid integer bounds")
         elif k=="word":
-            if set(f)!=base|{"alphabet"} or type(f["min"]) is not int or type(f["max"]) is not int or not 1<=f["min"]<=f["max"]<=100 or type(f["alphabet"]) is not str or not re.fullmatch("[a-zA-Z0-9]+",f["alphabet"]) or len(set(f["alphabet"]))!=len(f["alphabet"]): raise ValueError("Invalid word bounds")
+            if set(f)!=base|{"alphabet"} or type(f["min"]) is not int or type(f["max"]) is not int or not 0<=f["min"]<=f["max"]<=100 or type(f["alphabet"]) is not str or not re.fullmatch("[a-zA-Z0-9]+",f["alphabet"]) or len(set(f["alphabet"]))!=len(f["alphabet"]): raise ValueError("Invalid word bounds")
         elif k=="ints":
             if set(f) not in (base|{"length"},base|{"length_from"}) or type(f["min"]) is not int or type(f["max"]) is not int or not -10**15<=f["min"]<=f["max"]<=10**15: raise ValueError("Invalid list bounds")
             if "length" in f:
-                if type(f["length"]) is not int or not 1<=f["length"]<=100: raise ValueError("Invalid list length")
+                if type(f["length"]) is not int or not 0<=f["length"]<=100: raise ValueError("Invalid list length")
             else:
                 p=prior.get(f["length_from"]) if type(f["length_from"]) is str else None
-                if not p or p["kind"]!="int" or not 1<=p["min"]<=p["max"]<=100: raise ValueError("Invalid dependent length")
+                if not p or p["kind"]!="int" or not 0<=p["min"]<=p["max"]<=100: raise ValueError("Invalid dependent length")
         elif k=="matrix":
             if not base<=set(f) or set(f)-base-{"rows","rows_from","cols","cols_from"} or type(f["min"]) is not int or type(f["max"]) is not int or not -10**15<=f["min"]<=f["max"]<=10**15:raise ValueError("Invalid matrix bounds")
             for axis in ("rows","cols"):
@@ -131,10 +138,26 @@ def smaller(m,c):
             if complexity(m,d)<complexity(m,c): yield d
 
 def equal(m,a,b):
-    return a.split()==b.split() if m["output"]=="tokens" else a==b
+    if m["output"]=="tokens":return a.split()==b.split()
+    if m["output"]=="unordered_tokens":return Counter(a.split())==Counter(b.split())
+    if m["output"]=="exact":return a==b
+    if m["output"]!="float_tokens":return False
+    left,right=a.split(),b.split()
+    if len(left)!=len(right):return False
+    def number(token):
+        if len(token)>128 or not re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d{1,3})?",token):raise ValueError("Unsupported numeric token")
+        value=Decimal(token)
+        if not value.is_finite() or abs(value.as_tuple().exponent)>256:raise ValueError("Unsupported numeric magnitude")
+        return value
+    try:
+        with localcontext() as ctx:
+            ctx.prec=512
+            absolute=Decimal(str(m["tolerance"]["abs"]));relative=Decimal(str(m["tolerance"]["rel"]))
+            return all(abs(number(x)-number(y))<=max(absolute,relative*max(abs(number(x)),abs(number(y)))) for x,y in zip(left,right))
+    except (ValueError,InvalidOperation):return False
 
 def validate_package(p):
-    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt"}: raise ValueError("Expected manifest,reference,controls")
+    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt","provenance"}: raise ValueError("Expected manifest,reference,controls")
     m=validate_manifest(p["manifest"])
     if type(p["reference"]) is not str or not 1<=len(p["reference"].encode())<=MAX_SOURCE: raise ValueError("Invalid reference")
     if "reference_alt" in p and (type(p["reference_alt"]) is not str or not 1<=len(p["reference_alt"].encode())<=MAX_SOURCE or p["reference_alt"]==p["reference"]):raise ValueError("Alternative reference must be distinct and bounded")
@@ -143,6 +166,9 @@ def validate_package(p):
         if type(c) is not dict or set(c)!={"case","expected"} or type(c["expected"]) is not str or len(c["expected"])>8192: raise ValueError("Invalid control")
         serialize(m,c["case"])
     if len({digest(c["case"]) for c in p["controls"]})!=len(p["controls"]): raise ValueError("Duplicate controls")
+    if "provenance" in p:
+        from .v4_draft_review import validate_provenance
+        validate_provenance(p)
     return p
 
 class PackageStore:
