@@ -59,13 +59,14 @@ def router_for(require_loopback,token):
     @router.post("/packages/draft")
     def draft(body:Draft,request:Request):
         guard(request)
-        schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object"}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
-        instructions="Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. lines is a list of rows of field names in original order. Do not invent constraints; return no manifest if unsupported."
+        schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kind":{"enum":["int","word","ints"]},"min":{"type":"integer"},"max":{"type":"integer"},"alphabet":{"type":"string"},"length":{"type":"integer"},"length_from":{"type":"string"}},"required":["name","kind","min","max"],"additionalProperties":false}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":false}},"required":["manifest"],"additionalProperties":false}
+        instructions='Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. lines is a list of rows of field names in original order. Example for one integer n between 1 and 9: fields=[{"name":"n","kind":"int","min":1,"max":9}], lines=[["n"]], output="tokens". Omit irrelevant optional fields: alphabet only for word; length or length_from only for ints. id must be lowercase ASCII letters/digits/underscore. Never invent constraints.'
         try:
             provider=select_provider(body.model,body.cloud_consent)
             r=provider.propose("contract_draft",{"statement":body.statement,"grammar":instructions},schema)
             if set(r)!={"manifest"}:raise ValueError("Invalid draft envelope")
-            m=validate_manifest(r["manifest"])
+            if type(r["manifest"]) is not dict:raise ValueError("Invalid manifest")
+            m=validate_manifest({**r["manifest"],"statement":body.statement})
             return {"status":"draft_unreviewed","manifest":m,"model":body.model,"usage":getattr(provider,"usage",{}),"warning":"Check against original problem; supply independently reviewed reference and controls."}
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
         except (ValueError,TypeError,KeyError):raise HTTPException(422,"Unsupported or invalid draft; use manual authoring")
