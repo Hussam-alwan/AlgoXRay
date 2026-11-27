@@ -1,0 +1,151 @@
+{
+  "scope": "Seven paired external benchmark families; adapted function bodies, added stdio wrappers, bounded domains. Controls and bug locations are known. Not independent student submissions or unseen holdout. Source is external, task adapters and oracle implementations authored for this project.",
+  "trials": 14,
+  "fault_detected": 7,
+  "fault_total": 7,
+  "control_accusations": 0,
+  "control_total": 7,
+  "replays": 21,
+  "rows": [
+    {
+      "family": "gcd",
+      "role": "control",
+      "status": "no_witness_found",
+      "kind": null,
+      "replay_count": 0,
+      "trace": null,
+      "rank_status": null,
+      "seconds": 11.34
+    },
+    {
+      "family": "gcd",
+      "role": "fault",
+      "status": "observed_mismatch",
+      "kind": "exception",
+      "replay_count": 3,
+      "trace": "truncated",
+      "rank_status": "insufficient_complete_traces",
+      "seconds": 11.89
+    },
+    {
+      "family": "get_factors",
+      "role": "control",
+      "status": "no_witness_found",
+      "kind": null,
+      "replay_count": 0,
+      "trace": null,
+      "rank_status": null,
+      "seconds": 10.47
+    },
+    {
+      "family": "get_factors",
+      "role": "fault",
+      "status": "observed_mismatch",
+      "kind": "wrong_answer",
+      "replay_count": 3,
+      "trace": "complete",
+      "rank_status": "observed_spectrum",
+      "seconds": 15.69
+    },
+    {
+      "family": "sieve",
+      "role": "control",
+      "status": "no_witness_found",
+      "kind": null,
+      "replay_count": 0,
+      "trace": null,
+      "rank_status": null,
+      "seconds": 7.64
+    },
+    {
+      "family": "sieve",
+      "role": "fault",
+      "status": "observed_mismatch",
+      "kind": "wrong_answer",
+      "replay_count": 3,
+      "trace": "complete",
+      "rank_status": "observed_spectrum",
+      "seconds": 14.89
+    },
+    {
+      "family": "kth",
+      "role": "control",
+      "status": "no_witness_found",
+      "kind": null,
+      "replay_count": 0,
+      "trace": null,
+      "rank_status": null,
+      "seconds": 9.61
+    },
+    {
+      "family": "kth",
+      "role": "fault",
+      "status": "observed_mismatch",
+      "kind": "exception",
+      "replay_count": 3,
+      "trace": "complete",
+      "rank_status": "observed_spectrum",
+      "seconds": 15.14
+    },
+    {
+      "family": "quicksort",
+      "role": "control",
+      "status": "no_witness_found",
+      "kind": null,
+      "replay_count": 0,
+      "trace": null,
+      "rank_status": null,
+      "seconds": 7.51
+    },
+    {
+      "family": "quicksort",
+      "role": "fault",
+      "status": "observed_mismatch",
+      "kind": "wrong_answer",
+      "replay_count": 3,
+      "trace": "complete",
+      "rank_status": "observed_spectrum",
+      "seconds": 15.92
+    },
+    {
+      "family": "longest_common_subsequence",
+      "role": "control",
+      "status": "no_witness_found",
+      "kind": null,
+      "replay_count": 0,
+      "trace": null,
+      "rank_status": null,
+      "seconds": 9.83
+    },
+    {
+      "family": "longest_common_subsequence",
+      "role": "fault",
+      "status": "observed_mismatch",
+      "kind": "wrong_answer",
+      "replay_count": 3,
+      "trace": "complete",
+      "rank_status": "observed_spectrum",
+      "seconds": 15.64
+    },
+    {
+      "family": "possible_change",
+      "role": "control",
+      "status": "no_witness_found",
+      "kind": null,
+      "replay_count": 0,
+      "trace": null,
+      "rank_status": null,
+      "seconds": 7.42
+    },
+    {
+      "family": "possible_change",
+      "role": "fault",
+      "status": "observed_mismatch",
+      "kind": "exception",
+      "replay_count": 3,
+      "trace": "complete",
+      "rank_status": "observed_spectrum",
+      "seconds": 13.11
+    }
+  ]
+}

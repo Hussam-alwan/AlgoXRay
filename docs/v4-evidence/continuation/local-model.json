@@ -1,0 +1,270 @@
+{
+  "scope": "Three synthetic local-only smoke tasks, not comparative accuracy or human review.",
+  "model": "qwen2.5-coder:7b",
+  "context": 4096,
+  "commit": "b65f596fca34c487777641ebd47e97ba5161752b",
+  "tasks": [
+    {
+      "name": "schema_draft_transport",
+      "status": "schema_valid",
+      "response": {
+        "manifest": {
+          "id": "twice",
+          "title": "Twice",
+          "statement": "Read n from 1 to 9, print 2*n.",
+          "fields": [
+            {
+              "name": "n",
+              "kind": "int",
+              "min": 1,
+              "max": 9
+            }
+          ],
+          "lines": [
+            [
+              "n"
+            ]
+          ],
+          "output": "tokens"
+        }
+      },
+      "usage": {
+        "request_id": "0a3cd48373874c74865dc91bef2a78e1",
+        "total_duration": 10560418000,
+        "load_duration": 8469267500,
+        "prompt_eval_count": 156,
+        "prompt_eval_duration": 500601000,
+        "eval_count": 64,
+        "eval_duration": 1567266000,
+        "elapsed_ms": 10594.0
+      },
+      "seconds": 10.594
+    },
+    {
+      "name": "diagnosis",
+      "status": "schema_valid",
+      "response": {
+        "hypotheses": [
+          {
+            "text": "The code is not correctly implementing the task. It is printing the value of n instead of 2*n.",
+            "event_ids": [
+              "E3",
+              "E4"
+            ],
+            "line": 2
+          },
+          {
+            "text": "The code is not correctly reading n from 1 to 9. It is only reading n=3.",
+            "event_ids": [
+              "E3"
+            ],
+            "line": 2
+          }
+        ],
+        "facts": [
+          {
+            "event_id": "E1",
+            "variable": "n",
+            "value": 3
+          },
+          {
+            "event_id": "E4",
+            "variable": "n",
+            "value": 3
+          }
+        ]
+      },
+      "usage": {
+        "request_id": "4d4db52bcacc49baa939ee994998753f",
+        "total_duration": 4351814200,
+        "load_duration": 8338600,
+        "prompt_eval_count": 332,
+        "prompt_eval_duration": 246533000,
+        "eval_count": 174,
+        "eval_duration": 4084553000,
+        "elapsed_ms": 4391.0
+      },
+      "hypotheses": [
+        {
+          "text": "The code is not correctly implementing the task. It is printing the value of n instead of 2*n.",
+          "event_ids": [
+            "E3",
+            "E4"
+          ],
+          "line": 2,
+          "status": "hypothesis",
+          "causal_verified": false
+        },
+        {
+          "text": "The code is not correctly reading n from 1 to 9. It is only reading n=3.",
+          "event_ids": [
+            "E3"
+          ],
+          "line": 2,
+          "status": "hypothesis",
+          "causal_verified": false
+        }
+      ],
+      "facts": [
+        {
+          "event_id": "E1",
+          "variable": "n",
+          "value": 3,
+          "status": "unsupported",
+          "causal_verified": false
+        },
+        {
+          "event_id": "E4",
+          "variable": "n",
+          "value": 3,
+          "status": "matches_recorded_snapshot",
+          "causal_verified": false
+        }
+      ],
+      "seconds": 4.391
+    },
+    {
+      "name": "abstention",
+      "status": "schema_valid",
+      "response": {
+        "hypotheses": [],
+        "facts": []
+      },
+      "usage": {
+        "request_id": "d42de1f6ca4d40f9bee3e04a21a85e2b",
+        "total_duration": 398563600,
+        "load_duration": 6139800,
+        "prompt_eval_count": 88,
+        "prompt_eval_duration": 72281000,
+        "eval_count": 15,
+        "eval_duration": 301525000,
+        "elapsed_ms": 421.0
+      },
+      "hypotheses": [],
+      "facts": [],
+      "abstained": true,
+      "seconds": 0.421
+    }
+  ],
+  "gpu_samples": [
+    {
+      "board_memory_mib": 354,
+      "board_utilization_percent": 19
+    },
+    {
+      "board_memory_mib": 354,
+      "board_utilization_percent": 20
+    },
+    {
+      "board_memory_mib": 354,
+      "board_utilization_percent": 22
+    },
+    {
+      "board_memory_mib": 3255,
+      "board_utilization_percent": 6
+    },
+    {
+      "board_memory_mib": 4609,
+      "board_utilization_percent": 23
+    },
+    {
+      "board_memory_mib": 4609,
+      "board_utilization_percent": 15
+    },
+    {
+      "board_memory_mib": 4609,
+      "board_utilization_percent": 14
+    },
+    {
+      "board_memory_mib": 4609,
+      "board_utilization_percent": 16
+    },
+    {
+      "board_memory_mib": 4989,
+      "board_utilization_percent": 16
+    },
+    {
+      "board_memory_mib": 5001,
+      "board_utilization_percent": 10
+    },
+    {
+      "board_memory_mib": 5001,
+      "board_utilization_percent": 34
+    },
+    {
+      "board_memory_mib": 5003,
+      "board_utilization_percent": 82
+    },
+    {
+      "board_memory_mib": 5003,
+      "board_utilization_percent": 81
+    },
+    {
+      "board_memory_mib": 5003,
+      "board_utilization_percent": 88
+    },
+    {
+      "board_memory_mib": 5003,
+      "board_utilization_percent": 83
+    },
+    {
+      "board_memory_mib": 5003,
+      "board_utilization_percent": 88
+    }
+  ],
+  "model_tags": {
+    "models": [
+      {
+        "name": "qwen2.5-coder:7b",
+        "model": "qwen2.5-coder:7b",
+        "modified_at": "2026-11-27T09:44:16.6226699+03:00",
+        "size": 4683087561,
+        "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M",
+          "context_length": 32768,
+          "embedding_length": 3584,
+          "runner": "ggml"
+        },
+        "capabilities": [
+          "completion",
+          "tools",
+          "insert"
+        ]
+      }
+    ]
+  },
+  "model_ps": {
+    "models": [
+      {
+        "name": "qwen2.5-coder:7b",
+        "model": "qwen2.5-coder:7b",
+        "size": 4755397016,
+        "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-11-27T11:29:21.3985267+03:00",
+        "size_vram": 4755397016,
+        "context_length": 4096,
+        "runner": "llamacpp"
+      }
+    ]
+  },
+  "peak_board_memory_mib": 5003,
+  "memory_scope": "Observed whole GPU board samples, not isolated model peak allocation. ps records model residency at end."
+}

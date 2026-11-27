@@ -1,0 +1,39 @@
+{
+  "family": "longest_common_subsequence",
+  "role": "control",
+  "package_sha256": "4c150f8f137ab7713166d57b5b5ddfa7f6928fa13ae3dc7ce9e73a9b0a25cb61",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "a": "A",
+          "b": "B"
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "a": "AAA",
+          "b": "A"
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 6,
+  "result": {
+    "status": "no_witness_found",
+    "attempts": 5,
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "scope": "Bounded tests only; correctness not proven."
+  }
+}

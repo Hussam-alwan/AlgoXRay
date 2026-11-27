@@ -1,0 +1,39 @@
+{
+  "family": "gcd",
+  "role": "control",
+  "package_sha256": "0f4a9b367b131239293c9a312d1be27cb51f91aad09dd7ea06fe962b36710a13",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "a": 12,
+          "b": 0
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "a": 35,
+          "b": 21
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 5,
+  "result": {
+    "status": "no_witness_found",
+    "attempts": 5,
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "scope": "Bounded tests only; correctness not proven."
+  }
+}

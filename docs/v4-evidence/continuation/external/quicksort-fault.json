@@ -1,0 +1,3677 @@
+{
+  "family": "quicksort",
+  "role": "fault",
+  "package_sha256": "ff59d36658fe56893f68d3311f2827724d10070a1087bd5e87e435101444ce26",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "n": 1,
+          "a": [
+            0
+          ]
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "n": 4,
+          "a": [
+            2,
+            1,
+            2,
+            0
+          ]
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 7,
+  "result": {
+    "status": "observed_mismatch",
+    "kind": "wrong_answer",
+    "package_sha256": "ff59d36658fe56893f68d3311f2827724d10070a1087bd5e87e435101444ce26",
+    "original_case": {
+      "n": 4,
+      "a": [
+        2,
+        1,
+        2,
+        0
+      ]
+    },
+    "witness": {
+      "kind": "wrong_answer",
+      "case": {
+        "n": 4,
+        "a": [
+          2,
+          1,
+          2,
+          0
+        ]
+      },
+      "stdin": "4\n2 1 2 0\n",
+      "student": {
+        "status": "ok",
+        "detail": null,
+        "stdout": "0 1 2\n",
+        "stderr": "",
+        "events": [
+          {
+            "event_id": "E1",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 0,
+            "kind": "call",
+            "function": "<module>",
+            "snapshot_timing": "call",
+            "locals": {}
+          },
+          {
+            "event_id": "E2",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 1,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E3",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 10,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E4",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 11,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 4
+            }
+          },
+          {
+            "event_id": "E5",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 12,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 4,
+              "a": [
+                2,
+                1,
+                2,
+                0
+              ]
+            }
+          },
+          {
+            "event_id": "E6",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 1,
+            "kind": "call",
+            "function": "quicksort",
+            "snapshot_timing": "call",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E7",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E8",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 5,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E9",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E10",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "x": 1
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E11",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E12",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "x": 0
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E13",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 1,
+            "kind": "call",
+            "function": "quicksort",
+            "snapshot_timing": "call",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E14",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 2,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E15",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 5,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E16",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 6,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ],
+              "pivot": 1
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E17",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 6,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ],
+              "pivot": 1,
+              "x": 0
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E18",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 1,
+            "kind": "call",
+            "function": "quicksort",
+            "snapshot_timing": "call",
+            "locals": {
+              "arr": [
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E19",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 2,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E20",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 5,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E21",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 6,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                0
+              ],
+              "pivot": 0
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E22",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 1,
+            "kind": "call",
+            "function": "quicksort",
+            "snapshot_timing": "call",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E23",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E24",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 3,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E25",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 3,
+            "kind": "return",
+            "function": "quicksort",
+            "snapshot_timing": "return",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E26",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 7,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                0
+              ],
+              "pivot": 0,
+              "lesser": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E27",
+            "frame_id": "F6",
+            "parent_frame_id": "F4",
+            "line": 1,
+            "kind": "call",
+            "function": "quicksort",
+            "snapshot_timing": "call",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E28",
+            "frame_id": "F6",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E29",
+            "frame_id": "F6",
+            "parent_frame_id": "F4",
+            "line": 3,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E30",
+            "frame_id": "F6",
+            "parent_frame_id": "F4",
+            "line": 3,
+            "kind": "return",
+            "function": "quicksort",
+            "snapshot_timing": "return",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E31",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 8,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                0
+              ],
+              "pivot": 0,
+              "lesser": [],
+              "greater": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E32",
+            "frame_id": "F4",
+            "parent_frame_id": "F3",
+            "line": 8,
+            "kind": "return",
+            "function": "quicksort",
+            "snapshot_timing": "return",
+            "locals": {
+              "arr": [
+                0
+              ],
+              "pivot": 0,
+              "lesser": [],
+              "greater": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E33",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 7,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ],
+              "pivot": 1,
+              "lesser": [
+                0
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E34",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 7,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ],
+              "pivot": 1,
+              "lesser": [
+                0
+              ],
+              "x": 0
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E35",
+            "frame_id": "F7",
+            "parent_frame_id": "F3",
+            "line": 1,
+            "kind": "call",
+            "function": "quicksort",
+            "snapshot_timing": "call",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E36",
+            "frame_id": "F7",
+            "parent_frame_id": "F3",
+            "line": 2,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E37",
+            "frame_id": "F7",
+            "parent_frame_id": "F3",
+            "line": 3,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E38",
+            "frame_id": "F7",
+            "parent_frame_id": "F3",
+            "line": 3,
+            "kind": "return",
+            "function": "quicksort",
+            "snapshot_timing": "return",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E39",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 8,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ],
+              "pivot": 1,
+              "lesser": [
+                0
+              ],
+              "greater": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E40",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 8,
+            "kind": "return",
+            "function": "quicksort",
+            "snapshot_timing": "return",
+            "locals": {
+              "arr": [
+                1,
+                0
+              ],
+              "pivot": 1,
+              "lesser": [
+                0
+              ],
+              "greater": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E41",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 7,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "lesser": [
+                0,
+                1
+              ]
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E42",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 7,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "lesser": [
+                0,
+                1
+              ],
+              "x": 1
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E43",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 7,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "lesser": [
+                0,
+                1
+              ],
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E44",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 7,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "lesser": [
+                0,
+                1
+              ],
+              "x": 0
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E45",
+            "frame_id": "F8",
+            "parent_frame_id": "F2",
+            "line": 1,
+            "kind": "call",
+            "function": "quicksort",
+            "snapshot_timing": "call",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E46",
+            "frame_id": "F8",
+            "parent_frame_id": "F2",
+            "line": 2,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E47",
+            "frame_id": "F8",
+            "parent_frame_id": "F2",
+            "line": 3,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E48",
+            "frame_id": "F8",
+            "parent_frame_id": "F2",
+            "line": 3,
+            "kind": "return",
+            "function": "quicksort",
+            "snapshot_timing": "return",
+            "locals": {
+              "arr": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E49",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 8,
+            "kind": "line",
+            "function": "quicksort",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "lesser": [
+                0,
+                1
+              ],
+              "greater": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E50",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 8,
+            "kind": "return",
+            "function": "quicksort",
+            "snapshot_timing": "return",
+            "locals": {
+              "arr": [
+                2,
+                1,
+                2,
+                0
+              ],
+              "pivot": 2,
+              "lesser": [
+                0,
+                1
+              ],
+              "greater": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E51",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 12,
+            "kind": "return",
+            "function": "<module>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 4,
+              "a": [
+                2,
+                1,
+                2,
+                0
+              ]
+            }
+          }
+        ],
+        "trace_status": "complete",
+        "profile": {
+          "version": 1,
+          "status": "complete",
+          "method": "trace_segments_excluding_callback",
+          "clocks": {
+            "wall": "perf_counter_ns",
+            "cpu": "process_time_ns"
+          },
+          "execution_wall_ns": 1678400,
+          "execution_cpu_ns": 1676600,
+          "callback_wall_ns": 1262500,
+          "callback_cpu_ns": 1269200,
+          "timed_events": 51,
+          "event_budget": 100000,
+          "lines": [
+            {
+              "frame_id": "F1",
+              "line": 1,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 3900,
+              "self_cpu_ns": 3500,
+              "inclusive_wall_ns": 3900,
+              "inclusive_cpu_ns": 3500
+            },
+            {
+              "frame_id": "F1",
+              "line": 10,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 10200,
+              "self_cpu_ns": 10000,
+              "inclusive_wall_ns": 10200,
+              "inclusive_cpu_ns": 10000
+            },
+            {
+              "frame_id": "F1",
+              "line": 11,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 7500,
+              "self_cpu_ns": 7300,
+              "inclusive_wall_ns": 7500,
+              "inclusive_cpu_ns": 7300
+            },
+            {
+              "frame_id": "F1",
+              "line": 12,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 31400,
+              "self_cpu_ns": 31400,
+              "inclusive_wall_ns": 154100,
+              "inclusive_cpu_ns": 147500
+            },
+            {
+              "frame_id": "F2",
+              "line": 2,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 3000,
+              "self_cpu_ns": 2800,
+              "inclusive_wall_ns": 3000,
+              "inclusive_cpu_ns": 2800
+            },
+            {
+              "frame_id": "F2",
+              "line": 5,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2800,
+              "self_cpu_ns": 2600,
+              "inclusive_wall_ns": 2800,
+              "inclusive_cpu_ns": 2600
+            },
+            {
+              "frame_id": "F2",
+              "line": 6,
+              "function": "quicksort",
+              "hits": 4,
+              "self_wall_ns": 16000,
+              "self_cpu_ns": 15000,
+              "inclusive_wall_ns": 91000,
+              "inclusive_cpu_ns": 86200
+            },
+            {
+              "frame_id": "F3",
+              "line": 2,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2800,
+              "self_cpu_ns": 2700,
+              "inclusive_wall_ns": 2800,
+              "inclusive_cpu_ns": 2700
+            },
+            {
+              "frame_id": "F3",
+              "line": 5,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2800,
+              "self_cpu_ns": 2700,
+              "inclusive_wall_ns": 2800,
+              "inclusive_cpu_ns": 2700
+            },
+            {
+              "frame_id": "F3",
+              "line": 6,
+              "function": "quicksort",
+              "hits": 2,
+              "self_wall_ns": 9000,
+              "self_cpu_ns": 8600,
+              "inclusive_wall_ns": 48600,
+              "inclusive_cpu_ns": 46100
+            },
+            {
+              "frame_id": "F4",
+              "line": 2,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2700,
+              "self_cpu_ns": 2500,
+              "inclusive_wall_ns": 2700,
+              "inclusive_cpu_ns": 2500
+            },
+            {
+              "frame_id": "F4",
+              "line": 5,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2700,
+              "self_cpu_ns": 2500,
+              "inclusive_wall_ns": 2700,
+              "inclusive_cpu_ns": 2500
+            },
+            {
+              "frame_id": "F4",
+              "line": 6,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 6100,
+              "self_cpu_ns": 5900,
+              "inclusive_wall_ns": 14100,
+              "inclusive_cpu_ns": 13500
+            },
+            {
+              "frame_id": "F5",
+              "line": 2,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2700,
+              "self_cpu_ns": 2500,
+              "inclusive_wall_ns": 2700,
+              "inclusive_cpu_ns": 2500
+            },
+            {
+              "frame_id": "F5",
+              "line": 3,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2800,
+              "self_cpu_ns": 2600,
+              "inclusive_wall_ns": 2800,
+              "inclusive_cpu_ns": 2600
+            },
+            {
+              "frame_id": "F4",
+              "line": 7,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 6400,
+              "self_cpu_ns": 6100,
+              "inclusive_wall_ns": 14600,
+              "inclusive_cpu_ns": 13800
+            },
+            {
+              "frame_id": "F6",
+              "line": 2,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 3000,
+              "self_cpu_ns": 2800,
+              "inclusive_wall_ns": 3000,
+              "inclusive_cpu_ns": 2800
+            },
+            {
+              "frame_id": "F6",
+              "line": 3,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2200,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2200
+            },
+            {
+              "frame_id": "F4",
+              "line": 8,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 3000,
+              "self_cpu_ns": 2800,
+              "inclusive_wall_ns": 3000,
+              "inclusive_cpu_ns": 2800
+            },
+            {
+              "frame_id": "F3",
+              "line": 7,
+              "function": "quicksort",
+              "hits": 2,
+              "self_wall_ns": 8000,
+              "self_cpu_ns": 7700,
+              "inclusive_wall_ns": 15400,
+              "inclusive_cpu_ns": 14700
+            },
+            {
+              "frame_id": "F7",
+              "line": 2,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2200,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2200
+            },
+            {
+              "frame_id": "F7",
+              "line": 3,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2300,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2300
+            },
+            {
+              "frame_id": "F3",
+              "line": 8,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2600,
+              "self_cpu_ns": 2400,
+              "inclusive_wall_ns": 2600,
+              "inclusive_cpu_ns": 2400
+            },
+            {
+              "frame_id": "F2",
+              "line": 7,
+              "function": "quicksort",
+              "hits": 4,
+              "self_wall_ns": 12900,
+              "self_cpu_ns": 12200,
+              "inclusive_wall_ns": 20200,
+              "inclusive_cpu_ns": 19000
+            },
+            {
+              "frame_id": "F8",
+              "line": 2,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2500,
+              "self_cpu_ns": 2300,
+              "inclusive_wall_ns": 2500,
+              "inclusive_cpu_ns": 2300
+            },
+            {
+              "frame_id": "F8",
+              "line": 3,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2200,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2200
+            },
+            {
+              "frame_id": "F2",
+              "line": 8,
+              "function": "quicksort",
+              "hits": 1,
+              "self_wall_ns": 2600,
+              "self_cpu_ns": 2500,
+              "inclusive_wall_ns": 2600,
+              "inclusive_cpu_ns": 2500
+            }
+          ],
+          "blocks": [
+            {
+              "id": "B1",
+              "kind": "module",
+              "name": "<module>",
+              "scope": 0,
+              "line": 1,
+              "end_line": 12,
+              "hits": 1,
+              "self_wall_ns": 53000,
+              "self_cpu_ns": 52200,
+              "inclusive_wall_ns": 175700,
+              "inclusive_cpu_ns": 168300
+            },
+            {
+              "id": "B2",
+              "kind": "function",
+              "name": "quicksort",
+              "scope": 1,
+              "line": 1,
+              "end_line": 8,
+              "hits": 7,
+              "self_wall_ns": 104000,
+              "self_cpu_ns": 98100,
+              "inclusive_wall_ns": 249500,
+              "inclusive_cpu_ns": 235900
+            },
+            {
+              "id": "B3",
+              "kind": "if",
+              "name": "if",
+              "scope": 1,
+              "line": 2,
+              "end_line": 3,
+              "hits": 7,
+              "self_wall_ns": 29100,
+              "self_cpu_ns": 27100,
+              "inclusive_wall_ns": 29100,
+              "inclusive_cpu_ns": 27100
+            }
+          ],
+          "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+        },
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "source_sha256": "406ae79dbed655f0f507876aaeb32e3f14c601bbb2c2ee1e8a6eeaa918e45c08",
+        "input_sha256": "e0385a8ec6ac5a94beb2447e053eb645b4c41438a5946608bedd4be456a77ed6",
+        "elapsed_ms": 703.0,
+        "trace_trust": "guest_observation_not_authenticated",
+        "cleanup_confirmed": true
+      },
+      "reference": {
+        "status": "ok",
+        "detail": null,
+        "stdout": "0 1 2 2\n",
+        "stderr": "",
+        "events": [
+          {
+            "event_id": "E1",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 0,
+            "kind": "call",
+            "function": "<module>",
+            "snapshot_timing": "call",
+            "locals": {}
+          },
+          {
+            "event_id": "E2",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 1,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E3",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 4
+            }
+          },
+          {
+            "event_id": "E4",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "return",
+            "function": "<module>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 4
+            }
+          }
+        ],
+        "trace_status": "complete",
+        "profile": {
+          "version": 1,
+          "status": "complete",
+          "method": "trace_segments_excluding_callback",
+          "clocks": {
+            "wall": "perf_counter_ns",
+            "cpu": "process_time_ns"
+          },
+          "execution_wall_ns": 315200,
+          "execution_cpu_ns": 309100,
+          "callback_wall_ns": 141900,
+          "callback_cpu_ns": 141400,
+          "timed_events": 4,
+          "event_budget": 100000,
+          "lines": [
+            {
+              "frame_id": "F1",
+              "line": 1,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 9500,
+              "self_cpu_ns": 9400,
+              "inclusive_wall_ns": 9500,
+              "inclusive_cpu_ns": 9400
+            },
+            {
+              "frame_id": "F1",
+              "line": 2,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 21400,
+              "self_cpu_ns": 21400,
+              "inclusive_wall_ns": 21400,
+              "inclusive_cpu_ns": 21400
+            }
+          ],
+          "blocks": [
+            {
+              "id": "B1",
+              "kind": "module",
+              "name": "<module>",
+              "scope": 0,
+              "line": 1,
+              "end_line": 2,
+              "hits": 1,
+              "self_wall_ns": 30900,
+              "self_cpu_ns": 30800,
+              "inclusive_wall_ns": 30900,
+              "inclusive_cpu_ns": 30800
+            }
+          ],
+          "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+        },
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "source_sha256": "9d8c813c3b66fdf570eba4711e51615305cb61dd0399ce1cbb7fadf51fba4cbd",
+        "input_sha256": "e0385a8ec6ac5a94beb2447e053eb645b4c41438a5946608bedd4be456a77ed6",
+        "elapsed_ms": 671.0,
+        "trace_trust": "guest_observation_not_authenticated",
+        "cleanup_confirmed": true,
+        "alternative_agreed": true
+      }
+    },
+    "reference_source": "n=int(input())\nprint(*sorted(map(int,input().split())))\n",
+    "student_source": "def quicksort(arr):\n    if not arr:\n        return []\n\n    pivot = arr[0]\n    lesser = quicksort([x for x in arr[1:] if x < pivot])\n    greater = quicksort([x for x in arr[1:] if x > pivot])\n    return lesser + [pivot] + greater\n\nn=int(input())\na=list(map(int,input().split()))\nprint(*quicksort(a))\n",
+    "replay_count": 3,
+    "attempts": 8,
+    "student_graph": {
+      "kind": "observed_execution_not_static_cfg",
+      "nodes": [
+        {
+          "id": "F1:0",
+          "line": 0,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E1"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F1:1",
+          "line": 1,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E2"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 3900,
+            "self_cpu_ns": 3500,
+            "inclusive_wall_ns": 3900,
+            "inclusive_cpu_ns": 3500
+          }
+        },
+        {
+          "id": "F1:10",
+          "line": 10,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E3"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 10,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 10200,
+            "self_cpu_ns": 10000,
+            "inclusive_wall_ns": 10200,
+            "inclusive_cpu_ns": 10000
+          }
+        },
+        {
+          "id": "F1:11",
+          "line": 11,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E4"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 11,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 7500,
+            "self_cpu_ns": 7300,
+            "inclusive_wall_ns": 7500,
+            "inclusive_cpu_ns": 7300
+          }
+        },
+        {
+          "id": "F1:12",
+          "line": 12,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E5",
+            "E51"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 12,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 31400,
+            "self_cpu_ns": 31400,
+            "inclusive_wall_ns": 154100,
+            "inclusive_cpu_ns": 147500
+          }
+        },
+        {
+          "id": "F2:1",
+          "line": 1,
+          "frame_id": "F2",
+          "function": "quicksort",
+          "event_ids": [
+            "E6"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F2:2",
+          "line": 2,
+          "frame_id": "F2",
+          "function": "quicksort",
+          "event_ids": [
+            "E7"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          }
+        },
+        {
+          "id": "F2:5",
+          "line": 5,
+          "frame_id": "F2",
+          "function": "quicksort",
+          "event_ids": [
+            "E8"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 5,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          }
+        },
+        {
+          "id": "F2:6",
+          "line": 6,
+          "frame_id": "F2",
+          "function": "quicksort",
+          "event_ids": [
+            "E9",
+            "E10",
+            "E11",
+            "E12"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 6,
+            "function": "quicksort",
+            "hits": 4,
+            "self_wall_ns": 16000,
+            "self_cpu_ns": 15000,
+            "inclusive_wall_ns": 91000,
+            "inclusive_cpu_ns": 86200
+          }
+        },
+        {
+          "id": "F3:1",
+          "line": 1,
+          "frame_id": "F3",
+          "function": "quicksort",
+          "event_ids": [
+            "E13"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F3:2",
+          "line": 2,
+          "frame_id": "F3",
+          "function": "quicksort",
+          "event_ids": [
+            "E14"
+          ],
+          "timing": {
+            "frame_id": "F3",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2700
+          }
+        },
+        {
+          "id": "F3:5",
+          "line": 5,
+          "frame_id": "F3",
+          "function": "quicksort",
+          "event_ids": [
+            "E15"
+          ],
+          "timing": {
+            "frame_id": "F3",
+            "line": 5,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2700
+          }
+        },
+        {
+          "id": "F3:6",
+          "line": 6,
+          "frame_id": "F3",
+          "function": "quicksort",
+          "event_ids": [
+            "E16",
+            "E17"
+          ],
+          "timing": {
+            "frame_id": "F3",
+            "line": 6,
+            "function": "quicksort",
+            "hits": 2,
+            "self_wall_ns": 9000,
+            "self_cpu_ns": 8600,
+            "inclusive_wall_ns": 48600,
+            "inclusive_cpu_ns": 46100
+          }
+        },
+        {
+          "id": "F4:1",
+          "line": 1,
+          "frame_id": "F4",
+          "function": "quicksort",
+          "event_ids": [
+            "E18"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F4:2",
+          "line": 2,
+          "frame_id": "F4",
+          "function": "quicksort",
+          "event_ids": [
+            "E19"
+          ],
+          "timing": {
+            "frame_id": "F4",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2500
+          }
+        },
+        {
+          "id": "F4:5",
+          "line": 5,
+          "frame_id": "F4",
+          "function": "quicksort",
+          "event_ids": [
+            "E20"
+          ],
+          "timing": {
+            "frame_id": "F4",
+            "line": 5,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2500
+          }
+        },
+        {
+          "id": "F4:6",
+          "line": 6,
+          "frame_id": "F4",
+          "function": "quicksort",
+          "event_ids": [
+            "E21"
+          ],
+          "timing": {
+            "frame_id": "F4",
+            "line": 6,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 6100,
+            "self_cpu_ns": 5900,
+            "inclusive_wall_ns": 14100,
+            "inclusive_cpu_ns": 13500
+          }
+        },
+        {
+          "id": "F5:1",
+          "line": 1,
+          "frame_id": "F5",
+          "function": "quicksort",
+          "event_ids": [
+            "E22"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F5:2",
+          "line": 2,
+          "frame_id": "F5",
+          "function": "quicksort",
+          "event_ids": [
+            "E23"
+          ],
+          "timing": {
+            "frame_id": "F5",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2500
+          }
+        },
+        {
+          "id": "F5:3",
+          "line": 3,
+          "frame_id": "F5",
+          "function": "quicksort",
+          "event_ids": [
+            "E24",
+            "E25"
+          ],
+          "timing": {
+            "frame_id": "F5",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          }
+        },
+        {
+          "id": "F4:7",
+          "line": 7,
+          "frame_id": "F4",
+          "function": "quicksort",
+          "event_ids": [
+            "E26"
+          ],
+          "timing": {
+            "frame_id": "F4",
+            "line": 7,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 6400,
+            "self_cpu_ns": 6100,
+            "inclusive_wall_ns": 14600,
+            "inclusive_cpu_ns": 13800
+          }
+        },
+        {
+          "id": "F6:1",
+          "line": 1,
+          "frame_id": "F6",
+          "function": "quicksort",
+          "event_ids": [
+            "E27"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F6:2",
+          "line": 2,
+          "frame_id": "F6",
+          "function": "quicksort",
+          "event_ids": [
+            "E28"
+          ],
+          "timing": {
+            "frame_id": "F6",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          }
+        },
+        {
+          "id": "F6:3",
+          "line": 3,
+          "frame_id": "F6",
+          "function": "quicksort",
+          "event_ids": [
+            "E29",
+            "E30"
+          ],
+          "timing": {
+            "frame_id": "F6",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          }
+        },
+        {
+          "id": "F4:8",
+          "line": 8,
+          "frame_id": "F4",
+          "function": "quicksort",
+          "event_ids": [
+            "E31",
+            "E32"
+          ],
+          "timing": {
+            "frame_id": "F4",
+            "line": 8,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          }
+        },
+        {
+          "id": "F3:7",
+          "line": 7,
+          "frame_id": "F3",
+          "function": "quicksort",
+          "event_ids": [
+            "E33",
+            "E34"
+          ],
+          "timing": {
+            "frame_id": "F3",
+            "line": 7,
+            "function": "quicksort",
+            "hits": 2,
+            "self_wall_ns": 8000,
+            "self_cpu_ns": 7700,
+            "inclusive_wall_ns": 15400,
+            "inclusive_cpu_ns": 14700
+          }
+        },
+        {
+          "id": "F7:1",
+          "line": 1,
+          "frame_id": "F7",
+          "function": "quicksort",
+          "event_ids": [
+            "E35"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F7:2",
+          "line": 2,
+          "frame_id": "F7",
+          "function": "quicksort",
+          "event_ids": [
+            "E36"
+          ],
+          "timing": {
+            "frame_id": "F7",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          }
+        },
+        {
+          "id": "F7:3",
+          "line": 3,
+          "frame_id": "F7",
+          "function": "quicksort",
+          "event_ids": [
+            "E37",
+            "E38"
+          ],
+          "timing": {
+            "frame_id": "F7",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2300
+          }
+        },
+        {
+          "id": "F3:8",
+          "line": 8,
+          "frame_id": "F3",
+          "function": "quicksort",
+          "event_ids": [
+            "E39",
+            "E40"
+          ],
+          "timing": {
+            "frame_id": "F3",
+            "line": 8,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          }
+        },
+        {
+          "id": "F2:7",
+          "line": 7,
+          "frame_id": "F2",
+          "function": "quicksort",
+          "event_ids": [
+            "E41",
+            "E42",
+            "E43",
+            "E44"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 7,
+            "function": "quicksort",
+            "hits": 4,
+            "self_wall_ns": 12900,
+            "self_cpu_ns": 12200,
+            "inclusive_wall_ns": 20200,
+            "inclusive_cpu_ns": 19000
+          }
+        },
+        {
+          "id": "F8:1",
+          "line": 1,
+          "frame_id": "F8",
+          "function": "quicksort",
+          "event_ids": [
+            "E45"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F8:2",
+          "line": 2,
+          "frame_id": "F8",
+          "function": "quicksort",
+          "event_ids": [
+            "E46"
+          ],
+          "timing": {
+            "frame_id": "F8",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2500,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2500,
+            "inclusive_cpu_ns": 2300
+          }
+        },
+        {
+          "id": "F8:3",
+          "line": 3,
+          "frame_id": "F8",
+          "function": "quicksort",
+          "event_ids": [
+            "E47",
+            "E48"
+          ],
+          "timing": {
+            "frame_id": "F8",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          }
+        },
+        {
+          "id": "F2:8",
+          "line": 8,
+          "frame_id": "F2",
+          "function": "quicksort",
+          "event_ids": [
+            "E49",
+            "E50"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 8,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2500
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "F1:0",
+          "to": "F1:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E1",
+              "E2"
+            ]
+          ]
+        },
+        {
+          "from": "F1:1",
+          "to": "F1:10",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E2",
+              "E3"
+            ]
+          ]
+        },
+        {
+          "from": "F1:10",
+          "to": "F1:11",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E3",
+              "E4"
+            ]
+          ]
+        },
+        {
+          "from": "F1:11",
+          "to": "F1:12",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E4",
+              "E5"
+            ]
+          ]
+        },
+        {
+          "from": "F1:12",
+          "to": "F2:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E5",
+              "E6"
+            ]
+          ]
+        },
+        {
+          "from": "F2:1",
+          "to": "F2:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E6",
+              "E7"
+            ]
+          ]
+        },
+        {
+          "from": "F2:2",
+          "to": "F2:5",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E7",
+              "E8"
+            ]
+          ]
+        },
+        {
+          "from": "F2:5",
+          "to": "F2:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E8",
+              "E9"
+            ]
+          ]
+        },
+        {
+          "from": "F2:6",
+          "to": "F2:6",
+          "count": 3,
+          "event_pairs": [
+            [
+              "E9",
+              "E10"
+            ],
+            [
+              "E10",
+              "E11"
+            ],
+            [
+              "E11",
+              "E12"
+            ]
+          ]
+        },
+        {
+          "from": "F2:6",
+          "to": "F3:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E12",
+              "E13"
+            ]
+          ]
+        },
+        {
+          "from": "F3:1",
+          "to": "F3:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E13",
+              "E14"
+            ]
+          ]
+        },
+        {
+          "from": "F3:2",
+          "to": "F3:5",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E14",
+              "E15"
+            ]
+          ]
+        },
+        {
+          "from": "F3:5",
+          "to": "F3:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E15",
+              "E16"
+            ]
+          ]
+        },
+        {
+          "from": "F3:6",
+          "to": "F3:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E16",
+              "E17"
+            ]
+          ]
+        },
+        {
+          "from": "F3:6",
+          "to": "F4:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E17",
+              "E18"
+            ]
+          ]
+        },
+        {
+          "from": "F4:1",
+          "to": "F4:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E18",
+              "E19"
+            ]
+          ]
+        },
+        {
+          "from": "F4:2",
+          "to": "F4:5",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E19",
+              "E20"
+            ]
+          ]
+        },
+        {
+          "from": "F4:5",
+          "to": "F4:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E20",
+              "E21"
+            ]
+          ]
+        },
+        {
+          "from": "F4:6",
+          "to": "F5:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E21",
+              "E22"
+            ]
+          ]
+        },
+        {
+          "from": "F5:1",
+          "to": "F5:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E22",
+              "E23"
+            ]
+          ]
+        },
+        {
+          "from": "F5:2",
+          "to": "F5:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E23",
+              "E24"
+            ]
+          ]
+        },
+        {
+          "from": "F5:3",
+          "to": "F5:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E24",
+              "E25"
+            ]
+          ]
+        },
+        {
+          "from": "F5:3",
+          "to": "F4:7",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E25",
+              "E26"
+            ]
+          ]
+        },
+        {
+          "from": "F4:7",
+          "to": "F6:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E26",
+              "E27"
+            ]
+          ]
+        },
+        {
+          "from": "F6:1",
+          "to": "F6:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E27",
+              "E28"
+            ]
+          ]
+        },
+        {
+          "from": "F6:2",
+          "to": "F6:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E28",
+              "E29"
+            ]
+          ]
+        },
+        {
+          "from": "F6:3",
+          "to": "F6:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E29",
+              "E30"
+            ]
+          ]
+        },
+        {
+          "from": "F6:3",
+          "to": "F4:8",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E30",
+              "E31"
+            ]
+          ]
+        },
+        {
+          "from": "F4:8",
+          "to": "F4:8",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E31",
+              "E32"
+            ]
+          ]
+        },
+        {
+          "from": "F4:8",
+          "to": "F3:7",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E32",
+              "E33"
+            ]
+          ]
+        },
+        {
+          "from": "F3:7",
+          "to": "F3:7",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E33",
+              "E34"
+            ]
+          ]
+        },
+        {
+          "from": "F3:7",
+          "to": "F7:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E34",
+              "E35"
+            ]
+          ]
+        },
+        {
+          "from": "F7:1",
+          "to": "F7:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E35",
+              "E36"
+            ]
+          ]
+        },
+        {
+          "from": "F7:2",
+          "to": "F7:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E36",
+              "E37"
+            ]
+          ]
+        },
+        {
+          "from": "F7:3",
+          "to": "F7:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E37",
+              "E38"
+            ]
+          ]
+        },
+        {
+          "from": "F7:3",
+          "to": "F3:8",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E38",
+              "E39"
+            ]
+          ]
+        },
+        {
+          "from": "F3:8",
+          "to": "F3:8",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E39",
+              "E40"
+            ]
+          ]
+        },
+        {
+          "from": "F3:8",
+          "to": "F2:7",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E40",
+              "E41"
+            ]
+          ]
+        },
+        {
+          "from": "F2:7",
+          "to": "F2:7",
+          "count": 3,
+          "event_pairs": [
+            [
+              "E41",
+              "E42"
+            ],
+            [
+              "E42",
+              "E43"
+            ],
+            [
+              "E43",
+              "E44"
+            ]
+          ]
+        },
+        {
+          "from": "F2:7",
+          "to": "F8:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E44",
+              "E45"
+            ]
+          ]
+        },
+        {
+          "from": "F8:1",
+          "to": "F8:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E45",
+              "E46"
+            ]
+          ]
+        },
+        {
+          "from": "F8:2",
+          "to": "F8:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E46",
+              "E47"
+            ]
+          ]
+        },
+        {
+          "from": "F8:3",
+          "to": "F8:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E47",
+              "E48"
+            ]
+          ]
+        },
+        {
+          "from": "F8:3",
+          "to": "F2:8",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E48",
+              "E49"
+            ]
+          ]
+        },
+        {
+          "from": "F2:8",
+          "to": "F2:8",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E49",
+              "E50"
+            ]
+          ]
+        },
+        {
+          "from": "F2:8",
+          "to": "F1:12",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E50",
+              "E51"
+            ]
+          ]
+        }
+      ],
+      "changes": [
+        {
+          "frame_id": "F2",
+          "name": "x",
+          "before": 1,
+          "after": 2,
+          "before_event_id": "E10",
+          "after_event_id": "E11"
+        },
+        {
+          "frame_id": "F2",
+          "name": "x",
+          "before": 2,
+          "after": 0,
+          "before_event_id": "E11",
+          "after_event_id": "E12"
+        },
+        {
+          "frame_id": "F2",
+          "name": "x",
+          "before": 1,
+          "after": 2,
+          "before_event_id": "E42",
+          "after_event_id": "E43"
+        },
+        {
+          "frame_id": "F2",
+          "name": "x",
+          "before": 2,
+          "after": 0,
+          "before_event_id": "E43",
+          "after_event_id": "E44"
+        }
+      ],
+      "frames": [
+        {
+          "id": "F1",
+          "parent": null,
+          "function": "<module>",
+          "entry_event_id": "E1"
+        },
+        {
+          "id": "F2",
+          "parent": "F1",
+          "function": "quicksort",
+          "entry_event_id": "E6"
+        },
+        {
+          "id": "F3",
+          "parent": "F2",
+          "function": "quicksort",
+          "entry_event_id": "E13"
+        },
+        {
+          "id": "F4",
+          "parent": "F3",
+          "function": "quicksort",
+          "entry_event_id": "E18"
+        },
+        {
+          "id": "F5",
+          "parent": "F4",
+          "function": "quicksort",
+          "entry_event_id": "E22"
+        },
+        {
+          "id": "F6",
+          "parent": "F4",
+          "function": "quicksort",
+          "entry_event_id": "E27"
+        },
+        {
+          "id": "F7",
+          "parent": "F3",
+          "function": "quicksort",
+          "entry_event_id": "E35"
+        },
+        {
+          "id": "F8",
+          "parent": "F2",
+          "function": "quicksort",
+          "entry_event_id": "E45"
+        }
+      ],
+      "timeline": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "line": 0,
+          "kind": "call"
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "line": 1,
+          "kind": "line"
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "line": 10,
+          "kind": "line"
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F1",
+          "line": 11,
+          "kind": "line"
+        },
+        {
+          "event_id": "E5",
+          "frame_id": "F1",
+          "line": 12,
+          "kind": "line"
+        },
+        {
+          "event_id": "E6",
+          "frame_id": "F2",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E7",
+          "frame_id": "F2",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E8",
+          "frame_id": "F2",
+          "line": 5,
+          "kind": "line"
+        },
+        {
+          "event_id": "E9",
+          "frame_id": "F2",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E10",
+          "frame_id": "F2",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E11",
+          "frame_id": "F2",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E12",
+          "frame_id": "F2",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E13",
+          "frame_id": "F3",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E14",
+          "frame_id": "F3",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E15",
+          "frame_id": "F3",
+          "line": 5,
+          "kind": "line"
+        },
+        {
+          "event_id": "E16",
+          "frame_id": "F3",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E17",
+          "frame_id": "F3",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E18",
+          "frame_id": "F4",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E19",
+          "frame_id": "F4",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E20",
+          "frame_id": "F4",
+          "line": 5,
+          "kind": "line"
+        },
+        {
+          "event_id": "E21",
+          "frame_id": "F4",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E22",
+          "frame_id": "F5",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E23",
+          "frame_id": "F5",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E24",
+          "frame_id": "F5",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E25",
+          "frame_id": "F5",
+          "line": 3,
+          "kind": "return"
+        },
+        {
+          "event_id": "E26",
+          "frame_id": "F4",
+          "line": 7,
+          "kind": "line"
+        },
+        {
+          "event_id": "E27",
+          "frame_id": "F6",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E28",
+          "frame_id": "F6",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E29",
+          "frame_id": "F6",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E30",
+          "frame_id": "F6",
+          "line": 3,
+          "kind": "return"
+        },
+        {
+          "event_id": "E31",
+          "frame_id": "F4",
+          "line": 8,
+          "kind": "line"
+        },
+        {
+          "event_id": "E32",
+          "frame_id": "F4",
+          "line": 8,
+          "kind": "return"
+        },
+        {
+          "event_id": "E33",
+          "frame_id": "F3",
+          "line": 7,
+          "kind": "line"
+        },
+        {
+          "event_id": "E34",
+          "frame_id": "F3",
+          "line": 7,
+          "kind": "line"
+        },
+        {
+          "event_id": "E35",
+          "frame_id": "F7",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E36",
+          "frame_id": "F7",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E37",
+          "frame_id": "F7",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E38",
+          "frame_id": "F7",
+          "line": 3,
+          "kind": "return"
+        },
+        {
+          "event_id": "E39",
+          "frame_id": "F3",
+          "line": 8,
+          "kind": "line"
+        },
+        {
+          "event_id": "E40",
+          "frame_id": "F3",
+          "line": 8,
+          "kind": "return"
+        },
+        {
+          "event_id": "E41",
+          "frame_id": "F2",
+          "line": 7,
+          "kind": "line"
+        },
+        {
+          "event_id": "E42",
+          "frame_id": "F2",
+          "line": 7,
+          "kind": "line"
+        },
+        {
+          "event_id": "E43",
+          "frame_id": "F2",
+          "line": 7,
+          "kind": "line"
+        },
+        {
+          "event_id": "E44",
+          "frame_id": "F2",
+          "line": 7,
+          "kind": "line"
+        },
+        {
+          "event_id": "E45",
+          "frame_id": "F8",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E46",
+          "frame_id": "F8",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E47",
+          "frame_id": "F8",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E48",
+          "frame_id": "F8",
+          "line": 3,
+          "kind": "return"
+        },
+        {
+          "event_id": "E49",
+          "frame_id": "F2",
+          "line": 8,
+          "kind": "line"
+        },
+        {
+          "event_id": "E50",
+          "frame_id": "F2",
+          "line": 8,
+          "kind": "return"
+        },
+        {
+          "event_id": "E51",
+          "frame_id": "F1",
+          "line": 12,
+          "kind": "return"
+        }
+      ],
+      "relations": {
+        "data": [
+          {
+            "line": 5,
+            "reads": {
+              "arr[0]": 2
+            },
+            "write": {
+              "name": "pivot",
+              "value": 2
+            },
+            "frame_id": "F2",
+            "before_event_id": "E8",
+            "after_event_id": "E9"
+          },
+          {
+            "line": 5,
+            "reads": {
+              "arr[0]": 1
+            },
+            "write": {
+              "name": "pivot",
+              "value": 1
+            },
+            "frame_id": "F3",
+            "before_event_id": "E15",
+            "after_event_id": "E16"
+          },
+          {
+            "line": 5,
+            "reads": {
+              "arr[0]": 0
+            },
+            "write": {
+              "name": "pivot",
+              "value": 0
+            },
+            "frame_id": "F4",
+            "before_event_id": "E20",
+            "after_event_id": "E21"
+          }
+        ],
+        "control": [],
+        "def_use": []
+      },
+      "static_cfg": {
+        "status": "restricted_syntactic_cfg",
+        "nodes": [
+          {
+            "id": "module:1",
+            "line": 1,
+            "scope": "module",
+            "kind": "FunctionDef"
+          },
+          {
+            "id": "module/quicksort@1:2",
+            "line": 2,
+            "scope": "module/quicksort@1",
+            "kind": "If"
+          },
+          {
+            "id": "module/quicksort@1:3",
+            "line": 3,
+            "scope": "module/quicksort@1",
+            "kind": "Return"
+          },
+          {
+            "id": "module/quicksort@1:5",
+            "line": 5,
+            "scope": "module/quicksort@1",
+            "kind": "Assign"
+          },
+          {
+            "id": "module/quicksort@1:6",
+            "line": 6,
+            "scope": "module/quicksort@1",
+            "kind": "Assign"
+          },
+          {
+            "id": "module/quicksort@1:7",
+            "line": 7,
+            "scope": "module/quicksort@1",
+            "kind": "Assign"
+          },
+          {
+            "id": "module/quicksort@1:8",
+            "line": 8,
+            "scope": "module/quicksort@1",
+            "kind": "Return"
+          },
+          {
+            "id": "module:10",
+            "line": 10,
+            "scope": "module",
+            "kind": "Assign"
+          },
+          {
+            "id": "module:11",
+            "line": 11,
+            "scope": "module",
+            "kind": "Assign"
+          },
+          {
+            "id": "module:12",
+            "line": 12,
+            "scope": "module",
+            "kind": "Expr"
+          }
+        ],
+        "edges": [
+          {
+            "from": "module:1",
+            "to": "module:10",
+            "kind": "next"
+          },
+          {
+            "from": "module/quicksort@1:2",
+            "to": "module/quicksort@1:3",
+            "kind": "condition_true"
+          },
+          {
+            "from": "module/quicksort@1:2",
+            "to": "module/quicksort@1:5",
+            "kind": "condition_false"
+          },
+          {
+            "from": "module/quicksort@1:5",
+            "to": "module/quicksort@1:6",
+            "kind": "next"
+          },
+          {
+            "from": "module/quicksort@1:6",
+            "to": "module/quicksort@1:7",
+            "kind": "next"
+          },
+          {
+            "from": "module/quicksort@1:7",
+            "to": "module/quicksort@1:8",
+            "kind": "next"
+          },
+          {
+            "from": "module:10",
+            "to": "module:11",
+            "kind": "next"
+          },
+          {
+            "from": "module:11",
+            "to": "module:12",
+            "kind": "next"
+          }
+        ],
+        "unsupported": [],
+        "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+      },
+      "causal_fault_proven": false,
+      "profile": {
+        "version": 1,
+        "status": "complete",
+        "method": "trace_segments_excluding_callback",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 1678400,
+        "execution_cpu_ns": 1676600,
+        "callback_wall_ns": 1262500,
+        "callback_cpu_ns": 1269200,
+        "timed_events": 51,
+        "event_budget": 100000,
+        "lines": [
+          {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 3900,
+            "self_cpu_ns": 3500,
+            "inclusive_wall_ns": 3900,
+            "inclusive_cpu_ns": 3500
+          },
+          {
+            "frame_id": "F1",
+            "line": 10,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 10200,
+            "self_cpu_ns": 10000,
+            "inclusive_wall_ns": 10200,
+            "inclusive_cpu_ns": 10000
+          },
+          {
+            "frame_id": "F1",
+            "line": 11,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 7500,
+            "self_cpu_ns": 7300,
+            "inclusive_wall_ns": 7500,
+            "inclusive_cpu_ns": 7300
+          },
+          {
+            "frame_id": "F1",
+            "line": 12,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 31400,
+            "self_cpu_ns": 31400,
+            "inclusive_wall_ns": 154100,
+            "inclusive_cpu_ns": 147500
+          },
+          {
+            "frame_id": "F2",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          },
+          {
+            "frame_id": "F2",
+            "line": 5,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          },
+          {
+            "frame_id": "F2",
+            "line": 6,
+            "function": "quicksort",
+            "hits": 4,
+            "self_wall_ns": 16000,
+            "self_cpu_ns": 15000,
+            "inclusive_wall_ns": 91000,
+            "inclusive_cpu_ns": 86200
+          },
+          {
+            "frame_id": "F3",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2700
+          },
+          {
+            "frame_id": "F3",
+            "line": 5,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2700
+          },
+          {
+            "frame_id": "F3",
+            "line": 6,
+            "function": "quicksort",
+            "hits": 2,
+            "self_wall_ns": 9000,
+            "self_cpu_ns": 8600,
+            "inclusive_wall_ns": 48600,
+            "inclusive_cpu_ns": 46100
+          },
+          {
+            "frame_id": "F4",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2500
+          },
+          {
+            "frame_id": "F4",
+            "line": 5,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2500
+          },
+          {
+            "frame_id": "F4",
+            "line": 6,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 6100,
+            "self_cpu_ns": 5900,
+            "inclusive_wall_ns": 14100,
+            "inclusive_cpu_ns": 13500
+          },
+          {
+            "frame_id": "F5",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2500
+          },
+          {
+            "frame_id": "F5",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          },
+          {
+            "frame_id": "F4",
+            "line": 7,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 6400,
+            "self_cpu_ns": 6100,
+            "inclusive_wall_ns": 14600,
+            "inclusive_cpu_ns": 13800
+          },
+          {
+            "frame_id": "F6",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          },
+          {
+            "frame_id": "F6",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          },
+          {
+            "frame_id": "F4",
+            "line": 8,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          },
+          {
+            "frame_id": "F3",
+            "line": 7,
+            "function": "quicksort",
+            "hits": 2,
+            "self_wall_ns": 8000,
+            "self_cpu_ns": 7700,
+            "inclusive_wall_ns": 15400,
+            "inclusive_cpu_ns": 14700
+          },
+          {
+            "frame_id": "F7",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          },
+          {
+            "frame_id": "F7",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2300
+          },
+          {
+            "frame_id": "F3",
+            "line": 8,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          },
+          {
+            "frame_id": "F2",
+            "line": 7,
+            "function": "quicksort",
+            "hits": 4,
+            "self_wall_ns": 12900,
+            "self_cpu_ns": 12200,
+            "inclusive_wall_ns": 20200,
+            "inclusive_cpu_ns": 19000
+          },
+          {
+            "frame_id": "F8",
+            "line": 2,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2500,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2500,
+            "inclusive_cpu_ns": 2300
+          },
+          {
+            "frame_id": "F8",
+            "line": 3,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          },
+          {
+            "frame_id": "F2",
+            "line": 8,
+            "function": "quicksort",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2500
+          }
+        ],
+        "blocks": [
+          {
+            "id": "B1",
+            "kind": "module",
+            "name": "<module>",
+            "scope": 0,
+            "line": 1,
+            "end_line": 12,
+            "hits": 1,
+            "self_wall_ns": 53000,
+            "self_cpu_ns": 52200,
+            "inclusive_wall_ns": 175700,
+            "inclusive_cpu_ns": 168300
+          },
+          {
+            "id": "B2",
+            "kind": "function",
+            "name": "quicksort",
+            "scope": 1,
+            "line": 1,
+            "end_line": 8,
+            "hits": 7,
+            "self_wall_ns": 104000,
+            "self_cpu_ns": 98100,
+            "inclusive_wall_ns": 249500,
+            "inclusive_cpu_ns": 235900
+          },
+          {
+            "id": "B3",
+            "kind": "if",
+            "name": "if",
+            "scope": 1,
+            "line": 2,
+            "end_line": 3,
+            "hits": 7,
+            "self_wall_ns": 29100,
+            "self_cpu_ns": 27100,
+            "inclusive_wall_ns": 29100,
+            "inclusive_cpu_ns": 27100
+          }
+        ],
+        "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+      },
+      "output_chain": {
+        "status": "unsupported",
+        "links": []
+      }
+    },
+    "reference_graph": {
+      "kind": "observed_execution_not_static_cfg",
+      "nodes": [
+        {
+          "id": "F1:0",
+          "line": 0,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E1"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F1:1",
+          "line": 1,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E2"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 9500,
+            "self_cpu_ns": 9400,
+            "inclusive_wall_ns": 9500,
+            "inclusive_cpu_ns": 9400
+          }
+        },
+        {
+          "id": "F1:2",
+          "line": 2,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E3",
+            "E4"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 2,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 21400,
+            "self_cpu_ns": 21400,
+            "inclusive_wall_ns": 21400,
+            "inclusive_cpu_ns": 21400
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "F1:0",
+          "to": "F1:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E1",
+              "E2"
+            ]
+          ]
+        },
+        {
+          "from": "F1:1",
+          "to": "F1:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E2",
+              "E3"
+            ]
+          ]
+        },
+        {
+          "from": "F1:2",
+          "to": "F1:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E3",
+              "E4"
+            ]
+          ]
+        }
+      ],
+      "changes": [],
+      "frames": [
+        {
+          "id": "F1",
+          "parent": null,
+          "function": "<module>",
+          "entry_event_id": "E1"
+        }
+      ],
+      "timeline": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "line": 0,
+          "kind": "call"
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "line": 1,
+          "kind": "line"
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F1",
+          "line": 2,
+          "kind": "return"
+        }
+      ],
+      "relations": {
+        "data": [],
+        "control": [],
+        "def_use": []
+      },
+      "static_cfg": {
+        "status": "restricted_syntactic_cfg",
+        "nodes": [
+          {
+            "id": "module:1",
+            "line": 1,
+            "scope": "module",
+            "kind": "Assign"
+          },
+          {
+            "id": "module:2",
+            "line": 2,
+            "scope": "module",
+            "kind": "Expr"
+          }
+        ],
+        "edges": [
+          {
+            "from": "module:1",
+            "to": "module:2",
+            "kind": "next"
+          }
+        ],
+        "unsupported": [],
+        "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+      },
+      "causal_fault_proven": false,
+      "profile": {
+        "version": 1,
+        "status": "complete",
+        "method": "trace_segments_excluding_callback",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 315200,
+        "execution_cpu_ns": 309100,
+        "callback_wall_ns": 141900,
+        "callback_cpu_ns": 141400,
+        "timed_events": 4,
+        "event_budget": 100000,
+        "lines": [
+          {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 9500,
+            "self_cpu_ns": 9400,
+            "inclusive_wall_ns": 9500,
+            "inclusive_cpu_ns": 9400
+          },
+          {
+            "frame_id": "F1",
+            "line": 2,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 21400,
+            "self_cpu_ns": 21400,
+            "inclusive_wall_ns": 21400,
+            "inclusive_cpu_ns": 21400
+          }
+        ],
+        "blocks": [
+          {
+            "id": "B1",
+            "kind": "module",
+            "name": "<module>",
+            "scope": 0,
+            "line": 1,
+            "end_line": 2,
+            "hits": 1,
+            "self_wall_ns": 30900,
+            "self_cpu_ns": 30800,
+            "inclusive_wall_ns": 30900,
+            "inclusive_cpu_ns": 30800
+          }
+        ],
+        "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+      },
+      "output_chain": {
+        "status": "unsupported",
+        "links": []
+      }
+    },
+    "hypotheses": [],
+    "ai_facts": [],
+    "ai_status": "disabled",
+    "ai_model": null,
+    "ai_usage": {},
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "suspiciousness": {
+      "status": "observed_spectrum",
+      "ranked": [
+        {
+          "line": 1,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 2,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 3,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 5,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 6,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 7,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 8,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 10,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 11,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        },
+        {
+          "line": 12,
+          "ochiai": 0.57735,
+          "failing_coverage": 1,
+          "passing_coverage": 2
+        }
+      ],
+      "passing_count": 2,
+      "scope": "One failing trace and bounded passing traces of the same source. Coverage correlation, not root cause."
+    },
+    "ai_error": null,
+    "elapsed_ms": 15906.0,
+    "scope": "Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."
+  }
+}

@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\icips-v4\tools\verify_v4_browser.py", line 167, in <module>
+    if __name__=="__main__":main()
+                            ^^^^^^
+  File "D:\icips-v4\tools\verify_v4_browser.py", line 21, in main
+    return test(url,out)
+           ^^^^^^^^^^^^^
+  File "D:\icips-v4\tools\verify_v4_browser.py", line 150, in test
+    assert page.evaluate("document.body.scrollWidth")<=390
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

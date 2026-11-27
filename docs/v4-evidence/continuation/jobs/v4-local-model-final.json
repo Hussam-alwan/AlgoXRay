@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T08:24:04.927866+00:00",
+  "pid": 23168,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "tools/verify_v4_local_model.py",
+    "--out",
+    "results/v4-local-model-final"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T08:24:21.457367+00:00"
+}

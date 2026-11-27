@@ -1,0 +1,34 @@
+{
+  "commit": "b65f596",
+  "steps": [
+    {
+      "name": "checkout",
+      "exit": 0
+    },
+    {
+      "name": "venv",
+      "exit": 0
+    },
+    {
+      "name": "lock",
+      "exit": 0
+    },
+    {
+      "name": "install",
+      "exit": 0
+    },
+    {
+      "name": "pytest",
+      "exit": 0
+    },
+    {
+      "name": "vertical",
+      "exit": 0
+    },
+    {
+      "name": "external",
+      "exit": 0
+    }
+  ],
+  "scope": "same machine and same pinned worker, no live AI"
+}

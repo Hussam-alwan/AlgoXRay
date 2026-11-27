@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T08:32:16.457151+00:00",
+  "pid": 2632,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "tools/verify_v4_isolation.py",
+    "--out",
+    "results/v4-final-isolation.json"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T08:32:33.842806+00:00"
+}

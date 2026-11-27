@@ -1,0 +1,68 @@
+{
+  "stdio": {
+    "passed": true,
+    "status": "ok",
+    "elapsed_ms": 718.0,
+    "cleanup_confirmed": true
+  },
+  "module_trace": {
+    "passed": true,
+    "status": "ok",
+    "elapsed_ms": 688.0,
+    "cleanup_confirmed": true
+  },
+  "readonly": {
+    "passed": true,
+    "status": "ok",
+    "elapsed_ms": 719.0,
+    "cleanup_confirmed": true
+  },
+  "network": {
+    "passed": true,
+    "status": "ok",
+    "elapsed_ms": 625.0,
+    "cleanup_confirmed": true
+  },
+  "uid": {
+    "passed": true,
+    "status": "ok",
+    "elapsed_ms": 1062.0,
+    "cleanup_confirmed": true
+  },
+  "timeout": {
+    "passed": true,
+    "status": "timeout",
+    "elapsed_ms": 1328.0,
+    "cleanup_confirmed": true
+  },
+  "output_limit": {
+    "passed": true,
+    "status": "output_limit",
+    "elapsed_ms": 656.0,
+    "cleanup_confirmed": true
+  },
+  "memory": {
+    "passed": true,
+    "status": "infrastructure_error",
+    "elapsed_ms": 985.0,
+    "cleanup_confirmed": true
+  },
+  "host_wall_clock": {
+    "passed": true,
+    "status": "timeout",
+    "elapsed_ms": 8890.0,
+    "cleanup_confirmed": true
+  },
+  "dedicated_image": {
+    "passed": true,
+    "status": "ok",
+    "elapsed_ms": 625.0,
+    "cleanup_confirmed": true
+  },
+  "capabilities": {
+    "passed": true,
+    "status": "ok",
+    "elapsed_ms": 875.0,
+    "cleanup_confirmed": true
+  }
+}
