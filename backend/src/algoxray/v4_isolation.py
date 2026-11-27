@@ -12,16 +12,18 @@ import threading
 import time
 import uuid
 from .paths import ROOT
+from .v4_profiling import PROFILE_BOOTSTRAP
 
 IMAGE = "sha256:7594669de3f626d2de612f728140f71915609b310f7f1c16e2ed64d4a5190ade"
 MAX_PIPE = 512 * 1024
 MAX_SOURCE = 32768
 MAX_INPUT = 16384
 # A static bootstrap, never interpolated with user source. No host bind mounts.
-GUEST = r'''
+GUEST = PROFILE_BOOTSTRAP + r'''
 import contextlib, hashlib, io, json, sys, time
 req = json.loads(sys.stdin.readline())
 src = req["source"]
+profiler = ExecutionProfiler(src, req["trace_limit"] > 0)
 events = []
 frames = {}
 counter = 0
@@ -44,30 +46,38 @@ def snap(v,depth=0):
 def trace(f, kind, arg):
     global counter, truncated, trace_bytes
     if f.f_code.co_filename != "submission.py": return None
-    if time.monotonic() > deadline: raise Deadline()
-    if kind not in ("call","line","return","exception"): return trace
-    if truncated or len(events) >= req["trace_limit"]: truncated = True; return trace
-    ident = id(f)
-    if ident not in frames:
-        counter += 1
-        frames[ident] = ("F"+str(counter),frames.get(id(f.f_back),(None,None))[0])
-    frame,parent = frames[ident]
-    ev = {"event_id":"E"+str(len(events)+1),"frame_id":frame,"parent_frame_id":parent,
-          "line":f.f_lineno,"kind":kind,"function":f.f_code.co_name,
-          "snapshot_timing":"before_line" if kind=="line" else kind,
-          "locals":{k:snap(v) for k,v in [(k,v) for k,v in f.f_locals.items() if not k.startswith("__") and type(v) in (int,bool,str,list,tuple,type(None))][:32]}}
-    # Only scalar globals referenced by the function, distinguished from locals.
-    if f.f_code.co_name!="<module>":
-        ev["globals"]={k:snap(f.f_globals[k]) for k in f.f_code.co_names[:24] if k in f.f_globals and type(f.f_globals[k]) in (int,bool,str,type(None))}
-    if kind == "exception": ev["exception_type"] = arg[0].__name__
-    trace_bytes+=len(json.dumps(ev,ensure_ascii=True))
-    if trace_bytes>180000: truncated=True; return trace
-    events.append(ev)
-    if kind == "return": frames.pop(ident,None)
-    return trace
+    entered_wall,entered_cpu=time.perf_counter_ns(),time.process_time_ns()
+    profiler.tick(entered_wall,entered_cpu)
+    try:
+        if time.monotonic() > deadline: raise Deadline()
+        if kind not in ("call","line","return","exception"): return trace
+        ident = id(f)
+        if ident not in frames:
+            counter += 1
+            frames[ident] = ("F"+str(counter),frames.get(id(f.f_back),(None,None))[0])
+        frame,parent = frames[ident]
+        profiler.event(f,kind,frame)
+        if truncated or len(events) >= req["trace_limit"]:
+            truncated = True
+            return trace
+        ev = {"event_id":"E"+str(len(events)+1),"frame_id":frame,"parent_frame_id":parent,
+              "line":f.f_lineno,"kind":kind,"function":f.f_code.co_name,
+              "snapshot_timing":"before_line" if kind=="line" else kind,
+              "locals":{k:snap(v) for k,v in [(k,v) for k,v in f.f_locals.items() if not k.startswith("__") and type(v) in (int,bool,str,list,tuple,type(None))][:32]}}
+        if f.f_code.co_name!="<module>":
+            ev["globals"]={k:snap(f.f_globals[k]) for k in f.f_code.co_names[:24] if k in f.f_globals and type(f.f_globals[k]) in (int,bool,str,type(None))}
+        if kind == "exception": ev["exception_type"] = arg[0].__name__
+        trace_bytes+=len(json.dumps(ev,ensure_ascii=True))
+        if trace_bytes>180000: truncated=True; return trace
+        events.append(ev)
+        return trace
+    finally:
+        if kind == "return": frames.pop(id(f),None)
+        profiler.resume(entered_wall,entered_cpu)
 out,err = Output(),Output()
 original = sys.stdin
 status, detail = "ok",None
+execution_start_wall,execution_start_cpu=time.perf_counter_ns(),time.process_time_ns()
 try:
     code = compile(src,"submission.py","exec")
     sys.stdin = io.StringIO(req["stdin"])
@@ -82,7 +92,10 @@ except BaseException as exc: status,detail="exception",type(exc).__name__
 finally:
     sys.settrace(None)
     sys.stdin=original
+execution_wall_ns=time.perf_counter_ns()-execution_start_wall
+execution_cpu_ns=time.process_time_ns()-execution_start_cpu
 print(json.dumps({"status":status,"detail":detail,"stdout":out.getvalue(),"stderr":err.getvalue(),
+    "profile":profiler.report(status,execution_wall_ns,execution_cpu_ns),
     "events":events,"trace_status":"truncated" if truncated else "complete"},ensure_ascii=True,allow_nan=False))
 '''
 def configured_image():
@@ -153,7 +166,7 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
                     data=json.loads(buffers[0])
                     if type(data) is not dict or data.get("status") not in ("ok","timeout","output_limit","exception") or type(data.get("stdout")) is not str or type(data.get("events")) is not list:
                         raise ValueError("Invalid guest response")
-                    result={k:data[k] for k in ("status","detail","stdout","stderr","events","trace_status") if k in data}
+                    result={k:data[k] for k in ("status","detail","stdout","stderr","events","trace_status","profile") if k in data}
                 except (ValueError,UnicodeError): result={"status":"infrastructure_error","detail":"invalid_guest_protocol"}
     except OSError: result={"status":"infrastructure_error","detail":"docker_unavailable"}
     finally:

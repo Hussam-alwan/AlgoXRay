@@ -12,6 +12,10 @@ def observed_graph(events,source=None):
         key=f"{ev['frame_id']}:{ev['line']}"
         node=nodes.setdefault(key,{"id":key,"line":ev["line"],"frame_id":ev["frame_id"],"function":ev.get("function"),"event_ids":[]})
         node["event_ids"].append(ev["event_id"])
+        frames.setdefault(ev["frame_id"], {"id":ev["frame_id"], "parent":ev.get("parent_frame_id"),
+            "function":ev.get("function"), "entry_event_id":ev["event_id"]})
+        timeline.append({"event_id":ev["event_id"],"frame_id":ev["frame_id"],
+            "line":ev["line"],"kind":ev["kind"]})
         if last:
             pair=(last[0],key)
             edge=edges.setdefault(pair,{"from":pair[0],"to":pair[1],"count":0,"event_pairs":[]})

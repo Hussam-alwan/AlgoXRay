@@ -11,6 +11,11 @@ from .v4_gemini import provider_for,provider_status
 from .v4_openrouter import status as openrouter_status
 from .v4_groq import status as groq_status
 from .v4_authoring import import_problem,draft_reference
+from .v4_contracts import serialize,equal
+from .v4_engine import oracle
+from .v4_isolation import execute_stdio
+from .v4_graph import observed_graph
+from .v4_profiling import attach_profile
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
@@ -156,6 +161,38 @@ def router_for(require_loopback,token):
         try:
             p=store.load(body.package_key)
             return analyze_package(p,body.source,count=body.count,seed=body.seed,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum)
+        except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
+        finally:
+            if body.analysis_id:
+                with active_lock:active.pop(body.analysis_id,None)
+            lock.release()
+    @router.post("/profile")
+    def profile(body:Run,request:Request):
+        guard(request)
+        if not body.trusted_local_source:raise HTTPException(403,"Confirm local source review")
+        if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
+        c=threading.Event()
+        if body.analysis_id:
+            with active_lock:active[body.analysis_id]=c
+        try:
+            p=store.load(body.package_key)
+            case=body.case if body.case is not None else p["controls"][0]["case"]
+            stdin=serialize(p["manifest"],case)
+            def run(src,stdin,limit):
+                return execute_stdio(src,stdin,trace_limit=limit,cancel=c)
+            ref=oracle(p,stdin,run,256)
+            if ref["status"]=="cancelled":return {"status":"cancelled"}
+            if ref["status"]!="ok":return {"status":"oracle_unavailable","reference":ref}
+            student=run(body.source,stdin,256)
+            if student["status"]=="cancelled":return {"status":"cancelled"}
+            matches=student["status"]=="ok" and equal(p["manifest"],student["stdout"],ref["stdout"])
+            return dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "output_difference",
+                package_sha256=body.package_key,student_source=body.source,reference_source=p["reference"],
+                witness=dict(case=case,stdin=stdin,student=student,reference=ref),replay_count=0,attempts=1,
+                student_graph=attach_profile(observed_graph(student.get("events",[]),body.source),student),
+                reference_graph=attach_profile(observed_graph(ref.get("events",[]),p["reference"]),ref),
+                hypotheses=[],ai_facts=[],ai_status="disabled",
+                scope="One instrumented input, no search or replay claim. Timing is not judge runtime or complexity proof.")
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:

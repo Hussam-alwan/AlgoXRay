@@ -102,6 +102,49 @@ def test(url,out):
         page.locator("#load-repair").click()
         expect(page.locator("#repair-history-view")).to_contain_text("passed_named_tests")
         checks.append("immutable_repair_history")
+        # Timings must be present for both sides and survive evidence export.
+        assert data["student_graph"]["profile"]["status"]=="complete"
+        assert data["reference_graph"]["profile"]["status"]=="complete"
+        assert page.locator("#profile-table tbody tr").count()>0
+        page.locator("#student").click()
+        page.locator("#profile-clock").select_option("cpu")
+        page.locator("#profile-cost").select_option("self")
+        page.locator("#profile-table tbody button").first.click()
+        assert page.locator("#code .profile-range").count()>0
+        checks.append("block_timing_source_link_and_clocks")
+        page.locator("#profile-case").fill(json.dumps({"n":3,"a":[1,2,3]}))
+        page.locator("#source").fill("n=int(input())\ndef f(n):\n    if n==0:\n        return 1\n    return n*f(n-1)\nprint(f(n))\n")
+        page.locator("#trusted").check()
+        with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=35000) as response:
+            page.locator("#profile-run").click()
+        profiled=response.value.json()
+        assert profiled["status"]=="profiled_execution" and profiled["kind"]=="match",profiled.get("status")
+        expect(page.locator("#repair-panel")).to_be_hidden()
+        expect(page.locator("#profile-summary")).to_contain_text("complete")
+        events=profiled["witness"]["student"]["events"]
+        pos=next(i for i,e in enumerate(events) if e["function"]=="f" and e["kind"]=="line")
+        page.locator("#slider").fill(str(pos))
+        assert "f" in page.locator("#stack").inner_text()
+        checks.append("correct_code_profile_recursion_and_call_stack")
+        with page.expect_download() as dl:page.locator("#profile-csv").click()
+        dl.value.save_as(str(out/"timing.csv"))
+        assert "inclusive_cpu_ns" in (out/"timing.csv").read_text(encoding="utf-8-sig")
+        checks.append("profile_csv_export")
+        page.locator("#source").fill("s=0\nfor i in range(200):\n    s+=i\nprint(s)\n")
+        with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=35000) as response:
+            page.locator("#profile-run").click()
+        partial=response.value.json()
+        assert partial["witness"]["student"]["trace_status"]=="truncated"
+        assert partial["witness"]["student"]["profile"]["status"]=="complete"
+        checks.append("complete_timing_with_truncated_visual_trace")
+        page.locator("#source").fill("while True: pass")
+        with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=35000) as response:
+            page.locator("#profile-run").click()
+        timed=response.value.json()
+        assert timed["witness"]["student"]["status"]=="timeout"
+        assert timed["witness"]["student"]["profile"]["status"]=="partial"
+        expect(page.locator("#profile-summary")).to_contain_text("partial")
+        checks.append("timeout_profile_is_explicitly_partial")
         page.screenshot(path=str(out/"desktop.png"),full_page=True)
         page.set_viewport_size({"width":390,"height":844})
         assert page.evaluate("document.body.scrollWidth")<=390
