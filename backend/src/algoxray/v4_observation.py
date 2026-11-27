@@ -99,9 +99,11 @@ def summaries(runs):
     stats["timeouts"]=sum(r["status"]=="timeout" for r in runs)
     valid=[r for r in runs if r["status"]=="ok" and type(r.get("wall_ns")) is int and type(r.get("cpu_ns")) is int]
     stats["completed"]=len(valid)
-    for key in ("wall_ns","cpu_ns","host_ms"):
+    for key in ("wall_ns","cpu_ns","host_ms","startup_ms"):
         xs=[r[key] for r in valid if type(r.get(key)) in (float,int)]
-        stats[key]={"median":median(xs),"min":min(xs),"max":max(xs)} if xs else None
+        center=median(xs) if xs else None
+        stats[key]={"median":center,"min":min(xs),"max":max(xs),
+                    "mad":median(abs(x-center) for x in xs)} if xs else None
     return stats
 
 def empirical_exponent(points,repeats):
@@ -109,7 +111,8 @@ def empirical_exponent(points,repeats):
     if len(points)<3 or repeats<3:return {"status":"insufficient_points_or_repetitions"}
     if any(p["summary"]["completed"]!=repeats or p["summary"]["wall_ns"] is None or
            p["summary"]["wall_ns"]["min"]<=0 or p["summary"]["wall_ns"]["max"]>2*p["summary"]["wall_ns"]["min"] or
-           p["correctness"]=="recorded_mismatch" or len({r.get("stdout_sha256") for r in p["runs"]})!=1 for p in points):
+           p["correctness"]=="recorded_mismatch" or any(not r.get("stdout_sha256") for r in p["runs"]) or
+           len({r.get("stdout_sha256") for r in p["runs"]})!=1 for p in points):
         return {"status":"incomplete_noisy_or_incorrect"}
     sizes=[p["size"] for p in points]
     if any(type(s) is not int or s<=0 for s in sizes) or max(sizes)<4*min(sizes):
@@ -165,6 +168,8 @@ def benchmark_source(source,inputs,*,repeats=3,seconds=1.0,seed=2026,package=Non
             judgment=judge_output(package,row["case"],result.get("stdout"),expected) if valid and expected is not None else None
             match={"accepted":True,"rejected":False,"unavailable":None}[judgment["status"]] if judgment else None
             runs.append({"status":result["status"] if valid or result["status"]!="ok" else "measurement_unavailable",
+                         "timeout_basis":result.get("basis") if result["status"]=="timeout" else None,
+                         "detail":result.get("detail"),"startup_ms":result.get("startup_ms"),
                          "wall_ns":profile.get("execution_wall_ns") if valid else None,
                          "cpu_ns":profile.get("execution_cpu_ns") if valid else None,
                          "host_ms":result.get("elapsed_ms"),"matches_reviewed_reference":match,

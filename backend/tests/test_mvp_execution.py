@@ -2,7 +2,9 @@
 import json
 import subprocess
 import sys
+import threading
 import pytest
+from algoxray import v4_isolation
 from algoxray.v4_isolation import GUEST
 
 def guest(source,stdin="",mode="trace_profile",trace_limit=128):
@@ -41,3 +43,34 @@ def test_failure_location_and_exit_code():
     error=guest("def f():\n raise IndexError()\nf()")
     assert error["failure_location"]=={"line":2,"function":"f"}
     assert guest("import sys; sys.exit(7)")["exit_code"]==7
+
+
+def test_benchmark_host_deadline_starts_after_guest_ready(monkeypatch):
+    def worker_command(name, image):
+        return [sys.executable, "-I", "-c", "import time; time.sleep(.2)\n" + GUEST]
+
+    def simulate_container_cleanup(command, **kwargs):
+        assert command[:2] in (["docker", "rm"], ["docker", "ps"])
+        return subprocess.CompletedProcess(command, 0, stdout=b"")
+
+    monkeypatch.setattr(v4_isolation, "docker_command", worker_command)
+    monkeypatch.setattr(v4_isolation.subprocess, "run", simulate_container_cleanup)
+    options = dict(image=v4_isolation.IMAGE, mode="benchmark_uninstrumented", trace_limit=0, seconds=.15)
+    success = v4_isolation.execute_stdio("print(6)", "", **options)
+    assert success["status"] == "ok" and success["stdout"] == "6\n"
+    assert success["startup_ms"] >= 200 and success["startup_ms"] < success["elapsed_ms"]
+
+    expired = v4_isolation.execute_stdio("import time; time.sleep(5)", "", **options)
+    assert expired["status"] == "timeout" and expired["basis"] == "host_benchmark_wall_clock"
+    assert expired["elapsed_ms"] < 3000 and expired["cleanup_confirmed"]
+
+    cancel = threading.Event()
+    cancel.set()
+    cancelled = v4_isolation.execute_stdio("print(6)", "", cancel=cancel, **options)
+    assert cancelled["status"] == "cancelled" and cancelled["cleanup_confirmed"]
+
+    monkeypatch.setattr(v4_isolation, "STARTUP_SECONDS", .1)
+    startup = v4_isolation.execute_stdio("print(6)", "", **options)
+    assert startup["status"] == "infrastructure_error"
+    assert startup["detail"] == "benchmark_worker_startup_timeout" and startup["startup_ms"] is None
+    assert startup["cleanup_confirmed"]

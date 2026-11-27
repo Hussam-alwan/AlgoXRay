@@ -18,6 +18,8 @@ IMAGE = "sha256:7594669de3f626d2de612f728140f71915609b310f7f1c16e2ed64d4a5190ade
 MAX_PIPE = 512 * 1024
 MAX_SOURCE = 32768
 MAX_INPUT = 16384
+STARTUP_SECONDS = 8
+BENCHMARK_READY = b"ALGOXRAY_BENCHMARK_READY\n"
 # A static bootstrap, never interpolated with user source. No host bind mounts.
 GUEST = PROFILE_BOOTSTRAP + r'''
 import contextlib, hashlib, io, json, sys, time, math, itertools
@@ -95,6 +97,9 @@ original = sys.stdin
 status, detail = "ok",None
 exit_code = 0
 failure_location = None
+if req.get("announce_benchmark_start"):
+    sys.stdout.write("ALGOXRAY_BENCHMARK_READY\n")
+    sys.stdout.flush()
 execution_start_wall,execution_start_cpu=time.perf_counter_ns(),time.process_time_ns()
 try:
     code = compile(src,"submission.py","exec")
@@ -125,14 +130,15 @@ finally:
     sys.stdin=original
 execution_wall_ns=time.perf_counter_ns()-execution_start_wall
 execution_cpu_ns=time.process_time_ns()-execution_start_cpu
-# This is an observation, not an independent deadline enforcement mechanism.
-# The host still terminates the worker at its wall-clock ceiling.
+# The host also enforces a deadline independently of the guest's execution.
+basis = None
 if not instrumented and status=="ok" and execution_wall_ns>req["seconds"]*1e9:
     status,exit_code="timeout",None
+    basis="guest_execution_wall_clock"
 profile=profiler.report(status,execution_wall_ns,execution_cpu_ns)
 if not instrumented:
     profile.update(method="uninstrumented_execution",scope="Compile and execution inside guest, without trace/profile callbacks. Not judge runtime.")
-print(json.dumps({"status":status,"detail":detail,"exit_code":exit_code,"failure_location":failure_location,
+print(json.dumps({"status":status,"detail":detail,"basis":basis,"exit_code":exit_code,"failure_location":failure_location,
     "stdout":out.getvalue(),"stderr":err.getvalue(),"mode":mode,
     "profile":profile,"events":events,"trace_status":("disabled" if not instrumented else "truncated" if truncated else "complete")},ensure_ascii=True,allow_nan=False))
 '''
@@ -167,23 +173,35 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
     if mode=="benchmark_uninstrumented" and trace_limit!=0:
         raise ValueError("Uninstrumented mode requires trace_limit=0")
     name = "algoxray-v4-" + uuid.uuid4().hex
-    try:cmd = docker_command(name,image or configured_image())
+    try:
+        image_id=image or configured_image()
+        cmd=docker_command(name,image_id)
     except (OSError,ValueError,KeyError):return {"status":"infrastructure_error","detail":"dedicated_worker_unconfigured","events":[],"trace_trust":"guest_observation_not_authenticated"}
-    req = json.dumps({"source":source,"stdin":stdin,"seconds":seconds,"trace_limit":trace_limit,"mode":mode},ensure_ascii=True).encode()+b"\n"
+    benchmark = mode == "benchmark_uninstrumented"
+    req = json.dumps({"source":source,"stdin":stdin,"seconds":seconds,"trace_limit":trace_limit,
+                      "mode":mode,"announce_benchmark_start":benchmark},ensure_ascii=True).encode()+b"\n"
     started=time.monotonic()
+    ready_at=None
     result={"status":"infrastructure_error"}
     proc=None
     readers=[]
     buffers=[bytearray(),bytearray()]
     overflow=threading.Event()
     def read(stream, target):
+        nonlocal ready_at
+        awaiting_ready = benchmark and target is buffers[0]
         try:
             while True:
-                chunk=stream.read(4096)
+                chunk=stream.read1(4096)
                 if not chunk: break
                 if len(target)+len(chunk)>MAX_PIPE:
                     overflow.set(); break
                 target.extend(chunk)
+                if awaiting_ready and b"\n" in target:
+                    awaiting_ready=False
+                    if target.startswith(BENCHMARK_READY):
+                        del target[:len(BENCHMARK_READY)]
+                        ready_at=time.monotonic()
         except OSError: pass
     def write():
         try: proc.stdin.write(req); proc.stdin.close()
@@ -197,18 +215,32 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
         while proc.poll() is None:
             if cancel is not None and cancel.is_set(): result={"status":"cancelled"}; break
             if overflow.is_set(): result={"status":"output_limit"}; break
-            if time.monotonic()-started > seconds+8: result={"status":"timeout","basis":"host_wall_clock"}; break
+            now=time.monotonic()
+            benchmark_started=ready_at
+            if benchmark and (benchmark_started is None or benchmark_started-started>STARTUP_SECONDS):
+                if now-started>STARTUP_SECONDS:
+                    result={"status":"infrastructure_error","detail":"benchmark_worker_startup_timeout"}; break
+            elif benchmark and now-benchmark_started>seconds:
+                result={"status":"timeout","basis":"host_benchmark_wall_clock"}; break
+            if now-started>seconds+STARTUP_SECONDS:
+                result={"status":"timeout","basis":"host_wall_clock"}; break
             time.sleep(.025)
         else:
             for t in readers: t.join(1)
             if overflow.is_set(): result={"status":"output_limit"}
             elif proc.returncode != 0: result={"status":"infrastructure_error","exit_code":proc.returncode}
+            elif benchmark and ready_at is None:
+                result={"status":"infrastructure_error","detail":"benchmark_worker_ready_missing"}
+            elif benchmark and ready_at-started>STARTUP_SECONDS:
+                result={"status":"infrastructure_error","detail":"benchmark_worker_startup_timeout"}
             else:
                 try:
                     data=json.loads(buffers[0])
                     if type(data) is not dict or data.get("status") not in ("ok","timeout","output_limit","exception") or type(data.get("stdout")) is not str or type(data.get("events")) is not list:
                         raise ValueError("Invalid guest response")
                     result={k:data[k] for k in ("status","detail","stdout","stderr","events","trace_status","profile","exit_code","failure_location","mode") if k in data}
+                    if data.get("basis")=="guest_execution_wall_clock" and benchmark and data["status"]=="timeout":
+                        result["basis"]=data["basis"]
                 except (ValueError,UnicodeError): result={"status":"infrastructure_error","detail":"invalid_guest_protocol"}
     except OSError: result={"status":"infrastructure_error","detail":"docker_unavailable"}
     finally:
@@ -225,8 +257,11 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
             except (OSError,subprocess.TimeoutExpired): cleanup_ok=False
         for t in readers: t.join(.2)
     if not cleanup_ok: result={"status":"infrastructure_error","detail":"container_cleanup_unconfirmed"}
-    result.update(image_id=cmd[cmd.index("--entrypoint")+2],source_sha256=hashlib.sha256(source.encode()).hexdigest(),
+    result.update(image_id=image_id,source_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   input_sha256=hashlib.sha256(stdin.encode()).hexdigest(),
-                  elapsed_ms=round((time.monotonic()-started)*1000,2), requested_mode=mode, host_wall_limit_seconds=seconds+8,
+                  elapsed_ms=round((time.monotonic()-started)*1000,2), requested_mode=mode, host_wall_limit_seconds=seconds+STARTUP_SECONDS,
                   trace_trust="guest_observation_not_authenticated",cleanup_confirmed=cleanup_ok)
+    if benchmark:
+        result.update(startup_limit_seconds=STARTUP_SECONDS, benchmark_wall_limit_seconds=seconds,
+                      startup_ms=round((ready_at-started)*1000,2) if ready_at is not None else None)
     return result
