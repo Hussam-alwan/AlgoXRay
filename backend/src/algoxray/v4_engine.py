@@ -62,6 +62,6 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
             hypotheses=check_hypotheses(proposal,student_events);ai_status="ok"
         except (ProviderError,ValueError): ai_status="unavailable_or_invalid"
     return {"status":"observed_mismatch","kind":witness["kind"],"package_sha256":digest(p),"original_case":original["case"],"witness":witness,
-            "replay_count":3,"attempts":attempts,"student_graph":observed_graph(student_events),"reference_graph":observed_graph(reference_events),
+            "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":observed_graph(student_events),"reference_graph":observed_graph(reference_events),
             "hypotheses":hypotheses,"ai_status":ai_status,"elapsed_ms":round((time.monotonic()-start)*1000,2),
             "scope":"Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."}

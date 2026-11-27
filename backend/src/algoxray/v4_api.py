@@ -3,10 +3,13 @@ import secrets, threading
 from fastapi import APIRouter,HTTPException,Request
 from pydantic import BaseModel,ConfigDict,Field
 from .paths import ROOT
-from .v4_contracts import PackageStore,validate_package
+from .v4_contracts import PackageStore,validate_package,validate_manifest
 from .v4_engine import review,analyze_package
-from .v4_provider import OllamaProvider,model_health
+from .v4_provider import OllamaProvider,model_health,ProviderError
 
+class Draft(BaseModel):
+    model_config=ConfigDict(extra="forbid",strict=True)
+    statement:str=Field(min_length=1,max_length=8000)
 class Approve(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package:dict
@@ -34,6 +37,17 @@ def router_for(require_loopback,token):
     @router.get("/packages")
     def packages(request:Request):
         require_loopback(request);return store.list()
+    @router.post("/packages/draft")
+    def draft(body:Draft,request:Request):
+        guard(request)
+        schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object"}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
+        instructions="Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. lines is a list of rows of field names in original order. Do not invent constraints; return no manifest if unsupported."
+        try:
+            r=OllamaProvider().propose("contract_draft",{"statement":body.statement,"grammar":instructions},schema)
+            if set(r)!={"manifest"}:raise ValueError("Invalid draft envelope")
+            m=validate_manifest(r["manifest"])
+            return {"status":"draft_unreviewed","manifest":m,"warning":"Check against original problem; supply independently reviewed reference and controls."}
+        except (ProviderError,ValueError,TypeError,KeyError):raise HTTPException(422,"Local model unavailable or unsupported draft; use manual authoring")
     @router.post("/packages/approve")
     def approve(body:Approve,request:Request):
         guard(request)

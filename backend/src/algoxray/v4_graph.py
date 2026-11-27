@@ -4,6 +4,7 @@ def observed_graph(events):
     last=None
     for ev in events:
         if type(ev) is not dict or not all(k in ev for k in ("event_id","frame_id","line","kind","locals")): continue
+        if type(ev["event_id"]) is not str or type(ev["frame_id"]) is not str or type(ev["line"]) is not int or type(ev["locals"]) is not dict: continue
         key=f"{ev['frame_id']}:{ev['line']}"
         node=nodes.setdefault(key,{"id":key,"line":ev["line"],"frame_id":ev["frame_id"],"function":ev.get("function"),"event_ids":[]})
         node["event_ids"].append(ev["event_id"])
