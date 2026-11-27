@@ -31,3 +31,32 @@ def test_wire_and_usage(monkeypatch,tmp_path):
     p=g.GeminiProvider(ledger=g.Ledger(tmp_path/"usage.db"))
     assert p.propose("diagnosis",{},{"type":"object"})=={"hypotheses":[],"facts":[]}
     assert p.usage["totalTokenCount"]==21
+
+def test_rate_limit_has_no_automatic_retry(monkeypatch,tmp_path):
+    monkeypatch.setattr(g,"get_key",lambda:"test-key")
+    class Open:
+        def open(self,req,timeout):
+            raise urllib.error.HTTPError(req.full_url,429,"rate limit",{},None)
+    monkeypatch.setattr(g.urllib.request,"build_opener",lambda *a:Open())
+    p=g.GeminiProvider(ledger=g.Ledger(tmp_path/"usage.db"))
+    with pytest.raises(ProviderError,match="gemini_quota_or_rate_limit"):p.propose("diagnosis",{},{"type":"object"})
+    assert p.ledger.counts(p.model)["local_attempts_24h"]==1
+
+def test_draft_requires_cloud_consent_and_preserves_statement(monkeypatch):
+    from fastapi.testclient import TestClient
+    from algoxray.api import app
+    from algoxray import v4_api
+    from algoxray.v4_provider import MockProvider
+    with TestClient(app) as c:
+        token=c.get("/api/session").json()["custom_code_token"]
+        headers={"X-AlgoXRay-Token":token}
+        body={"statement":"Read one integer n between 1 and 9.","model":g.MODELS[0]}
+        assert c.post("/api/v4/packages/draft",json=body,headers=headers).status_code==403
+        proposed={"manifest":{"id":"twice","title":"Double","statement":"rewritten","fields":[{"name":"n","kind":"int","min":1,"max":9}],"lines":[["n"]],"output":"tokens"}}
+        def provider(model,consent):
+            assert model==g.MODELS[0] and consent
+            return MockProvider(proposed)
+        monkeypatch.setattr(v4_api,"provider_for",provider)
+        r=c.post("/api/v4/packages/draft",json={**body,"cloud_consent":True},headers=headers)
+        assert r.status_code==200 and r.json()["status"]=="draft_unreviewed"
+        assert r.json()["manifest"]["statement"]==body["statement"]
