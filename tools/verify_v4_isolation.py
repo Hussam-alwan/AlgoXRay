@@ -22,7 +22,7 @@ def main():
         run=execute_stdio(source,stdin,seconds=.7)
         passed=run["status"]==status and run["cleanup_confirmed"] and (stdout is None or run.get("stdout","").strip()==stdout)
         if name=="module_trace": passed=passed and bool(observed_graph(run.get("events",[]))["changes"])
-        if name=="memory" and run["status"]=="infrastructure_error": passed=run["cleanup_confirmed"] # Possible cgroup OOM termination, not a successful allocation.
+        if name=="memory" and run["status"]=="infrastructure_error" and run.get("exit_code")==137: passed=run["cleanup_confirmed"] # Exit 137 is consistent with cgroup OOM, not a proof of cause.
         report[name]={"passed":passed,"status":run["status"],"elapsed_ms":run["elapsed_ms"],"cleanup_confirmed":run["cleanup_confirmed"]}
         print(name,report[name],flush=True)
     path=Path("results/v4-isolation-smoke-expanded.json");path.parent.mkdir(exist_ok=True);path.write_text(json.dumps(report,indent=2))

@@ -6,10 +6,18 @@ from .paths import ROOT
 from .v4_contracts import PackageStore,validate_package,validate_manifest
 from .v4_engine import review,analyze_package
 from .v4_provider import OllamaProvider,model_health,ProviderError
+from .v4_repair import propose_repair,verify_repair
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     statement:str=Field(min_length=1,max_length=8000)
+class Repair(BaseModel):
+    model_config=ConfigDict(extra="forbid",strict=True)
+    package_key:str
+    source:str=Field(min_length=1,max_length=32768)
+    case:dict
+    candidate:str|None=Field(default=None,min_length=1,max_length=32768)
+    reviewed:bool=False
 class Approve(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package:dict
@@ -59,6 +67,19 @@ def router_for(require_loopback,token):
             result=review(body.package)
             if not result["passed"]:return {"status":"rejected","review":result}
             return {"status":"approved_by_owner","key":store.save(body.package),"review":result}
+        except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
+        finally:lock.release()
+    @router.post("/repair/propose")
+    def repair_propose(body:Repair,request:Request):
+        guard(request)
+        try:return propose_repair(OllamaProvider(),store.load(body.package_key),body.source,body.case)
+        except (ProviderError,ValueError,OSError):raise HTTPException(422,"Local model unavailable or proposal invalid")
+    @router.post("/repair/verify")
+    def repair_verify(body:Repair,request:Request):
+        guard(request)
+        if not body.reviewed or body.candidate is None:raise HTTPException(403,"Review candidate before execution")
+        if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
+        try:return verify_repair(store.load(body.package_key),body.source,body.candidate,body.case)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:lock.release()
     @router.post("/analysis/{analysis_id}/cancel")
