@@ -1,0 +1,385 @@
+{
+  "upstream": "https://github.com/jkoppel/QuixBugs",
+  "commit": "4257f44b0ff1181dedaedee6a447e133219fcebf",
+  "scope": "Seven paired external benchmark families; adapted function bodies, added stdio wrappers, bounded domains. Controls and bug locations are known. Not independent student submissions or unseen holdout. Source is external, task adapters and oracle implementations authored for this project.",
+  "families": [
+    {
+      "family": "gcd",
+      "upstream_fault": "python_programs/gcd.py",
+      "upstream_control": "correct_python_programs/gcd.py",
+      "fault_line_in_adaptation": 5,
+      "package": {
+        "manifest": {
+          "id": "quix_gcd",
+          "title": "QuixBugs gcd",
+          "statement": "Read two integers a,b in 0..40; print their greatest common divisor, with gcd(0,0)=0.",
+          "fields": [
+            {
+              "name": "a",
+              "kind": "int",
+              "min": 0,
+              "max": 40
+            },
+            {
+              "name": "b",
+              "kind": "int",
+              "min": 0,
+              "max": 40
+            }
+          ],
+          "lines": [
+            [
+              "a",
+              "b"
+            ]
+          ],
+          "output": "tokens"
+        },
+        "reference": "import math\na,b=map(int,input().split())\nprint(math.gcd(a,b))\n",
+        "reference_alt": "def gcd(a, b):\n    if b == 0:\n        return a\n    else:\n        return gcd(b, a % b)\n\na,b=map(int,input().split())\nprint(gcd(a,b))\n",
+        "controls": [
+          {
+            "case": {
+              "a": 12,
+              "b": 0
+            },
+            "expected": "12"
+          },
+          {
+            "case": {
+              "a": 35,
+              "b": 21
+            },
+            "expected": "7"
+          }
+        ]
+      },
+      "fault": "def gcd(a, b):\n    if b == 0:\n        return a\n    else:\n        return gcd(a % b, b)\n\na,b=map(int,input().split())\nprint(gcd(a,b))\n",
+      "control": "def gcd(a, b):\n    if b == 0:\n        return a\n    else:\n        return gcd(b, a % b)\n\na,b=map(int,input().split())\nprint(gcd(a,b))\n"
+    },
+    {
+      "family": "get_factors",
+      "upstream_fault": "python_programs/get_factors.py",
+      "upstream_control": "correct_python_programs/get_factors.py",
+      "fault_line_in_adaptation": 9,
+      "package": {
+        "manifest": {
+          "id": "quix_get_factors",
+          "title": "QuixBugs get_factors",
+          "statement": "Read n in 1..60; print its prime factors in ascending order with repetitions, separated by spaces; print an empty line for 1.",
+          "fields": [
+            {
+              "name": "n",
+              "kind": "int",
+              "min": 1,
+              "max": 60
+            }
+          ],
+          "lines": [
+            [
+              "n"
+            ]
+          ],
+          "output": "tokens"
+        },
+        "reference": "n=int(input())\nout=[]\nfor i in range(2,n+1):\n    while n%i==0:\n        out.append(i)\n        n//=i\nprint(*out)\n",
+        "reference_alt": "def get_factors(n):\n    if n == 1:\n        return []\n\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return [i] + get_factors(n // i)\n\n    return [n]\n\nn=int(input())\nprint(*get_factors(n))\n",
+        "controls": [
+          {
+            "case": {
+              "n": 1
+            },
+            "expected": ""
+          },
+          {
+            "case": {
+              "n": 12
+            },
+            "expected": "2 2 3"
+          }
+        ]
+      },
+      "fault": "def get_factors(n):\n    if n == 1:\n        return []\n\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return [i] + get_factors(n // i)\n\n    return []\n\nn=int(input())\nprint(*get_factors(n))\n",
+      "control": "def get_factors(n):\n    if n == 1:\n        return []\n\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return [i] + get_factors(n // i)\n\n    return [n]\n\nn=int(input())\nprint(*get_factors(n))\n"
+    },
+    {
+      "family": "sieve",
+      "upstream_fault": "python_programs/sieve.py",
+      "upstream_control": "correct_python_programs/sieve.py",
+      "fault_line_in_adaptation": 4,
+      "package": {
+        "manifest": {
+          "id": "quix_sieve",
+          "title": "QuixBugs sieve",
+          "statement": "Read n in 1..30; print all primes no greater than n, separated by spaces.",
+          "fields": [
+            {
+              "name": "n",
+              "kind": "int",
+              "min": 1,
+              "max": 30
+            }
+          ],
+          "lines": [
+            [
+              "n"
+            ]
+          ],
+          "output": "tokens"
+        },
+        "reference": "n=int(input())\nprint(*(x for x in range(2,n+1) if all(x%d for d in range(2,x))))\n",
+        "reference_alt": "def sieve(max):\n    primes = []\n    for n in range(2, max + 1):\n        if all(n % p > 0 for p in primes):\n            primes.append(n)\n    return primes\n\nn=int(input())\nprint(*sieve(n))\n",
+        "controls": [
+          {
+            "case": {
+              "n": 1
+            },
+            "expected": ""
+          },
+          {
+            "case": {
+              "n": 10
+            },
+            "expected": "2 3 5 7"
+          }
+        ]
+      },
+      "fault": "def sieve(max):\n    primes = []\n    for n in range(2, max + 1):\n        if any(n % p > 0 for p in primes):\n            primes.append(n)\n    return primes\n\nn=int(input())\nprint(*sieve(n))\n",
+      "control": "def sieve(max):\n    primes = []\n    for n in range(2, max + 1):\n        if all(n % p > 0 for p in primes):\n            primes.append(n)\n    return primes\n\nn=int(input())\nprint(*sieve(n))\n"
+    },
+    {
+      "family": "kth",
+      "upstream_fault": "python_programs/kth.py",
+      "upstream_control": "correct_python_programs/kth.py",
+      "fault_line_in_adaptation": 12,
+      "package": {
+        "manifest": {
+          "id": "quix_kth",
+          "title": "QuixBugs kth",
+          "statement": "Read exactly four integers -5..5, then k in 0..3; print the zero-based kth smallest element, counting duplicates.",
+          "fields": [
+            {
+              "name": "a",
+              "kind": "ints",
+              "min": -5,
+              "max": 5,
+              "length": 4
+            },
+            {
+              "name": "k",
+              "kind": "int",
+              "min": 0,
+              "max": 3
+            }
+          ],
+          "lines": [
+            [
+              "a"
+            ],
+            [
+              "k"
+            ]
+          ],
+          "output": "tokens"
+        },
+        "reference": "a=list(map(int,input().split()))\nk=int(input())\nprint(sorted(a)[k])\n",
+        "reference_alt": "def kth(arr, k):\n    pivot = arr[0]\n    below = [x for x in arr if x < pivot]\n    above = [x for x in arr if x > pivot]\n\n    num_less = len(below)\n    num_lessoreq = len(arr) - len(above)\n\n    if k < num_less:\n        return kth(below, k)\n    elif k >= num_lessoreq:\n        return kth(above, k - num_lessoreq)\n    else:\n        return pivot\n\na=list(map(int,input().split()))\nk=int(input())\nprint(kth(a,k))\n",
+        "controls": [
+          {
+            "case": {
+              "a": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "k": 3
+            },
+            "expected": "1"
+          },
+          {
+            "case": {
+              "a": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "k": 3
+            },
+            "expected": "3"
+          }
+        ]
+      },
+      "fault": "def kth(arr, k):\n    pivot = arr[0]\n    below = [x for x in arr if x < pivot]\n    above = [x for x in arr if x > pivot]\n\n    num_less = len(below)\n    num_lessoreq = len(arr) - len(above)\n\n    if k < num_less:\n        return kth(below, k)\n    elif k >= num_lessoreq:\n        return kth(above, k)\n    else:\n        return pivot\n\na=list(map(int,input().split()))\nk=int(input())\nprint(kth(a,k))\n",
+      "control": "def kth(arr, k):\n    pivot = arr[0]\n    below = [x for x in arr if x < pivot]\n    above = [x for x in arr if x > pivot]\n\n    num_less = len(below)\n    num_lessoreq = len(arr) - len(above)\n\n    if k < num_less:\n        return kth(below, k)\n    elif k >= num_lessoreq:\n        return kth(above, k - num_lessoreq)\n    else:\n        return pivot\n\na=list(map(int,input().split()))\nk=int(input())\nprint(kth(a,k))\n"
+    },
+    {
+      "family": "quicksort",
+      "upstream_fault": "python_programs/quicksort.py",
+      "upstream_control": "correct_python_programs/quicksort.py",
+      "fault_line_in_adaptation": 7,
+      "package": {
+        "manifest": {
+          "id": "quix_quicksort",
+          "title": "QuixBugs quicksort",
+          "statement": "Read n in 1..6, then n integers in -3..3; print all integers in ascending order including duplicates.",
+          "fields": [
+            {
+              "name": "n",
+              "kind": "int",
+              "min": 1,
+              "max": 6
+            },
+            {
+              "name": "a",
+              "kind": "ints",
+              "min": -3,
+              "max": 3,
+              "length_from": "n"
+            }
+          ],
+          "lines": [
+            [
+              "n"
+            ],
+            [
+              "a"
+            ]
+          ],
+          "output": "tokens"
+        },
+        "reference": "n=int(input())\nprint(*sorted(map(int,input().split())))\n",
+        "reference_alt": "def quicksort(arr):\n    if not arr:\n        return []\n\n    pivot = arr[0]\n    lesser = quicksort([x for x in arr[1:] if x < pivot])\n    greater = quicksort([x for x in arr[1:] if x >= pivot])\n    return lesser + [pivot] + greater\n\nn=int(input())\na=list(map(int,input().split()))\nprint(*quicksort(a))\n",
+        "controls": [
+          {
+            "case": {
+              "n": 1,
+              "a": [
+                0
+              ]
+            },
+            "expected": "0"
+          },
+          {
+            "case": {
+              "n": 4,
+              "a": [
+                2,
+                1,
+                2,
+                0
+              ]
+            },
+            "expected": "0 1 2 2"
+          }
+        ]
+      },
+      "fault": "def quicksort(arr):\n    if not arr:\n        return []\n\n    pivot = arr[0]\n    lesser = quicksort([x for x in arr[1:] if x < pivot])\n    greater = quicksort([x for x in arr[1:] if x > pivot])\n    return lesser + [pivot] + greater\n\nn=int(input())\na=list(map(int,input().split()))\nprint(*quicksort(a))\n",
+      "control": "def quicksort(arr):\n    if not arr:\n        return []\n\n    pivot = arr[0]\n    lesser = quicksort([x for x in arr[1:] if x < pivot])\n    greater = quicksort([x for x in arr[1:] if x >= pivot])\n    return lesser + [pivot] + greater\n\nn=int(input())\na=list(map(int,input().split()))\nprint(*quicksort(a))\n"
+    },
+    {
+      "family": "longest_common_subsequence",
+      "upstream_fault": "python_programs/longest_common_subsequence.py",
+      "upstream_control": "correct_python_programs/longest_common_subsequence.py",
+      "fault_line_in_adaptation": 6,
+      "package": {
+        "manifest": {
+          "id": "quix_longest_common_subsequence",
+          "title": "QuixBugs longest_common_subsequence",
+          "statement": "Read two words, each 1..5 characters over ABC, and print the LENGTH of a longest common subsequence (length-only adaptation).",
+          "fields": [
+            {
+              "name": "a",
+              "kind": "word",
+              "min": 1,
+              "max": 5,
+              "alphabet": "ABC"
+            },
+            {
+              "name": "b",
+              "kind": "word",
+              "min": 1,
+              "max": 5,
+              "alphabet": "ABC"
+            }
+          ],
+          "lines": [
+            [
+              "a"
+            ],
+            [
+              "b"
+            ]
+          ],
+          "output": "tokens"
+        },
+        "reference": "a=input();b=input()\ndp=[[0]*(len(b)+1) for _ in range(len(a)+1)]\nfor i,x in enumerate(a,1):\n    for j,y in enumerate(b,1):\n        dp[i][j]=dp[i-1][j-1]+1 if x==y else max(dp[i-1][j],dp[i][j-1])\nprint(dp[-1][-1])\n",
+        "reference_alt": "def longest_common_subsequence(a, b):\n    if not a or not b:\n        return ''\n\n    elif a[0] == b[0]:\n        return a[0] + longest_common_subsequence(a[1:], b[1:])\n\n    else:\n        return max(\n            longest_common_subsequence(a, b[1:]),\n            longest_common_subsequence(a[1:], b),\n            key=len\n        )\n\na=input()\nb=input()\nprint(len(longest_common_subsequence(a,b)))\n",
+        "controls": [
+          {
+            "case": {
+              "a": "A",
+              "b": "B"
+            },
+            "expected": "0"
+          },
+          {
+            "case": {
+              "a": "AAA",
+              "b": "A"
+            },
+            "expected": "1"
+          }
+        ]
+      },
+      "fault": "def longest_common_subsequence(a, b):\n    if not a or not b:\n        return ''\n\n    elif a[0] == b[0]:\n        return a[0] + longest_common_subsequence(a[1:], b)\n\n    else:\n        return max(\n            longest_common_subsequence(a, b[1:]),\n            longest_common_subsequence(a[1:], b),\n            key=len\n        )\n\na=input()\nb=input()\nprint(len(longest_common_subsequence(a,b)))\n",
+      "control": "def longest_common_subsequence(a, b):\n    if not a or not b:\n        return ''\n\n    elif a[0] == b[0]:\n        return a[0] + longest_common_subsequence(a[1:], b[1:])\n\n    else:\n        return max(\n            longest_common_subsequence(a, b[1:]),\n            longest_common_subsequence(a[1:], b),\n            key=len\n        )\n\na=input()\nb=input()\nprint(len(longest_common_subsequence(a,b)))\n"
+    },
+    {
+      "family": "possible_change",
+      "upstream_fault": "python_programs/possible_change.py",
+      "upstream_control": "correct_python_programs/possible_change.py",
+      "fault_line_in_adaptation": 8,
+      "package": {
+        "manifest": {
+          "id": "quix_possible_change",
+          "title": "QuixBugs possible_change",
+          "statement": "Read total in 0..12; print the number of ways to make the total using unlimited coins of denominations 1,2,5 (fixed-denomination adaptation).",
+          "fields": [
+            {
+              "name": "total",
+              "kind": "int",
+              "min": 0,
+              "max": 12
+            }
+          ],
+          "lines": [
+            [
+              "total"
+            ]
+          ],
+          "output": "tokens"
+        },
+        "reference": "total=int(input())\ndp=[1]+[0]*total\nfor coin in [1,2,5]:\n    for x in range(coin,total+1):\n        dp[x]+=dp[x-coin]\nprint(dp[total])\n",
+        "reference_alt": "def possible_change(coins, total):\n    if total == 0:\n        return 1\n    if total < 0 or not coins:\n        return 0\n\n    first, *rest = coins\n    return possible_change(coins, total - first) + possible_change(rest, total)\n\ntotal=int(input())\nprint(possible_change([1,2,5],total))\n",
+        "controls": [
+          {
+            "case": {
+              "total": 0
+            },
+            "expected": "1"
+          },
+          {
+            "case": {
+              "total": 5
+            },
+            "expected": "4"
+          }
+        ]
+      },
+      "fault": "# Python 3\ndef possible_change(coins, total):\n    if total == 0:\n        return 1\n    if total < 0:\n        return 0\n\n    first, *rest = coins\n    return possible_change(coins, total - first) + possible_change(rest, total)\n\ntotal=int(input())\nprint(possible_change([1,2,5],total))\n",
+      "control": "def possible_change(coins, total):\n    if total == 0:\n        return 1\n    if total < 0 or not coins:\n        return 0\n\n    first, *rest = coins\n    return possible_change(coins, total - first) + possible_change(rest, total)\n\ntotal=int(input())\nprint(possible_change([1,2,5],total))\n"
+    }
+  ]
+}
