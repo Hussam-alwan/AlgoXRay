@@ -13,7 +13,7 @@ class Provider(Protocol):
 LOCK=threading.Lock()
 MAX_REQUEST=48000
 MAX_RESPONSE=65536
-TASKS={"contract_draft","diagnosis","repair"}
+TASKS={"contract_draft","diagnosis","repair","reference_draft","case_suggestions"}
 
 @dataclass(frozen=True)
 class MockProvider:
@@ -58,7 +58,9 @@ class OllamaProvider:
 
 def model_health():
     try:
-        opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self,*args,**kwargs):raise OSError("redirect blocked")
+        opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
         with opener.open("http://127.0.0.1:11434/api/tags",timeout=2) as response:
             data=json.loads(response.read(MAX_RESPONSE))
         return {"status":"available","models":[m["name"] for m in data["models"] if type(m.get("name")) is str]}

@@ -10,10 +10,19 @@ from .v4_repair import propose_repair,verify_repair
 from .v4_gemini import provider_for,provider_status
 from .v4_openrouter import status as openrouter_status
 from .v4_groq import status as groq_status
+from .v4_authoring import import_problem,draft_reference
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     statement:str=Field(min_length=1,max_length=8000)
+    model:str="qwen2.5-coder:7b"
+    cloud_consent:bool=False
+class ImportProblem(BaseModel):
+    model_config=ConfigDict(extra="forbid",strict=True)
+    url:str=Field(min_length=1,max_length=250)
+class DraftReference(BaseModel):
+    model_config=ConfigDict(extra="forbid",strict=True)
+    manifest:dict
     model:str="qwen2.5-coder:7b"
     cloud_consent:bool=False
 class Repair(BaseModel):
@@ -72,6 +81,17 @@ def router_for(require_loopback,token):
             return {"status":"draft_unreviewed","manifest":m,"model":body.model,"usage":getattr(provider,"usage",{}),"warning":"Check against original problem; supply independently reviewed reference and controls."}
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
         except (ValueError,TypeError,KeyError):raise HTTPException(422,"Unsupported or invalid draft; use manual authoring")
+    @router.post("/packages/import")
+    def problem_import(body:ImportProblem,request:Request):
+        guard(request)
+        try:return import_problem(body.url)
+        except ValueError as exc:raise HTTPException(422,str(exc)) from None
+    @router.post("/packages/reference")
+    def reference_draft(body:DraftReference,request:Request):
+        guard(request)
+        try:return draft_reference(select_provider(body.model,body.cloud_consent),body.manifest)
+        except ProviderError as exc:raise HTTPException(422,str(exc)) from None
+        except ValueError as exc:raise HTTPException(422,str(exc)) from None
     @router.post("/packages/approve")
     def approve(body:Approve,request:Request):
         guard(request)
