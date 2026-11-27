@@ -35,6 +35,17 @@ def test(url,out):
         page.route("**/*",route)
         page.goto(url+"/v4")
         expect(page.locator("#package")).to_have_value(re.compile("hamburgers"),timeout=15000)
+        page.locator("#problem-url").fill("https://example.com/problem")
+        with page.expect_response(lambda r:r.url.endswith("/packages/import"),timeout=10000) as response:
+            page.locator("#import-problem").click()
+        assert response.value.status==422
+        checks.append("external_import_allowlist")
+        page.locator("#model").select_option("openai/gpt-oss-120b")
+        with page.expect_response(lambda r:r.url.endswith("/packages/draft"),timeout=10000) as response:
+            page.locator("#draft").click()
+        assert response.value.status==403
+        page.locator("#model").select_option("qwen2.5-coder:7b")
+        checks.append("explicit_cloud_consent")
         page.locator("#demo").select_option("sum")
         page.locator("#load").click()
         with page.expect_response(lambda r:r.url.endswith("/packages/approve"),timeout=10000) as response:
@@ -56,6 +67,14 @@ def test(url,out):
         assert page.locator("#graph .node").count()>0
         assert data["replay_count"]==3
         checks.append("replay_witness_and_graph")
+        assert page.locator("#matrix-view td").count()>0
+        assert page.locator("#cmp-student-code .active").count()==1
+        assert page.locator("#cmp-reference-code .active").count()==1
+        page.locator("#cmp-reference").fill("1")
+        assert page.locator("#cmp-student").input_value()=="0"
+        checks.append("independent_side_by_side_trace_and_array")
+        assert "restricted_syntactic_cfg" in page.locator("#static-cfg").inner_text()
+        checks.append("static_cfg_separate")
         page.locator("#graph .node").last.click()
         assert page.locator("#code .active").count()==1
         page.locator("#reference").click()
@@ -78,6 +97,10 @@ def test(url,out):
         assert response.value.json()["status"]=="passed_named_tests",response.value.json()
         assert page.locator("#source").input_value()==original
         checks.append("manual_patch_verification_original_unchanged")
+        expect(page.locator("#repair-history")).to_have_value(re.compile(r"^[a-f0-9]{64}$"),timeout=15000)
+        page.locator("#load-repair").click()
+        expect(page.locator("#repair-history-view")).to_contain_text("passed_named_tests")
+        checks.append("immutable_repair_history")
         page.screenshot(path=str(out/"desktop.png"),full_page=True)
         page.set_viewport_size({"width":390,"height":844})
         assert page.evaluate("document.body.scrollWidth")<=390
