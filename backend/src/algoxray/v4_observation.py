@@ -47,6 +47,8 @@ def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
                     input_validity="not_verified_against_problem",general_correctness_claim=False)
     graph=with_loops(attach_profile(observed_graph(result.get("events",[]),source),result),source,result)
     graph["output_chain"]=output_chain(source,result,graph)
+    from .v4_branches import observed_branches
+    graph["branches"]=observed_branches(source,result,cfg=graph["static_cfg"])
     from .v4_localization import localize
     progress=execution_diagnostics(source,result)
     localization=localize(source,{"student":result},graph,diagnostics=progress)

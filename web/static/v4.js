@@ -60,7 +60,7 @@ function show(){
    msg("reduction-best",w.stdin);
    msg("reduction-evidence",JSON.stringify({signature:reduction.signature,accepted_steps:reduction.accepted.length,original_replays:reduction.original_replay_count||0,reduced_replays:reduction.reduced_replay_count,stop:reduction.stop_reason,scope:reduction.scope},null,2));
  }
- setupComparison();showRanking();render();showExecutionDiagnostics();showAI();showLocalization();
+ setupComparison();showRanking();render();showExecutionDiagnostics();showAI();showLocalization();showBranchRanking();
 }
 function jumpToEvidence(line,eventId,endLine=line){
  side="student";const events=result.witness.student.events||[];
@@ -102,8 +102,14 @@ function showAI(){
  msg("ai-state",message);
  $("hypotheses").replaceChildren();
  for(const h of result.hypotheses||[]){
-  const div=document.createElement("div");div.className="hypothesis";div.textContent=(h.status==="hypothesis"?"فرضية غير مؤكدة":"إحالات غير مدعومة")+" — "+h.text+" ("+h.event_ids.join(", ")+")";
-  if(h.status==="hypothesis")div.onclick=()=>jumpToEvidence(h.line,h.event_ids[0]);
+  const div=document.createElement("div");div.className="hypothesis";
+  const basis={recorded:"فرضية حول أحداث مسجلة",static:"فرضية ساكنة (لا تثبت تنفيذ السطر)",missing_condition:"فرضية شرط ناقص (لا تدعي وجود سطر منفذ)"};
+  div.textContent=(h.status==="hypothesis"?(basis[h.basis]||"فرضية غير مؤكدة"):"إحالات غير مدعومة")+
+    (h.conflicting_claims?" · يحتوي الرد على ادعاءات متناقضة":"")+" — "+h.text+" ("+h.event_ids.join(", ")+")";
+  if(h.status==="hypothesis"){
+   const b=document.createElement("button");b.textContent="L"+h.line+" · proposed location";
+   const jump=()=>jumpToEvidence(h.line,h.basis==="recorded"?h.event_ids.find(i=>result.witness.student.events.some(e=>e.event_id===i&&e.line===h.line)):null);div.onclick=jump;b.onclick=e=>{e.stopPropagation();jump()};div.append(b);
+  }
   $("hypotheses").append(div);
  }
  if(!($("hypotheses").children.length))msg("hypotheses",ok?"الموديل لم يرجع فرضية؛ لا نستنتج سبباً من فراغ الرد.":message);
@@ -211,7 +217,7 @@ function render(){
   b.onclick=()=>{const first=loop.body_event_ids?.[0]||loop.header_event_ids?.[0];const pos=events.findIndex(e=>e.event_id===first);if(pos>=0){index=pos;render()}};$("loops").append(b);
  }
  if(!$("loops").children.length)msg("loops","لا توجد حلقات مدعومة مرصودة في هذا الجزء من التتبع.");
- renderProfile();msg("output-chain",JSON.stringify(g.output_chain||{},null,2));msg("static-cfg",JSON.stringify(g.static_cfg||{},null,2));renderAst(g,events);
+ renderProfile();msg("output-chain",JSON.stringify(g.output_chain||{},null,2));msg("static-cfg",JSON.stringify(g.static_cfg||{},null,2));renderAst(g,events);showBranchCoverage(g);
 }
 for(const id of ["graph-frame","graph-kind","graph-layout"])$(id).onchange=()=>{if(result)render()};
 let graphDrag=null;
@@ -428,4 +434,27 @@ function renderAst(g,events){
   return ul;
  }
  view.append(branch(null));
+}
+
+function showBranchCoverage(g){
+ const rows=$("branch-coverage"),b=g.branches||{};rows.replaceChildren();
+ msg("branch-coverage-scope",b.scope||"لا تتوفر ملاحظات فروع لهذا المسار.");
+ for(const r of b.observed||[]){
+  const button=document.createElement("button");
+  button.textContent="L"+r.line+" → L"+r.target_line+" · "+r.kind+" · "+r.count+"×";
+  button.onclick=()=>{
+   const id=r.event_pairs?.[0]?.[0];const pos=result.witness[side].events.findIndex(e=>e.event_id===id);
+   if(pos>=0)index=pos;profileSelection={line:r.line,end_line:r.line};render();
+  };rows.append(button);
+ }
+ if(!rows.children.length)msg("branch-coverage","لا توجد انتقالات فروع مدعومة ضمن اللقطات.");
+}
+function showBranchRanking(){
+ const rows=$("branch-ranking");rows.replaceChildren();const b=result?.suspiciousness?.branches||{};
+ for(const r of b.ranked||[]){
+  const button=document.createElement("button");
+  button.textContent="L"+r.line+" → L"+r.target_line+" · "+r.kind+" · "+r.ochiai+" · F"+r.failing_coverage+"/P"+r.passing_coverage;
+  button.onclick=()=>jumpToEvidence(r.line,r.witness_event_pairs?.[0]?.[0]);rows.append(button);
+ }
+ if(!rows.children.length)msg("branch-ranking","ترتيب الفروع يحتاج عينات ناجحة وفاشلة كاملة؛ غير متاح في هذا الطلب.");
 }

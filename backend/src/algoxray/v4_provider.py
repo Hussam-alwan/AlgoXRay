@@ -122,18 +122,27 @@ def model_health():
 
 DIAGNOSIS_SCHEMA={"type":"object","properties":{"hypotheses":{"type":"array","maxItems":3,"items":{"type":"object","properties":{"text":{"type":"string"},"event_ids":{"type":"array","items":{"type":"string"}},"line":{"type":"integer"}},"required":["text","event_ids","line"],"additionalProperties":False}}},"required":["hypotheses"],"additionalProperties":False}
 
-def check_hypotheses(response,events):
+def check_hypotheses(response,events,source_lines=None):
     """Check shape and anchor existence only. Free-text causality remains unverified."""
     if type(response) is not dict or not {"hypotheses"}<=set(response)<={"hypotheses","facts","branches"} or type(response["hypotheses"]) is not list or len(response["hypotheses"])>3:
         raise ProviderError("invalid_hypothesis_schema")
     known={e["event_id"]:e for e in events if type(e) is dict and "event_id" in e}
     checked=[]
     for h in response["hypotheses"]:
-        if type(h) is not dict or set(h)!={"text","event_ids","line"} or type(h["text"]) is not str or not 0<len(h["text"])<=1000 or type(h["line"]) is not int or type(h["event_ids"]) is not list or not 1<=len(h["event_ids"])<=8 or any(type(x) is not str for x in h["event_ids"]):
+        if type(h) is not dict or not {"text","event_ids","line"}<=set(h)<={"text","event_ids","line","basis"} or type(h["text"]) is not str or not 0<len(h["text"])<=1000 or type(h["line"]) is not int or type(h["event_ids"]) is not list or not 1<=len(h["event_ids"])<=8 or any(type(x) is not str for x in h["event_ids"]):
             raise ProviderError("invalid_hypothesis_schema")
-        valid=all(x in known for x in h["event_ids"]) and any(known[x]["line"]==h["line"] for x in h["event_ids"] if x in known)
-        checked.append({**h,"status":"hypothesis" if valid else "unsupported","causal_verified":False})
+        basis=h.get("basis","recorded")
+        if basis not in ("recorded","static","missing_condition"):raise ProviderError("invalid_hypothesis_schema")
+        ids_exist=all(x in known for x in h["event_ids"])
+        line_observed=any(known[x]["line"]==h["line"] for x in h["event_ids"] if x in known)
+        if basis=="recorded":valid=ids_exist and line_observed
+        else:valid=ids_exist and source_lines is not None and h["line"] in source_lines
+        checked.append({**h,"basis":basis,"status":"hypothesis" if valid else "unsupported",
+                        "line_observed_in_supplied_anchors":line_observed,
+                        "text_semantically_verified":False,"causal_verified":False})
     return checked
+
+DIAGNOSIS_SCHEMA["properties"]["hypotheses"]["items"]["properties"]["basis"]={"type":"string","enum":["recorded","static","missing_condition"]}
 
 # Extend the structured output schema with machine-checkable value claims.
 DIAGNOSIS_SCHEMA["properties"]["facts"]={"type":"array","maxItems":6,"items":{"type":"object","properties":{"event_id":{"type":"string"},"variable":{"type":"string"},"value":{"type":["integer","boolean","string","null"]}},"required":["event_id","variable","value"],"additionalProperties":False}}
@@ -149,7 +158,8 @@ def check_facts(response,events):
         ev=by_id.get(f["event_id"])
         loc=ev.get("locals",{}) if ev else {}
         valid=f["variable"] in loc and type(loc[f["variable"]]) is type(f["value"]) and loc[f["variable"]]==f["value"]
-        result.append({**f,"status":"matches_recorded_snapshot" if valid else "unsupported","causal_verified":False})
+        comparable=f["variable"] in loc and type(loc[f["variable"]]) is type(f["value"])
+        result.append({**f,"status":"matches_recorded_snapshot" if valid else "contradicted" if comparable else "unsupported","causal_verified":False})
     return result
 
 DIAGNOSIS_SCHEMA["properties"]["branches"]={"type":"array","maxItems":6,"items":{"type":"object","properties":{"event_id":{"type":"string"},"line":{"type":"integer"},"condition":{"type":"boolean"}},"required":["event_id","line","condition"],"additionalProperties":False}}

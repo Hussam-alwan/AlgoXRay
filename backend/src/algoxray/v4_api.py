@@ -330,19 +330,22 @@ def router_for(require_loopback,token):
             judgment=judge_output(p,case,student.get("stdout"),ref.get("stdout")) if student["status"]=="ok" else None
             matches=judgment is not None and judgment["status"]=="accepted"
             witness=dict(case=case,stdin=stdin,student=student,reference=ref,judgment=judgment,kind="wrong_answer" if judgment and judgment["status"]=="rejected" else "observation")
-            diagnosis=diagnose_execution(p,body.source,witness,provider,cancel=c)
-            if c.is_set():return {"status":"cancelled"}
             from .v4_localization import localize
             student_graph=with_loops(attach_profile(observed_graph(student.get("events",[]),body.source),student),body.source,student)
             from .v4_cfg import output_chain
             student_graph["output_chain"]=output_chain(body.source,student,student_graph)
             progress=execution_diagnostics(body.source,student)
+            from .v4_branches import observed_branches
+            student_graph["branches"]=observed_branches(body.source,student,cfg=student_graph["static_cfg"])
+            localization=localize(body.source,witness,student_graph,diagnostics=progress)
+            diagnosis=diagnose_execution(p,body.source,witness,provider,cancel=c,localization=localization,branches=student_graph["branches"])
+            if c.is_set():return {"status":"cancelled"}
             return dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "oracle_unavailable" if judgment and judgment["status"]=="unavailable" else "output_difference",
                 package_sha256=body.package_key,student_source=body.source,reference_source=p["reference"],
                 witness=witness,replay_count=0,attempts=1,
                 student_graph=student_graph,
                 reference_graph=with_loops(attach_profile(observed_graph(ref.get("events",[]),p["reference"]),ref),p["reference"],ref),
-                **diagnosis,execution_diagnostics=progress,evidence_localization=localize(body.source,witness,student_graph,diagnostics=progress),
+                **diagnosis,execution_diagnostics=progress,evidence_localization=localization,
                 scope="One instrumented input, no search or replay claim. Timing is not judge runtime or complexity proof.")
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:

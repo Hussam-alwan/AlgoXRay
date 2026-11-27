@@ -153,7 +153,7 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provide
     reference_events=witness["reference"].get("events",[])
     ranking={"status":"disabled","ranked":[]}
     if spectrum:
-        passing=[]
+        passing=[];additional_failing=[]
         if witness["student"].get("trace_status")=="complete":
             candidates=[c["case"] for c in p["controls"]]+list(generate(m,seed^12345,3))
             checked=set()
@@ -164,22 +164,27 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provide
                 extra=pair(c,128)
                 if extra["kind"]=="cancelled":break
                 if extra["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":extra}
-                if extra["kind"]=="match" and extra["student"].get("trace_status")=="complete":passing.append(extra["student"])
-                if len(checked)>=3 or len(passing)>=2:break
-        ranking=rank(witness["student"],passing)
-    if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
-    diagnosis=diagnose_execution(p,source,witness,provider,ranking,cancel)
-    hypotheses=diagnosis["hypotheses"];ai_status=diagnosis["ai_status"]
-    if provider is not None and guided and not suggested and hypotheses and ai_status=="ok":
-        extra=run_suggestions({"case":witness["case"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout")},hypotheses)
-        if extra and extra["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":extra,"guidance":guidance}
+                if extra["student"].get("trace_status")=="complete":
+                    if extra["kind"]=="match":passing.append(extra["student"])
+                    elif extra["kind"] in ("wrong_answer","exception"):additional_failing.append(extra["student"])
+                if len(checked)>=4:break
+        ranking=rank(witness["student"],passing,source=source,additional_failing=additional_failing)
     if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
     student_graph=with_loops(attach_profile(observed_graph(student_events,source),witness["student"]),source,witness["student"]);reference_graph=with_loops(attach_profile(observed_graph(reference_events,p["reference"]),witness["reference"]),p["reference"],witness["reference"])
     student_graph["output_chain"]=output_chain(source,witness["student"],student_graph)
     reference_graph["output_chain"]=output_chain(p["reference"],witness["reference"],reference_graph)
+    from .v4_branches import observed_branches
+    student_graph["branches"]=observed_branches(source,witness["student"],cfg=student_graph["static_cfg"])
+    reference_graph["branches"]=observed_branches(p["reference"],witness["reference"],cfg=reference_graph["static_cfg"])
     from .v4_localization import localize
     localization=localize(source,witness,student_graph,ranking)
 
+    diagnosis=diagnose_execution(p,source,witness,provider,ranking,cancel,localization=localization,reduction=reduction,branches=student_graph["branches"])
+    hypotheses=[h for h in diagnosis["hypotheses"] if h["status"]=="hypothesis" and not h.get("conflicting_claims")];ai_status=diagnosis["ai_status"]
+    if provider is not None and guided and not suggested and hypotheses and ai_status=="ok":
+        extra=run_suggestions({"case":witness["case"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout")},hypotheses)
+        if extra and extra["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":extra,"guidance":guidance}
+    if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
     return {"status":"observed_mismatch","kind":witness["kind"],"package_sha256":digest(p),"original_case":original["case"],"original_witness":original,"reduction":reduction,"executions":executions,"witness":witness,
             "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":student_graph,"reference_graph":reference_graph,
             **diagnosis,"evidence_localization":localization,"generator":generator,"guidance":guidance,"suspiciousness":ranking,"elapsed_ms":round((time.monotonic()-start)*1000,2),

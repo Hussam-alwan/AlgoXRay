@@ -93,6 +93,11 @@ def localize(source,witness,graph,ranking=None,diagnostics=None):
             add(row.get("line"),"coverage_ochiai",round(score,6),
                 [e["event_id"] for e in known.values() if e["line"]==row["line"]],
                 "Association with failing vs passing line coverage; not causation.")
+    for row in (ranking or {}).get("branches",{}).get("ranked",[])[:24]:
+        ids=[e for pair in row.get("witness_event_pairs",[]) for e in pair]
+        if ids:
+            add(row.get("line"),"observed_branch_ochiai",round(row["ochiai"],6),ids,
+                "Observed restricted successor edge associated with failure, not causal proof.")
     for link in chain.get("links",[])[:16]:
         add(link.get("line"),"output_predecessor",2,
             [link.get("before_event_id"),link.get("after_event_id")],

@@ -1,0 +1,245 @@
+{
+  "status": "observed_mismatch",
+  "ai_status": "ok",
+  "ai_error": null,
+  "model": "qwen2.5-coder:7b",
+  "usage": {
+    "request_id": "0a97b992b8a7457bac95e5a435d2f2a3",
+    "total_duration": 12005112700,
+    "load_duration": 9921480600,
+    "prompt_eval_count": 1874,
+    "prompt_eval_duration": 1667185000,
+    "eval_count": 12,
+    "eval_duration": 383782000,
+    "elapsed_ms": 12047.0
+  },
+  "context": {
+    "identity": {
+      "package_sha256": "81cd26df6621def86f607b32afe14ae90d4d6ea0cec18a855ac0912c3060b79f",
+      "source_sha256": "7f53198205a0465fd45d355543e0072448ef5041b88a4a1611edc09f73f59bea",
+      "input_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "context_bytes": 5128,
+    "source_complete": true,
+    "statement_complete": true,
+    "input_complete": true,
+    "outputs_complete": true,
+    "execution_status": "ok",
+    "trace_status": "complete",
+    "context_version": 2,
+    "supplied_event_ids": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6"
+    ],
+    "supplied_source_lines": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "location_candidates": [
+      {
+        "line": 2,
+        "score": 1.207107,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "event_ids": [
+              "E3"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          },
+          {
+            "kind": "observed_branch_ochiai",
+            "event_ids": [
+              "E3",
+              "E4"
+            ],
+            "detail": "Observed restricted successor edge associated with failure, not causal proof."
+          }
+        ],
+        "event_ids": [
+          "E3",
+          "E4"
+        ],
+        "causal_verified": false
+      },
+      {
+        "line": 3,
+        "score": 0.707107,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "event_ids": [
+              "E4"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          }
+        ],
+        "event_ids": [
+          "E4"
+        ],
+        "causal_verified": false
+      },
+      {
+        "line": 1,
+        "score": 0.5,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "event_ids": [
+              "E2"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          }
+        ],
+        "event_ids": [
+          "E2"
+        ],
+        "causal_verified": false
+      },
+      {
+        "line": 6,
+        "score": 0.5,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "event_ids": [
+              "E5",
+              "E6"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          }
+        ],
+        "event_ids": [
+          "E5",
+          "E6"
+        ],
+        "causal_verified": false
+      }
+    ],
+    "range_observations": [],
+    "judgment": {
+      "status": "rejected",
+      "authority": "reviewed_reference",
+      "policy": "tokens"
+    }
+  },
+  "hypotheses": [],
+  "facts": [],
+  "branches": [],
+  "scope": "One exposed synthetic local-only development bug, not scientific accuracy or human review.",
+  "witness": {
+    "n": 0
+  },
+  "localization": {
+    "status": "candidate_locations",
+    "source_sha256": "7f53198205a0465fd45d355543e0072448ef5041b88a4a1611edc09f73f59bea",
+    "effect_site": {
+      "line": 6,
+      "event_id": "E5",
+      "kind": "output_snapshot_compatible",
+      "causal_verified": false
+    },
+    "ranked": [
+      {
+        "line": 2,
+        "score": 1.207107,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "weight": 0.5,
+            "event_ids": [
+              "E3"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          },
+          {
+            "kind": "observed_branch_ochiai",
+            "weight": 0.707107,
+            "event_ids": [
+              "E3",
+              "E4"
+            ],
+            "detail": "Observed restricted successor edge associated with failure, not causal proof."
+          }
+        ],
+        "event_ids": [
+          "E3",
+          "E4"
+        ],
+        "status": "suspected_location",
+        "causal_verified": false
+      },
+      {
+        "line": 3,
+        "score": 0.707107,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "weight": 0.707107,
+            "event_ids": [
+              "E4"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          }
+        ],
+        "event_ids": [
+          "E4"
+        ],
+        "status": "suspected_location",
+        "causal_verified": false
+      },
+      {
+        "line": 1,
+        "score": 0.5,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "weight": 0.5,
+            "event_ids": [
+              "E2"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          }
+        ],
+        "event_ids": [
+          "E2"
+        ],
+        "status": "suspected_location",
+        "causal_verified": false
+      },
+      {
+        "line": 6,
+        "score": 0.5,
+        "signals": [
+          {
+            "kind": "coverage_ochiai",
+            "weight": 0.5,
+            "event_ids": [
+              "E5",
+              "E6"
+            ],
+            "detail": "Association with failing vs passing line coverage; not causation."
+          }
+        ],
+        "event_ids": [
+          "E5",
+          "E6"
+        ],
+        "status": "suspected_location",
+        "causal_verified": false
+      }
+    ],
+    "loop_bounds": [],
+    "trace_status": "complete",
+    "causal_fault_proven": false,
+    "scope": "Heuristic evidence ranking, not calibrated probability or root-cause proof. Unrecorded code or missing conditions may be responsible; no unique line is guaranteed."
+  }
+}
