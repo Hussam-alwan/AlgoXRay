@@ -4,6 +4,7 @@ from .v4_dataflow import relations
 def observed_graph(events,source=None):
     nodes,edges,changes,prior={}, {}, [], {}
     last=None
+    frames={};timeline=[]
     for ev in events:
         if type(ev) is not dict or not all(k in ev for k in ("event_id","frame_id","line","kind","locals")): continue
         if type(ev["event_id"]) is not str or type(ev["frame_id"]) is not str or type(ev["line"]) is not int or type(ev["locals"]) is not dict: continue
@@ -23,5 +24,5 @@ def observed_graph(events,source=None):
                 if k in values and values[k]!=v and not isinstance(v,dict) and not isinstance(values[k],dict):
                     changes.append({"frame_id":ev["frame_id"],"name":k,"before":values[k],"after":v,"before_event_id":before,"after_event_id":ev["event_id"]})
         prior[ev["frame_id"]]=(ev["event_id"],ev["locals"])
-    return {"kind":"observed_execution_not_static_cfg","nodes":list(nodes.values()),"edges":list(edges.values()),"changes":changes,
-            "relations":relations(source,events) if source is not None else {"data":[],"control":[]},"causal_fault_proven":False}
+    return {"kind":"observed_execution_not_static_cfg","nodes":list(nodes.values()),"edges":list(edges.values()),"changes":changes,"frames":list(frames.values()),"timeline":timeline,
+            "relations":relations(source,events) if source is not None else {"data":[],"control":[],"def_use":[]},"causal_fault_proven":False}

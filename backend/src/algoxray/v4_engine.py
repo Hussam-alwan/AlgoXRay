@@ -3,6 +3,7 @@ import time
 from .v4_contracts import validate_package,serialize,generate,smaller,equal,digest
 from .v4_isolation import execute_stdio
 from .v4_graph import observed_graph
+from .v4_compare import rank
 from .v4_guidance import hypothesis_cases,suggestions,classify_probe
 from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_facts,ProviderError
 
@@ -22,7 +23,7 @@ def review(p,run=execute_stdio):
         checks.append({"case":c["case"],"status":r["status"],"matches":r["status"]=="ok" and equal(m,r["stdout"],c["expected"])})
     return {"passed":all(x["matches"] for x in checks),"checks":checks,"limitation":"Finite owner-supplied controls, not proof of reference correctness."}
 
-def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider=None,run=execute_stdio,cancel=None,generator="boundary_random",guided=False):
+def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider=None,run=execute_stdio,cancel=None,generator="boundary_random",guided=False,spectrum=False):
     validate_package(p);m=p["manifest"]
     if type(count) is not int or not 1<=count<=12 or type(reduce_calls) is not int or not 0<=reduce_calls<=6: raise ValueError("Invalid analysis budget")
     if type(seed) is not int or not 0<=seed<=2**32-1: raise ValueError("Invalid seed")
@@ -111,8 +112,23 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
     ai_usage=dict(getattr(provider,"usage",{}))
     if provider is not None and guided and not suggested and hypotheses and ai_status=="ok":
         run_suggestions({"case":witness["case"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout")},hypotheses)
+    ranking={"status":"disabled","ranked":[]}
+    if spectrum:
+        passing=[]
+        if witness["student"].get("trace_status")=="complete":
+            candidates=[c["case"] for c in p["controls"]]+list(generate(m,seed^12345,3))
+            checked=set()
+            for c in candidates:
+                key=digest(c)
+                if key==digest(witness["case"]) or key in checked:continue
+                checked.add(key)
+                extra=pair(c,128)
+                if extra["kind"]=="cancelled":break
+                if extra["kind"]=="match" and extra["student"].get("trace_status")=="complete":passing.append(extra["student"])
+                if len(checked)>=3 or len(passing)>=2:break
+        ranking=rank(witness["student"],passing)
     if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
     return {"status":"observed_mismatch","kind":witness["kind"],"package_sha256":digest(p),"original_case":original["case"],"witness":witness,
             "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":observed_graph(student_events,source),"reference_graph":observed_graph(reference_events,p["reference"]),
-            "hypotheses":hypotheses,"ai_facts":facts,"ai_status":ai_status,"ai_model":getattr(provider,"model",None),"ai_usage":ai_usage,"generator":generator,"guidance":guidance,"ai_error":ai_error,"elapsed_ms":round((time.monotonic()-start)*1000,2),
+            "hypotheses":hypotheses,"ai_facts":facts,"ai_status":ai_status,"ai_model":getattr(provider,"model",None),"ai_usage":ai_usage,"generator":generator,"guidance":guidance,"suspiciousness":ranking,"ai_error":ai_error,"elapsed_ms":round((time.monotonic()-start)*1000,2),
             "scope":"Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."}
