@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "checks": [
+    "external_import_allowlist",
+    "explicit_cloud_consent",
+    "qwen_cloud_requires_explicit_consent",
+    "local_memory_cache_controls",
+    "review_required",
+    "reference_audit_review_required",
+    "distinct_reference_audit",
+    "synthetic_author_approval",
+    "replay_witness_and_graph",
+    "independent_side_by_side_trace_and_array",
+    "static_cfg_separate",
+    "student_reference_navigation",
+    "export",
+    "patch_review_required",
+    "manual_patch_verification_original_unchanged",
+    "immutable_repair_history",
+    "block_timing_source_link_and_clocks",
+    "correct_code_profile_recursion_and_call_stack",
+    "graph_frame_event_layout_and_snapshot_controls",
+    "profile_csv_export",
+    "loop_observations_disclose_partial_counts",
+    "complete_timing_with_truncated_visual_trace",
+    "timeout_profile_is_explicitly_partial",
+    "mobile",
+    "server_cancellation"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Synthetic approval and repair tests; no human research rating"
+}

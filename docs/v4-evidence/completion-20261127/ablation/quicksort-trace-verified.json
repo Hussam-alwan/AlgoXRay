@@ -1,0 +1,64 @@
+{
+  "identity": {
+    "package_sha256": "ff59d36658fe56893f68d3311f2827724d10070a1087bd5e87e435101444ce26",
+    "source_sha256": "406ae79dbed655f0f507876aaeb32e3f14c601bbb2c2ee1e8a6eeaa918e45c08",
+    "input_sha256": "e0385a8ec6ac5a94beb2447e053eb645b4c41438a5946608bedd4be456a77ed6",
+    "frozen_evidence_sha256": "9446f5ead5a2776b720c9f56b80211cc97ba619524750ba3506660728f86130c",
+    "known_edit_line": 7
+  },
+  "raw_response_sha256": "6ae60ebeece2e78611c92e80443bb856d8106ca151c8ad793ff670d3470fb553",
+  "row": {
+    "family": "quicksort",
+    "arm": "trace_verified",
+    "status": "completed",
+    "suspected_lines": [
+      11,
+      7,
+      2,
+      3,
+      8
+    ],
+    "edit_line_top1": false,
+    "edit_line_top3": true,
+    "edit_line_top5": true,
+    "seconds": 0,
+    "additional_inference": false,
+    "facts_total": 4,
+    "facts_matching": 0,
+    "branches_total": 0,
+    "branches_matching": 0,
+    "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+  },
+  "rejected_unobserved_lines": [],
+  "fact_checks": [
+    {
+      "event_id": "E11",
+      "variable": "pivot",
+      "value": 1,
+      "status": "unsupported",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E12",
+      "variable": "lesser",
+      "value": "[]",
+      "status": "unsupported",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E13",
+      "variable": "greater",
+      "value": "[2, 2]",
+      "status": "unsupported",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E14",
+      "variable": "result",
+      "value": "[0, 1, 2, 2]",
+      "status": "unsupported",
+      "causal_verified": false
+    }
+  ],
+  "branch_checks": []
+}

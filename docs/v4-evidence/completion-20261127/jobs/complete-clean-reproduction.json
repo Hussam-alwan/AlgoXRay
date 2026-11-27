@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T09:34:08.591524+00:00",
+  "pid": 20092,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "tools/reproduce_v4.py",
+    "--checkout",
+    "D:/icips-v4-repro-completion",
+    "--out",
+    "results/v4-completion-reproduction",
+    "--commit",
+    "HEAD"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T09:40:27.058983+00:00"
+}

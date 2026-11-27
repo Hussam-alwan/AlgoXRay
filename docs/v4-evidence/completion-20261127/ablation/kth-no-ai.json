@@ -1,0 +1,16 @@
+{
+  "family": "kth",
+  "arm": "v4_no_ai",
+  "status": "observed_mismatch",
+  "discovery_from_frozen_witness": true,
+  "replays": 3,
+  "suspected_lines": [],
+  "scope": "No model inference or localization prediction",
+  "identity": {
+    "package_sha256": "698ba65cf6834670a8f16c96575ba4a1a2f70c2195b7551eb989684da4193057",
+    "source_sha256": "26436447a9d46400c4d64d886224cdeeefac317f35bb0e1b110ee2c6f2431d87",
+    "input_sha256": "0ccfac1f80887bc141cacd668d703b831e7db68da311dd58826575d752e7a39a",
+    "frozen_evidence_sha256": "60aa842ff2f331fd2dff6d83a1f8219a147144bfc409140369ba5d578fb85893",
+    "known_edit_line": 12
+  }
+}

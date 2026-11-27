@@ -1,0 +1,192 @@
+{
+  "scope": "Synthetic local model probes only; no cloud requests, human ratings or generated code execution.",
+  "checks": [
+    "real_local_cache_hit",
+    "clear_invalidates_cache",
+    "open_ended_bounded_grammar_matches_known_constraints"
+  ],
+  "cache": {
+    "first_usage": {
+      "request_id": "452619f0df534cf3945b1f9ef9094524",
+      "total_duration": 594207000,
+      "load_duration": 8276600,
+      "prompt_eval_count": 86,
+      "prompt_eval_duration": 269909000,
+      "eval_count": 15,
+      "eval_duration": 288614000,
+      "elapsed_ms": 641.0,
+      "cache": "miss",
+      "model_revision": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+    },
+    "second_usage": {
+      "request_id": "ebe920c065234c50ac8174fd128c877b",
+      "cache": "hit",
+      "model_revision": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+      "elapsed_ms": 0.0,
+      "eval_count": 0,
+      "source_usage": {
+        "request_id": "452619f0df534cf3945b1f9ef9094524",
+        "total_duration": 594207000,
+        "load_duration": 8276600,
+        "prompt_eval_count": 86,
+        "prompt_eval_duration": 269909000,
+        "eval_count": 15,
+        "eval_duration": 288614000,
+        "elapsed_ms": 641.0
+      }
+    },
+    "same_result": true
+  },
+  "draft": {
+    "status_code": 200,
+    "result": {
+      "status": "draft_unreviewed",
+      "manifest": {
+        "id": "contract_draft",
+        "title": "Integer Sum Calculator",
+        "statement": "Read integer n on the first line, where 1 <= n <= 8. Read exactly n integers on the second line, each between -9 and 9 inclusive. Print the sum of those integers.",
+        "fields": [
+          {
+            "name": "n",
+            "kind": "int",
+            "min": 1,
+            "max": 8
+          },
+          {
+            "name": "values",
+            "kind": "ints",
+            "min": -9,
+            "max": 9,
+            "length_from": "n"
+          }
+        ],
+        "lines": [
+          [
+            "n"
+          ],
+          [
+            "values"
+          ]
+        ],
+        "output": "tokens"
+      },
+      "provenance": {
+        "statement_sha256": "24626d99dc3af4243672e84f16c1d5372ad1ca49fb547d55db970418ce93275a",
+        "evidence": [
+          {
+            "field": "n",
+            "attribute": "min",
+            "quote": "1 <= n <= 8"
+          },
+          {
+            "field": "n",
+            "attribute": "max",
+            "quote": "1 <= n <= 8"
+          },
+          {
+            "field": "values",
+            "attribute": "min",
+            "quote": "each between -9 and 9 inclusive"
+          },
+          {
+            "field": "values",
+            "attribute": "max",
+            "quote": "each between -9 and 9 inclusive"
+          },
+          {
+            "field": "values",
+            "attribute": "length_from",
+            "quote": "exactly n integers"
+          }
+        ],
+        "unresolved": []
+      },
+      "constraint_review": {
+        "provenance": {
+          "statement_sha256": "24626d99dc3af4243672e84f16c1d5372ad1ca49fb547d55db970418ce93275a",
+          "evidence": [
+            {
+              "field": "n",
+              "attribute": "min",
+              "quote": "1 <= n <= 8"
+            },
+            {
+              "field": "n",
+              "attribute": "max",
+              "quote": "1 <= n <= 8"
+            },
+            {
+              "field": "values",
+              "attribute": "min",
+              "quote": "each between -9 and 9 inclusive"
+            },
+            {
+              "field": "values",
+              "attribute": "max",
+              "quote": "each between -9 and 9 inclusive"
+            },
+            {
+              "field": "values",
+              "attribute": "length_from",
+              "quote": "exactly n integers"
+            }
+          ],
+          "unresolved": []
+        },
+        "checks": [
+          {
+            "field": "n",
+            "attribute": "min",
+            "quote": "1 <= n <= 8",
+            "declared_value": 1,
+            "status": "literal_present_requires_semantic_review"
+          },
+          {
+            "field": "n",
+            "attribute": "max",
+            "quote": "1 <= n <= 8",
+            "declared_value": 8,
+            "status": "literal_present_requires_semantic_review"
+          },
+          {
+            "field": "values",
+            "attribute": "min",
+            "quote": "each between -9 and 9 inclusive",
+            "declared_value": -9,
+            "status": "literal_present_requires_semantic_review"
+          },
+          {
+            "field": "values",
+            "attribute": "max",
+            "quote": "each between -9 and 9 inclusive",
+            "declared_value": 9,
+            "status": "literal_present_requires_semantic_review"
+          },
+          {
+            "field": "values",
+            "attribute": "length_from",
+            "quote": "exactly n integers",
+            "declared_value": "n",
+            "status": "literal_present_requires_semantic_review"
+          }
+        ],
+        "uncited_attributes": [],
+        "scope": "Exact quotation/literal checks only. Numeric direction, units and full mathematical fidelity require owner review."
+      },
+      "model": "qwen2.5-coder:7b",
+      "usage": {
+        "request_id": "a40c1e28bed941ed9894506bf659017c",
+        "total_duration": 7000415000,
+        "load_duration": 3975100,
+        "prompt_eval_count": 420,
+        "prompt_eval_duration": 287194000,
+        "eval_count": 342,
+        "eval_duration": 6690806000,
+        "elapsed_ms": 7031.0
+      },
+      "warning": "Check against original problem; supply independently reviewed reference and controls."
+    },
+    "seconds": 7.063
+  },
+  "status": "passed"
+}

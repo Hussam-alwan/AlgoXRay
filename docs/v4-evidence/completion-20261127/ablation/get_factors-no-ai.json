@@ -1,0 +1,16 @@
+{
+  "family": "get_factors",
+  "arm": "v4_no_ai",
+  "status": "observed_mismatch",
+  "discovery_from_frozen_witness": true,
+  "replays": 3,
+  "suspected_lines": [],
+  "scope": "No model inference or localization prediction",
+  "identity": {
+    "package_sha256": "4c981723303331897c0a04270aafc269e93ca34f672a5d15e69e751cb303f82c",
+    "source_sha256": "00a9520047f57654fe13115e2a16457186b22c29663fb6bc3f6ccf38aff2b9d2",
+    "input_sha256": "a1fb50e6c86fae1679ef3351296fd6713411a08cf8dd1790a4fd05fae8688164",
+    "frozen_evidence_sha256": "5f56101221f99d29ad7eb838c349c244c9e67b2a27b267acfde26e358f7b6ee0",
+    "known_edit_line": 9
+  }
+}

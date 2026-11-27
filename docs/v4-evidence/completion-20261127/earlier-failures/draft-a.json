@@ -1,0 +1,87 @@
+{
+  "scope": "Synthetic local model probes only; no cloud requests, human ratings or generated code execution.",
+  "checks": [
+    "real_local_cache_hit",
+    "clear_invalidates_cache"
+  ],
+  "cache": {
+    "first_usage": {
+      "request_id": "e6d23fed70664d51b2eb76be9850beed",
+      "total_duration": 9847982100,
+      "load_duration": 8890885600,
+      "prompt_eval_count": 86,
+      "prompt_eval_duration": 556131000,
+      "eval_count": 15,
+      "eval_duration": 375697000,
+      "elapsed_ms": 9891.0,
+      "cache": "miss",
+      "model_revision": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+    },
+    "second_usage": {
+      "request_id": "d051cb4aa9404034b0c0231f341d2b48",
+      "cache": "hit",
+      "model_revision": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+      "elapsed_ms": 0.0,
+      "eval_count": 0,
+      "source_usage": {
+        "request_id": "e6d23fed70664d51b2eb76be9850beed",
+        "total_duration": 9847982100,
+        "load_duration": 8890885600,
+        "prompt_eval_count": 86,
+        "prompt_eval_duration": 556131000,
+        "eval_count": 15,
+        "eval_duration": 375697000,
+        "elapsed_ms": 9891.0
+      }
+    },
+    "same_result": true
+  },
+  "draft": {
+    "status_code": 200,
+    "result": {
+      "status": "draft_unreviewed",
+      "manifest": {
+        "id": "contract_draft",
+        "title": "Integer Sum Calculator",
+        "statement": "Read integer n on the first line, where 1 <= n <= 8. Read exactly n integers on the second line, each between -9 and 9 inclusive. Print the sum of those integers.",
+        "fields": [
+          {
+            "name": "n",
+            "kind": "int",
+            "min": 1,
+            "max": 8
+          },
+          {
+            "name": "integers",
+            "kind": "ints",
+            "min": -9,
+            "max": 9,
+            "length": 1
+          }
+        ],
+        "lines": [
+          [
+            "n"
+          ],
+          [
+            "integers"
+          ]
+        ],
+        "output": "tokens"
+      },
+      "model": "qwen2.5-coder:7b",
+      "usage": {
+        "request_id": "33e7643282d64c1c82b493189564ca1d",
+        "total_duration": 3901039400,
+        "load_duration": 6928300,
+        "prompt_eval_count": 292,
+        "prompt_eval_duration": 224203000,
+        "eval_count": 176,
+        "eval_duration": 3660214000,
+        "elapsed_ms": 3937.0
+      },
+      "warning": "Check against original problem; supply independently reviewed reference and controls."
+    },
+    "seconds": 4.11
+  }
+}

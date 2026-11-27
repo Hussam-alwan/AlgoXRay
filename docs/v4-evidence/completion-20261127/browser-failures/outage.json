@@ -1,0 +1,887 @@
+{
+  "status": "observed_mismatch",
+  "kind": "wrong_answer",
+  "package_sha256": "d105fb32829ebacff50f68363b781cfceaf66fb3818bb3ac0669b1392c04332f",
+  "original_case": {
+    "n": 2,
+    "a": [
+      1,
+      1
+    ]
+  },
+  "witness": {
+    "kind": "wrong_answer",
+    "case": {
+      "n": 1,
+      "a": [
+        1
+      ]
+    },
+    "stdin": "1\n1\n",
+    "student": {
+      "status": "ok",
+      "detail": null,
+      "stdout": "0\n",
+      "stderr": "",
+      "events": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 0,
+          "kind": "call",
+          "function": "<module>",
+          "snapshot_timing": "call",
+          "locals": {}
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 1,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {}
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 2,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1
+          }
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        },
+        {
+          "event_id": "E5",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "return",
+          "function": "<module>",
+          "snapshot_timing": "return",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        }
+      ],
+      "trace_status": "complete",
+      "profile": {
+        "version": 1,
+        "status": "complete",
+        "method": "trace_segments_excluding_callback",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 452600,
+        "execution_cpu_ns": 448500,
+        "callback_wall_ns": 233400,
+        "callback_cpu_ns": 233200,
+        "timed_events": 5,
+        "event_budget": 100000,
+        "lines": [
+          {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 12600,
+            "self_cpu_ns": 12500,
+            "inclusive_wall_ns": 12600,
+            "inclusive_cpu_ns": 12500
+          },
+          {
+            "frame_id": "F1",
+            "line": 2,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 7600,
+            "self_cpu_ns": 7400,
+            "inclusive_wall_ns": 7600,
+            "inclusive_cpu_ns": 7400
+          },
+          {
+            "frame_id": "F1",
+            "line": 3,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 14100,
+            "self_cpu_ns": 13900,
+            "inclusive_wall_ns": 14100,
+            "inclusive_cpu_ns": 13900
+          }
+        ],
+        "blocks": [
+          {
+            "id": "B1",
+            "kind": "module",
+            "name": "<module>",
+            "scope": 0,
+            "line": 1,
+            "end_line": 3,
+            "hits": 1,
+            "self_wall_ns": 34300,
+            "self_cpu_ns": 33800,
+            "inclusive_wall_ns": 34300,
+            "inclusive_cpu_ns": 33800
+          }
+        ],
+        "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+      },
+      "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+      "source_sha256": "e654c2ea9d6e6f29c115c62325cabda7492bf9b7c14d039ef6f9be4e8cb847fb",
+      "input_sha256": "ad0fadf63cc7cd779ce475e345bf4063565b63a3c2efef1eebc89790aaa6acba",
+      "elapsed_ms": 688.0,
+      "trace_trust": "guest_observation_not_authenticated",
+      "cleanup_confirmed": true
+    },
+    "reference": {
+      "status": "ok",
+      "detail": null,
+      "stdout": "1\n",
+      "stderr": "",
+      "events": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 0,
+          "kind": "call",
+          "function": "<module>",
+          "snapshot_timing": "call",
+          "locals": {}
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 1,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {}
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 2,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1
+          }
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "line",
+          "function": "<module>",
+          "snapshot_timing": "before_line",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        },
+        {
+          "event_id": "E5",
+          "frame_id": "F1",
+          "parent_frame_id": null,
+          "line": 3,
+          "kind": "return",
+          "function": "<module>",
+          "snapshot_timing": "return",
+          "locals": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          }
+        }
+      ],
+      "trace_status": "complete",
+      "profile": {
+        "version": 1,
+        "status": "complete",
+        "method": "trace_segments_excluding_callback",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 697800,
+        "execution_cpu_ns": 683000,
+        "callback_wall_ns": 355300,
+        "callback_cpu_ns": 355000,
+        "timed_events": 5,
+        "event_budget": 100000,
+        "lines": [
+          {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 18200,
+            "self_cpu_ns": 17900,
+            "inclusive_wall_ns": 18200,
+            "inclusive_cpu_ns": 17900
+          },
+          {
+            "frame_id": "F1",
+            "line": 2,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 13000,
+            "self_cpu_ns": 12700,
+            "inclusive_wall_ns": 13000,
+            "inclusive_cpu_ns": 12700
+          },
+          {
+            "frame_id": "F1",
+            "line": 3,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 22000,
+            "self_cpu_ns": 21900,
+            "inclusive_wall_ns": 22000,
+            "inclusive_cpu_ns": 21900
+          }
+        ],
+        "blocks": [
+          {
+            "id": "B1",
+            "kind": "module",
+            "name": "<module>",
+            "scope": 0,
+            "line": 1,
+            "end_line": 3,
+            "hits": 1,
+            "self_wall_ns": 53200,
+            "self_cpu_ns": 52500,
+            "inclusive_wall_ns": 53200,
+            "inclusive_cpu_ns": 52500
+          }
+        ],
+        "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+      },
+      "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+      "source_sha256": "d24dbde5166576a5c70c442c847e30e06d4445164e0956b03332f6ef79ec1a59",
+      "input_sha256": "ad0fadf63cc7cd779ce475e345bf4063565b63a3c2efef1eebc89790aaa6acba",
+      "elapsed_ms": 640.0,
+      "trace_trust": "guest_observation_not_authenticated",
+      "cleanup_confirmed": true
+    }
+  },
+  "reference_source": "n=int(input())\na=list(map(int,input().split()))\nprint(sum(a))\n",
+  "student_source": "n=int(input())\na=list(map(int,input().split()))\nprint(sum(a)-1)\n",
+  "replay_count": 3,
+  "attempts": 5,
+  "student_graph": {
+    "kind": "observed_execution_not_static_cfg",
+    "nodes": [
+      {
+        "id": "F1:0",
+        "line": 0,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E1"
+        ],
+        "timing": null
+      },
+      {
+        "id": "F1:1",
+        "line": 1,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E2"
+        ],
+        "timing": {
+          "frame_id": "F1",
+          "line": 1,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 12600,
+          "self_cpu_ns": 12500,
+          "inclusive_wall_ns": 12600,
+          "inclusive_cpu_ns": 12500
+        }
+      },
+      {
+        "id": "F1:2",
+        "line": 2,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E3"
+        ],
+        "timing": {
+          "frame_id": "F1",
+          "line": 2,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 7600,
+          "self_cpu_ns": 7400,
+          "inclusive_wall_ns": 7600,
+          "inclusive_cpu_ns": 7400
+        }
+      },
+      {
+        "id": "F1:3",
+        "line": 3,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E4",
+          "E5"
+        ],
+        "timing": {
+          "frame_id": "F1",
+          "line": 3,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 14100,
+          "self_cpu_ns": 13900,
+          "inclusive_wall_ns": 14100,
+          "inclusive_cpu_ns": 13900
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": "F1:0",
+        "to": "F1:1",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E1",
+            "E2"
+          ]
+        ]
+      },
+      {
+        "from": "F1:1",
+        "to": "F1:2",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E2",
+            "E3"
+          ]
+        ]
+      },
+      {
+        "from": "F1:2",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E3",
+            "E4"
+          ]
+        ]
+      },
+      {
+        "from": "F1:3",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E4",
+            "E5"
+          ]
+        ]
+      }
+    ],
+    "changes": [],
+    "frames": [
+      {
+        "id": "F1",
+        "parent": null,
+        "function": "<module>",
+        "entry_event_id": "E1"
+      }
+    ],
+    "timeline": [
+      {
+        "event_id": "E1",
+        "frame_id": "F1",
+        "line": 0,
+        "kind": "call"
+      },
+      {
+        "event_id": "E2",
+        "frame_id": "F1",
+        "line": 1,
+        "kind": "line"
+      },
+      {
+        "event_id": "E3",
+        "frame_id": "F1",
+        "line": 2,
+        "kind": "line"
+      },
+      {
+        "event_id": "E4",
+        "frame_id": "F1",
+        "line": 3,
+        "kind": "line"
+      },
+      {
+        "event_id": "E5",
+        "frame_id": "F1",
+        "line": 3,
+        "kind": "return"
+      }
+    ],
+    "relations": {
+      "data": [],
+      "control": [],
+      "def_use": []
+    },
+    "static_cfg": {
+      "status": "restricted_syntactic_cfg",
+      "nodes": [
+        {
+          "id": "module:1",
+          "line": 1,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:2",
+          "line": 2,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:3",
+          "line": 3,
+          "scope": "module",
+          "kind": "Expr"
+        }
+      ],
+      "edges": [
+        {
+          "from": "module:1",
+          "to": "module:2",
+          "kind": "next"
+        },
+        {
+          "from": "module:2",
+          "to": "module:3",
+          "kind": "next"
+        }
+      ],
+      "unsupported": [],
+      "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+    },
+    "causal_fault_proven": false,
+    "profile": {
+      "version": 1,
+      "status": "complete",
+      "method": "trace_segments_excluding_callback",
+      "clocks": {
+        "wall": "perf_counter_ns",
+        "cpu": "process_time_ns"
+      },
+      "execution_wall_ns": 452600,
+      "execution_cpu_ns": 448500,
+      "callback_wall_ns": 233400,
+      "callback_cpu_ns": 233200,
+      "timed_events": 5,
+      "event_budget": 100000,
+      "lines": [
+        {
+          "frame_id": "F1",
+          "line": 1,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 12600,
+          "self_cpu_ns": 12500,
+          "inclusive_wall_ns": 12600,
+          "inclusive_cpu_ns": 12500
+        },
+        {
+          "frame_id": "F1",
+          "line": 2,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 7600,
+          "self_cpu_ns": 7400,
+          "inclusive_wall_ns": 7600,
+          "inclusive_cpu_ns": 7400
+        },
+        {
+          "frame_id": "F1",
+          "line": 3,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 14100,
+          "self_cpu_ns": 13900,
+          "inclusive_wall_ns": 14100,
+          "inclusive_cpu_ns": 13900
+        }
+      ],
+      "blocks": [
+        {
+          "id": "B1",
+          "kind": "module",
+          "name": "<module>",
+          "scope": 0,
+          "line": 1,
+          "end_line": 3,
+          "hits": 1,
+          "self_wall_ns": 34300,
+          "self_cpu_ns": 33800,
+          "inclusive_wall_ns": 34300,
+          "inclusive_cpu_ns": 33800
+        }
+      ],
+      "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+    },
+    "loop_summary": {
+      "status": "observed",
+      "loops": [],
+      "scope": "Counts come from recorded same-frame line transitions. Partial traces give observed lower bounds; header visits are not body iterations."
+    },
+    "output_chain": {
+      "status": "unsupported",
+      "links": []
+    }
+  },
+  "reference_graph": {
+    "kind": "observed_execution_not_static_cfg",
+    "nodes": [
+      {
+        "id": "F1:0",
+        "line": 0,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E1"
+        ],
+        "timing": null
+      },
+      {
+        "id": "F1:1",
+        "line": 1,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E2"
+        ],
+        "timing": {
+          "frame_id": "F1",
+          "line": 1,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 18200,
+          "self_cpu_ns": 17900,
+          "inclusive_wall_ns": 18200,
+          "inclusive_cpu_ns": 17900
+        }
+      },
+      {
+        "id": "F1:2",
+        "line": 2,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E3"
+        ],
+        "timing": {
+          "frame_id": "F1",
+          "line": 2,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 13000,
+          "self_cpu_ns": 12700,
+          "inclusive_wall_ns": 13000,
+          "inclusive_cpu_ns": 12700
+        }
+      },
+      {
+        "id": "F1:3",
+        "line": 3,
+        "frame_id": "F1",
+        "function": "<module>",
+        "event_ids": [
+          "E4",
+          "E5"
+        ],
+        "timing": {
+          "frame_id": "F1",
+          "line": 3,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 22000,
+          "self_cpu_ns": 21900,
+          "inclusive_wall_ns": 22000,
+          "inclusive_cpu_ns": 21900
+        }
+      }
+    ],
+    "edges": [
+      {
+        "from": "F1:0",
+        "to": "F1:1",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E1",
+            "E2"
+          ]
+        ]
+      },
+      {
+        "from": "F1:1",
+        "to": "F1:2",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E2",
+            "E3"
+          ]
+        ]
+      },
+      {
+        "from": "F1:2",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E3",
+            "E4"
+          ]
+        ]
+      },
+      {
+        "from": "F1:3",
+        "to": "F1:3",
+        "count": 1,
+        "event_pairs": [
+          [
+            "E4",
+            "E5"
+          ]
+        ]
+      }
+    ],
+    "changes": [],
+    "frames": [
+      {
+        "id": "F1",
+        "parent": null,
+        "function": "<module>",
+        "entry_event_id": "E1"
+      }
+    ],
+    "timeline": [
+      {
+        "event_id": "E1",
+        "frame_id": "F1",
+        "line": 0,
+        "kind": "call"
+      },
+      {
+        "event_id": "E2",
+        "frame_id": "F1",
+        "line": 1,
+        "kind": "line"
+      },
+      {
+        "event_id": "E3",
+        "frame_id": "F1",
+        "line": 2,
+        "kind": "line"
+      },
+      {
+        "event_id": "E4",
+        "frame_id": "F1",
+        "line": 3,
+        "kind": "line"
+      },
+      {
+        "event_id": "E5",
+        "frame_id": "F1",
+        "line": 3,
+        "kind": "return"
+      }
+    ],
+    "relations": {
+      "data": [],
+      "control": [],
+      "def_use": []
+    },
+    "static_cfg": {
+      "status": "restricted_syntactic_cfg",
+      "nodes": [
+        {
+          "id": "module:1",
+          "line": 1,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:2",
+          "line": 2,
+          "scope": "module",
+          "kind": "Assign"
+        },
+        {
+          "id": "module:3",
+          "line": 3,
+          "scope": "module",
+          "kind": "Expr"
+        }
+      ],
+      "edges": [
+        {
+          "from": "module:1",
+          "to": "module:2",
+          "kind": "next"
+        },
+        {
+          "from": "module:2",
+          "to": "module:3",
+          "kind": "next"
+        }
+      ],
+      "unsupported": [],
+      "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+    },
+    "causal_fault_proven": false,
+    "profile": {
+      "version": 1,
+      "status": "complete",
+      "method": "trace_segments_excluding_callback",
+      "clocks": {
+        "wall": "perf_counter_ns",
+        "cpu": "process_time_ns"
+      },
+      "execution_wall_ns": 697800,
+      "execution_cpu_ns": 683000,
+      "callback_wall_ns": 355300,
+      "callback_cpu_ns": 355000,
+      "timed_events": 5,
+      "event_budget": 100000,
+      "lines": [
+        {
+          "frame_id": "F1",
+          "line": 1,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 18200,
+          "self_cpu_ns": 17900,
+          "inclusive_wall_ns": 18200,
+          "inclusive_cpu_ns": 17900
+        },
+        {
+          "frame_id": "F1",
+          "line": 2,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 13000,
+          "self_cpu_ns": 12700,
+          "inclusive_wall_ns": 13000,
+          "inclusive_cpu_ns": 12700
+        },
+        {
+          "frame_id": "F1",
+          "line": 3,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 22000,
+          "self_cpu_ns": 21900,
+          "inclusive_wall_ns": 22000,
+          "inclusive_cpu_ns": 21900
+        }
+      ],
+      "blocks": [
+        {
+          "id": "B1",
+          "kind": "module",
+          "name": "<module>",
+          "scope": 0,
+          "line": 1,
+          "end_line": 3,
+          "hits": 1,
+          "self_wall_ns": 53200,
+          "self_cpu_ns": 52500,
+          "inclusive_wall_ns": 53200,
+          "inclusive_cpu_ns": 52500
+        }
+      ],
+      "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+    },
+    "loop_summary": {
+      "status": "observed",
+      "loops": [],
+      "scope": "Counts come from recorded same-frame line transitions. Partial traces give observed lower bounds; header visits are not body iterations."
+    },
+    "output_chain": {
+      "status": "unsupported",
+      "links": []
+    }
+  },
+  "hypotheses": [],
+  "ai_facts": [],
+  "ai_branches": [],
+  "ai_context": {
+    "identity": {
+      "package_sha256": "d105fb32829ebacff50f68363b781cfceaf66fb3818bb3ac0669b1392c04332f",
+      "source_sha256": "e654c2ea9d6e6f29c115c62325cabda7492bf9b7c14d039ef6f9be4e8cb847fb",
+      "input_sha256": "ad0fadf63cc7cd779ce475e345bf4063565b63a3c2efef1eebc89790aaa6acba"
+    },
+    "context_bytes": 2214,
+    "source_complete": true,
+    "statement_complete": true,
+    "input_complete": true,
+    "outputs_complete": true
+  },
+  "ai_status": "unavailable_or_invalid",
+  "ai_model": "controlled-outage-test",
+  "ai_usage": {},
+  "generator": "boundary_random",
+  "guidance": {
+    "status": "disabled",
+    "rejected": 0,
+    "probes": []
+  },
+  "suspiciousness": {
+    "status": "disabled",
+    "ranked": []
+  },
+  "ai_error": "controlled_test_provider_unavailable",
+  "elapsed_ms": 6766.0,
+  "scope": "Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."
+}

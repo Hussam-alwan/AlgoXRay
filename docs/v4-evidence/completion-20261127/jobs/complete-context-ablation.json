@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T09:32:58.203564+00:00",
+  "pid": 14076,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "tools/evaluate_v4_context_ablation.py",
+    "--out",
+    "results/v4-completion-context-ablation"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T09:35:27.886142+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "identity": {
+    "package_sha256": "46e6b5c2e8ce6059d1abd545be5577706512ea9874e07c13e7285ce51936f44a",
+    "source_sha256": "5fc284a67823da258efe10155bdd4791fc176800be14ddfaa832b712a8deb0af",
+    "input_sha256": "917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469",
+    "frozen_evidence_sha256": "762fa03332c77de60afb9b3c665ca646e45b999ded99a7edd753b31127048dfa",
+    "known_edit_line": 4
+  },
+  "raw_response_sha256": "a08becc4f8e4269f49a520319e8903a51028c986bcefbfb1141db2b0226baa73",
+  "row": {
+    "family": "sieve",
+    "arm": "trace_verified",
+    "status": "completed",
+    "suspected_lines": [
+      4,
+      6,
+      8
+    ],
+    "edit_line_top1": true,
+    "edit_line_top3": true,
+    "edit_line_top5": true,
+    "seconds": 0,
+    "additional_inference": false,
+    "facts_total": 0,
+    "facts_matching": 0,
+    "branches_total": 0,
+    "branches_matching": 0,
+    "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+  },
+  "rejected_unobserved_lines": [
+    5,
+    7
+  ],
+  "fact_checks": [],
+  "branch_checks": []
+}

@@ -1,0 +1,16 @@
+{
+  "family": "gcd",
+  "arm": "v4_no_ai",
+  "status": "observed_mismatch",
+  "discovery_from_frozen_witness": true,
+  "replays": 3,
+  "suspected_lines": [],
+  "scope": "No model inference or localization prediction",
+  "identity": {
+    "package_sha256": "0f4a9b367b131239293c9a312d1be27cb51f91aad09dd7ea06fe962b36710a13",
+    "source_sha256": "1b24885862b04320553bcb3109e8551a67216a86e8653715748ffaf9b68226ad",
+    "input_sha256": "f97af30c15cbf887b4e3ada668364ed2c9cb528ed46561415ab38314383ac4e7",
+    "frozen_evidence_sha256": "76022f1207cad8414f2de7dc4f84c55a445618c906d64aa3793675185f0bdd30",
+    "known_edit_line": 5
+  }
+}

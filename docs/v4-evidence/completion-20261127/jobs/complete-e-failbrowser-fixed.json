@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T09:32:50.188696+00:00",
+  "pid": 9556,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "tools/verify_v4_failure_browser.py",
+    "--out",
+    "results/v4-completion-e-failure-browser-fixed",
+    "--port",
+    "8805"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T09:33:26.214961+00:00"
+}

@@ -1,0 +1,16 @@
+{
+  "family": "quicksort",
+  "arm": "v4_no_ai",
+  "status": "observed_mismatch",
+  "discovery_from_frozen_witness": true,
+  "replays": 3,
+  "suspected_lines": [],
+  "scope": "No model inference or localization prediction",
+  "identity": {
+    "package_sha256": "ff59d36658fe56893f68d3311f2827724d10070a1087bd5e87e435101444ce26",
+    "source_sha256": "406ae79dbed655f0f507876aaeb32e3f14c601bbb2c2ee1e8a6eeaa918e45c08",
+    "input_sha256": "e0385a8ec6ac5a94beb2447e053eb645b4c41438a5946608bedd4be456a77ed6",
+    "frozen_evidence_sha256": "9446f5ead5a2776b720c9f56b80211cc97ba619524750ba3506660728f86130c",
+    "known_edit_line": 7
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "identity": {
+    "package_sha256": "62b26b15475b0784b5457f1bbeebe35bb9b2614fdd6cdc30887c7db2211cd799",
+    "source_sha256": "c6b70fd19055647d5d2602554367ce434b5e319224f5c99ee0d8a219ab9565ad",
+    "input_sha256": "f0b5c2c2211c8d67ed15e75e656c7862d086e9245420892a7de62cd9ec582a06",
+    "frozen_evidence_sha256": "0851f3c7d421c6e10d0a2bf6c14cba1850d09ab0d591f246f6294b9ba81a6196",
+    "known_edit_line": 8
+  },
+  "raw_response_sha256": "8425d32615af7c2252edf4aa5d9ef89ec74990c94c5b4f9c33e7562ffffcc343",
+  "row": {
+    "family": "possible_change",
+    "arm": "trace_verified",
+    "status": "completed",
+    "suspected_lines": [
+      8,
+      9,
+      12
+    ],
+    "edit_line_top1": true,
+    "edit_line_top3": true,
+    "edit_line_top5": true,
+    "seconds": 0,
+    "additional_inference": false,
+    "facts_total": 6,
+    "facts_matching": 6,
+    "branches_total": 0,
+    "branches_matching": 0,
+    "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+  },
+  "rejected_unobserved_lines": [
+    10,
+    11
+  ],
+  "fact_checks": [
+    {
+      "event_id": "E58",
+      "variable": "total",
+      "value": 1,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E60",
+      "variable": "first",
+      "value": 5,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E61",
+      "variable": "total",
+      "value": 1,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E62",
+      "variable": "first",
+      "value": 2,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E63",
+      "variable": "total",
+      "value": 1,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    },
+    {
+      "event_id": "E64",
+      "variable": "first",
+      "value": 1,
+      "status": "matches_recorded_snapshot",
+      "causal_verified": false
+    }
+  ],
+  "branch_checks": []
+}

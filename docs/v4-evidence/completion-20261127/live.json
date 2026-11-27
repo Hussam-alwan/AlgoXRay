@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "v4_port": 8002,
+  "v3_health_http": 200,
+  "new_routes": [
+    "/api/v4/cache/clear",
+    "/api/v4/packages/audit",
+    "/api/v4/profile"
+  ],
+  "runtime_commit": "1aee128bfaf33313fb01e9dcf8d5ffd70859e13e"
+}

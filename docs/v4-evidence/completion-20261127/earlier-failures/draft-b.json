@@ -1,0 +1,46 @@
+{
+  "scope": "Synthetic local model probes only; no cloud requests, human ratings or generated code execution.",
+  "checks": [
+    "real_local_cache_hit",
+    "clear_invalidates_cache"
+  ],
+  "cache": {
+    "first_usage": {
+      "request_id": "e578bfcfa4af4471a3d0a79607e1096d",
+      "total_duration": 9510309400,
+      "load_duration": 8510577700,
+      "prompt_eval_count": 86,
+      "prompt_eval_duration": 615974000,
+      "eval_count": 15,
+      "eval_duration": 368226000,
+      "elapsed_ms": 9531.0,
+      "cache": "miss",
+      "model_revision": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+    },
+    "second_usage": {
+      "request_id": "a6d97e19ef544303b83fad8b2de43013",
+      "cache": "hit",
+      "model_revision": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+      "elapsed_ms": 0.0,
+      "eval_count": 0,
+      "source_usage": {
+        "request_id": "e578bfcfa4af4471a3d0a79607e1096d",
+        "total_duration": 9510309400,
+        "load_duration": 8510577700,
+        "prompt_eval_count": 86,
+        "prompt_eval_duration": 615974000,
+        "eval_count": 15,
+        "eval_duration": 368226000,
+        "elapsed_ms": 9531.0
+      }
+    },
+    "same_result": true
+  },
+  "draft": {
+    "status_code": 422,
+    "result": {
+      "detail": "Unsupported or invalid draft; use manual authoring"
+    },
+    "seconds": 8.016
+  }
+}

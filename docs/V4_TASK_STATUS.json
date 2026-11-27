@@ -1,0 +1,186 @@
+{
+  "as_of": "2026-11-27",
+  "runtime_commit": "1aee128bfaf33313fb01e9dcf8d5ffd70859e13e",
+  "authoritative_plan": "docs/V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md",
+  "percentage_scope": "100 means the named bounded software task is implemented and its stated exit check passed. No percentage is assigned to the open-ended project/research scope.",
+  "overall_project_percentage": null,
+  "completed_software_tasks": [
+    {
+      "id": "cache",
+      "title": "Versioned opt-in local memory cache",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_cache.py"
+    },
+    {
+      "id": "qwen_cloud",
+      "title": "Configured Qwen Cloud software adapter; live service separate",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_qwen_cloud.py"
+    },
+    {
+      "id": "draft_provenance",
+      "title": "Exact quotation and literal-value provenance review; semantic human review still required",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_draft_review.py"
+    },
+    {
+      "id": "draft_shapes",
+      "title": "Mutually exclusive fixed/dependent field schema",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_draft_shapes.py"
+    },
+    {
+      "id": "reference_audit",
+      "title": "Bounded finite-domain or second-reference comparison; independence not certified",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_package_audit.py"
+    },
+    {
+      "id": "empty_collections",
+      "title": "Zero-length list/word codec and generation",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_output_policies.py"
+    },
+    {
+      "id": "output_policies",
+      "title": "Bounded unordered and finite floating token comparisons",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_output_policies.py"
+    },
+    {
+      "id": "graph_controls",
+      "title": "Frame/event filters, layouts, panning and source links",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "tools/verify_v4_browser.py"
+    },
+    {
+      "id": "snapshots",
+      "title": "Previous same-frame snapshots and diffs",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "tools/verify_v4_browser.py"
+    },
+    {
+      "id": "loop_counts",
+      "title": "Observed header/body entries and explicit partial counts",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_loop_observations.py"
+    },
+    {
+      "id": "diagnostic_context",
+      "title": "Bounded source/evidence context with identity and omission flags",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_diagnostic_context.py"
+    },
+    {
+      "id": "branch_facts",
+      "title": "Primitive condition recomputation without host code execution",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "backend/tests/test_v4_diagnostic_context.py"
+    },
+    {
+      "id": "failure_browser",
+      "title": "Controlled outage, reference disagreement, unsupported contract and missing-trace browser paths",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "tools/verify_v4_failure_browser.py"
+    },
+    {
+      "id": "local_ablation",
+      "title": "Seven exposed families, three matched contexts, same-response verification",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "tools/evaluate_v4_context_ablation.py"
+    },
+    {
+      "id": "regression",
+      "title": "223 tests and 30 browser checks",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "docs/v4-evidence/completion-20261127/SOURCE_FREEZE.json"
+    },
+    {
+      "id": "clean_reproduction",
+      "title": "Fresh checkout/environment, five demos and paired seven-family pilot",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "docs/v4-evidence/completion-20261127/reproduction/progress.json"
+    },
+    {
+      "id": "isolation_probes",
+      "title": "11 plus 3 local probes; no independent security certification",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "docs/v4-evidence/completion-20261127/isolation.json"
+    },
+    {
+      "id": "block_timing",
+      "title": "Measured wall/CPU self/inclusive line/block profiles and exports",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "docs/V4_PROFILING.md"
+    },
+    {
+      "id": "evidence_delivery",
+      "title": "Allowlisted exact-byte exports, source freeze, active plan and research supplement",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "tools/publish_v4_completion.py"
+    },
+    {
+      "id": "live_and_git",
+      "title": "New V4 live routes, preserved V3, synchronized public branches",
+      "status": "completed",
+      "percent": 100,
+      "evidence": "docs/v4-evidence/completion-20261127/live.json"
+    }
+  ],
+  "open_items": [
+    {
+      "id": "independent_corpus",
+      "status": "requires_independent_participants",
+      "percent": null
+    },
+    {
+      "id": "human_factuality_and_causality",
+      "status": "requires_independent_reviewers",
+      "percent": null
+    },
+    {
+      "id": "security_assessment",
+      "status": "requires_independent_assessment",
+      "percent": null
+    },
+    {
+      "id": "qwen_live",
+      "status": "requires_credentials_and_explicit_transmission_consent",
+      "percent": null
+    },
+    {
+      "id": "general_cp_grammar_checkers_and_languages",
+      "status": "unsupported_in_bounded_release",
+      "percent": null
+    },
+    {
+      "id": "heap_alias_semantic_alignment",
+      "status": "unsupported_in_bounded_release",
+      "percent": null
+    },
+    {
+      "id": "venue_approval_submission",
+      "status": "requires_author_and_venue_decisions",
+      "percent": null
+    }
+  ]
+}

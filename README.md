@@ -6,7 +6,9 @@ Counterexample-driven visual debugging and evidence-grounded hints for algorithm
 
 ## النسخة الحالية: V4 Dynamic AI
 
-**ابدأ من [الخطة الحالية وحالة كل بند](docs/V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md)**. خطط Core وOption B أدناه تاريخية؛ نتائجها تبقى مرتبطة بإصداراتها.
+**ابدأ من [الخطة الحالية وحالة كل بند](docs/V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md)**.
+
+**تحديث 27 نوفمبر:** [تقرير الإنجاز ونسبة كل مهمة](docs/V4_COMPLETION_20261127_AR.md) — 223 اختباراً و30 فحص متصفح، Cache محلي اختياري، موصل Qwen Cloud، مراجعة قيود، تدقيق مرجع، تحسين الرسم، وفحص شروط التنفيذ. [أدلة الدفعة](docs/v4-evidence/completion-20261127/MANIFEST.json) تتضمن مقارنة Ollama من 21 استدعاء على سبع عائلات عامة. خطط Core وOption B أدناه تاريخية؛ نتائجها تبقى مرتبطة بإصداراتها.
 
 - على جهاز التطوير: `D:/icips-v4`، والرابط [http://127.0.0.1:8002/v4](http://127.0.0.1:8002/v4). افتح `start-v4.bat` بعد الإعداد. V3 مستقل على 8001.
 - V4 يقبل Python بصيغة `input()/print()` وحزم مسائل معلنة ومعتمدة: نص، قيود، حل مرجعي واختبارات معروفة مستقلة. لا يضيف شرطاً خاصاً بكل مسألة إلى المحرك.

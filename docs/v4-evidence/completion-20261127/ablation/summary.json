@@ -1,0 +1,791 @@
+{
+  "scope": "Seven exposed public QuixBugs adaptations with known edit lines. Single deterministic sample per arm/family; not a holdout, independent labels, human ratings or root-cause accuracy. End-to-end discovery is excluded by conditioning on existing witnesses.",
+  "families": 7,
+  "model_requests": 21,
+  "rows": [
+    {
+      "family": "gcd",
+      "arm": "v4_no_ai",
+      "status": "observed_mismatch",
+      "discovery_from_frozen_witness": true,
+      "replays": 3,
+      "suspected_lines": [],
+      "scope": "No model inference or localization prediction"
+    },
+    {
+      "family": "gcd",
+      "arm": "source_only",
+      "status": "completed",
+      "suspected_lines": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 12.11,
+      "usage": {
+        "request_id": "fe062bbeb6a54054ad628b0923a68f7f",
+        "total_duration": 12093907300,
+        "load_duration": 7717166100,
+        "prompt_eval_count": 315,
+        "prompt_eval_duration": 654346000,
+        "eval_count": 147,
+        "eval_duration": 3709128000,
+        "elapsed_ms": 12110.0
+      }
+    },
+    {
+      "family": "gcd",
+      "arm": "witness",
+      "status": "completed",
+      "suspected_lines": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 6.281,
+      "usage": {
+        "request_id": "399761b6352849a7bb655543a3736820",
+        "total_duration": 6233207400,
+        "load_duration": 6781300,
+        "prompt_eval_count": 344,
+        "prompt_eval_duration": 71746000,
+        "eval_count": 264,
+        "eval_duration": 6146826000,
+        "elapsed_ms": 6281.0
+      }
+    },
+    {
+      "family": "gcd",
+      "arm": "trace",
+      "status": "completed",
+      "suspected_lines": [
+        1,
+        2,
+        5,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 5.125,
+      "usage": {
+        "request_id": "1d006a31c5cb4be68c77fffdb52bdb24",
+        "total_duration": 5067948200,
+        "load_duration": 8859500,
+        "prompt_eval_count": 1559,
+        "prompt_eval_duration": 949565000,
+        "eval_count": 169,
+        "eval_duration": 4093722000,
+        "elapsed_ms": 5125.0
+      }
+    },
+    {
+      "family": "gcd",
+      "arm": "trace_verified",
+      "status": "completed",
+      "suspected_lines": [
+        1,
+        2,
+        5,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 0,
+      "additional_inference": false,
+      "facts_total": 0,
+      "facts_matching": 0,
+      "branches_total": 0,
+      "branches_matching": 0,
+      "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+    },
+    {
+      "family": "get_factors",
+      "arm": "v4_no_ai",
+      "status": "observed_mismatch",
+      "discovery_from_frozen_witness": true,
+      "replays": 3,
+      "suspected_lines": [],
+      "scope": "No model inference or localization prediction"
+    },
+    {
+      "family": "get_factors",
+      "arm": "source_only",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        8,
+        9,
+        10
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": true,
+      "seconds": 4.328,
+      "usage": {
+        "request_id": "054f0cef5ed7403c97d51ecb33390b69",
+        "total_duration": 4285182000,
+        "load_duration": 4780200,
+        "prompt_eval_count": 324,
+        "prompt_eval_duration": 189503000,
+        "eval_count": 158,
+        "eval_duration": 4036090000,
+        "elapsed_ms": 4328.0
+      }
+    },
+    {
+      "family": "get_factors",
+      "arm": "witness",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": false,
+      "seconds": 7.547,
+      "usage": {
+        "request_id": "00db44941a2d480b96ba11335163549f",
+        "total_duration": 7521041900,
+        "load_duration": 4066200,
+        "prompt_eval_count": 359,
+        "prompt_eval_duration": 64265000,
+        "eval_count": 335,
+        "eval_duration": 7438653000,
+        "elapsed_ms": 7547.0
+      }
+    },
+    {
+      "family": "get_factors",
+      "arm": "trace",
+      "status": "completed",
+      "suspected_lines": [
+        7,
+        10
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": false,
+      "seconds": 6.359,
+      "usage": {
+        "request_id": "161469905e63486e88c416bdc8be8dc0",
+        "total_duration": 6328036000,
+        "load_duration": 4580200,
+        "prompt_eval_count": 1461,
+        "prompt_eval_duration": 843070000,
+        "eval_count": 255,
+        "eval_duration": 5468283000,
+        "elapsed_ms": 6359.0
+      }
+    },
+    {
+      "family": "get_factors",
+      "arm": "trace_verified",
+      "status": "completed",
+      "suspected_lines": [
+        7
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": false,
+      "seconds": 0,
+      "additional_inference": false,
+      "facts_total": 3,
+      "facts_matching": 2,
+      "branches_total": 0,
+      "branches_matching": 0,
+      "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+    },
+    {
+      "family": "sieve",
+      "arm": "v4_no_ai",
+      "status": "observed_mismatch",
+      "discovery_from_frozen_witness": true,
+      "replays": 3,
+      "suspected_lines": [],
+      "scope": "No model inference or localization prediction"
+    },
+    {
+      "family": "sieve",
+      "arm": "source_only",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 5.64,
+      "usage": {
+        "request_id": "6fd32de65e374dc69f0df1c03d864a99",
+        "total_duration": 5610748000,
+        "load_duration": 13552900,
+        "prompt_eval_count": 293,
+        "prompt_eval_duration": 148999000,
+        "eval_count": 243,
+        "eval_duration": 5412717000,
+        "elapsed_ms": 5640.0
+      }
+    },
+    {
+      "family": "sieve",
+      "arm": "witness",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 5.657,
+      "usage": {
+        "request_id": "ad436ddc9cda4d3f8b74db38d23bfb71",
+        "total_duration": 5630453100,
+        "load_duration": 13565900,
+        "prompt_eval_count": 327,
+        "prompt_eval_duration": 63850000,
+        "eval_count": 248,
+        "eval_duration": 5547879000,
+        "elapsed_ms": 5657.0
+      }
+    },
+    {
+      "family": "sieve",
+      "arm": "trace",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 4.734,
+      "usage": {
+        "request_id": "a8ac87a99d0a4a848a6a0d15962b37fc",
+        "total_duration": 4715877700,
+        "load_duration": 4341500,
+        "prompt_eval_count": 1451,
+        "prompt_eval_duration": 860961000,
+        "eval_count": 167,
+        "eval_duration": 3843351000,
+        "elapsed_ms": 4734.0
+      }
+    },
+    {
+      "family": "sieve",
+      "arm": "trace_verified",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        6,
+        8
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 0,
+      "additional_inference": false,
+      "facts_total": 0,
+      "facts_matching": 0,
+      "branches_total": 0,
+      "branches_matching": 0,
+      "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+    },
+    {
+      "family": "kth",
+      "arm": "v4_no_ai",
+      "status": "observed_mismatch",
+      "discovery_from_frozen_witness": true,
+      "replays": 3,
+      "suspected_lines": [],
+      "scope": "No model inference or localization prediction"
+    },
+    {
+      "family": "kth",
+      "arm": "source_only",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": false,
+      "seconds": 4.015,
+      "usage": {
+        "request_id": "78277e26e27745f09cdd5c6de62c7cec",
+        "total_duration": 3983811900,
+        "load_duration": 6969500,
+        "prompt_eval_count": 411,
+        "prompt_eval_duration": 230009000,
+        "eval_count": 152,
+        "eval_duration": 3707559000,
+        "elapsed_ms": 4015.0
+      }
+    },
+    {
+      "family": "kth",
+      "arm": "witness",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": false,
+      "seconds": 4.094,
+      "usage": {
+        "request_id": "4f2aba304b6646f481c20a366d502a9b",
+        "total_duration": 4062592500,
+        "load_duration": 7111900,
+        "prompt_eval_count": 444,
+        "prompt_eval_duration": 81649000,
+        "eval_count": 160,
+        "eval_duration": 3955874000,
+        "elapsed_ms": 4094.0
+      }
+    },
+    {
+      "family": "kth",
+      "arm": "trace",
+      "status": "completed",
+      "suspected_lines": [
+        12,
+        11,
+        2,
+        1,
+        18
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 8.625,
+      "usage": {
+        "request_id": "7cb477d6eab44278add5211fc247af0a",
+        "total_duration": 8593329500,
+        "load_duration": 11805500,
+        "prompt_eval_count": 1637,
+        "prompt_eval_duration": 912758000,
+        "eval_count": 341,
+        "eval_duration": 7657411000,
+        "elapsed_ms": 8625.0
+      }
+    },
+    {
+      "family": "kth",
+      "arm": "trace_verified",
+      "status": "completed",
+      "suspected_lines": [
+        12,
+        11,
+        2,
+        1,
+        18
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 0,
+      "additional_inference": false,
+      "facts_total": 6,
+      "facts_matching": 6,
+      "branches_total": 0,
+      "branches_matching": 0,
+      "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+    },
+    {
+      "family": "quicksort",
+      "arm": "v4_no_ai",
+      "status": "observed_mismatch",
+      "discovery_from_frozen_witness": true,
+      "replays": 3,
+      "suspected_lines": [],
+      "scope": "No model inference or localization prediction"
+    },
+    {
+      "family": "quicksort",
+      "arm": "source_only",
+      "status": "completed",
+      "suspected_lines": [
+        10,
+        11,
+        12
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": false,
+      "seconds": 8.797,
+      "usage": {
+        "request_id": "07a0c6226e034f218e35b5daebe8fd73",
+        "total_duration": 8772058800,
+        "load_duration": 7107600,
+        "prompt_eval_count": 372,
+        "prompt_eval_duration": 219215000,
+        "eval_count": 372,
+        "eval_duration": 8486400000,
+        "elapsed_ms": 8797.0
+      }
+    },
+    {
+      "family": "quicksort",
+      "arm": "witness",
+      "status": "completed",
+      "suspected_lines": [
+        10,
+        11,
+        12
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": false,
+      "seconds": 6.766,
+      "usage": {
+        "request_id": "a0b0a4b5303d4bdda596561210323e29",
+        "total_duration": 6731960700,
+        "load_duration": 5688600,
+        "prompt_eval_count": 418,
+        "prompt_eval_duration": 78033000,
+        "eval_count": 286,
+        "eval_duration": 6625512000,
+        "elapsed_ms": 6766.0
+      }
+    },
+    {
+      "family": "quicksort",
+      "arm": "trace",
+      "status": "completed",
+      "suspected_lines": [
+        11,
+        7,
+        2,
+        3,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 7.843,
+      "usage": {
+        "request_id": "e50144adb155470a9110a0f81d64f6d4",
+        "total_duration": 7804050500,
+        "load_duration": 6389500,
+        "prompt_eval_count": 1486,
+        "prompt_eval_duration": 823196000,
+        "eval_count": 310,
+        "eval_duration": 6960384000,
+        "elapsed_ms": 7843.0
+      }
+    },
+    {
+      "family": "quicksort",
+      "arm": "trace_verified",
+      "status": "completed",
+      "suspected_lines": [
+        11,
+        7,
+        2,
+        3,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 0,
+      "additional_inference": false,
+      "facts_total": 4,
+      "facts_matching": 0,
+      "branches_total": 0,
+      "branches_matching": 0,
+      "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+    },
+    {
+      "family": "longest_common_subsequence",
+      "arm": "v4_no_ai",
+      "status": "observed_mismatch",
+      "discovery_from_frozen_witness": true,
+      "replays": 3,
+      "suspected_lines": [],
+      "scope": "No model inference or localization prediction"
+    },
+    {
+      "family": "longest_common_subsequence",
+      "arm": "source_only",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 8.765,
+      "usage": {
+        "request_id": "db8be1b74ec24d35bfde78ec50490572",
+        "total_duration": 8702190600,
+        "load_duration": 4204300,
+        "prompt_eval_count": 402,
+        "prompt_eval_duration": 228400000,
+        "eval_count": 364,
+        "eval_duration": 8428687000,
+        "elapsed_ms": 8765.0
+      }
+    },
+    {
+      "family": "longest_common_subsequence",
+      "arm": "witness",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 10.563,
+      "usage": {
+        "request_id": "55babdc1e7744533a5317557e8f52364",
+        "total_duration": 10531631800,
+        "load_duration": 12002900,
+        "prompt_eval_count": 432,
+        "prompt_eval_duration": 76328000,
+        "eval_count": 476,
+        "eval_duration": 10436150000,
+        "elapsed_ms": 10563.0
+      }
+    },
+    {
+      "family": "longest_common_subsequence",
+      "arm": "trace",
+      "status": "completed",
+      "suspected_lines": [
+        16,
+        6,
+        10,
+        14
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 8.578,
+      "usage": {
+        "request_id": "e0e8a596da5f4eafbb5af50e739ca4df",
+        "total_duration": 8554384900,
+        "load_duration": 6491700,
+        "prompt_eval_count": 1644,
+        "prompt_eval_duration": 944768000,
+        "eval_count": 343,
+        "eval_duration": 7554063000,
+        "elapsed_ms": 8578.0
+      }
+    },
+    {
+      "family": "longest_common_subsequence",
+      "arm": "trace_verified",
+      "status": "completed",
+      "suspected_lines": [
+        16,
+        6
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 0,
+      "additional_inference": false,
+      "facts_total": 6,
+      "facts_matching": 2,
+      "branches_total": 0,
+      "branches_matching": 0,
+      "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+    },
+    {
+      "family": "possible_change",
+      "arm": "v4_no_ai",
+      "status": "observed_mismatch",
+      "discovery_from_frozen_witness": true,
+      "replays": 3,
+      "suspected_lines": [],
+      "scope": "No model inference or localization prediction"
+    },
+    {
+      "family": "possible_change",
+      "arm": "source_only",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": true,
+      "seconds": 9.953,
+      "usage": {
+        "request_id": "12472b0c0eb24fbbab8e2ae508291c63",
+        "total_duration": 9915314900,
+        "load_duration": 5973300,
+        "prompt_eval_count": 335,
+        "prompt_eval_duration": 205105000,
+        "eval_count": 447,
+        "eval_duration": 9633468000,
+        "elapsed_ms": 9953.0
+      }
+    },
+    {
+      "family": "possible_change",
+      "arm": "witness",
+      "status": "completed",
+      "suspected_lines": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "edit_line_top1": false,
+      "edit_line_top3": false,
+      "edit_line_top5": true,
+      "seconds": 3.719,
+      "usage": {
+        "request_id": "f97cd034451c4ad1a9c99f7bc62359fe",
+        "total_duration": 3688976800,
+        "load_duration": 5684000,
+        "prompt_eval_count": 360,
+        "prompt_eval_duration": 80487000,
+        "eval_count": 154,
+        "eval_duration": 3571882000,
+        "elapsed_ms": 3719.0
+      }
+    },
+    {
+      "family": "possible_change",
+      "arm": "trace",
+      "status": "completed",
+      "suspected_lines": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 8.672,
+      "usage": {
+        "request_id": "599f366e67aa4b78be9fa7bb610fa251",
+        "total_duration": 8650585000,
+        "load_duration": 6739200,
+        "prompt_eval_count": 1321,
+        "prompt_eval_duration": 758187000,
+        "eval_count": 364,
+        "eval_duration": 7875313000,
+        "elapsed_ms": 8672.0
+      }
+    },
+    {
+      "family": "possible_change",
+      "arm": "trace_verified",
+      "status": "completed",
+      "suspected_lines": [
+        8,
+        9,
+        12
+      ],
+      "edit_line_top1": true,
+      "edit_line_top3": true,
+      "edit_line_top5": true,
+      "seconds": 0,
+      "additional_inference": false,
+      "facts_total": 6,
+      "facts_matching": 6,
+      "branches_total": 0,
+      "branches_matching": 0,
+      "scope": "Only observed-line membership and primitive recorded facts checked; retained candidate lines are hypotheses, never verified causes."
+    }
+  ],
+  "arms": {
+    "source_only": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 1,
+      "edit_line_top3": 3,
+      "edit_line_top5": 5,
+      "total_seconds": 53.608
+    },
+    "witness": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 1,
+      "edit_line_top3": 3,
+      "edit_line_top5": 4,
+      "total_seconds": 44.627
+    },
+    "trace": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 3,
+      "edit_line_top3": 6,
+      "edit_line_top5": 6,
+      "total_seconds": 49.936
+    },
+    "trace_verified": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 3,
+      "edit_line_top3": 6,
+      "edit_line_top5": 6,
+      "total_seconds": 0
+    }
+  }
+}

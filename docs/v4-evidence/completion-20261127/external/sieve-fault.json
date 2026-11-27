@@ -1,0 +1,7102 @@
+{
+  "family": "sieve",
+  "role": "fault",
+  "package_sha256": "46e6b5c2e8ce6059d1abd545be5577706512ea9874e07c13e7285ce51936f44a",
+  "reference_review": {
+    "passed": true,
+    "checks": [
+      {
+        "case": {
+          "n": 1
+        },
+        "status": "ok",
+        "matches": true
+      },
+      {
+        "case": {
+          "n": 10
+        },
+        "status": "ok",
+        "matches": true
+      }
+    ],
+    "limitation": "Finite owner-supplied controls, not proof of reference correctness."
+  },
+  "known_bug_line": 4,
+  "result": {
+    "status": "observed_mismatch",
+    "kind": "wrong_answer",
+    "package_sha256": "46e6b5c2e8ce6059d1abd545be5577706512ea9874e07c13e7285ce51936f44a",
+    "original_case": {
+      "n": 10
+    },
+    "witness": {
+      "kind": "wrong_answer",
+      "case": {
+        "n": 10
+      },
+      "stdin": "10\n",
+      "student": {
+        "status": "ok",
+        "detail": null,
+        "stdout": "\n",
+        "stderr": "",
+        "events": [
+          {
+            "event_id": "E1",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 0,
+            "kind": "call",
+            "function": "<module>",
+            "snapshot_timing": "call",
+            "locals": {}
+          },
+          {
+            "event_id": "E2",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 1,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E3",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 8,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E4",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 9,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 10
+            }
+          },
+          {
+            "event_id": "E5",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 1,
+            "kind": "call",
+            "function": "sieve",
+            "snapshot_timing": "call",
+            "locals": {
+              "max": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E6",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E7",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": []
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E8",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E9",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E10",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E11",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E12",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E13",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E14",
+            "frame_id": "F4",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E15",
+            "frame_id": "F4",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E16",
+            "frame_id": "F4",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E17",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E18",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E19",
+            "frame_id": "F5",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E20",
+            "frame_id": "F5",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E21",
+            "frame_id": "F5",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E22",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E23",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E24",
+            "frame_id": "F6",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E25",
+            "frame_id": "F6",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E26",
+            "frame_id": "F6",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E27",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E28",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E29",
+            "frame_id": "F7",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E30",
+            "frame_id": "F7",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E31",
+            "frame_id": "F7",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E32",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E33",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E34",
+            "frame_id": "F8",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E35",
+            "frame_id": "F8",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E36",
+            "frame_id": "F8",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E37",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E38",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E39",
+            "frame_id": "F9",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E40",
+            "frame_id": "F9",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E41",
+            "frame_id": "F9",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E42",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E43",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E44",
+            "frame_id": "F10",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E45",
+            "frame_id": "F10",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E46",
+            "frame_id": "F10",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E47",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E48",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 4,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E49",
+            "frame_id": "F11",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "n": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E50",
+            "frame_id": "F11",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E51",
+            "frame_id": "F11",
+            "parent_frame_id": "F2",
+            "line": 4,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E52",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 3,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E53",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "line",
+            "function": "sieve",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E54",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 6,
+            "kind": "return",
+            "function": "sieve",
+            "snapshot_timing": "return",
+            "locals": {
+              "max": 10,
+              "primes": [],
+              "n": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E55",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 9,
+            "kind": "return",
+            "function": "<module>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 10
+            }
+          }
+        ],
+        "trace_status": "complete",
+        "profile": {
+          "version": 1,
+          "status": "complete",
+          "method": "trace_segments_excluding_callback",
+          "clocks": {
+            "wall": "perf_counter_ns",
+            "cpu": "process_time_ns"
+          },
+          "execution_wall_ns": 2370800,
+          "execution_cpu_ns": 2369200,
+          "callback_wall_ns": 1883300,
+          "callback_cpu_ns": 1898000,
+          "timed_events": 55,
+          "event_budget": 100000,
+          "lines": [
+            {
+              "frame_id": "F1",
+              "line": 1,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 4500,
+              "self_cpu_ns": 4300,
+              "inclusive_wall_ns": 4500,
+              "inclusive_cpu_ns": 4300
+            },
+            {
+              "frame_id": "F1",
+              "line": 8,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 10500,
+              "self_cpu_ns": 10400,
+              "inclusive_wall_ns": 10500,
+              "inclusive_cpu_ns": 10400
+            },
+            {
+              "frame_id": "F1",
+              "line": 9,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 23400,
+              "self_cpu_ns": 23100,
+              "inclusive_wall_ns": 223800,
+              "inclusive_cpu_ns": 208800
+            },
+            {
+              "frame_id": "F2",
+              "line": 2,
+              "function": "sieve",
+              "hits": 1,
+              "self_wall_ns": 3000,
+              "self_cpu_ns": 2800,
+              "inclusive_wall_ns": 3000,
+              "inclusive_cpu_ns": 2800
+            },
+            {
+              "frame_id": "F2",
+              "line": 3,
+              "function": "sieve",
+              "hits": 10,
+              "self_wall_ns": 34100,
+              "self_cpu_ns": 31100,
+              "inclusive_wall_ns": 34100,
+              "inclusive_cpu_ns": 31100
+            },
+            {
+              "frame_id": "F2",
+              "line": 4,
+              "function": "sieve",
+              "hits": 9,
+              "self_wall_ns": 83000,
+              "self_cpu_ns": 79000,
+              "inclusive_wall_ns": 156800,
+              "inclusive_cpu_ns": 145800
+            },
+            {
+              "frame_id": "F3",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 3200,
+              "self_cpu_ns": 3000,
+              "inclusive_wall_ns": 3200,
+              "inclusive_cpu_ns": 3000
+            },
+            {
+              "frame_id": "F4",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 14500,
+              "self_cpu_ns": 11900,
+              "inclusive_wall_ns": 14500,
+              "inclusive_cpu_ns": 11900
+            },
+            {
+              "frame_id": "F5",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 3700,
+              "self_cpu_ns": 3500,
+              "inclusive_wall_ns": 3700,
+              "inclusive_cpu_ns": 3500
+            },
+            {
+              "frame_id": "F6",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 3000,
+              "self_cpu_ns": 2900,
+              "inclusive_wall_ns": 3000,
+              "inclusive_cpu_ns": 2900
+            },
+            {
+              "frame_id": "F7",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2900,
+              "self_cpu_ns": 2700,
+              "inclusive_wall_ns": 2900,
+              "inclusive_cpu_ns": 2700
+            },
+            {
+              "frame_id": "F8",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 5900,
+              "self_cpu_ns": 5200,
+              "inclusive_wall_ns": 5900,
+              "inclusive_cpu_ns": 5200
+            },
+            {
+              "frame_id": "F9",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 3400,
+              "self_cpu_ns": 3200,
+              "inclusive_wall_ns": 3400,
+              "inclusive_cpu_ns": 3200
+            },
+            {
+              "frame_id": "F10",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 3000,
+              "self_cpu_ns": 2800,
+              "inclusive_wall_ns": 3000,
+              "inclusive_cpu_ns": 2800
+            },
+            {
+              "frame_id": "F11",
+              "line": 4,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 3000,
+              "self_cpu_ns": 2800,
+              "inclusive_wall_ns": 3000,
+              "inclusive_cpu_ns": 2800
+            },
+            {
+              "frame_id": "F2",
+              "line": 6,
+              "function": "sieve",
+              "hits": 1,
+              "self_wall_ns": 2900,
+              "self_cpu_ns": 2700,
+              "inclusive_wall_ns": 2900,
+              "inclusive_cpu_ns": 2700
+            }
+          ],
+          "blocks": [
+            {
+              "id": "B1",
+              "kind": "module",
+              "name": "<module>",
+              "scope": 0,
+              "line": 1,
+              "end_line": 9,
+              "hits": 1,
+              "self_wall_ns": 38400,
+              "self_cpu_ns": 37800,
+              "inclusive_wall_ns": 238800,
+              "inclusive_cpu_ns": 223500
+            },
+            {
+              "id": "B2",
+              "kind": "function",
+              "name": "sieve",
+              "scope": 1,
+              "line": 1,
+              "end_line": 6,
+              "hits": 1,
+              "self_wall_ns": 123000,
+              "self_cpu_ns": 115600,
+              "inclusive_wall_ns": 196800,
+              "inclusive_cpu_ns": 182400
+            },
+            {
+              "id": "B3",
+              "kind": "for",
+              "name": "for",
+              "scope": 1,
+              "line": 3,
+              "end_line": 5,
+              "hits": 10,
+              "self_wall_ns": 117100,
+              "self_cpu_ns": 110100,
+              "inclusive_wall_ns": 190900,
+              "inclusive_cpu_ns": 176900
+            },
+            {
+              "id": "B4",
+              "kind": "if",
+              "name": "if",
+              "scope": 1,
+              "line": 4,
+              "end_line": 5,
+              "hits": 9,
+              "self_wall_ns": 83000,
+              "self_cpu_ns": 79000,
+              "inclusive_wall_ns": 156800,
+              "inclusive_cpu_ns": 145800
+            }
+          ],
+          "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+        },
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "source_sha256": "5fc284a67823da258efe10155bdd4791fc176800be14ddfaa832b712a8deb0af",
+        "input_sha256": "917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469",
+        "elapsed_ms": 625.0,
+        "trace_trust": "guest_observation_not_authenticated",
+        "cleanup_confirmed": true
+      },
+      "reference": {
+        "status": "ok",
+        "detail": null,
+        "stdout": "2 3 5 7\n",
+        "stderr": "",
+        "events": [
+          {
+            "event_id": "E1",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 0,
+            "kind": "call",
+            "function": "<module>",
+            "snapshot_timing": "call",
+            "locals": {}
+          },
+          {
+            "event_id": "E2",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 1,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {}
+          },
+          {
+            "event_id": "E3",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "line",
+            "function": "<module>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "n": 10
+            }
+          },
+          {
+            "event_id": "E4",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {},
+            "globals": {}
+          },
+          {
+            "event_id": "E5",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {},
+            "globals": {}
+          },
+          {
+            "event_id": "E6",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E7",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E8",
+            "frame_id": "F3",
+            "parent_frame_id": "F2",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E9",
+            "frame_id": "F2",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E10",
+            "frame_id": "F4",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E11",
+            "frame_id": "F4",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E12",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E13",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E14",
+            "frame_id": "F5",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 3,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E15",
+            "frame_id": "F6",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 3,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E16",
+            "frame_id": "F6",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 3,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E17",
+            "frame_id": "F6",
+            "parent_frame_id": "F4",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 3,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E18",
+            "frame_id": "F4",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E19",
+            "frame_id": "F7",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E20",
+            "frame_id": "F7",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E21",
+            "frame_id": "F8",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E22",
+            "frame_id": "F8",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E23",
+            "frame_id": "F8",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 4,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E24",
+            "frame_id": "F9",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 4,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E25",
+            "frame_id": "F9",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "exception",
+            "function": "<genexpr>",
+            "snapshot_timing": "exception",
+            "locals": {
+              "x": 4,
+              "d": 2
+            },
+            "globals": {},
+            "exception_type": "GeneratorExit"
+          },
+          {
+            "event_id": "E26",
+            "frame_id": "F9",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 4,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E27",
+            "frame_id": "F7",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E28",
+            "frame_id": "F10",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E29",
+            "frame_id": "F10",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E30",
+            "frame_id": "F10",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 5,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E31",
+            "frame_id": "F11",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 5,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E32",
+            "frame_id": "F11",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 5,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E33",
+            "frame_id": "F11",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 5,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E34",
+            "frame_id": "F12",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 5,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E35",
+            "frame_id": "F12",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 5,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E36",
+            "frame_id": "F12",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 5,
+              "d": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E37",
+            "frame_id": "F13",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 5,
+              "d": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E38",
+            "frame_id": "F13",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 5,
+              "d": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E39",
+            "frame_id": "F13",
+            "parent_frame_id": "F7",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 5,
+              "d": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E40",
+            "frame_id": "F7",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E41",
+            "frame_id": "F14",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E42",
+            "frame_id": "F14",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E43",
+            "frame_id": "F15",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E44",
+            "frame_id": "F15",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E45",
+            "frame_id": "F15",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 6,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E46",
+            "frame_id": "F16",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 6,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E47",
+            "frame_id": "F16",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "exception",
+            "function": "<genexpr>",
+            "snapshot_timing": "exception",
+            "locals": {
+              "x": 6,
+              "d": 2
+            },
+            "globals": {},
+            "exception_type": "GeneratorExit"
+          },
+          {
+            "event_id": "E48",
+            "frame_id": "F16",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 6,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E49",
+            "frame_id": "F14",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E50",
+            "frame_id": "F17",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E51",
+            "frame_id": "F17",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E52",
+            "frame_id": "F17",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 7,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E53",
+            "frame_id": "F18",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 7,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E54",
+            "frame_id": "F18",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 7,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E55",
+            "frame_id": "F18",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 7,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E56",
+            "frame_id": "F19",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 7,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E57",
+            "frame_id": "F19",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 7,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E58",
+            "frame_id": "F19",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 7,
+              "d": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E59",
+            "frame_id": "F20",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 7,
+              "d": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E60",
+            "frame_id": "F20",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 7,
+              "d": 4
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E61",
+            "frame_id": "F20",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 7,
+              "d": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E62",
+            "frame_id": "F21",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 7,
+              "d": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E63",
+            "frame_id": "F21",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 7,
+              "d": 5
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E64",
+            "frame_id": "F21",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 7,
+              "d": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E65",
+            "frame_id": "F22",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 7,
+              "d": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E66",
+            "frame_id": "F22",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 7,
+              "d": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E67",
+            "frame_id": "F22",
+            "parent_frame_id": "F14",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 7,
+              "d": 6
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E68",
+            "frame_id": "F14",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E69",
+            "frame_id": "F23",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E70",
+            "frame_id": "F23",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 7
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E71",
+            "frame_id": "F24",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E72",
+            "frame_id": "F24",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E73",
+            "frame_id": "F24",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 8,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E74",
+            "frame_id": "F25",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 8,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E75",
+            "frame_id": "F25",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "exception",
+            "function": "<genexpr>",
+            "snapshot_timing": "exception",
+            "locals": {
+              "x": 8,
+              "d": 2
+            },
+            "globals": {},
+            "exception_type": "GeneratorExit"
+          },
+          {
+            "event_id": "E76",
+            "frame_id": "F25",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 8,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E77",
+            "frame_id": "F23",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 8
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E78",
+            "frame_id": "F26",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E79",
+            "frame_id": "F26",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E80",
+            "frame_id": "F26",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 9,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E81",
+            "frame_id": "F27",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 9,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E82",
+            "frame_id": "F27",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 9,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E83",
+            "frame_id": "F27",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 9,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E84",
+            "frame_id": "F28",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 9,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E85",
+            "frame_id": "F28",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "exception",
+            "function": "<genexpr>",
+            "snapshot_timing": "exception",
+            "locals": {
+              "x": 9,
+              "d": 3
+            },
+            "globals": {},
+            "exception_type": "GeneratorExit"
+          },
+          {
+            "event_id": "E86",
+            "frame_id": "F28",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 9,
+              "d": 3
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E87",
+            "frame_id": "F23",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 9
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E88",
+            "frame_id": "F29",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E89",
+            "frame_id": "F29",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E90",
+            "frame_id": "F29",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 10,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E91",
+            "frame_id": "F30",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "call",
+            "function": "<genexpr>",
+            "snapshot_timing": "call",
+            "locals": {
+              "x": 10,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E92",
+            "frame_id": "F30",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "exception",
+            "function": "<genexpr>",
+            "snapshot_timing": "exception",
+            "locals": {
+              "x": 10,
+              "d": 2
+            },
+            "globals": {},
+            "exception_type": "GeneratorExit"
+          },
+          {
+            "event_id": "E93",
+            "frame_id": "F30",
+            "parent_frame_id": "F23",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 10,
+              "d": 2
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E94",
+            "frame_id": "F23",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "line",
+            "function": "<genexpr>",
+            "snapshot_timing": "before_line",
+            "locals": {
+              "x": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E95",
+            "frame_id": "F23",
+            "parent_frame_id": "F1",
+            "line": 2,
+            "kind": "return",
+            "function": "<genexpr>",
+            "snapshot_timing": "return",
+            "locals": {
+              "x": 10
+            },
+            "globals": {}
+          },
+          {
+            "event_id": "E96",
+            "frame_id": "F1",
+            "parent_frame_id": null,
+            "line": 2,
+            "kind": "return",
+            "function": "<module>",
+            "snapshot_timing": "return",
+            "locals": {
+              "n": 10
+            }
+          }
+        ],
+        "trace_status": "complete",
+        "profile": {
+          "version": 1,
+          "status": "complete",
+          "method": "trace_segments_excluding_callback",
+          "clocks": {
+            "wall": "perf_counter_ns",
+            "cpu": "process_time_ns"
+          },
+          "execution_wall_ns": 2324900,
+          "execution_cpu_ns": 2321600,
+          "callback_wall_ns": 1795500,
+          "callback_cpu_ns": 1809500,
+          "timed_events": 96,
+          "event_budget": 100000,
+          "lines": [
+            {
+              "frame_id": "F1",
+              "line": 1,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 16400,
+              "self_cpu_ns": 16200,
+              "inclusive_wall_ns": 16400,
+              "inclusive_cpu_ns": 16200
+            },
+            {
+              "frame_id": "F1",
+              "line": 2,
+              "function": "<module>",
+              "hits": 1,
+              "self_wall_ns": 42200,
+              "self_cpu_ns": 41000,
+              "inclusive_wall_ns": 298500,
+              "inclusive_cpu_ns": 284600
+            },
+            {
+              "frame_id": "F2",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 9200,
+              "self_cpu_ns": 8800,
+              "inclusive_wall_ns": 31800,
+              "inclusive_cpu_ns": 31200
+            },
+            {
+              "frame_id": "F3",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 20000,
+              "self_cpu_ns": 19900,
+              "inclusive_wall_ns": 20000,
+              "inclusive_cpu_ns": 19900
+            },
+            {
+              "frame_id": "F4",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 9000,
+              "self_cpu_ns": 8600,
+              "inclusive_wall_ns": 19100,
+              "inclusive_cpu_ns": 17900
+            },
+            {
+              "frame_id": "F5",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2800,
+              "self_cpu_ns": 2600,
+              "inclusive_wall_ns": 2800,
+              "inclusive_cpu_ns": 2600
+            },
+            {
+              "frame_id": "F6",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2300,
+              "self_cpu_ns": 2100,
+              "inclusive_wall_ns": 2300,
+              "inclusive_cpu_ns": 2100
+            },
+            {
+              "frame_id": "F7",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 2,
+              "self_wall_ns": 28100,
+              "self_cpu_ns": 27200,
+              "inclusive_wall_ns": 59000,
+              "inclusive_cpu_ns": 56600
+            },
+            {
+              "frame_id": "F8",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2600,
+              "self_cpu_ns": 2500,
+              "inclusive_wall_ns": 2600,
+              "inclusive_cpu_ns": 2500
+            },
+            {
+              "frame_id": "F10",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2600,
+              "self_cpu_ns": 2400,
+              "inclusive_wall_ns": 2600,
+              "inclusive_cpu_ns": 2400
+            },
+            {
+              "frame_id": "F11",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2500,
+              "self_cpu_ns": 2400,
+              "inclusive_wall_ns": 2500,
+              "inclusive_cpu_ns": 2400
+            },
+            {
+              "frame_id": "F12",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2300,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2300
+            },
+            {
+              "frame_id": "F13",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2800,
+              "self_cpu_ns": 2600,
+              "inclusive_wall_ns": 2800,
+              "inclusive_cpu_ns": 2600
+            },
+            {
+              "frame_id": "F14",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 2,
+              "self_wall_ns": 27700,
+              "self_cpu_ns": 26000,
+              "inclusive_wall_ns": 66100,
+              "inclusive_cpu_ns": 62400
+            },
+            {
+              "frame_id": "F15",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2600,
+              "self_cpu_ns": 2400,
+              "inclusive_wall_ns": 2600,
+              "inclusive_cpu_ns": 2400
+            },
+            {
+              "frame_id": "F17",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2700,
+              "self_cpu_ns": 2600,
+              "inclusive_wall_ns": 2700,
+              "inclusive_cpu_ns": 2600
+            },
+            {
+              "frame_id": "F18",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2600,
+              "self_cpu_ns": 2400,
+              "inclusive_wall_ns": 2600,
+              "inclusive_cpu_ns": 2400
+            },
+            {
+              "frame_id": "F19",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2600,
+              "self_cpu_ns": 2600,
+              "inclusive_wall_ns": 2600,
+              "inclusive_cpu_ns": 2600
+            },
+            {
+              "frame_id": "F20",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2300,
+              "self_cpu_ns": 2100,
+              "inclusive_wall_ns": 2300,
+              "inclusive_cpu_ns": 2100
+            },
+            {
+              "frame_id": "F21",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2300,
+              "self_cpu_ns": 2200,
+              "inclusive_wall_ns": 2300,
+              "inclusive_cpu_ns": 2200
+            },
+            {
+              "frame_id": "F22",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2200,
+              "self_cpu_ns": 2100,
+              "inclusive_wall_ns": 2200,
+              "inclusive_cpu_ns": 2100
+            },
+            {
+              "frame_id": "F23",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 4,
+              "self_wall_ns": 30400,
+              "self_cpu_ns": 28900,
+              "inclusive_wall_ns": 63700,
+              "inclusive_cpu_ns": 59700
+            },
+            {
+              "frame_id": "F24",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2300,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2300
+            },
+            {
+              "frame_id": "F26",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2500,
+              "self_cpu_ns": 2400,
+              "inclusive_wall_ns": 2500,
+              "inclusive_cpu_ns": 2400
+            },
+            {
+              "frame_id": "F27",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2200,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2200
+            },
+            {
+              "frame_id": "F29",
+              "line": 2,
+              "function": "<genexpr>",
+              "hits": 1,
+              "self_wall_ns": 2400,
+              "self_cpu_ns": 2200,
+              "inclusive_wall_ns": 2400,
+              "inclusive_cpu_ns": 2200
+            }
+          ],
+          "blocks": [
+            {
+              "id": "B1",
+              "kind": "module",
+              "name": "<module>",
+              "scope": 0,
+              "line": 1,
+              "end_line": 2,
+              "hits": 1,
+              "self_wall_ns": 58600,
+              "self_cpu_ns": 57200,
+              "inclusive_wall_ns": 314900,
+              "inclusive_cpu_ns": 300800
+            }
+          ],
+          "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+        },
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "source_sha256": "f4f256a667cebe0bf78f8b704f3cf96669059045a089af4ed12801f0ac720660",
+        "input_sha256": "917df3320d778ddbaa5c5c7742bc4046bf803c36ed2b050f30844ed206783469",
+        "elapsed_ms": 782.0,
+        "trace_trust": "guest_observation_not_authenticated",
+        "cleanup_confirmed": true,
+        "alternative_agreed": true
+      }
+    },
+    "reference_source": "n=int(input())\nprint(*(x for x in range(2,n+1) if all(x%d for d in range(2,x))))\n",
+    "student_source": "def sieve(max):\n    primes = []\n    for n in range(2, max + 1):\n        if any(n % p > 0 for p in primes):\n            primes.append(n)\n    return primes\n\nn=int(input())\nprint(*sieve(n))\n",
+    "replay_count": 3,
+    "attempts": 8,
+    "student_graph": {
+      "kind": "observed_execution_not_static_cfg",
+      "nodes": [
+        {
+          "id": "F1:0",
+          "line": 0,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E1"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F1:1",
+          "line": 1,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E2"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 4500,
+            "self_cpu_ns": 4300,
+            "inclusive_wall_ns": 4500,
+            "inclusive_cpu_ns": 4300
+          }
+        },
+        {
+          "id": "F1:8",
+          "line": 8,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E3"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 8,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 10500,
+            "self_cpu_ns": 10400,
+            "inclusive_wall_ns": 10500,
+            "inclusive_cpu_ns": 10400
+          }
+        },
+        {
+          "id": "F1:9",
+          "line": 9,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E4",
+            "E55"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 9,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 23400,
+            "self_cpu_ns": 23100,
+            "inclusive_wall_ns": 223800,
+            "inclusive_cpu_ns": 208800
+          }
+        },
+        {
+          "id": "F2:1",
+          "line": 1,
+          "frame_id": "F2",
+          "function": "sieve",
+          "event_ids": [
+            "E5"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F2:2",
+          "line": 2,
+          "frame_id": "F2",
+          "function": "sieve",
+          "event_ids": [
+            "E6"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 2,
+            "function": "sieve",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          }
+        },
+        {
+          "id": "F2:3",
+          "line": 3,
+          "frame_id": "F2",
+          "function": "sieve",
+          "event_ids": [
+            "E7",
+            "E12",
+            "E17",
+            "E22",
+            "E27",
+            "E32",
+            "E37",
+            "E42",
+            "E47",
+            "E52"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 3,
+            "function": "sieve",
+            "hits": 10,
+            "self_wall_ns": 34100,
+            "self_cpu_ns": 31100,
+            "inclusive_wall_ns": 34100,
+            "inclusive_cpu_ns": 31100
+          }
+        },
+        {
+          "id": "F2:4",
+          "line": 4,
+          "frame_id": "F2",
+          "function": "sieve",
+          "event_ids": [
+            "E8",
+            "E13",
+            "E18",
+            "E23",
+            "E28",
+            "E33",
+            "E38",
+            "E43",
+            "E48"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 4,
+            "function": "sieve",
+            "hits": 9,
+            "self_wall_ns": 83000,
+            "self_cpu_ns": 79000,
+            "inclusive_wall_ns": 156800,
+            "inclusive_cpu_ns": 145800
+          }
+        },
+        {
+          "id": "F3:4",
+          "line": 4,
+          "frame_id": "F3",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E9",
+            "E10",
+            "E11"
+          ],
+          "timing": {
+            "frame_id": "F3",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3200,
+            "self_cpu_ns": 3000,
+            "inclusive_wall_ns": 3200,
+            "inclusive_cpu_ns": 3000
+          }
+        },
+        {
+          "id": "F4:4",
+          "line": 4,
+          "frame_id": "F4",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E14",
+            "E15",
+            "E16"
+          ],
+          "timing": {
+            "frame_id": "F4",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 14500,
+            "self_cpu_ns": 11900,
+            "inclusive_wall_ns": 14500,
+            "inclusive_cpu_ns": 11900
+          }
+        },
+        {
+          "id": "F5:4",
+          "line": 4,
+          "frame_id": "F5",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E19",
+            "E20",
+            "E21"
+          ],
+          "timing": {
+            "frame_id": "F5",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3700,
+            "self_cpu_ns": 3500,
+            "inclusive_wall_ns": 3700,
+            "inclusive_cpu_ns": 3500
+          }
+        },
+        {
+          "id": "F6:4",
+          "line": 4,
+          "frame_id": "F6",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E24",
+            "E25",
+            "E26"
+          ],
+          "timing": {
+            "frame_id": "F6",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2900,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2900
+          }
+        },
+        {
+          "id": "F7:4",
+          "line": 4,
+          "frame_id": "F7",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E29",
+            "E30",
+            "E31"
+          ],
+          "timing": {
+            "frame_id": "F7",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2900,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2900,
+            "inclusive_cpu_ns": 2700
+          }
+        },
+        {
+          "id": "F8:4",
+          "line": 4,
+          "frame_id": "F8",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E34",
+            "E35",
+            "E36"
+          ],
+          "timing": {
+            "frame_id": "F8",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 5900,
+            "self_cpu_ns": 5200,
+            "inclusive_wall_ns": 5900,
+            "inclusive_cpu_ns": 5200
+          }
+        },
+        {
+          "id": "F9:4",
+          "line": 4,
+          "frame_id": "F9",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E39",
+            "E40",
+            "E41"
+          ],
+          "timing": {
+            "frame_id": "F9",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3400,
+            "self_cpu_ns": 3200,
+            "inclusive_wall_ns": 3400,
+            "inclusive_cpu_ns": 3200
+          }
+        },
+        {
+          "id": "F10:4",
+          "line": 4,
+          "frame_id": "F10",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E44",
+            "E45",
+            "E46"
+          ],
+          "timing": {
+            "frame_id": "F10",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          }
+        },
+        {
+          "id": "F11:4",
+          "line": 4,
+          "frame_id": "F11",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E49",
+            "E50",
+            "E51"
+          ],
+          "timing": {
+            "frame_id": "F11",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          }
+        },
+        {
+          "id": "F2:6",
+          "line": 6,
+          "frame_id": "F2",
+          "function": "sieve",
+          "event_ids": [
+            "E53",
+            "E54"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 6,
+            "function": "sieve",
+            "hits": 1,
+            "self_wall_ns": 2900,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2900,
+            "inclusive_cpu_ns": 2700
+          }
+        }
+      ],
+      "edges": [
+        {
+          "from": "F1:0",
+          "to": "F1:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E1",
+              "E2"
+            ]
+          ]
+        },
+        {
+          "from": "F1:1",
+          "to": "F1:8",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E2",
+              "E3"
+            ]
+          ]
+        },
+        {
+          "from": "F1:8",
+          "to": "F1:9",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E3",
+              "E4"
+            ]
+          ]
+        },
+        {
+          "from": "F1:9",
+          "to": "F2:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E4",
+              "E5"
+            ]
+          ]
+        },
+        {
+          "from": "F2:1",
+          "to": "F2:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E5",
+              "E6"
+            ]
+          ]
+        },
+        {
+          "from": "F2:2",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E6",
+              "E7"
+            ]
+          ]
+        },
+        {
+          "from": "F2:3",
+          "to": "F2:4",
+          "count": 9,
+          "event_pairs": [
+            [
+              "E7",
+              "E8"
+            ],
+            [
+              "E12",
+              "E13"
+            ],
+            [
+              "E17",
+              "E18"
+            ],
+            [
+              "E22",
+              "E23"
+            ],
+            [
+              "E27",
+              "E28"
+            ],
+            [
+              "E32",
+              "E33"
+            ],
+            [
+              "E37",
+              "E38"
+            ],
+            [
+              "E42",
+              "E43"
+            ],
+            [
+              "E47",
+              "E48"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F3:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E8",
+              "E9"
+            ]
+          ]
+        },
+        {
+          "from": "F3:4",
+          "to": "F3:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E9",
+              "E10"
+            ],
+            [
+              "E10",
+              "E11"
+            ]
+          ]
+        },
+        {
+          "from": "F3:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E11",
+              "E12"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F4:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E13",
+              "E14"
+            ]
+          ]
+        },
+        {
+          "from": "F4:4",
+          "to": "F4:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E14",
+              "E15"
+            ],
+            [
+              "E15",
+              "E16"
+            ]
+          ]
+        },
+        {
+          "from": "F4:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E16",
+              "E17"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F5:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E18",
+              "E19"
+            ]
+          ]
+        },
+        {
+          "from": "F5:4",
+          "to": "F5:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E19",
+              "E20"
+            ],
+            [
+              "E20",
+              "E21"
+            ]
+          ]
+        },
+        {
+          "from": "F5:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E21",
+              "E22"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F6:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E23",
+              "E24"
+            ]
+          ]
+        },
+        {
+          "from": "F6:4",
+          "to": "F6:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E24",
+              "E25"
+            ],
+            [
+              "E25",
+              "E26"
+            ]
+          ]
+        },
+        {
+          "from": "F6:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E26",
+              "E27"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F7:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E28",
+              "E29"
+            ]
+          ]
+        },
+        {
+          "from": "F7:4",
+          "to": "F7:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E29",
+              "E30"
+            ],
+            [
+              "E30",
+              "E31"
+            ]
+          ]
+        },
+        {
+          "from": "F7:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E31",
+              "E32"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F8:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E33",
+              "E34"
+            ]
+          ]
+        },
+        {
+          "from": "F8:4",
+          "to": "F8:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E34",
+              "E35"
+            ],
+            [
+              "E35",
+              "E36"
+            ]
+          ]
+        },
+        {
+          "from": "F8:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E36",
+              "E37"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F9:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E38",
+              "E39"
+            ]
+          ]
+        },
+        {
+          "from": "F9:4",
+          "to": "F9:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E39",
+              "E40"
+            ],
+            [
+              "E40",
+              "E41"
+            ]
+          ]
+        },
+        {
+          "from": "F9:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E41",
+              "E42"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F10:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E43",
+              "E44"
+            ]
+          ]
+        },
+        {
+          "from": "F10:4",
+          "to": "F10:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E44",
+              "E45"
+            ],
+            [
+              "E45",
+              "E46"
+            ]
+          ]
+        },
+        {
+          "from": "F10:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E46",
+              "E47"
+            ]
+          ]
+        },
+        {
+          "from": "F2:4",
+          "to": "F11:4",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E48",
+              "E49"
+            ]
+          ]
+        },
+        {
+          "from": "F11:4",
+          "to": "F11:4",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E49",
+              "E50"
+            ],
+            [
+              "E50",
+              "E51"
+            ]
+          ]
+        },
+        {
+          "from": "F11:4",
+          "to": "F2:3",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E51",
+              "E52"
+            ]
+          ]
+        },
+        {
+          "from": "F2:3",
+          "to": "F2:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E52",
+              "E53"
+            ]
+          ]
+        },
+        {
+          "from": "F2:6",
+          "to": "F2:6",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E53",
+              "E54"
+            ]
+          ]
+        },
+        {
+          "from": "F2:6",
+          "to": "F1:9",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E54",
+              "E55"
+            ]
+          ]
+        }
+      ],
+      "changes": [
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 2,
+          "after": 3,
+          "before_event_id": "E12",
+          "after_event_id": "E13"
+        },
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 3,
+          "after": 4,
+          "before_event_id": "E17",
+          "after_event_id": "E18"
+        },
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 4,
+          "after": 5,
+          "before_event_id": "E22",
+          "after_event_id": "E23"
+        },
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 5,
+          "after": 6,
+          "before_event_id": "E27",
+          "after_event_id": "E28"
+        },
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 6,
+          "after": 7,
+          "before_event_id": "E32",
+          "after_event_id": "E33"
+        },
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 7,
+          "after": 8,
+          "before_event_id": "E37",
+          "after_event_id": "E38"
+        },
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 8,
+          "after": 9,
+          "before_event_id": "E42",
+          "after_event_id": "E43"
+        },
+        {
+          "frame_id": "F2",
+          "name": "n",
+          "before": 9,
+          "after": 10,
+          "before_event_id": "E47",
+          "after_event_id": "E48"
+        }
+      ],
+      "frames": [
+        {
+          "id": "F1",
+          "parent": null,
+          "function": "<module>",
+          "entry_event_id": "E1"
+        },
+        {
+          "id": "F2",
+          "parent": "F1",
+          "function": "sieve",
+          "entry_event_id": "E5"
+        },
+        {
+          "id": "F3",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E9"
+        },
+        {
+          "id": "F4",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E14"
+        },
+        {
+          "id": "F5",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E19"
+        },
+        {
+          "id": "F6",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E24"
+        },
+        {
+          "id": "F7",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E29"
+        },
+        {
+          "id": "F8",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E34"
+        },
+        {
+          "id": "F9",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E39"
+        },
+        {
+          "id": "F10",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E44"
+        },
+        {
+          "id": "F11",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E49"
+        }
+      ],
+      "timeline": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "line": 0,
+          "kind": "call"
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "line": 1,
+          "kind": "line"
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "line": 8,
+          "kind": "line"
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F1",
+          "line": 9,
+          "kind": "line"
+        },
+        {
+          "event_id": "E5",
+          "frame_id": "F2",
+          "line": 1,
+          "kind": "call"
+        },
+        {
+          "event_id": "E6",
+          "frame_id": "F2",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E7",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E8",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E9",
+          "frame_id": "F3",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E10",
+          "frame_id": "F3",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E11",
+          "frame_id": "F3",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E12",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E13",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E14",
+          "frame_id": "F4",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E15",
+          "frame_id": "F4",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E16",
+          "frame_id": "F4",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E17",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E18",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E19",
+          "frame_id": "F5",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E20",
+          "frame_id": "F5",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E21",
+          "frame_id": "F5",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E22",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E23",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E24",
+          "frame_id": "F6",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E25",
+          "frame_id": "F6",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E26",
+          "frame_id": "F6",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E27",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E28",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E29",
+          "frame_id": "F7",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E30",
+          "frame_id": "F7",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E31",
+          "frame_id": "F7",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E32",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E33",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E34",
+          "frame_id": "F8",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E35",
+          "frame_id": "F8",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E36",
+          "frame_id": "F8",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E37",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E38",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E39",
+          "frame_id": "F9",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E40",
+          "frame_id": "F9",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E41",
+          "frame_id": "F9",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E42",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E43",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E44",
+          "frame_id": "F10",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E45",
+          "frame_id": "F10",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E46",
+          "frame_id": "F10",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E47",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E48",
+          "frame_id": "F2",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E49",
+          "frame_id": "F11",
+          "line": 4,
+          "kind": "call"
+        },
+        {
+          "event_id": "E50",
+          "frame_id": "F11",
+          "line": 4,
+          "kind": "line"
+        },
+        {
+          "event_id": "E51",
+          "frame_id": "F11",
+          "line": 4,
+          "kind": "return"
+        },
+        {
+          "event_id": "E52",
+          "frame_id": "F2",
+          "line": 3,
+          "kind": "line"
+        },
+        {
+          "event_id": "E53",
+          "frame_id": "F2",
+          "line": 6,
+          "kind": "line"
+        },
+        {
+          "event_id": "E54",
+          "frame_id": "F2",
+          "line": 6,
+          "kind": "return"
+        },
+        {
+          "event_id": "E55",
+          "frame_id": "F1",
+          "line": 9,
+          "kind": "return"
+        }
+      ],
+      "relations": {
+        "data": [],
+        "control": [],
+        "def_use": []
+      },
+      "static_cfg": {
+        "status": "restricted_syntactic_cfg",
+        "nodes": [
+          {
+            "id": "module:1",
+            "line": 1,
+            "scope": "module",
+            "kind": "FunctionDef"
+          },
+          {
+            "id": "module/sieve@1:2",
+            "line": 2,
+            "scope": "module/sieve@1",
+            "kind": "Assign"
+          },
+          {
+            "id": "module/sieve@1:3",
+            "line": 3,
+            "scope": "module/sieve@1",
+            "kind": "For"
+          },
+          {
+            "id": "module/sieve@1:4",
+            "line": 4,
+            "scope": "module/sieve@1",
+            "kind": "If"
+          },
+          {
+            "id": "module/sieve@1:5",
+            "line": 5,
+            "scope": "module/sieve@1",
+            "kind": "Expr"
+          },
+          {
+            "id": "module/sieve@1:6",
+            "line": 6,
+            "scope": "module/sieve@1",
+            "kind": "Return"
+          },
+          {
+            "id": "module:8",
+            "line": 8,
+            "scope": "module",
+            "kind": "Assign"
+          },
+          {
+            "id": "module:9",
+            "line": 9,
+            "scope": "module",
+            "kind": "Expr"
+          }
+        ],
+        "edges": [
+          {
+            "from": "module:1",
+            "to": "module:8",
+            "kind": "next"
+          },
+          {
+            "from": "module/sieve@1:2",
+            "to": "module/sieve@1:3",
+            "kind": "next"
+          },
+          {
+            "from": "module/sieve@1:3",
+            "to": "module/sieve@1:4",
+            "kind": "loop_body"
+          },
+          {
+            "from": "module/sieve@1:3",
+            "to": "module/sieve@1:6",
+            "kind": "loop_exit"
+          },
+          {
+            "from": "module/sieve@1:4",
+            "to": "module/sieve@1:5",
+            "kind": "condition_true"
+          },
+          {
+            "from": "module/sieve@1:4",
+            "to": "module/sieve@1:3",
+            "kind": "condition_false"
+          },
+          {
+            "from": "module/sieve@1:5",
+            "to": "module/sieve@1:3",
+            "kind": "next"
+          },
+          {
+            "from": "module:8",
+            "to": "module:9",
+            "kind": "next"
+          }
+        ],
+        "unsupported": [],
+        "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+      },
+      "causal_fault_proven": false,
+      "profile": {
+        "version": 1,
+        "status": "complete",
+        "method": "trace_segments_excluding_callback",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 2370800,
+        "execution_cpu_ns": 2369200,
+        "callback_wall_ns": 1883300,
+        "callback_cpu_ns": 1898000,
+        "timed_events": 55,
+        "event_budget": 100000,
+        "lines": [
+          {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 4500,
+            "self_cpu_ns": 4300,
+            "inclusive_wall_ns": 4500,
+            "inclusive_cpu_ns": 4300
+          },
+          {
+            "frame_id": "F1",
+            "line": 8,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 10500,
+            "self_cpu_ns": 10400,
+            "inclusive_wall_ns": 10500,
+            "inclusive_cpu_ns": 10400
+          },
+          {
+            "frame_id": "F1",
+            "line": 9,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 23400,
+            "self_cpu_ns": 23100,
+            "inclusive_wall_ns": 223800,
+            "inclusive_cpu_ns": 208800
+          },
+          {
+            "frame_id": "F2",
+            "line": 2,
+            "function": "sieve",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          },
+          {
+            "frame_id": "F2",
+            "line": 3,
+            "function": "sieve",
+            "hits": 10,
+            "self_wall_ns": 34100,
+            "self_cpu_ns": 31100,
+            "inclusive_wall_ns": 34100,
+            "inclusive_cpu_ns": 31100
+          },
+          {
+            "frame_id": "F2",
+            "line": 4,
+            "function": "sieve",
+            "hits": 9,
+            "self_wall_ns": 83000,
+            "self_cpu_ns": 79000,
+            "inclusive_wall_ns": 156800,
+            "inclusive_cpu_ns": 145800
+          },
+          {
+            "frame_id": "F3",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3200,
+            "self_cpu_ns": 3000,
+            "inclusive_wall_ns": 3200,
+            "inclusive_cpu_ns": 3000
+          },
+          {
+            "frame_id": "F4",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 14500,
+            "self_cpu_ns": 11900,
+            "inclusive_wall_ns": 14500,
+            "inclusive_cpu_ns": 11900
+          },
+          {
+            "frame_id": "F5",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3700,
+            "self_cpu_ns": 3500,
+            "inclusive_wall_ns": 3700,
+            "inclusive_cpu_ns": 3500
+          },
+          {
+            "frame_id": "F6",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2900,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2900
+          },
+          {
+            "frame_id": "F7",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2900,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2900,
+            "inclusive_cpu_ns": 2700
+          },
+          {
+            "frame_id": "F8",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 5900,
+            "self_cpu_ns": 5200,
+            "inclusive_wall_ns": 5900,
+            "inclusive_cpu_ns": 5200
+          },
+          {
+            "frame_id": "F9",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3400,
+            "self_cpu_ns": 3200,
+            "inclusive_wall_ns": 3400,
+            "inclusive_cpu_ns": 3200
+          },
+          {
+            "frame_id": "F10",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          },
+          {
+            "frame_id": "F11",
+            "line": 4,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 3000,
+            "self_cpu_ns": 2800,
+            "inclusive_wall_ns": 3000,
+            "inclusive_cpu_ns": 2800
+          },
+          {
+            "frame_id": "F2",
+            "line": 6,
+            "function": "sieve",
+            "hits": 1,
+            "self_wall_ns": 2900,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 2900,
+            "inclusive_cpu_ns": 2700
+          }
+        ],
+        "blocks": [
+          {
+            "id": "B1",
+            "kind": "module",
+            "name": "<module>",
+            "scope": 0,
+            "line": 1,
+            "end_line": 9,
+            "hits": 1,
+            "self_wall_ns": 38400,
+            "self_cpu_ns": 37800,
+            "inclusive_wall_ns": 238800,
+            "inclusive_cpu_ns": 223500
+          },
+          {
+            "id": "B2",
+            "kind": "function",
+            "name": "sieve",
+            "scope": 1,
+            "line": 1,
+            "end_line": 6,
+            "hits": 1,
+            "self_wall_ns": 123000,
+            "self_cpu_ns": 115600,
+            "inclusive_wall_ns": 196800,
+            "inclusive_cpu_ns": 182400
+          },
+          {
+            "id": "B3",
+            "kind": "for",
+            "name": "for",
+            "scope": 1,
+            "line": 3,
+            "end_line": 5,
+            "hits": 10,
+            "self_wall_ns": 117100,
+            "self_cpu_ns": 110100,
+            "inclusive_wall_ns": 190900,
+            "inclusive_cpu_ns": 176900
+          },
+          {
+            "id": "B4",
+            "kind": "if",
+            "name": "if",
+            "scope": 1,
+            "line": 4,
+            "end_line": 5,
+            "hits": 9,
+            "self_wall_ns": 83000,
+            "self_cpu_ns": 79000,
+            "inclusive_wall_ns": 156800,
+            "inclusive_cpu_ns": 145800
+          }
+        ],
+        "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+      },
+      "loop_summary": {
+        "status": "observed",
+        "loops": [
+          {
+            "line": 3,
+            "end_line": 5,
+            "kind": "For",
+            "status": "observed_complete_trace",
+            "frame_id": "F2",
+            "header_visits": 10,
+            "observed_body_entries": 9,
+            "header_event_ids": [
+              "E7",
+              "E12",
+              "E17",
+              "E22",
+              "E27",
+              "E32",
+              "E37",
+              "E42",
+              "E47",
+              "E52"
+            ],
+            "body_event_ids": [
+              "E8",
+              "E13",
+              "E18",
+              "E23",
+              "E28",
+              "E33",
+              "E38",
+              "E43",
+              "E48"
+            ]
+          }
+        ],
+        "scope": "Counts come from recorded same-frame line transitions. Partial traces give observed lower bounds; header visits are not body iterations."
+      },
+      "output_chain": {
+        "status": "unsupported",
+        "links": []
+      }
+    },
+    "reference_graph": {
+      "kind": "observed_execution_not_static_cfg",
+      "nodes": [
+        {
+          "id": "F1:0",
+          "line": 0,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E1"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F1:1",
+          "line": 1,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E2"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 16400,
+            "self_cpu_ns": 16200,
+            "inclusive_wall_ns": 16400,
+            "inclusive_cpu_ns": 16200
+          }
+        },
+        {
+          "id": "F1:2",
+          "line": 2,
+          "frame_id": "F1",
+          "function": "<module>",
+          "event_ids": [
+            "E3",
+            "E96"
+          ],
+          "timing": {
+            "frame_id": "F1",
+            "line": 2,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 42200,
+            "self_cpu_ns": 41000,
+            "inclusive_wall_ns": 298500,
+            "inclusive_cpu_ns": 284600
+          }
+        },
+        {
+          "id": "F2:2",
+          "line": 2,
+          "frame_id": "F2",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E4",
+            "E5",
+            "E9"
+          ],
+          "timing": {
+            "frame_id": "F2",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 9200,
+            "self_cpu_ns": 8800,
+            "inclusive_wall_ns": 31800,
+            "inclusive_cpu_ns": 31200
+          }
+        },
+        {
+          "id": "F3:2",
+          "line": 2,
+          "frame_id": "F3",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E6",
+            "E7",
+            "E8"
+          ],
+          "timing": {
+            "frame_id": "F3",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 20000,
+            "self_cpu_ns": 19900,
+            "inclusive_wall_ns": 20000,
+            "inclusive_cpu_ns": 19900
+          }
+        },
+        {
+          "id": "F4:2",
+          "line": 2,
+          "frame_id": "F4",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E10",
+            "E11",
+            "E18"
+          ],
+          "timing": {
+            "frame_id": "F4",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 9000,
+            "self_cpu_ns": 8600,
+            "inclusive_wall_ns": 19100,
+            "inclusive_cpu_ns": 17900
+          }
+        },
+        {
+          "id": "F5:2",
+          "line": 2,
+          "frame_id": "F5",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E12",
+            "E13",
+            "E14"
+          ],
+          "timing": {
+            "frame_id": "F5",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          }
+        },
+        {
+          "id": "F6:2",
+          "line": 2,
+          "frame_id": "F6",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E15",
+            "E16",
+            "E17"
+          ],
+          "timing": {
+            "frame_id": "F6",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2300,
+            "self_cpu_ns": 2100,
+            "inclusive_wall_ns": 2300,
+            "inclusive_cpu_ns": 2100
+          }
+        },
+        {
+          "id": "F7:2",
+          "line": 2,
+          "frame_id": "F7",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E19",
+            "E20",
+            "E27",
+            "E40"
+          ],
+          "timing": {
+            "frame_id": "F7",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 2,
+            "self_wall_ns": 28100,
+            "self_cpu_ns": 27200,
+            "inclusive_wall_ns": 59000,
+            "inclusive_cpu_ns": 56600
+          }
+        },
+        {
+          "id": "F8:2",
+          "line": 2,
+          "frame_id": "F8",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E21",
+            "E22",
+            "E23"
+          ],
+          "timing": {
+            "frame_id": "F8",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2500
+          }
+        },
+        {
+          "id": "F9:2",
+          "line": 2,
+          "frame_id": "F9",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E24",
+            "E25",
+            "E26"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F10:2",
+          "line": 2,
+          "frame_id": "F10",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E28",
+            "E29",
+            "E30"
+          ],
+          "timing": {
+            "frame_id": "F10",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          }
+        },
+        {
+          "id": "F11:2",
+          "line": 2,
+          "frame_id": "F11",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E31",
+            "E32",
+            "E33"
+          ],
+          "timing": {
+            "frame_id": "F11",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2500,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2500,
+            "inclusive_cpu_ns": 2400
+          }
+        },
+        {
+          "id": "F12:2",
+          "line": 2,
+          "frame_id": "F12",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E34",
+            "E35",
+            "E36"
+          ],
+          "timing": {
+            "frame_id": "F12",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2300
+          }
+        },
+        {
+          "id": "F13:2",
+          "line": 2,
+          "frame_id": "F13",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E37",
+            "E38",
+            "E39"
+          ],
+          "timing": {
+            "frame_id": "F13",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          }
+        },
+        {
+          "id": "F14:2",
+          "line": 2,
+          "frame_id": "F14",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E41",
+            "E42",
+            "E49",
+            "E68"
+          ],
+          "timing": {
+            "frame_id": "F14",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 2,
+            "self_wall_ns": 27700,
+            "self_cpu_ns": 26000,
+            "inclusive_wall_ns": 66100,
+            "inclusive_cpu_ns": 62400
+          }
+        },
+        {
+          "id": "F15:2",
+          "line": 2,
+          "frame_id": "F15",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E43",
+            "E44",
+            "E45"
+          ],
+          "timing": {
+            "frame_id": "F15",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          }
+        },
+        {
+          "id": "F16:2",
+          "line": 2,
+          "frame_id": "F16",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E46",
+            "E47",
+            "E48"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F17:2",
+          "line": 2,
+          "frame_id": "F17",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E50",
+            "E51",
+            "E52"
+          ],
+          "timing": {
+            "frame_id": "F17",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2600
+          }
+        },
+        {
+          "id": "F18:2",
+          "line": 2,
+          "frame_id": "F18",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E53",
+            "E54",
+            "E55"
+          ],
+          "timing": {
+            "frame_id": "F18",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          }
+        },
+        {
+          "id": "F19:2",
+          "line": 2,
+          "frame_id": "F19",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E56",
+            "E57",
+            "E58"
+          ],
+          "timing": {
+            "frame_id": "F19",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2600
+          }
+        },
+        {
+          "id": "F20:2",
+          "line": 2,
+          "frame_id": "F20",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E59",
+            "E60",
+            "E61"
+          ],
+          "timing": {
+            "frame_id": "F20",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2300,
+            "self_cpu_ns": 2100,
+            "inclusive_wall_ns": 2300,
+            "inclusive_cpu_ns": 2100
+          }
+        },
+        {
+          "id": "F21:2",
+          "line": 2,
+          "frame_id": "F21",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E62",
+            "E63",
+            "E64"
+          ],
+          "timing": {
+            "frame_id": "F21",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2300,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2300,
+            "inclusive_cpu_ns": 2200
+          }
+        },
+        {
+          "id": "F22:2",
+          "line": 2,
+          "frame_id": "F22",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E65",
+            "E66",
+            "E67"
+          ],
+          "timing": {
+            "frame_id": "F22",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2200,
+            "self_cpu_ns": 2100,
+            "inclusive_wall_ns": 2200,
+            "inclusive_cpu_ns": 2100
+          }
+        },
+        {
+          "id": "F23:2",
+          "line": 2,
+          "frame_id": "F23",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E69",
+            "E70",
+            "E77",
+            "E87",
+            "E94",
+            "E95"
+          ],
+          "timing": {
+            "frame_id": "F23",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 4,
+            "self_wall_ns": 30400,
+            "self_cpu_ns": 28900,
+            "inclusive_wall_ns": 63700,
+            "inclusive_cpu_ns": 59700
+          }
+        },
+        {
+          "id": "F24:2",
+          "line": 2,
+          "frame_id": "F24",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E71",
+            "E72",
+            "E73"
+          ],
+          "timing": {
+            "frame_id": "F24",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2300
+          }
+        },
+        {
+          "id": "F25:2",
+          "line": 2,
+          "frame_id": "F25",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E74",
+            "E75",
+            "E76"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F26:2",
+          "line": 2,
+          "frame_id": "F26",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E78",
+            "E79",
+            "E80"
+          ],
+          "timing": {
+            "frame_id": "F26",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2500,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2500,
+            "inclusive_cpu_ns": 2400
+          }
+        },
+        {
+          "id": "F27:2",
+          "line": 2,
+          "frame_id": "F27",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E81",
+            "E82",
+            "E83"
+          ],
+          "timing": {
+            "frame_id": "F27",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          }
+        },
+        {
+          "id": "F28:2",
+          "line": 2,
+          "frame_id": "F28",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E84",
+            "E85",
+            "E86"
+          ],
+          "timing": null
+        },
+        {
+          "id": "F29:2",
+          "line": 2,
+          "frame_id": "F29",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E88",
+            "E89",
+            "E90"
+          ],
+          "timing": {
+            "frame_id": "F29",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          }
+        },
+        {
+          "id": "F30:2",
+          "line": 2,
+          "frame_id": "F30",
+          "function": "<genexpr>",
+          "event_ids": [
+            "E91",
+            "E92",
+            "E93"
+          ],
+          "timing": null
+        }
+      ],
+      "edges": [
+        {
+          "from": "F1:0",
+          "to": "F1:1",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E1",
+              "E2"
+            ]
+          ]
+        },
+        {
+          "from": "F1:1",
+          "to": "F1:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E2",
+              "E3"
+            ]
+          ]
+        },
+        {
+          "from": "F1:2",
+          "to": "F2:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E3",
+              "E4"
+            ]
+          ]
+        },
+        {
+          "from": "F2:2",
+          "to": "F2:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E4",
+              "E5"
+            ]
+          ]
+        },
+        {
+          "from": "F2:2",
+          "to": "F3:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E5",
+              "E6"
+            ]
+          ]
+        },
+        {
+          "from": "F3:2",
+          "to": "F3:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E6",
+              "E7"
+            ],
+            [
+              "E7",
+              "E8"
+            ]
+          ]
+        },
+        {
+          "from": "F3:2",
+          "to": "F2:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E8",
+              "E9"
+            ]
+          ]
+        },
+        {
+          "from": "F2:2",
+          "to": "F4:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E9",
+              "E10"
+            ]
+          ]
+        },
+        {
+          "from": "F4:2",
+          "to": "F4:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E10",
+              "E11"
+            ]
+          ]
+        },
+        {
+          "from": "F4:2",
+          "to": "F5:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E11",
+              "E12"
+            ]
+          ]
+        },
+        {
+          "from": "F5:2",
+          "to": "F5:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E12",
+              "E13"
+            ],
+            [
+              "E13",
+              "E14"
+            ]
+          ]
+        },
+        {
+          "from": "F5:2",
+          "to": "F6:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E14",
+              "E15"
+            ]
+          ]
+        },
+        {
+          "from": "F6:2",
+          "to": "F6:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E15",
+              "E16"
+            ],
+            [
+              "E16",
+              "E17"
+            ]
+          ]
+        },
+        {
+          "from": "F6:2",
+          "to": "F4:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E17",
+              "E18"
+            ]
+          ]
+        },
+        {
+          "from": "F4:2",
+          "to": "F7:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E18",
+              "E19"
+            ]
+          ]
+        },
+        {
+          "from": "F7:2",
+          "to": "F7:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E19",
+              "E20"
+            ]
+          ]
+        },
+        {
+          "from": "F7:2",
+          "to": "F8:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E20",
+              "E21"
+            ]
+          ]
+        },
+        {
+          "from": "F8:2",
+          "to": "F8:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E21",
+              "E22"
+            ],
+            [
+              "E22",
+              "E23"
+            ]
+          ]
+        },
+        {
+          "from": "F8:2",
+          "to": "F9:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E23",
+              "E24"
+            ]
+          ]
+        },
+        {
+          "from": "F9:2",
+          "to": "F9:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E24",
+              "E25"
+            ],
+            [
+              "E25",
+              "E26"
+            ]
+          ]
+        },
+        {
+          "from": "F9:2",
+          "to": "F7:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E26",
+              "E27"
+            ]
+          ]
+        },
+        {
+          "from": "F7:2",
+          "to": "F10:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E27",
+              "E28"
+            ]
+          ]
+        },
+        {
+          "from": "F10:2",
+          "to": "F10:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E28",
+              "E29"
+            ],
+            [
+              "E29",
+              "E30"
+            ]
+          ]
+        },
+        {
+          "from": "F10:2",
+          "to": "F11:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E30",
+              "E31"
+            ]
+          ]
+        },
+        {
+          "from": "F11:2",
+          "to": "F11:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E31",
+              "E32"
+            ],
+            [
+              "E32",
+              "E33"
+            ]
+          ]
+        },
+        {
+          "from": "F11:2",
+          "to": "F12:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E33",
+              "E34"
+            ]
+          ]
+        },
+        {
+          "from": "F12:2",
+          "to": "F12:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E34",
+              "E35"
+            ],
+            [
+              "E35",
+              "E36"
+            ]
+          ]
+        },
+        {
+          "from": "F12:2",
+          "to": "F13:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E36",
+              "E37"
+            ]
+          ]
+        },
+        {
+          "from": "F13:2",
+          "to": "F13:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E37",
+              "E38"
+            ],
+            [
+              "E38",
+              "E39"
+            ]
+          ]
+        },
+        {
+          "from": "F13:2",
+          "to": "F7:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E39",
+              "E40"
+            ]
+          ]
+        },
+        {
+          "from": "F7:2",
+          "to": "F14:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E40",
+              "E41"
+            ]
+          ]
+        },
+        {
+          "from": "F14:2",
+          "to": "F14:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E41",
+              "E42"
+            ]
+          ]
+        },
+        {
+          "from": "F14:2",
+          "to": "F15:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E42",
+              "E43"
+            ]
+          ]
+        },
+        {
+          "from": "F15:2",
+          "to": "F15:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E43",
+              "E44"
+            ],
+            [
+              "E44",
+              "E45"
+            ]
+          ]
+        },
+        {
+          "from": "F15:2",
+          "to": "F16:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E45",
+              "E46"
+            ]
+          ]
+        },
+        {
+          "from": "F16:2",
+          "to": "F16:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E46",
+              "E47"
+            ],
+            [
+              "E47",
+              "E48"
+            ]
+          ]
+        },
+        {
+          "from": "F16:2",
+          "to": "F14:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E48",
+              "E49"
+            ]
+          ]
+        },
+        {
+          "from": "F14:2",
+          "to": "F17:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E49",
+              "E50"
+            ]
+          ]
+        },
+        {
+          "from": "F17:2",
+          "to": "F17:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E50",
+              "E51"
+            ],
+            [
+              "E51",
+              "E52"
+            ]
+          ]
+        },
+        {
+          "from": "F17:2",
+          "to": "F18:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E52",
+              "E53"
+            ]
+          ]
+        },
+        {
+          "from": "F18:2",
+          "to": "F18:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E53",
+              "E54"
+            ],
+            [
+              "E54",
+              "E55"
+            ]
+          ]
+        },
+        {
+          "from": "F18:2",
+          "to": "F19:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E55",
+              "E56"
+            ]
+          ]
+        },
+        {
+          "from": "F19:2",
+          "to": "F19:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E56",
+              "E57"
+            ],
+            [
+              "E57",
+              "E58"
+            ]
+          ]
+        },
+        {
+          "from": "F19:2",
+          "to": "F20:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E58",
+              "E59"
+            ]
+          ]
+        },
+        {
+          "from": "F20:2",
+          "to": "F20:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E59",
+              "E60"
+            ],
+            [
+              "E60",
+              "E61"
+            ]
+          ]
+        },
+        {
+          "from": "F20:2",
+          "to": "F21:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E61",
+              "E62"
+            ]
+          ]
+        },
+        {
+          "from": "F21:2",
+          "to": "F21:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E62",
+              "E63"
+            ],
+            [
+              "E63",
+              "E64"
+            ]
+          ]
+        },
+        {
+          "from": "F21:2",
+          "to": "F22:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E64",
+              "E65"
+            ]
+          ]
+        },
+        {
+          "from": "F22:2",
+          "to": "F22:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E65",
+              "E66"
+            ],
+            [
+              "E66",
+              "E67"
+            ]
+          ]
+        },
+        {
+          "from": "F22:2",
+          "to": "F14:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E67",
+              "E68"
+            ]
+          ]
+        },
+        {
+          "from": "F14:2",
+          "to": "F23:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E68",
+              "E69"
+            ]
+          ]
+        },
+        {
+          "from": "F23:2",
+          "to": "F23:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E69",
+              "E70"
+            ],
+            [
+              "E94",
+              "E95"
+            ]
+          ]
+        },
+        {
+          "from": "F23:2",
+          "to": "F24:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E70",
+              "E71"
+            ]
+          ]
+        },
+        {
+          "from": "F24:2",
+          "to": "F24:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E71",
+              "E72"
+            ],
+            [
+              "E72",
+              "E73"
+            ]
+          ]
+        },
+        {
+          "from": "F24:2",
+          "to": "F25:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E73",
+              "E74"
+            ]
+          ]
+        },
+        {
+          "from": "F25:2",
+          "to": "F25:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E74",
+              "E75"
+            ],
+            [
+              "E75",
+              "E76"
+            ]
+          ]
+        },
+        {
+          "from": "F25:2",
+          "to": "F23:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E76",
+              "E77"
+            ]
+          ]
+        },
+        {
+          "from": "F23:2",
+          "to": "F26:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E77",
+              "E78"
+            ]
+          ]
+        },
+        {
+          "from": "F26:2",
+          "to": "F26:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E78",
+              "E79"
+            ],
+            [
+              "E79",
+              "E80"
+            ]
+          ]
+        },
+        {
+          "from": "F26:2",
+          "to": "F27:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E80",
+              "E81"
+            ]
+          ]
+        },
+        {
+          "from": "F27:2",
+          "to": "F27:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E81",
+              "E82"
+            ],
+            [
+              "E82",
+              "E83"
+            ]
+          ]
+        },
+        {
+          "from": "F27:2",
+          "to": "F28:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E83",
+              "E84"
+            ]
+          ]
+        },
+        {
+          "from": "F28:2",
+          "to": "F28:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E84",
+              "E85"
+            ],
+            [
+              "E85",
+              "E86"
+            ]
+          ]
+        },
+        {
+          "from": "F28:2",
+          "to": "F23:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E86",
+              "E87"
+            ]
+          ]
+        },
+        {
+          "from": "F23:2",
+          "to": "F29:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E87",
+              "E88"
+            ]
+          ]
+        },
+        {
+          "from": "F29:2",
+          "to": "F29:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E88",
+              "E89"
+            ],
+            [
+              "E89",
+              "E90"
+            ]
+          ]
+        },
+        {
+          "from": "F29:2",
+          "to": "F30:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E90",
+              "E91"
+            ]
+          ]
+        },
+        {
+          "from": "F30:2",
+          "to": "F30:2",
+          "count": 2,
+          "event_pairs": [
+            [
+              "E91",
+              "E92"
+            ],
+            [
+              "E92",
+              "E93"
+            ]
+          ]
+        },
+        {
+          "from": "F30:2",
+          "to": "F23:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E93",
+              "E94"
+            ]
+          ]
+        },
+        {
+          "from": "F23:2",
+          "to": "F1:2",
+          "count": 1,
+          "event_pairs": [
+            [
+              "E95",
+              "E96"
+            ]
+          ]
+        }
+      ],
+      "changes": [
+        {
+          "frame_id": "F4",
+          "name": "x",
+          "before": 2,
+          "after": 3,
+          "before_event_id": "E11",
+          "after_event_id": "E18"
+        },
+        {
+          "frame_id": "F7",
+          "name": "x",
+          "before": 3,
+          "after": 4,
+          "before_event_id": "E20",
+          "after_event_id": "E27"
+        },
+        {
+          "frame_id": "F11",
+          "name": "d",
+          "before": 2,
+          "after": 3,
+          "before_event_id": "E32",
+          "after_event_id": "E33"
+        },
+        {
+          "frame_id": "F12",
+          "name": "d",
+          "before": 3,
+          "after": 4,
+          "before_event_id": "E35",
+          "after_event_id": "E36"
+        },
+        {
+          "frame_id": "F7",
+          "name": "x",
+          "before": 4,
+          "after": 5,
+          "before_event_id": "E27",
+          "after_event_id": "E40"
+        },
+        {
+          "frame_id": "F14",
+          "name": "x",
+          "before": 5,
+          "after": 6,
+          "before_event_id": "E42",
+          "after_event_id": "E49"
+        },
+        {
+          "frame_id": "F18",
+          "name": "d",
+          "before": 2,
+          "after": 3,
+          "before_event_id": "E54",
+          "after_event_id": "E55"
+        },
+        {
+          "frame_id": "F19",
+          "name": "d",
+          "before": 3,
+          "after": 4,
+          "before_event_id": "E57",
+          "after_event_id": "E58"
+        },
+        {
+          "frame_id": "F20",
+          "name": "d",
+          "before": 4,
+          "after": 5,
+          "before_event_id": "E60",
+          "after_event_id": "E61"
+        },
+        {
+          "frame_id": "F21",
+          "name": "d",
+          "before": 5,
+          "after": 6,
+          "before_event_id": "E63",
+          "after_event_id": "E64"
+        },
+        {
+          "frame_id": "F14",
+          "name": "x",
+          "before": 6,
+          "after": 7,
+          "before_event_id": "E49",
+          "after_event_id": "E68"
+        },
+        {
+          "frame_id": "F23",
+          "name": "x",
+          "before": 7,
+          "after": 8,
+          "before_event_id": "E70",
+          "after_event_id": "E77"
+        },
+        {
+          "frame_id": "F27",
+          "name": "d",
+          "before": 2,
+          "after": 3,
+          "before_event_id": "E82",
+          "after_event_id": "E83"
+        },
+        {
+          "frame_id": "F23",
+          "name": "x",
+          "before": 8,
+          "after": 9,
+          "before_event_id": "E77",
+          "after_event_id": "E87"
+        },
+        {
+          "frame_id": "F23",
+          "name": "x",
+          "before": 9,
+          "after": 10,
+          "before_event_id": "E87",
+          "after_event_id": "E94"
+        }
+      ],
+      "frames": [
+        {
+          "id": "F1",
+          "parent": null,
+          "function": "<module>",
+          "entry_event_id": "E1"
+        },
+        {
+          "id": "F2",
+          "parent": "F1",
+          "function": "<genexpr>",
+          "entry_event_id": "E4"
+        },
+        {
+          "id": "F3",
+          "parent": "F2",
+          "function": "<genexpr>",
+          "entry_event_id": "E6"
+        },
+        {
+          "id": "F4",
+          "parent": "F1",
+          "function": "<genexpr>",
+          "entry_event_id": "E10"
+        },
+        {
+          "id": "F5",
+          "parent": "F4",
+          "function": "<genexpr>",
+          "entry_event_id": "E12"
+        },
+        {
+          "id": "F6",
+          "parent": "F4",
+          "function": "<genexpr>",
+          "entry_event_id": "E15"
+        },
+        {
+          "id": "F7",
+          "parent": "F1",
+          "function": "<genexpr>",
+          "entry_event_id": "E19"
+        },
+        {
+          "id": "F8",
+          "parent": "F7",
+          "function": "<genexpr>",
+          "entry_event_id": "E21"
+        },
+        {
+          "id": "F9",
+          "parent": "F7",
+          "function": "<genexpr>",
+          "entry_event_id": "E24"
+        },
+        {
+          "id": "F10",
+          "parent": "F7",
+          "function": "<genexpr>",
+          "entry_event_id": "E28"
+        },
+        {
+          "id": "F11",
+          "parent": "F7",
+          "function": "<genexpr>",
+          "entry_event_id": "E31"
+        },
+        {
+          "id": "F12",
+          "parent": "F7",
+          "function": "<genexpr>",
+          "entry_event_id": "E34"
+        },
+        {
+          "id": "F13",
+          "parent": "F7",
+          "function": "<genexpr>",
+          "entry_event_id": "E37"
+        },
+        {
+          "id": "F14",
+          "parent": "F1",
+          "function": "<genexpr>",
+          "entry_event_id": "E41"
+        },
+        {
+          "id": "F15",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E43"
+        },
+        {
+          "id": "F16",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E46"
+        },
+        {
+          "id": "F17",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E50"
+        },
+        {
+          "id": "F18",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E53"
+        },
+        {
+          "id": "F19",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E56"
+        },
+        {
+          "id": "F20",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E59"
+        },
+        {
+          "id": "F21",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E62"
+        },
+        {
+          "id": "F22",
+          "parent": "F14",
+          "function": "<genexpr>",
+          "entry_event_id": "E65"
+        },
+        {
+          "id": "F23",
+          "parent": "F1",
+          "function": "<genexpr>",
+          "entry_event_id": "E69"
+        },
+        {
+          "id": "F24",
+          "parent": "F23",
+          "function": "<genexpr>",
+          "entry_event_id": "E71"
+        },
+        {
+          "id": "F25",
+          "parent": "F23",
+          "function": "<genexpr>",
+          "entry_event_id": "E74"
+        },
+        {
+          "id": "F26",
+          "parent": "F23",
+          "function": "<genexpr>",
+          "entry_event_id": "E78"
+        },
+        {
+          "id": "F27",
+          "parent": "F23",
+          "function": "<genexpr>",
+          "entry_event_id": "E81"
+        },
+        {
+          "id": "F28",
+          "parent": "F23",
+          "function": "<genexpr>",
+          "entry_event_id": "E84"
+        },
+        {
+          "id": "F29",
+          "parent": "F23",
+          "function": "<genexpr>",
+          "entry_event_id": "E88"
+        },
+        {
+          "id": "F30",
+          "parent": "F23",
+          "function": "<genexpr>",
+          "entry_event_id": "E91"
+        }
+      ],
+      "timeline": [
+        {
+          "event_id": "E1",
+          "frame_id": "F1",
+          "line": 0,
+          "kind": "call"
+        },
+        {
+          "event_id": "E2",
+          "frame_id": "F1",
+          "line": 1,
+          "kind": "line"
+        },
+        {
+          "event_id": "E3",
+          "frame_id": "F1",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E4",
+          "frame_id": "F2",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E5",
+          "frame_id": "F2",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E6",
+          "frame_id": "F3",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E7",
+          "frame_id": "F3",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E8",
+          "frame_id": "F3",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E9",
+          "frame_id": "F2",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E10",
+          "frame_id": "F4",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E11",
+          "frame_id": "F4",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E12",
+          "frame_id": "F5",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E13",
+          "frame_id": "F5",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E14",
+          "frame_id": "F5",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E15",
+          "frame_id": "F6",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E16",
+          "frame_id": "F6",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E17",
+          "frame_id": "F6",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E18",
+          "frame_id": "F4",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E19",
+          "frame_id": "F7",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E20",
+          "frame_id": "F7",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E21",
+          "frame_id": "F8",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E22",
+          "frame_id": "F8",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E23",
+          "frame_id": "F8",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E24",
+          "frame_id": "F9",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E25",
+          "frame_id": "F9",
+          "line": 2,
+          "kind": "exception"
+        },
+        {
+          "event_id": "E26",
+          "frame_id": "F9",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E27",
+          "frame_id": "F7",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E28",
+          "frame_id": "F10",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E29",
+          "frame_id": "F10",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E30",
+          "frame_id": "F10",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E31",
+          "frame_id": "F11",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E32",
+          "frame_id": "F11",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E33",
+          "frame_id": "F11",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E34",
+          "frame_id": "F12",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E35",
+          "frame_id": "F12",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E36",
+          "frame_id": "F12",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E37",
+          "frame_id": "F13",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E38",
+          "frame_id": "F13",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E39",
+          "frame_id": "F13",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E40",
+          "frame_id": "F7",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E41",
+          "frame_id": "F14",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E42",
+          "frame_id": "F14",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E43",
+          "frame_id": "F15",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E44",
+          "frame_id": "F15",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E45",
+          "frame_id": "F15",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E46",
+          "frame_id": "F16",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E47",
+          "frame_id": "F16",
+          "line": 2,
+          "kind": "exception"
+        },
+        {
+          "event_id": "E48",
+          "frame_id": "F16",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E49",
+          "frame_id": "F14",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E50",
+          "frame_id": "F17",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E51",
+          "frame_id": "F17",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E52",
+          "frame_id": "F17",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E53",
+          "frame_id": "F18",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E54",
+          "frame_id": "F18",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E55",
+          "frame_id": "F18",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E56",
+          "frame_id": "F19",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E57",
+          "frame_id": "F19",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E58",
+          "frame_id": "F19",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E59",
+          "frame_id": "F20",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E60",
+          "frame_id": "F20",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E61",
+          "frame_id": "F20",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E62",
+          "frame_id": "F21",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E63",
+          "frame_id": "F21",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E64",
+          "frame_id": "F21",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E65",
+          "frame_id": "F22",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E66",
+          "frame_id": "F22",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E67",
+          "frame_id": "F22",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E68",
+          "frame_id": "F14",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E69",
+          "frame_id": "F23",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E70",
+          "frame_id": "F23",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E71",
+          "frame_id": "F24",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E72",
+          "frame_id": "F24",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E73",
+          "frame_id": "F24",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E74",
+          "frame_id": "F25",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E75",
+          "frame_id": "F25",
+          "line": 2,
+          "kind": "exception"
+        },
+        {
+          "event_id": "E76",
+          "frame_id": "F25",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E77",
+          "frame_id": "F23",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E78",
+          "frame_id": "F26",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E79",
+          "frame_id": "F26",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E80",
+          "frame_id": "F26",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E81",
+          "frame_id": "F27",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E82",
+          "frame_id": "F27",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E83",
+          "frame_id": "F27",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E84",
+          "frame_id": "F28",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E85",
+          "frame_id": "F28",
+          "line": 2,
+          "kind": "exception"
+        },
+        {
+          "event_id": "E86",
+          "frame_id": "F28",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E87",
+          "frame_id": "F23",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E88",
+          "frame_id": "F29",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E89",
+          "frame_id": "F29",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E90",
+          "frame_id": "F29",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E91",
+          "frame_id": "F30",
+          "line": 2,
+          "kind": "call"
+        },
+        {
+          "event_id": "E92",
+          "frame_id": "F30",
+          "line": 2,
+          "kind": "exception"
+        },
+        {
+          "event_id": "E93",
+          "frame_id": "F30",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E94",
+          "frame_id": "F23",
+          "line": 2,
+          "kind": "line"
+        },
+        {
+          "event_id": "E95",
+          "frame_id": "F23",
+          "line": 2,
+          "kind": "return"
+        },
+        {
+          "event_id": "E96",
+          "frame_id": "F1",
+          "line": 2,
+          "kind": "return"
+        }
+      ],
+      "relations": {
+        "data": [],
+        "control": [],
+        "def_use": []
+      },
+      "static_cfg": {
+        "status": "restricted_syntactic_cfg",
+        "nodes": [
+          {
+            "id": "module:1",
+            "line": 1,
+            "scope": "module",
+            "kind": "Assign"
+          },
+          {
+            "id": "module:2",
+            "line": 2,
+            "scope": "module",
+            "kind": "Expr"
+          }
+        ],
+        "edges": [
+          {
+            "from": "module:1",
+            "to": "module:2",
+            "kind": "next"
+          }
+        ],
+        "unsupported": [],
+        "scope": "Syntactic successors only, no runtime reachability or call/exception proof."
+      },
+      "causal_fault_proven": false,
+      "profile": {
+        "version": 1,
+        "status": "complete",
+        "method": "trace_segments_excluding_callback",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 2324900,
+        "execution_cpu_ns": 2321600,
+        "callback_wall_ns": 1795500,
+        "callback_cpu_ns": 1809500,
+        "timed_events": 96,
+        "event_budget": 100000,
+        "lines": [
+          {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 16400,
+            "self_cpu_ns": 16200,
+            "inclusive_wall_ns": 16400,
+            "inclusive_cpu_ns": 16200
+          },
+          {
+            "frame_id": "F1",
+            "line": 2,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 42200,
+            "self_cpu_ns": 41000,
+            "inclusive_wall_ns": 298500,
+            "inclusive_cpu_ns": 284600
+          },
+          {
+            "frame_id": "F2",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 9200,
+            "self_cpu_ns": 8800,
+            "inclusive_wall_ns": 31800,
+            "inclusive_cpu_ns": 31200
+          },
+          {
+            "frame_id": "F3",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 20000,
+            "self_cpu_ns": 19900,
+            "inclusive_wall_ns": 20000,
+            "inclusive_cpu_ns": 19900
+          },
+          {
+            "frame_id": "F4",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 9000,
+            "self_cpu_ns": 8600,
+            "inclusive_wall_ns": 19100,
+            "inclusive_cpu_ns": 17900
+          },
+          {
+            "frame_id": "F5",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          },
+          {
+            "frame_id": "F6",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2300,
+            "self_cpu_ns": 2100,
+            "inclusive_wall_ns": 2300,
+            "inclusive_cpu_ns": 2100
+          },
+          {
+            "frame_id": "F7",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 2,
+            "self_wall_ns": 28100,
+            "self_cpu_ns": 27200,
+            "inclusive_wall_ns": 59000,
+            "inclusive_cpu_ns": 56600
+          },
+          {
+            "frame_id": "F8",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2500,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2500
+          },
+          {
+            "frame_id": "F10",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          },
+          {
+            "frame_id": "F11",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2500,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2500,
+            "inclusive_cpu_ns": 2400
+          },
+          {
+            "frame_id": "F12",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2300
+          },
+          {
+            "frame_id": "F13",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2800,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2800,
+            "inclusive_cpu_ns": 2600
+          },
+          {
+            "frame_id": "F14",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 2,
+            "self_wall_ns": 27700,
+            "self_cpu_ns": 26000,
+            "inclusive_wall_ns": 66100,
+            "inclusive_cpu_ns": 62400
+          },
+          {
+            "frame_id": "F15",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          },
+          {
+            "frame_id": "F17",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2700,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2700,
+            "inclusive_cpu_ns": 2600
+          },
+          {
+            "frame_id": "F18",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2400
+          },
+          {
+            "frame_id": "F19",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2600,
+            "self_cpu_ns": 2600,
+            "inclusive_wall_ns": 2600,
+            "inclusive_cpu_ns": 2600
+          },
+          {
+            "frame_id": "F20",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2300,
+            "self_cpu_ns": 2100,
+            "inclusive_wall_ns": 2300,
+            "inclusive_cpu_ns": 2100
+          },
+          {
+            "frame_id": "F21",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2300,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2300,
+            "inclusive_cpu_ns": 2200
+          },
+          {
+            "frame_id": "F22",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2200,
+            "self_cpu_ns": 2100,
+            "inclusive_wall_ns": 2200,
+            "inclusive_cpu_ns": 2100
+          },
+          {
+            "frame_id": "F23",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 4,
+            "self_wall_ns": 30400,
+            "self_cpu_ns": 28900,
+            "inclusive_wall_ns": 63700,
+            "inclusive_cpu_ns": 59700
+          },
+          {
+            "frame_id": "F24",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2300,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2300
+          },
+          {
+            "frame_id": "F26",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2500,
+            "self_cpu_ns": 2400,
+            "inclusive_wall_ns": 2500,
+            "inclusive_cpu_ns": 2400
+          },
+          {
+            "frame_id": "F27",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          },
+          {
+            "frame_id": "F29",
+            "line": 2,
+            "function": "<genexpr>",
+            "hits": 1,
+            "self_wall_ns": 2400,
+            "self_cpu_ns": 2200,
+            "inclusive_wall_ns": 2400,
+            "inclusive_cpu_ns": 2200
+          }
+        ],
+        "blocks": [
+          {
+            "id": "B1",
+            "kind": "module",
+            "name": "<module>",
+            "scope": 0,
+            "line": 1,
+            "end_line": 2,
+            "hits": 1,
+            "self_wall_ns": 58600,
+            "self_cpu_ns": 57200,
+            "inclusive_wall_ns": 314900,
+            "inclusive_cpu_ns": 300800
+          }
+        ],
+        "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+      },
+      "loop_summary": {
+        "status": "observed",
+        "loops": [],
+        "scope": "Counts come from recorded same-frame line transitions. Partial traces give observed lower bounds; header visits are not body iterations."
+      },
+      "output_chain": {
+        "status": "unsupported",
+        "links": []
+      }
+    },
+    "hypotheses": [],
+    "ai_facts": [],
+    "ai_branches": [],
+    "ai_context": {},
+    "ai_status": "disabled",
+    "ai_model": null,
+    "ai_usage": {},
+    "generator": "hypothesis",
+    "guidance": {
+      "status": "disabled",
+      "rejected": 0,
+      "probes": []
+    },
+    "suspiciousness": {
+      "status": "observed_spectrum",
+      "ranked": [
+        {
+          "line": 4,
+          "ochiai": 1.0,
+          "failing_coverage": 1,
+          "passing_coverage": 0
+        },
+        {
+          "line": 1,
+          "ochiai": 0.707107,
+          "failing_coverage": 1,
+          "passing_coverage": 1
+        },
+        {
+          "line": 2,
+          "ochiai": 0.707107,
+          "failing_coverage": 1,
+          "passing_coverage": 1
+        },
+        {
+          "line": 3,
+          "ochiai": 0.707107,
+          "failing_coverage": 1,
+          "passing_coverage": 1
+        },
+        {
+          "line": 6,
+          "ochiai": 0.707107,
+          "failing_coverage": 1,
+          "passing_coverage": 1
+        },
+        {
+          "line": 8,
+          "ochiai": 0.707107,
+          "failing_coverage": 1,
+          "passing_coverage": 1
+        },
+        {
+          "line": 9,
+          "ochiai": 0.707107,
+          "failing_coverage": 1,
+          "passing_coverage": 1
+        }
+      ],
+      "passing_count": 1,
+      "scope": "One failing trace and bounded passing traces of the same source. Coverage correlation, not root cause."
+    },
+    "ai_error": null,
+    "elapsed_ms": 16203.0,
+    "scope": "Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."
+  }
+}

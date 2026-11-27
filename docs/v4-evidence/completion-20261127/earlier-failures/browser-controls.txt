@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "D:\icips-v4\tools\verify_v4_failure_browser.py", line 91, in <module>
+    if __name__=="__main__":main()
+                            ^^^^^^
+  File "D:\icips-v4\tools\verify_v4_failure_browser.py", line 33, in main
+    return test(url,out)
+           ^^^^^^^^^^^^^
+  File "D:\icips-v4\tools\verify_v4_failure_browser.py", line 55, in test
+    approve();page.locator("#trusted").check();page.locator("#count").fill("2")
+    ^^^^^^^^^
+  File "D:\icips-v4\tools\verify_v4_failure_browser.py", line 53, in approve
+    value=response.value.json();assert response.value.ok and value["status"]=="approved_by_owner",value
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'detail': 'Supply 2–8 independently known controls'}

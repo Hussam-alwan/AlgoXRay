@@ -1,0 +1,4 @@
+﻿"kind","name","function","frame_id","line","end_line","hits","self_wall_ns","self_cpu_ns","inclusive_wall_ns","inclusive_cpu_ns"
+"function","f","","","2","5","4","57400","56800","203000","201900"
+"if","if","","","3","4","4","44000","44000","44000","44000"
+"module","<module>","","","1","6","1","27000","26600","93000","91400"

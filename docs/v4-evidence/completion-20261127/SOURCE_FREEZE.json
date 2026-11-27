@@ -1,0 +1,67 @@
+{
+  "publisher_sha256": "f56250a9bcc7b39de9a816c3e3e990a736908ff7cdef65e1097f61b331df637a",
+  "created_at": "2026-11-27T09:41:29.696699+00:00",
+  "runtime_commit": "1aee128bfaf33313fb01e9dcf8d5ffd70859e13e",
+  "ablation_commit": "2d6d284bb59e63ea03e92fc6b0f8fa7dc9f5925b",
+  "packaging_parent_commit": "1aee128bfaf33313fb01e9dcf8d5ffd70859e13e",
+  "tests": 223,
+  "browser_checks": 30,
+  "browser_split": [
+    25,
+    5
+  ],
+  "reproduction_steps": 7,
+  "external_faults": [
+    7,
+    7
+  ],
+  "external_control_accusations": [
+    0,
+    7
+  ],
+  "external_replays": 21,
+  "ablation_requests": 21,
+  "ablation_arms": {
+    "source_only": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 1,
+      "edit_line_top3": 3,
+      "edit_line_top5": 5,
+      "total_seconds": 53.608
+    },
+    "witness": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 1,
+      "edit_line_top3": 3,
+      "edit_line_top5": 4,
+      "total_seconds": 44.627
+    },
+    "trace": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 3,
+      "edit_line_top3": 6,
+      "edit_line_top5": 6,
+      "total_seconds": 49.936
+    },
+    "trace_verified": {
+      "total": 7,
+      "completed": 7,
+      "abstained": 0,
+      "failed": 0,
+      "edit_line_top1": 3,
+      "edit_line_top3": 6,
+      "edit_line_top5": 6,
+      "total_seconds": 0
+    }
+  },
+  "scope": "Same-machine software evidence and exposed public adaptations. Not independent security validation, unseen student accuracy, human ratings or conference submission. Ablation reuses earlier frozen witnesses; fresh deterministic pilot is separate."
+}

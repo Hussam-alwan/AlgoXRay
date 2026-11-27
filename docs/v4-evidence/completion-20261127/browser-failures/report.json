@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "checks": [
+    "provider_outage_keeps_replayed_witness_and_graph",
+    "correct_control_not_accused_during_provider_outage",
+    "unsupported_contract_rejected",
+    "later_reference_disagreement_blocks_accusation",
+    "syntax_exception_has_no_fabricated_trace"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Real browser and isolated worker; controlled mocked provider outage and authored negative packages. No live cloud request or human study."
+}

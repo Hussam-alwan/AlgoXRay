@@ -5,32 +5,37 @@ Owner objective: debug previously unseen competitive-programming problems with a
 
 ## Active checkpoint - 27 November 2026
 
-This is the current plan. Core/Option B handoffs and the earlier V4 status document are historical. Runtime code is measured at `b65f596fca34c487777641ebd47e97ba5161752b`; later documentation, navigation and evidence packaging do not change that engine. V4 lives in `D:/icips-v4` on `v4-dynamic-ai`, port 8002. V3 stays in `D:/icips`, port 8001.
+This is the current plan. Core/Option B handoffs and earlier V4 status documents are historical. The latest verified runtime is `1aee128bfaf33313fb01e9dcf8d5ffd70859e13e`; the completion export identifies the exact runtime, ablation and packaging commits separately. V4 lives in `D:/icips-v4`, port 8002; V3 is preserved in `D:/icips`, port 8001.
 
-Owner additions: publish all intended project changes to GitHub, and measure execution time for each code block for CP. Code, tests, documentation and the explicit synthetic/public evidence export belong in Git. Credentials, personal submissions, package stores, quota databases, environments and private reviewer keys do not.
+Owner additions: publish intended project code, tests, documentation and explicit synthetic/public evidence to both `main` and `v4-dynamic-ai`; measure execution time for each supported code block for CP. Credentials, private submissions, package stores, quota databases, environments and private reviewer keys stay outside Git.
 
-| Package | Verified implementation | Open boundary or remaining task |
+The bounded software tasks in [the current task ledger](V4_TASK_STATUS.json) and [the Arabic completion report](V4_COMPLETION_20261127_AR.md) are complete at 100% of their named scope. The research and generalization requirements below remain separate; no overall project percentage is inferred by averaging software checks.
+
+| Package | Verified implementation | Remaining boundary |
 |---|---|---|
-| WP9 | Separate worktree and dependencies; preserved archives; pinned dedicated Docker worker with isolation probes; local Qwen 7B schema/diagnosis/abstention smoke | Independent threat assessment and authenticated adversarial trace evidence are not complete; public execution stays disabled |
-| WP10 | Ollama, Gemini, Groq and OpenRouter adapters; strict output schema validation; timeout, local cancellation, consent and local request limits; measured local token/latency metadata | Optional Qwen Cloud adapter and cache are not implemented; remote cancellation and global account quotas are not guaranteed |
-| WP11 | Immutable reviewed packages, restart persistence and tamper checks; stdio field grammar with matrices; Codeforces text import; draft/reference proposal and review controls; five data-driven demos | General mathematical constraints/checkers and independent review of arbitrary references remain out of scope for this bounded release |
-| WP12 | Seeded boundary/random/Hypothesis generation, AI case suggestions, legal reduction, explicit statuses, three replays and independent reference disagreement handling | General multi-testcase/cross-field constraints, huge CP input ranges and multiple-valid-output checkers are not implemented |
-| WP13 | Observed graph, source navigation, actual call frames, variables, side-by-side trace, restricted CFG, supported data/control links and coverage ranking | General alias/heap/call slicing and automatic semantic alignment remain unsupported |
-| WP14 | Real local/cloud proposals; schema and event-anchor checks; recomputed scalar facts; execution-tested hypotheses; deterministic core survives AI failure | Free-form causal explanations remain hypotheses; no independent localization accuracy estimate |
-| WP15 | Reviewed patch proposals, diff, immutable history, witness and named regression checks, cancellation, export and live browser journeys | Broader repair/usability evidence and guaranteed remote inference termination remain unproven |
-| WP16 | Public paired seven-family pilot, local model smoke, 182 tests, 19 browser journeys, five demos, clean reproduction and explicit public evidence manifest; scoped primary-paper comparison | Independent unseen student corpus, human factuality/localization ratings, matched multi-problem AI ablation, author/venue approval and submission remain pending |
-| WP17 (owner addition) | Bounded block and line profiling: wall/CPU, self/inclusive, counts/averages, source/graph links, correct-code profiling, CSV/JSON, partial/unavailable states and mobile | Instrumented one-input timings are not judge runtime, a Big-O inference, or a calibrated CP performance benchmark |
+| WP9 | Dedicated worktree/environment/worker, preserved V3, model digest, fresh clean reproduction, 11+3 local isolation probes | Independent adversarial security assessment and authenticated trace evidence remain open; public execution disabled |
+| WP10 | Ollama, Gemini, Groq, OpenRouter and configured Qwen Cloud adapter; schema, request IDs, budgets, consent, cancellation states; opt-in versioned local RAM cache and clear controls | Qwen Cloud live call not tested without credentials/consent; remote termination and global provider quotas not guaranteed |
+| WP11 | Immutable packages, persistence/tamper checks, editable text drafts, exact quotation/literal provenance, unresolved gates, exclusive field schemas, bounded finite-domain/second-reference audit | Quotations do not prove semantic extraction accuracy; distinct reference code does not prove independent origin; arbitrary references need review |
+| WP12 | Seeded random/boundary/Hypothesis search, legal AI probes, reduction/replay, empty words/lists, bounded unordered and floating output policies, explicit disagreement/error states | General multi-testcase/cross-field constraints, huge CP ranges and arbitrary multiple-valid-output checkers remain unsupported |
+| WP13 | Observed source-linked graphs, call frames, arrays, timeline, same-frame snapshots, frame/event filters, pan/layout, observed loop entries, restricted CFG/data/control/def-use and ranking | Heap/alias/call slicing and automatic semantic alignment remain unsupported; partial traces give lower bounds |
+| WP14 | Bounded hashed diagnostic context, explicit omissions, ranked evidence, scalar facts and primitive if/while condition recomputation; invalid claims cannot become verified causal prose | General causal diagnosis and independent localization accuracy remain unmeasured |
+| WP15 | Immutable reviewed repair/diff/history/regression workflow, cancellation/export, 25 normal and 5 negative real browser checks | Wider repair/usability study and guaranteed remote inference termination remain open |
+| WP16 | 223 tests, clean seven-step reproduction, five demos, fresh paired public seven-family pilot, 21 local matched context calls plus same-response verification, raw evidence and hashes, measured research supplement | Independent unseen programs, human ratings, common-contract V3 study, author/venue approval and submission remain open |
+| WP17 | Supported block/line wall+CPU, self/inclusive, visits/averages, source/graph links, correct-code profiling, CSV/JSON, partial states and mobile | Instrumented one-input timing is not judge runtime, Big-O inference or a calibrated CP benchmark |
 
-### Verification snapshot
+### Current verification
 
-- Clean checkout and fresh virtual environment completed all seven reproduction steps at b65f596; all 11 worker isolation probes and three extra credential/mount/PID probes passed on the continuation. This remains same-machine evidence, not an independent security assessment.
-- 182/182 tests on Windows after schema hardening; one existing Starlette deprecation warning. Earlier Linux baseline 167/167, profiling checkpoint 174/174. Counts are software tests, not students or independent programs.
-- 19/19 browser journeys, with no page errors or external browser requests. An initial mobile table overflow failed; fixed and the failed report is retained.
-- Five authored demos passed; paired public pilot found 7/7 faulty variants, 0/7 corrected controls accused, 21 replay matches. These are exposed public adaptations, not an unseen student corpus.
-- Qwen2.5-Coder 7B Q4_K_M, digest `dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364`, context 4096: constrained draft transport 10.594 s, diagnosis 4.391 s, abstention 0.421 s; all three schema-valid, empty-evidence abstention passed. The draft transport uses a fixed candidate, not an open-ended authoring accuracy test. Peak sampled whole-board GPU memory 5003 MiB; it is not isolated peak model allocation.
-- [Continuation evidence](v4-evidence/continuation/MANIFEST.json), [profiling semantics](V4_PROFILING.md), [earlier expanded checkpoint](V4_EXPANDED_RELEASE.md), and [reviewable delivery draft](v4-delivery/README.md).
+- 223/223 Windows tests in the development run and the clean checkout. One existing Starlette deprecation warning.
+- 25 normal + 5 negative browser journeys, no page errors or external browser requests. Outage is deliberately injected in a test-only process, never a production hook.
+- Five authored demos; fresh public paired pilot: 7/7 faulty variants observed, 0/7 corrected variants accused, 21 replay matches. Exposed adaptations are not independent student submissions.
+- Seven-step same-machine reproduction uses a fresh Python environment and the same pinned Docker worker. The invocation used symbolic HEAD; [SOURCE_FREEZE.json](v4-evidence/completion-20261127/SOURCE_FREEZE.json) resolves the exact checkout commit.
+- Local Qwen cache miss/hit/clear/miss passed. An open-ended controlled draft example finally returned the dependent length and quoted bounds; two earlier failures are retained. This is one example, not general authoring accuracy.
+- Local ablation on seven exposed families: source-only edit-line Top1/3/5 = 1/3/5 of 7; witness = 1/3/4; trace = 3/6/6. The same-response validator retained 3/6/6. No additional model call or causal validation is claimed for the last arm. All 21 inference requests completed; raw requests, model revision, schema and budgets are retained.
+- Of 25 scalar fact claims in the trace arm, 16 matched recorded snapshots and 9 remained unsupported. Claims in arms without supplied events remained unsupported. There were no live trace-arm branch claims; branch checks are unit-tested.
+- [Completion evidence](v4-evidence/completion-20261127/MANIFEST.json), [provider completion](V4_PROVIDER_COMPLETION.md), [profiling semantics](V4_PROFILING.md), [measured research supplement](v4-delivery/supplement_20261127.md).
+- [Earlier continuation evidence](v4-evidence/continuation/MANIFEST.json) and its 182-test/19-browser PDFs remain historical, unchanged.
 
-No claim of universal debugging, first-of-kind novelty, improved learning, hostile-code security or general causal accuracy is made. Work remaining for independent participants or conference decisions is kept open rather than simulated. The original checklist below is a specification history; the table above is the current completion record.
+The original exit-gate checklist below is a requirements history, not the current task status. General debugging, first-of-kind novelty, improved learning, hostile-code security and universal causal accuracy are not established by these tests.
 
 ## Scope and constraints
 - First release: Python, conventional stdin/stdout and existing solve(payload) contracts, bounded deterministic noninteractive problems. No promise of all Python programs, interactive judges, arbitrary languages or guaranteed fault localization.
@@ -46,7 +51,7 @@ Trace -> observed execution graph, timeline, supported data/control links, suspi
 Optional repair -> separate version -> witness + unseen regression tests. Never overwrite original.
 AI is a proposal service, not oracle, verifier, renderer of fabricated trace or execution authority. New package data should use a limited declarative grammar interpreted by trusted code; no eval/exec in web process. Executable references need isolated execution and explicit approval.
 
-## Work packages and exit gates
+## Historical work packages and exit gates
 ### WP9 — Baseline, execution boundary and model setup
 - [ ] Record V3 source, dependency and result hashes; create dedicated V4 branch/worktree; test V3 archive replay and run existing pytest baseline unchanged. Capture missing prior V3 reports.
 - [ ] Inspect free disk, RAM, nvidia-smi driver/VRAM, Docker engine and current ports. Install official Ollama for Windows if absent; bind localhost only; pull qwen2.5-coder:7b; record model digest, version and settings. Source: https://ollama.com/library/qwen2.5-coder:7b .
