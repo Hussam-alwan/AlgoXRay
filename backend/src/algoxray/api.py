@@ -248,4 +248,11 @@ def poster():
     return FileResponse(path)
 
 
+from .v4_api import router_for
+app.include_router(router_for(require_loopback,custom_code_token))
+
+@app.get("/v4",include_in_schema=False)
+def v4_page():
+    return FileResponse(WEB / "v4.html")
+
 app.mount("/static", StaticFiles(directory=WEB / "static"), name="static")
