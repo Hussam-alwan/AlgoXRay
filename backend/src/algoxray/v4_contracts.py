@@ -111,31 +111,13 @@ def generate(m,seed,count):
         yield validate_case(m,c)
 
 def complexity(m,c):
-    result=[]
-    for f in m["fields"]:
-        v=c[f["name"]]
-        if type(v) is int: result.append(v-f["min"])
-        elif type(v) is str: result.extend([len(v),sum(f["alphabet"].index(x) for x in v)])
-        elif f["kind"]=="matrix":result.extend([len(v)*len(v[0]),sum(x-f["min"] for row in v for x in row)])
-        else: result.extend([len(v),sum(x-f["min"] for x in v)])
-    return sum(result)
+    """Lexicographic structural size, then magnitude of values."""
+    from .v4_shrinking import complexity as measure
+    return measure(m,c)
 
 def smaller(m,c):
-    for f in m["fields"]:
-        name=f["name"];v=c[name];lo=f["min"]
-        if type(v) is int: candidates=[lo,lo+(v-lo)//2]
-        elif type(v) is str: candidates=[v[:lo],f["alphabet"][0]*len(v)]
-        elif f["kind"]=="matrix":candidates=[[[lo for _ in row] for row in v]]
-        else: candidates=[[lo]*len(v)]+[v[:i]+[lo]+v[i+1:] for i in range(min(len(v),8))]
-        for x in candidates:
-            d={**c,name:x}
-            for dependent in m["fields"]:
-                if dependent.get("length_from")==name and type(x) is int: d[dependent["name"]]=c[dependent["name"]][:x]
-                if dependent["kind"]=="matrix" and type(x) is int and name in (dependent.get("rows_from"),dependent.get("cols_from")):
-                    d[dependent["name"]]=[row[:dimension(dependent,"cols",d)] for row in c[dependent["name"]][:dimension(dependent,"rows",d)]]
-            try: validate_case(m,d)
-            except ValueError: continue
-            if complexity(m,d)<complexity(m,c): yield d
+    from .v4_shrinking import candidates
+    yield from candidates(m,c)
 
 def equal(m,a,b):
     if m["output"]=="tokens":return a.split()==b.split()

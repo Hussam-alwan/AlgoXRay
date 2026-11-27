@@ -68,6 +68,7 @@ class Run(BaseModel):
     guided:bool=False
     spectrum:bool=False
     count:int=Field(default=6,ge=1,le=12)
+    reduce_calls:int=Field(default=12,ge=0,le=32)
     seed:int=Field(default=2026,ge=0,le=2**32-1)
     case:dict|None=None
     analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
@@ -191,7 +192,7 @@ def router_for(require_loopback,token):
             with active_lock:active[body.analysis_id]=c
         try:
             p=store.load(body.package_key)
-            return analyze_package(p,body.source,count=body.count,seed=body.seed,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum)
+            return analyze_package(p,body.source,count=body.count,seed=body.seed,reduce_calls=body.reduce_calls,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:

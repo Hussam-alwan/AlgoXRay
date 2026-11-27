@@ -89,8 +89,8 @@ try:
         if instrumented:
             sys.settrace(trace)
         exec(code,{"__name__":"__main__","__file__":"submission.py"})
-except Deadline: status = "timeout"
-except Limit: status = "output_limit"
+except Deadline: status,exit_code = "timeout",None
+except Limit: status,exit_code = "output_limit",None
 except SystemExit as exc:
     if exc.code not in (None,0):
         status,detail="exception","SystemExit"
@@ -114,7 +114,7 @@ execution_cpu_ns=time.process_time_ns()-execution_start_cpu
 # This is an observation, not an independent deadline enforcement mechanism.
 # The host still terminates the worker at its wall-clock ceiling.
 if not instrumented and status=="ok" and execution_wall_ns>req["seconds"]*1e9:
-    status="timeout"
+    status,exit_code="timeout",None
 profile=profiler.report(status,execution_wall_ns,execution_cpu_ns)
 if not instrumented:
     profile.update(method="uninstrumented_execution",scope="Compile and execution inside guest, without trace/profile callbacks. Not judge runtime.")
