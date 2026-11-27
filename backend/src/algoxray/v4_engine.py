@@ -5,10 +5,19 @@ from .v4_isolation import execute_stdio
 from .v4_graph import observed_graph
 from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_facts,ProviderError
 
+def oracle(p,stdin,run,trace_limit=0):
+    first=run(p["reference"],stdin,trace_limit)
+    if first["status"]!="ok" or "reference_alt" not in p:return first
+    second=run(p["reference_alt"],stdin,0)
+    if second["status"]=="cancelled":return second
+    if second["status"]!="ok" or not equal(p["manifest"],first["stdout"],second["stdout"]):
+        return {"status":"oracle_disagreement","primary":first,"alternative":second}
+    return {**first,"alternative_agreed":True}
+
 def review(p,run=execute_stdio):
     validate_package(p);m=p["manifest"];checks=[]
     for c in p["controls"]:
-        r=run(p["reference"],serialize(m,c["case"]),trace_limit=0)
+        r=oracle(p,serialize(m,c["case"]),lambda src,stdin,limit:run(src,stdin,trace_limit=limit))
         checks.append({"case":c["case"],"status":r["status"],"matches":r["status"]=="ok" and equal(m,r["stdout"],c["expected"])})
     return {"passed":all(x["matches"] for x in checks),"checks":checks,"limitation":"Finite owner-supplied controls, not proof of reference correctness."}
 
@@ -24,7 +33,7 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
         attempts+=1
         stdin=serialize(m,c)
         if cancel is not None and cancel.is_set():return {"kind":"cancelled","case":c,"stdin":stdin}
-        ref=invoke(p["reference"],stdin,trace_limit)
+        ref=oracle(p,stdin,invoke,trace_limit)
         if ref["status"]=="cancelled":return {"kind":"cancelled","case":c,"stdin":stdin}
         if ref["status"]!="ok": return {"kind":"oracle_unavailable","case":c,"stdin":stdin,"reference":ref}
         actual=invoke(source,stdin,trace_limit)

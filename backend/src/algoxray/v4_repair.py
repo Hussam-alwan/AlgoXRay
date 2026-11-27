@@ -3,6 +3,7 @@ import hashlib
 from .v4_contracts import validate_package,serialize,generate,equal,digest
 from .v4_isolation import execute_stdio,MAX_SOURCE
 from .v4_provider import ProviderError
+from .v4_engine import oracle
 REPAIR_SCHEMA={"type":"object","properties":{"candidate":{"type":"string"},"rationale":{"type":"string"}},"required":["candidate","rationale"],"additionalProperties":False}
 def propose_repair(provider,p,source,case):
     m=p["manifest"];serialize(m,case)
@@ -17,7 +18,7 @@ def verify_repair(p,source,candidate,case,seed=2027,count=4,run=execute_stdio):
     if type(count) is not int or not 1<=count<=8 or type(seed) is not int or not 0<=seed<=2**32-1:raise ValueError("Invalid repair budget")
     if type(source) is not str or type(candidate) is not str or not 0<len(candidate.encode())<=MAX_SOURCE or not 0<len(source.encode())<=MAX_SOURCE:raise ValueError("Invalid source")
     stdin=serialize(m,case)
-    ref=run(p["reference"],stdin,trace_limit=0)
+    ref=oracle(p,stdin,lambda src,stdin,limit:run(src,stdin,trace_limit=limit))
     original=run(source,stdin,trace_limit=0)
     if ref["status"]!="ok" or not (original["status"]=="exception" or original["status"]=="ok" and not equal(m,original["stdout"],ref["stdout"])):
         return {"status":"original_witness_not_reproduced","checks":[]}
@@ -27,7 +28,7 @@ def verify_repair(p,source,candidate,case,seed=2027,count=4,run=execute_stdio):
         key=digest(c)
         if key in seen:continue
         seen.add(key);stdin=serialize(m,c)
-        ref=run(p["reference"],stdin,trace_limit=0)
+        ref=oracle(p,stdin,lambda src,stdin,limit:run(src,stdin,trace_limit=limit))
         if ref["status"]!="ok":
             checks.append({"kind":label,"case":c,"status":"oracle_unavailable"});break
         actual=run(candidate,stdin,trace_limit=0)
