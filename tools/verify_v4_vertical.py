@@ -13,6 +13,7 @@ def main():
         good=analyze_package(p,d["correct"],count=2,reduce_calls=0)
         bad=analyze_package(p,d["mutant"],count=2,reduce_calls=2)
         passed=checked["passed"] and good["status"]=="no_witness_found" and bad["status"]=="observed_mismatch" and bad["replay_count"]==3 and bool(bad["student_graph"]["nodes"])
+        if name=="hamburgers":passed=passed and bool(bad["student_graph"]["relations"]["data"])
         report[name]={"passed":passed,"reference_review":checked,"correct":good,"faulty":bad}
         print(name,passed,good["status"],bad["status"],flush=True)
     path=Path(args.out);path.parent.mkdir(parents=True,exist_ok=True)

@@ -1,5 +1,5 @@
 import pytest
-from algoxray.v4_isolation import docker_command,IMAGE,execute_stdio
+from algoxray.v4_isolation import docker_command,IMAGE,execute_stdio,GUEST
 from algoxray.v4_graph import observed_graph
 from algoxray.v4_provider import MockProvider,ProviderError,check_hypotheses
 
@@ -10,6 +10,13 @@ def test_docker_policy():
     assert not any(x in c for x in ["-v","--volume","--mount","--privileged"])
     with pytest.raises(ValueError): docker_command("test","latest")
 
+def test_guest_snapshot_and_byte_budget():
+    import subprocess,sys,json
+    source="\n".join([f"v{i}={i}" for i in range(20)]+["mid=v18+v19","print(mid)"])
+    req=json.dumps({"source":source,"stdin":"","seconds":1,"trace_limit":100})
+    result=json.loads(subprocess.check_output([sys.executable,"-I","-c",GUEST],input=req.encode()))
+    assert result["stdout"].strip()=="37"
+    assert any(e["locals"].get("mid")==37 for e in result["events"])
 def test_bad_budget():
     with pytest.raises(ValueError): execute_stdio("print(1)","",seconds=10)
     with pytest.raises(ValueError): execute_stdio("print(1)","",trace_limit=300)

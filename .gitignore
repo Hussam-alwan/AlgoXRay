@@ -40,3 +40,6 @@ results/external-v2-*/
 
 results/option-b-v3/
 results/external-v3-*/
+
+# V4 local runtime, author-approved packages, private source and evidence
+results/v4-*

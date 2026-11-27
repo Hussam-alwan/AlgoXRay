@@ -26,6 +26,7 @@ events = []
 frames = {}
 counter = 0
 truncated = False
+trace_bytes = 0
 deadline = time.monotonic() + req["seconds"]
 class Deadline(Exception): pass
 class Limit(Exception): pass
@@ -41,11 +42,11 @@ def snap(v):
         return [snap(x) for x in v]
     return {"unavailable": True}
 def trace(f, kind, arg):
-    global counter, truncated
+    global counter, truncated, trace_bytes
     if f.f_code.co_filename != "submission.py": return None
     if time.monotonic() > deadline: raise Deadline()
     if kind not in ("call","line","return","exception"): return trace
-    if len(events) >= req["trace_limit"]: truncated = True; return trace
+    if truncated or len(events) >= req["trace_limit"]: truncated = True; return trace
     ident = id(f)
     if ident not in frames:
         counter += 1
@@ -54,8 +55,13 @@ def trace(f, kind, arg):
     ev = {"event_id":"E"+str(len(events)+1),"frame_id":frame,"parent_frame_id":parent,
           "line":f.f_lineno,"kind":kind,"function":f.f_code.co_name,
           "snapshot_timing":"before_line" if kind=="line" else kind,
-          "locals":{k:snap(v) for k,v in list(f.f_locals.items())[:16] if not k.startswith("__")}}
+          "locals":{k:snap(v) for k,v in [(k,v) for k,v in f.f_locals.items() if not k.startswith("__") and type(v) in (int,bool,str,list,tuple,type(None))][:32]}}
+    # Only scalar globals referenced by the function, distinguished from locals.
+    if f.f_code.co_name!="<module>":
+        ev["globals"]={k:snap(f.f_globals[k]) for k in f.f_code.co_names[:24] if k in f.f_globals and type(f.f_globals[k]) in (int,bool,str,type(None))}
     if kind == "exception": ev["exception_type"] = arg[0].__name__
+    trace_bytes+=len(json.dumps(ev,ensure_ascii=True))
+    if trace_bytes>180000: truncated=True; return trace
     events.append(ev)
     if kind == "return": frames.pop(ident,None)
     return trace
