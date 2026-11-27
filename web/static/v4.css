@@ -9,3 +9,5 @@ main{grid-template-columns:minmax(0,1fr)}.panel,#profiling{min-width:0}
 .diagnostic-card p{margin:.6rem 0}
 .finding-jump{margin:4px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
 #execution-summary,#ai-state{line-height:1.7}
+
+#benchmark-chart{min-width:0;max-width:100%;overflow:hidden}#benchmark-chart svg{min-width:0;max-width:100%;height:auto}#benchmark-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}#benchmark-table th,#benchmark-table td{padding:8px;border-bottom:1px solid #40516a;white-space:nowrap}#size-field,#size-values{max-width:100%;background:#0b1220;color:#e2e8f0;border:1px solid #40516a;border-radius:7px;padding:7px}details{margin:12px 0}details summary{cursor:pointer;margin-bottom:8px}

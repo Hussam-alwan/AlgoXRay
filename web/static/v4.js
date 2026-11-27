@@ -1,6 +1,6 @@
 "use strict";
 const $=id=>document.getElementById(id);
-let token="",demos={},activeDemo="hamburgers",result=null,side="student",index=0,sources={},busy=false,analysisId=null,profileSelection=null,activeIntake=null,preparedStatement=null;
+let token="",demos={},activeDemo="hamburgers",result=null,side="student",index=0,sources={},busy=false,analysisId=null,profileSelection=null,activeIntake=null,preparedStatement=null,benchmarkResult=null;
 async function api(path,body){
  const opts=body===undefined?{}:{method:"POST",headers:{"Content-Type":"application/json","X-AlgoXRay-Token":token},body:JSON.stringify(body)};
  const response=await fetch(path,opts);const data=await response.json();if(!response.ok){const error=Error(typeof data.detail==="string"?data.detail:JSON.stringify(data.detail));error.payload=data.detail;throw error}return data;
@@ -11,7 +11,7 @@ async function refreshModels(){const h=await api("/api/v4/health");msg("health",
 $("refresh-models").onclick=()=>refreshModels().catch(e=>msg("health",e.message));
 $("model").onchange=()=>{$("cloud-consent").checked=false;refreshModels().catch(e=>msg("health",e.message))};
 
-function setBusy(value){busy=value;for(const id of ["prepare-statement","statement","statement-kind","manual-samples","draft-schema","problem-url","approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
+function setBusy(value){busy=value;for(const id of ["observe-run","plain-benchmark","scaling-benchmark","manual-stdin","manual-expected","sample-reviewed","sample-comparison","size-field","size-values","timing-repetitions","timing-seconds","prepare-statement","statement","statement-kind","manual-samples","draft-schema","problem-url","approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
 async function packages(selected){const p=await api("/api/v4/packages");$("packages").replaceChildren();for(const x of p){const opt=document.createElement("option");opt.value=x.key;opt.textContent=x.manifest.title+" · "+x.key.slice(0,8);$("packages").append(opt)}if(selected)$("packages").value=selected;}
 function loadDemo(){activeIntake=null;preparedStatement=null;$("intake-review").hidden=true;$("manual-samples").value="";activeDemo=$("demo").value;const d=demos[activeDemo];if(!d)return;$("package").value=JSON.stringify(d.package,null,2);$("statement").value=d.package.manifest.statement;$("source").value=d.mutant;$("reviewed").checked=false;$("trusted").checked=false;msg("approval","مسودة مثال؛ يجب المراجعة قبل الاعتماد.");}
 $("load").onclick=loadDemo;
@@ -36,15 +36,21 @@ $("draft").onclick=async()=>{if(busy)return;setBusy(true);msg("approval","تول
 $("import-problem").onclick=async()=>{if(busy)return;setBusy(true);try{const r=await api("/api/v4/packages/intake",{kind:"codeforces",url:$("problem-url").value});$("statement").value=r.statement;$("manual-samples").value=JSON.stringify(r.samples,null,2);displayIntake(r);$("import-samples").hidden=false;msg("import-samples",JSON.stringify({source:r.source_url,samples:r.samples},null,2));$("reviewed").checked=false;msg("approval",r.warning)}catch(e){msg("approval",e.message)}finally{setBusy(false)}};
 $("draft-reference").onclick=async()=>{if(busy)return;setBusy(true);try{const p=JSON.parse($("package").value);const r=await api("/api/v4/packages/reference",{manifest:p.manifest,...aiOptions()});p.reference=r.reference;delete p.reference_alt;p.controls=[];$("package").value=JSON.stringify(p,null,2);$("reviewed").checked=false;msg("approval",r.warning+" — "+r.rationale)}catch(e){msg("approval",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};
 $("approve").onclick=async()=>{if(busy)return;setBusy(true);msg("approval","فحص المرجع ضمن Docker...");try{let p=JSON.parse($("package").value);let r=await api("/api/v4/packages/approve",{package:p,owner_reviewed:$("reviewed").checked});msg("approval",JSON.stringify(r.review,null,2));if(r.key)await packages(r.key)}catch(e){msg("approval",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};
-$("run").onclick=async()=>{if(busy)return;setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;msg("status","تنفيذ الحالات والبحث وإعادة التحقق...");try{const source=$("source").value;result=await api("/api/v4/analyze",{package_key:$("packages").value,source,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),generator:$("generator").value,guided:$("guided").checked,spectrum:$("spectrum").checked,count:Number($("count").value),reduce_calls:Number($("reduce-count").value),analysis_id:analysisId});msg("status",result.status+" · "+(result.attempts||0)+" attempts");if(result.status==="observed_mismatch"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show() }else msg("status",result.status+" — "+((result.scope||"No supported conclusion")+" | "+JSON.stringify(result.guidance||{})))}catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}};
+$("run").onclick=async()=>{if(busy)return;setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;$("benchmark-results").hidden=true;msg("status","تنفيذ الحالات والبحث وإعادة التحقق...");try{const source=$("source").value;result=await api("/api/v4/analyze",{package_key:$("packages").value,source,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),generator:$("generator").value,guided:$("guided").checked,spectrum:$("spectrum").checked,count:Number($("count").value),reduce_calls:Number($("reduce-count").value),analysis_id:analysisId});msg("status",result.status+" · "+(result.attempts||0)+" attempts");if(result.status==="observed_mismatch"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show() }else msg("status",result.status+" — "+((result.scope||"No supported conclusion")+" | "+JSON.stringify(result.guidance||{})))}catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}};
 $("cancel").onclick=async()=>{const id=analysisId;if(!id)return;for(let i=0;i<12&&analysisId===id;i++){try{await api("/api/v4/analysis/"+id+"/cancel",{});msg("status","Cancellation requested");return}catch(e){await new Promise(r=>setTimeout(r,150))}}};
 function show(){
  $("repair-panel").hidden=result.status!=="observed_mismatch";
  msg("result-title",result.status==="profiled_execution"?"3. قياس تنفيذ واحد · "+result.kind:"3. الشاهد وأدلة التنفيذ");
  profileSelection=null;$("candidate").value="";$("patch-reviewed").checked=false;
  for(const id of ["patch-status","patch-diff","repair-history-view"])msg(id,"");
- refreshRepairs().catch(()=>{});const w=result.witness;$("results").hidden=false;
- msg("stdin",w.stdin);msg("expected",w.reference.stdout);msg("actual",w.student.stdout||w.student.detail||w.student.status);
+ if(result.package_sha256)refreshRepairs().catch(()=>{});
+ const w=result.witness;const manual=result.status==="manual_observation";
+ $("results").hidden=false;$("benchmark-results").hidden=true;
+ $("reference").disabled=manual;$("cmp-reference").closest("div").hidden=manual;
+ $("expected").previousElementSibling.textContent=manual?"خرج عينة معلوم (إن روجع)":"المرجع";
+ $("actual").previousElementSibling.textContent=manual?"خرج البرنامج":"الطالب";
+ msg("stdin",w.stdin);msg("expected",manual?(result.judgment.expected??"لا يوجد مرجع متحقق"):w.reference.stdout);msg("actual",w.student.stdout||w.student.detail||w.student.status);
+ if(manual)msg("result-title","ملاحظة تنفيذ مستقل — "+result.kind+" · "+result.judgment.status);
  msg("scope",result.scope+" | replay: "+result.replay_count+" | trace: "+w.student.trace_status+" | AI: "+result.ai_status+" · "+(result.ai_model||""));
  const reduction=result.reduction;
  $("reduction-panel").hidden=!reduction;
@@ -227,15 +233,19 @@ async function refreshRepairs(){
 }
 $("load-repair").onclick=async()=>{try{const key=$("repair-history").value;if(!key)return;const r=await api("/api/v4/repair/version/"+key);msg("repair-history-view",JSON.stringify(r,null,2))}catch(e){msg("repair-history-view",e.message)}};
 
-function invalidateResult(){if(!busy){result=null;$("results").hidden=true;profileSelection=null}}
+function invalidateResult(){if(!busy){result=null;benchmarkResult=null;$("results").hidden=true;$("benchmark-results").hidden=true;profileSelection=null}}
 $("source").addEventListener("input",invalidateResult);
 $("profile-case").addEventListener("input",invalidateResult);
+for(const id of ["manual-stdin","manual-expected","size-field","size-values","timing-repetitions","timing-seconds"])$(id).addEventListener("input",invalidateResult);
+$("sample-reviewed").addEventListener("change",invalidateResult);
+$("sample-comparison").addEventListener("change",invalidateResult);
+
 for(const id of ["correct","mutant","load"])$(id).addEventListener("click",invalidateResult);
 $("profile-run").onclick=async()=>{
  if(busy)return;
  let caseValue=null;
  try{caseValue=$("profile-case").value.trim()?JSON.parse($("profile-case").value):null}catch(e){msg("status","مدخل JSON غير صالح");return}
- setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;msg("status","قياس التنفيذ للطالب والمرجع...");
+ setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;$("benchmark-results").hidden=true;msg("status","قياس التنفيذ للطالب والمرجع...");
  try{
   const source=$("source").value;
   result=await api("/api/v4/profile",{package_key:$("packages").value,source,case:caseValue,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),analysis_id:analysisId});
@@ -276,3 +286,70 @@ $("profile-csv").onclick=()=>{
 $("clear-cache").onclick=async()=>{if(busy)return;try{await api("/api/v4/cache/clear",{});await refreshModels()}catch(e){msg("cache-state",e.message)}};
 
 $("audit-reference").onclick=async()=>{if(busy)return;setBusy(true);try{const r=await api("/api/v4/packages/audit",{package:JSON.parse($("package").value),owner_reviewed:$("reviewed").checked,max_cases:16});$("reference-audit").hidden=false;msg("reference-audit",JSON.stringify(r,null,2))}catch(e){$("reference-audit").hidden=false;msg("reference-audit",e.message)}finally{setBusy(false)}};
+
+async function runIndependent(path,body){
+ if(busy)return;
+ setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;
+ result=null;benchmarkResult=null;$("results").hidden=true;$("benchmark-results").hidden=true;msg("status","Executing isolated program...");
+ try{
+  const source=$("source").value;
+  const data=await api(path,{...body,source,trusted_local_source:$("trusted").checked,analysis_id:analysisId});
+  if(data.analysis_id!==analysisId||source!==$("source").value)return;
+  msg("status",data.status+" · "+(data.kind||data.stop_reason||""));
+  if(data.status==="manual_observation"){
+   result=data;sources={student:source,reference:""};side="student";index=0;show();
+  }else if(data.status==="benchmark_observation"){
+   benchmarkResult=data;showBenchmark();
+  }
+ }catch(e){msg("status",e.message)}
+ finally{analysisId=null;$("cancel").hidden=true;setBusy(false)}
+}
+$("observe-run").onclick=()=>runIndependent("/api/v4/observe",{stdin:$("manual-stdin").value,
+ expected:$("sample-reviewed").checked?$("manual-expected").value:null,expected_reviewed:$("sample-reviewed").checked,
+ comparison:$("sample-comparison").value,mode:"trace_profile",seconds:Number($("timing-seconds").value)});
+$("plain-benchmark").onclick=()=>runIndependent("/api/v4/benchmark",{stdin:$("manual-stdin").value,repetitions:Number($("timing-repetitions").value),seconds:Number($("timing-seconds").value)});
+$("scaling-benchmark").onclick=()=>runIndependent("/api/v4/benchmark",{package_key:$("packages").value,size_field:$("size-field").value.trim(),
+ sizes:$("size-values").value.split(",").map(x=>Number(x.trim())),repetitions:Number($("timing-repetitions").value),seconds:Number($("timing-seconds").value)});
+function showBenchmark(){
+ const b=benchmarkResult;if(!b)return;
+ $("benchmark-results").hidden=false;
+ msg("benchmark-summary",b.stop_reason+" · "+b.physical_executions+" worker executions · "+b.elapsed_ms+" ms session");
+ msg("benchmark-scope",b.scope);msg("benchmark-growth",JSON.stringify(b.growth,null,2));
+ const tbody=$("benchmark-table").tBodies[0];tbody.replaceChildren();
+ const ms=n=>Number.isFinite(n)?(n/1e6).toFixed(4):"—";
+ for(const point of b.points){
+  const s=point.summary,tr=document.createElement("tr");
+  for(const v of [point.size??"manual",s.completed+"/"+s.requested,ms(s.wall_ns?.median),ms(s.cpu_ns?.median),
+   s.wall_ns?ms(s.wall_ns.min)+" – "+ms(s.wall_ns.max):"—",s.timeouts,point.correctness]){
+   const td=document.createElement("td");td.textContent=String(v);tr.append(td);
+  }tbody.append(tr);
+ }
+ const view=$("benchmark-chart");view.replaceChildren();
+ const rows=b.points.filter(p=>Number.isFinite(p.size)&&Number.isFinite(p.summary.wall_ns?.median));
+ if(rows.length<2){msg("benchmark-chart","At least two measured sizes are needed for a curve.");return}
+ const xMin=Math.min(...b.points.map(p=>p.size)),xMax=Math.max(...b.points.map(p=>p.size));
+ const yMax=Math.max(1,...rows.map(p=>p.summary.wall_ns.max));
+ const x=v=>50+520*(v-xMin)/Math.max(1,xMax-xMin),y=v=>215-175*v/yMax;
+ const svg=svgEl("svg",{viewBox:"0 0 620 255",role:"img","aria-label":"Measured wall time medians by input size"});
+ svg.style.width="100%";svg.style.maxWidth="720px";
+ svg.append(svgEl("path",{d:"M50 20 V215 H590",stroke:"currentColor",fill:"none"}));
+ const units=svgEl("text",{x:55,y:15,fill:"currentColor","font-size":12});units.textContent="Wall time (ms)";svg.append(units);
+ let previous=null;
+ for(const p of b.points){
+  const wall=p.summary.wall_ns;
+  if(!wall||p.summary.completed!==p.summary.requested){previous=null;continue}
+  const px=x(p.size),py=y(wall.median);
+  if(previous)svg.append(svgEl("line",{x1:previous[0],y1:previous[1],x2:px,y2:py,stroke:"#2563eb","stroke-width":2}));
+  svg.append(svgEl("line",{x1:px,y1:y(wall.min),x2:px,y2:y(wall.max),stroke:"currentColor","stroke-width":1}));
+  const circle=svgEl("circle",{cx:px,cy:py,r:4,fill:"#2563eb"}),tip=svgEl("title",{});
+  tip.textContent=p.size+": "+ms(wall.median)+" ms, "+p.correctness;circle.append(tip);svg.append(circle);
+  const label=svgEl("text",{x:px,y:235,fill:"currentColor","font-size":11,"text-anchor":"middle"});label.textContent=String(p.size);svg.append(label);
+  previous=[px,py];
+ }
+ view.append(svg);
+}
+$("benchmark-export").onclick=()=>{
+ if(!benchmarkResult)return;
+ const url=URL.createObjectURL(new Blob([JSON.stringify(benchmarkResult,null,2)],{type:"application/json"}));
+ const a=document.createElement("a");a.href=url;a.download="algoxray-benchmark.json";a.click();URL.revokeObjectURL(url);
+};

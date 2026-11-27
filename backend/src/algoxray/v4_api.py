@@ -81,6 +81,31 @@ class Run(BaseModel):
     case:dict|None=None
     analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
 
+class Observation(BaseModel):
+    model_config=ConfigDict(extra="forbid",strict=True)
+    source:str=Field(min_length=1,max_length=32768)
+    stdin:str=Field(default="",max_length=16384)
+    expected:str|None=Field(default=None,max_length=8192)
+    expected_reviewed:bool=False
+    comparison:str="tokens"
+    mode:str="trace_profile"
+    seconds:float=Field(default=1.0,ge=.05,le=3)
+    trusted_local_source:bool=False
+    analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
+
+class Benchmark(BaseModel):
+    model_config=ConfigDict(extra="forbid",strict=True)
+    source:str=Field(min_length=1,max_length=32768)
+    trusted_local_source:bool=False
+    stdin:str|None=Field(default=None,max_length=16384)
+    package_key:str|None=None
+    size_field:str|None=Field(default=None,max_length=31)
+    sizes:list[int]|None=Field(default=None,min_length=1,max_length=5)
+    seed:int=Field(default=2026,ge=0,le=2**32-1)
+    repetitions:int=Field(default=3,ge=1,le=5)
+    seconds:float=Field(default=1.0,ge=.05,le=3)
+    analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
+
 def router_for(require_loopback,token):
     router=APIRouter(prefix="/api/v4");lock=threading.Lock();active={};active_lock=threading.Lock()
     store=PackageStore(os.getenv("ALGOXRAY_V4_PACKAGE_STORE") or ROOT/"results"/"v4-packages")
@@ -205,6 +230,48 @@ def router_for(require_loopback,token):
             return {**result,"history_key":repairs.save(body.package_key,body.source,body.candidate,result)}
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:lock.release()
+    def local_observation(body,request,action):
+        guard(request)
+        if not body.trusted_local_source:raise HTTPException(403,"Confirm local source review")
+        if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
+        c=threading.Event()
+        if body.analysis_id:
+            with active_lock:active[body.analysis_id]=c
+        try:
+            result=action(c)
+            return {**result,"analysis_id":body.analysis_id}
+        except (ValueError,OSError,TypeError,KeyError) as exc:raise HTTPException(422,str(exc)[:240]) from None
+        finally:
+            if body.analysis_id:
+                with active_lock:active.pop(body.analysis_id,None)
+            lock.release()
+
+    @router.post("/observe")
+    def observe(body:Observation,request:Request):
+        from .v4_observation import observe_source
+        return local_observation(body,request,lambda c:observe_source(
+            body.source,body.stdin,expected=body.expected,expected_reviewed=body.expected_reviewed,
+            comparison=body.comparison,mode=body.mode,seconds=body.seconds,cancel=c))
+
+    @router.post("/benchmark")
+    def benchmark(body:Benchmark,request:Request):
+        from .v4_observation import generated_size_inputs,benchmark_source
+        def execute(c):
+            if body.package_key is not None:
+                if body.stdin is not None or body.size_field is None or body.sizes is None:
+                    raise ValueError("Choose package and size field/sizes, not manual stdin")
+                package=store.load(body.package_key)
+                inputs=generated_size_inputs(package["manifest"],body.size_field,body.sizes,body.seed)
+            else:
+                if body.stdin is None or body.size_field is not None or body.sizes is not None:
+                    raise ValueError("Supply manual stdin, or package and size field/sizes")
+                package=None
+                inputs=[{"size":None,"case":None,"stdin":body.stdin}]
+            return benchmark_source(body.source,inputs,repeats=body.repetitions,
+                                    seconds=body.seconds,seed=body.seed,package=package,
+                                    size_field=body.size_field,cancel=c)
+        return local_observation(body,request,execute)
+
     @router.post("/analysis/{analysis_id}/cancel")
     def cancel_analysis(analysis_id:str,request:Request):
         guard(request)
