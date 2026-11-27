@@ -1,7 +1,7 @@
 """Bounded legal test generation and model-proposed prediction checks."""
 from hypothesis import given,seed as hyp_seed,settings,Phase,strategies as st
 from .v4_contracts import serialize,digest,dimension
-from .v4_provider import ProviderError
+from .v4_provider import ProviderError,bounded_propose
 
 def hypothesis_cases(m,seed,count):
     @st.composite
@@ -39,10 +39,10 @@ def case_schema(m):
         properties[f["name"]]=v
     return {"type":"object","properties":properties,"required":list(properties),"additionalProperties":False}
 
-def suggestions(provider,m,source,witness=None,hypotheses=()):
+def suggestions(provider,m,source,witness=None,hypotheses=(),cancel=None):
     schema={"type":"object","properties":{"proposals":{"type":"array","maxItems":3,"items":{"type":"object","properties":{"case":case_schema(m),"prediction":{"type":"string","enum":["match","mismatch"]},"hypothesis_index":{"type":"integer","minimum":-1,"maximum":2}},"required":["case","prediction","hypothesis_index"],"additionalProperties":False}}},"required":["proposals"],"additionalProperties":False}
     data={"manifest":m,"source":source,"witness":witness,"hypotheses":list(hypotheses),"instruction":"Propose up to 3 different legal cases to test predicted match or mismatch relative to reference. Use hypothesis_index -1 for general search; otherwise index a supported hypothesis. No code or expected output. Include exact field lengths."}
-    r=provider.propose("case_suggestions",data,schema)
+    r=bounded_propose(provider,"case_suggestions",data,schema,cancel=cancel)
     if type(r) is not dict or set(r)!={"proposals"} or type(r["proposals"]) is not list or len(r["proposals"])>3:raise ProviderError("invalid_case_suggestions")
     valid=[];rejected=0;seen=set()
     for p in r["proposals"]:

@@ -6,7 +6,7 @@ from .v4_graph import observed_graph
 from .v4_compare import rank
 from .v4_cfg import output_chain
 from .v4_guidance import hypothesis_cases,suggestions,classify_probe
-from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_facts,ProviderError
+from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_facts,ProviderError,bounded_propose
 
 def oracle(p,stdin,run,trace_limit=0):
     first=run(p["reference"],stdin,trace_limit)
@@ -69,7 +69,7 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
         suggested=True
         if cancel is not None and cancel.is_set():return None
         try:
-            proposals,rejected=suggestions(provider,m,source,witness,hypotheses)
+            proposals,rejected=suggestions(provider,m,source,witness,hypotheses,cancel=cancel)
             guidance.update(status="completed",rejected=rejected,usage=getattr(provider,"usage",{}))
         except (ProviderError,ValueError) as exc:
             guidance.update(status="unavailable_or_invalid",error=str(exc)[:120]);return None
@@ -110,7 +110,7 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
     if provider is not None:
         try:
             supplied=student_events[-24:]
-            proposal=provider.propose("diagnosis",{"statement":m["statement"],"source":source,"stdin":witness["stdin"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout"),"events":supplied,"instruction":"Use only supplied event IDs. Facts must use scalar local variables only: integer, boolean, string or null; omit arrays and unavailable values. Hypotheses are not verified causes."},DIAGNOSIS_SCHEMA)
+            proposal=bounded_propose(provider,"diagnosis",{"statement":m["statement"],"source":source,"stdin":witness["stdin"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout"),"events":supplied,"instruction":"Use only supplied event IDs. Facts must use scalar local variables only: integer, boolean, string or null; omit arrays and unavailable values. Hypotheses are not verified causes."},DIAGNOSIS_SCHEMA,cancel=cancel)
             hypotheses=check_hypotheses(proposal,supplied);facts=check_facts(proposal,supplied);ai_status="ok"
         except ProviderError as exc: ai_status="unavailable_or_invalid";ai_error=str(exc);hypotheses=[];facts=[]
         except ValueError: ai_status="unavailable_or_invalid";ai_error="invalid_model_output";hypotheses=[];facts=[]

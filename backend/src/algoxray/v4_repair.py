@@ -1,5 +1,6 @@
 """Optional user-reviewed patch. Test success is not a proof of general correctness."""
-import hashlib
+import hashlib,difflib,json
+from pathlib import Path
 from .v4_contracts import validate_package,serialize,generate,equal,digest
 from .v4_isolation import execute_stdio,MAX_SOURCE
 from .v4_provider import ProviderError
@@ -11,7 +12,7 @@ def propose_repair(provider,p,source,case):
         "instruction":"Propose complete Python stdin/stdout source, not a diff. Keep scope limited. Do not claim it passed tests."},REPAIR_SCHEMA)
     if type(result) is not dict or set(result)!={"candidate","rationale"} or type(result["candidate"]) is not str or not 0<len(result["candidate"].encode())<=MAX_SOURCE or type(result["rationale"]) is not str or len(result["rationale"])>1500:
         raise ProviderError("invalid_repair")
-    return {**result,"status":"unreviewed_proposal","executed":False}
+    return {**result,"status":"unreviewed_proposal","executed":False,"diff":"".join(difflib.unified_diff(source.splitlines(keepends=True),result["candidate"].splitlines(keepends=True),fromfile="original",tofile="candidate"))}
 
 def verify_repair(p,source,candidate,case,seed=2027,count=4,run=execute_stdio):
     validate_package(p);m=p["manifest"]
@@ -38,3 +39,32 @@ def verify_repair(p,source,candidate,case,seed=2027,count=4,run=execute_stdio):
             "checks":checks,"seed":seed,"package_sha256":digest(p),"original_sha256":hashlib.sha256(source.encode()).hexdigest(),
             "candidate_sha256":hashlib.sha256(candidate.encode()).hexdigest(),
             "scope":"Finite reviewed-reference regression cases; generated cases are not an independent research holdout. Original is unchanged."}
+
+class RepairStore:
+    """Local immutable verified-attempt history, not proof or auto-acceptance."""
+    def __init__(self,root):self.root=Path(root)
+    def save(self,package_key,source,candidate,result):
+        record={"package_key":package_key,"source":source,"candidate":candidate,"result":result}
+        key=digest(record);self.root.mkdir(parents=True,exist_ok=True)
+        target=self.root/(key+".json")
+        try:
+            with target.open("x",encoding="utf-8") as f:json.dump(record,f,ensure_ascii=True)
+        except FileExistsError:
+            if digest(self.load(key))!=key:raise ValueError("Repair history hash mismatch")
+        return key
+    def load(self,key):
+        import re
+        if type(key) is not str or not re.fullmatch("[0-9a-f]{64}",key):raise ValueError("Invalid repair history key")
+        p=self.root/(key+".json")
+        if not p.is_file():raise ValueError("Unknown repair history")
+        r=json.loads(p.read_text(encoding="utf-8"))
+        if digest(r)!=key:raise ValueError("Repair history hash mismatch")
+        return r
+    def list(self,package_key):
+        rows=[]
+        for p in sorted(self.root.glob("*.json"),key=lambda p:p.stat().st_mtime,reverse=True)[:100]:
+            try:
+                r=self.load(p.stem)
+                if r["package_key"]==package_key:rows.append({"key":p.stem,"status":r["result"]["status"],"candidate_sha256":r["result"].get("candidate_sha256")})
+            except (OSError,ValueError,KeyError):continue
+        return rows

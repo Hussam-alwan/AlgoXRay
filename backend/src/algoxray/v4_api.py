@@ -6,7 +6,7 @@ from .paths import ROOT
 from .v4_contracts import PackageStore,validate_package,validate_manifest
 from .v4_engine import review,analyze_package
 from .v4_provider import OllamaProvider,model_health,ProviderError
-from .v4_repair import propose_repair,verify_repair
+from .v4_repair import propose_repair,verify_repair,RepairStore
 from .v4_gemini import provider_for,provider_status
 from .v4_openrouter import status as openrouter_status
 from .v4_groq import status as groq_status
@@ -57,6 +57,7 @@ class Run(BaseModel):
 def router_for(require_loopback,token):
     router=APIRouter(prefix="/api/v4");lock=threading.Lock();active={};active_lock=threading.Lock()
     store=PackageStore(os.getenv("ALGOXRAY_V4_PACKAGE_STORE") or ROOT/"results"/"v4-packages")
+    repairs=RepairStore(os.getenv("ALGOXRAY_V4_REPAIR_STORE") or (store.root.parent/(store.root.name+"-repairs")))
     def guard(request):
         require_loopback(request)
         if not secrets.compare_digest(request.headers.get("x-algoxray-token",""),token):raise HTTPException(403,"Local author session required")
@@ -115,12 +116,24 @@ def router_for(require_loopback,token):
             return {**propose_repair(provider,store.load(body.package_key),body.source,body.case),"model":body.model,"usage":getattr(provider,"usage",{})}
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
         except (ValueError,OSError):raise HTTPException(422,"Proposal invalid")
+    @router.get("/repairs/{package_key}")
+    def repair_history(package_key:str,request:Request):
+        require_loopback(request)
+        try:store.load(package_key);return repairs.list(package_key)
+        except (ValueError,OSError):raise HTTPException(422,"Unknown package") from None
+    @router.get("/repair/version/{key}")
+    def repair_version(key:str,request:Request):
+        require_loopback(request)
+        try:return repairs.load(key)
+        except (ValueError,OSError):raise HTTPException(422,"Unknown repair version") from None
     @router.post("/repair/verify")
     def repair_verify(body:Repair,request:Request):
         guard(request)
         if not body.reviewed or body.candidate is None:raise HTTPException(403,"Review candidate before execution")
         if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
-        try:return verify_repair(store.load(body.package_key),body.source,body.candidate,body.case)
+        try:
+            result=verify_repair(store.load(body.package_key),body.source,body.candidate,body.case)
+            return {**result,"history_key":repairs.save(body.package_key,body.source,body.candidate,result)}
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:lock.release()
     @router.post("/analysis/{analysis_id}/cancel")

@@ -2,11 +2,32 @@
 from dataclasses import dataclass
 import json
 import threading
+import time
 import urllib.request
 import urllib.error
 from typing import Protocol
 
 class ProviderError(RuntimeError): pass
+def bounded_propose(provider,task,data,schema,cancel=None,deadline=105):
+    """Abandon an in-flight call locally; transport may still finish/consume quota.
+    The underlying provider lock remains held until its request ends.
+    """
+    if cancel is None:return provider.propose(task,data,schema)
+    if cancel.is_set():raise ProviderError("inference_cancelled")
+    complete=threading.Event();box={}
+    def work():
+        try:box["result"]=provider.propose(task,data,schema)
+        except Exception as exc:box["error"]=exc
+        finally:complete.set()
+    threading.Thread(target=work,daemon=True).start()
+    end=time.monotonic()+deadline
+    while not complete.wait(.05):
+        if cancel.is_set():raise ProviderError("inference_cancelled")
+        if time.monotonic()>end:raise ProviderError("inference_deadline")
+    if cancel.is_set():raise ProviderError("inference_cancelled")
+    if "error" in box:raise box["error"]
+    return box["result"]
+
 class Provider(Protocol):
     def propose(self, task: str, data: dict, schema: dict) -> dict: ...
 
