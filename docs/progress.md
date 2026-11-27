@@ -1,3 +1,5 @@
+> Current continuation: [V4 active plan and verification status](V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md). This document preserves its original checkpoint; later measurements do not replace its historical results.
+
 # سجل التنفيذ — 26 نوفمبر 2026
 
 ## تحديث محرر الكود — تم التحقق منه

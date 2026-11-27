@@ -1,7 +1,35 @@
 # AlgoXRay V4 — Dynamic AI Engine
-Status: implementation specification, not a completed release.
+Status: active V4 continuation record, reconciled 27 November 2026. The bounded local prototype is implemented; the full research/generalization gates are still partial. The original specification follows the verified checkpoint below.
 Baseline: c84d0c9ba1eb1a4c7da857a5454a4ace90f8843d (option-b).
 Owner objective: debug previously unseen competitive-programming problems with actual execution, evidence-linked graphics and AI-assisted hypotheses, without adding problem-specific conditions to the engine for every new problem.
+
+## Active checkpoint - 27 November 2026
+
+This is the current plan. Core/Option B handoffs and the earlier V4 status document are historical. Runtime code is measured at `b65f596fca34c487777641ebd47e97ba5161752b`; later documentation, navigation and evidence packaging do not change that engine. V4 lives in `D:/icips-v4` on `v4-dynamic-ai`, port 8002. V3 stays in `D:/icips`, port 8001.
+
+Owner additions: publish all intended project changes to GitHub, and measure execution time for each code block for CP. Code, tests, documentation and the explicit synthetic/public evidence export belong in Git. Credentials, personal submissions, package stores, quota databases, environments and private reviewer keys do not.
+
+| Package | Verified implementation | Open boundary or remaining task |
+|---|---|---|
+| WP9 | Separate worktree and dependencies; preserved archives; pinned dedicated Docker worker with isolation probes; local Qwen 7B schema/diagnosis/abstention smoke | Independent threat assessment and authenticated adversarial trace evidence are not complete; public execution stays disabled |
+| WP10 | Ollama, Gemini, Groq and OpenRouter adapters; strict output schema validation; timeout, local cancellation, consent and local request limits; measured local token/latency metadata | Optional Qwen Cloud adapter and cache are not implemented; remote cancellation and global account quotas are not guaranteed |
+| WP11 | Immutable reviewed packages, restart persistence and tamper checks; stdio field grammar with matrices; Codeforces text import; draft/reference proposal and review controls; five data-driven demos | General mathematical constraints/checkers and independent review of arbitrary references remain out of scope for this bounded release |
+| WP12 | Seeded boundary/random/Hypothesis generation, AI case suggestions, legal reduction, explicit statuses, three replays and independent reference disagreement handling | General multi-testcase/cross-field constraints, huge CP input ranges and multiple-valid-output checkers are not implemented |
+| WP13 | Observed graph, source navigation, actual call frames, variables, side-by-side trace, restricted CFG, supported data/control links and coverage ranking | General alias/heap/call slicing and automatic semantic alignment remain unsupported |
+| WP14 | Real local/cloud proposals; schema and event-anchor checks; recomputed scalar facts; execution-tested hypotheses; deterministic core survives AI failure | Free-form causal explanations remain hypotheses; no independent localization accuracy estimate |
+| WP15 | Reviewed patch proposals, diff, immutable history, witness and named regression checks, cancellation, export and live browser journeys | Broader repair/usability evidence and guaranteed remote inference termination remain unproven |
+| WP16 | Public paired seven-family pilot, local model smoke, 182 tests, 19 browser journeys, five demos, clean reproduction and explicit public evidence manifest; scoped primary-paper comparison | Independent unseen student corpus, human factuality/localization ratings, matched multi-problem AI ablation, author/venue approval and submission remain pending |
+| WP17 (owner addition) | Bounded block and line profiling: wall/CPU, self/inclusive, counts/averages, source/graph links, correct-code profiling, CSV/JSON, partial/unavailable states and mobile | Instrumented one-input timings are not judge runtime, a Big-O inference, or a calibrated CP performance benchmark |
+
+### Verification snapshot
+
+- 182/182 tests on Windows after schema hardening; one existing Starlette deprecation warning. Earlier Linux baseline 167/167, profiling checkpoint 174/174. Counts are software tests, not students or independent programs.
+- 19/19 browser journeys, with no page errors or external browser requests. An initial mobile table overflow failed; fixed and the failed report is retained.
+- Five authored demos passed; paired public pilot found 7/7 faulty variants, 0/7 corrected controls accused, 21 replay matches. These are exposed public adaptations, not an unseen student corpus.
+- Qwen2.5-Coder 7B Q4_K_M, digest `dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364`, context 4096: constrained draft transport 10.594 s, diagnosis 4.391 s, abstention 0.421 s; all three schema-valid, empty-evidence abstention passed. The draft transport uses a fixed candidate, not an open-ended authoring accuracy test. Peak sampled whole-board GPU memory 5003 MiB; it is not isolated peak model allocation.
+- [Continuation evidence](v4-evidence/continuation/MANIFEST.json), [profiling semantics](V4_PROFILING.md), [earlier expanded checkpoint](V4_EXPANDED_RELEASE.md), and [reviewable delivery draft](v4-delivery/README.md).
+
+No claim of universal debugging, first-of-kind novelty, improved learning, hostile-code security or general causal accuracy is made. Work remaining for independent participants or conference decisions is kept open rather than simulated. The original checklist below is a specification history; the table above is the current completion record.
 
 ## Scope and constraints
 - First release: Python, conventional stdin/stdout and existing solve(payload) contracts, bounded deterministic noninteractive problems. No promise of all Python programs, interactive judges, arbitrary languages or guaranteed fault localization.

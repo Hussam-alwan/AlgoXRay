@@ -1,3 +1,5 @@
+> Current continuation: [V4 active plan and verification status](V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md). This document preserves its original checkpoint; later measurements do not replace its historical results.
+
 # V4 expanded experimental checkpoint — 27 November 2026
 
 Runtime code: 58f44f39e3a415e8c38b9edbf8b4356ee984377d. Later commits add evidence and reproduction tooling. Local V4 at http://127.0.0.1:8002/v4; V3 on port 8001. Public execution remains disabled. This is not a validated general-purpose tutor.

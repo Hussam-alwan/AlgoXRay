@@ -1,3 +1,5 @@
+> Current continuation: [V4 active plan and verification status](V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md). This document preserves its original checkpoint; later measurements do not replace its historical results.
+
 # تسليم المشروع
 
 المجلد على جهاز Windows: D:\icips. شغّل start.bat ثم http://127.0.0.1:8000. لإعادة التثبيت استخدم setup.bat. اقرأ README.md قبل إضافة حل جديد.

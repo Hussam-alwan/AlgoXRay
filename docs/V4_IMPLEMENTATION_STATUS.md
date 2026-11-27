@@ -1,3 +1,5 @@
+> Current continuation: [V4 active plan and verification status](V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md). This document preserves its original checkpoint; later measurements do not replace its historical results.
+
 # V4 implementation checkpoint — 27 November 2026
 
 Experimental local workbench, not a complete general-purpose debugger or a conference evaluation. V3 worktree remains D:/icips on option-b; V4 D:/icips-v4 on v4-dynamic-ai. Live URL http://127.0.0.1:8002/v4; V3 stays on 8001. Code measured at 6980e82d82b760c02ab03804f9176796b54908e5. The separate dedicated worker is locally pinned to sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107; build base resolved to python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b.

@@ -126,6 +126,11 @@ def test(url,out):
         page.locator("#slider").fill(str(pos))
         assert "f" in page.locator("#stack").inner_text()
         checks.append("correct_code_profile_recursion_and_call_stack")
+        page.locator("#profiling").screenshot(path=str(out/"profile-table.png"))
+        page.set_viewport_size({"width":390,"height":844})
+        assert page.evaluate("document.body.scrollWidth")<=390
+        page.locator("#profiling").screenshot(path=str(out/"profile-mobile.png"))
+        page.set_viewport_size({"width":1400,"height":1000})
         with page.expect_download() as dl:page.locator("#profile-csv").click()
         dl.value.save_as(str(out/"timing.csv"))
         assert "inclusive_cpu_ns" in (out/"timing.csv").read_text(encoding="utf-8-sig")

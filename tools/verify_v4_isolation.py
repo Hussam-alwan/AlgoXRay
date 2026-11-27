@@ -2,10 +2,12 @@
 import json
 from pathlib import Path
 import sys
+import argparse
 from algoxray.v4_isolation import execute_stdio
 from algoxray.v4_graph import observed_graph
 
 def main():
+    parser=argparse.ArgumentParser();parser.add_argument("--out",default="results/v4-isolation-smoke-expanded.json");args=parser.parse_args()
     probes={
       "stdio":("a=int(input())\nprint(a+1)","4\n","ok","5"),
       "module_trace":("x=1\nx+=2\nprint(x)","","ok","3"),
@@ -27,6 +29,8 @@ def main():
         if name=="memory" and run["status"]=="infrastructure_error" and run.get("exit_code")==137: passed=run["cleanup_confirmed"] # Exit 137 is consistent with cgroup OOM, not a proof of cause.
         report[name]={"passed":passed,"status":run["status"],"elapsed_ms":run["elapsed_ms"],"cleanup_confirmed":run["cleanup_confirmed"]}
         print(name,report[name],flush=True)
-    path=Path("results/v4-isolation-smoke-expanded.json");path.parent.mkdir(exist_ok=True);path.write_text(json.dumps(report,indent=2))
+    path=Path(args.out);path.parent.mkdir(parents=True,exist_ok=True)
+    if path.exists():raise SystemExit("Choose a new output file to preserve earlier measurements")
+    path.write_text(json.dumps(report,indent=2))
     return 0 if all(x["passed"] for x in report.values()) else 1
 if __name__=="__main__": raise SystemExit(main())
