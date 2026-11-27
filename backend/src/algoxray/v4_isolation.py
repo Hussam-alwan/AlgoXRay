@@ -11,6 +11,7 @@ import subprocess
 import threading
 import time
 import uuid
+from .paths import ROOT
 
 IMAGE = "sha256:7594669de3f626d2de612f728140f71915609b310f7f1c16e2ed64d4a5190ade"
 MAX_PIPE = 512 * 1024
@@ -78,6 +79,15 @@ finally:
 print(json.dumps({"status":status,"detail":detail,"stdout":out.getvalue(),"stderr":err.getvalue(),
     "events":events,"trace_status":"truncated" if truncated else "complete"},ensure_ascii=True,allow_nan=False))
 '''
+def configured_image():
+    value=os.getenv("ALGOXRAY_V4_IMAGE")
+    if value:return value
+    path=ROOT/"results"/"v4-runtime.json"
+    if path.is_file():
+        data=json.loads(path.read_text(encoding="utf-8"))
+        return data["image_id"]
+    return IMAGE
+
 def docker_command(name, image):
     if not re.fullmatch(r"sha256:[0-9a-f]{64}", image):
         raise ValueError("Use an explicitly pinned local image ID")
@@ -86,7 +96,7 @@ def docker_command(name, image):
             "--security-opt","no-new-privileges","--user","10001:10001",
             "--memory","128m","--memory-swap","128m","--cpus","0.5","--pids-limit","32",
             "--tmpfs","/tmp:rw,noexec,nosuid,nodev,size=8m","--log-driver","none",
-            "--workdir","/tmp","--entrypoint","python",image,"-I","-B","-c",GUEST]
+            "--no-healthcheck","--workdir","/tmp","--entrypoint","python",image,"-I","-B","-c",GUEST]
 
 def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, cancel=None):
     if type(source) is not str or not 0 < len(source.encode("utf-8")) <= MAX_SOURCE:
@@ -96,7 +106,7 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
     if type(seconds) not in (float,int) or not 0.05 <= seconds <= 3 or type(trace_limit) is not int or not 0 <= trace_limit <= 256:
         raise ValueError("Invalid execution budget")
     name = "algoxray-v4-" + uuid.uuid4().hex
-    cmd = docker_command(name,image or os.getenv("ALGOXRAY_V4_IMAGE",IMAGE))
+    cmd = docker_command(name,image or configured_image())
     req = json.dumps({"source":source,"stdin":stdin,"seconds":seconds,"trace_limit":trace_limit},ensure_ascii=True).encode()+b"\n"
     started=time.monotonic()
     result={"status":"infrastructure_error"}
@@ -153,7 +163,7 @@ def execute_stdio(source, stdin, *, seconds=1.0, trace_limit=128, image=None, ca
             except (OSError,subprocess.TimeoutExpired): cleanup_ok=False
         for t in readers: t.join(.2)
     if not cleanup_ok: result={"status":"infrastructure_error","detail":"container_cleanup_unconfirmed"}
-    result.update(source_sha256=hashlib.sha256(source.encode()).hexdigest(),
+    result.update(image_id=cmd[cmd.index("--entrypoint")+2],source_sha256=hashlib.sha256(source.encode()).hexdigest(),
                   input_sha256=hashlib.sha256(stdin.encode()).hexdigest(),
                   elapsed_ms=round((time.monotonic()-started)*1000,2),
                   trace_trust="guest_observation_not_authenticated",cleanup_confirmed=cleanup_ok)

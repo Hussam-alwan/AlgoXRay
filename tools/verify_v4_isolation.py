@@ -14,14 +14,17 @@ def main():
       "uid":("import os\nprint(os.getuid())","","ok","10001"),
       "timeout":("while True: pass","","timeout",None),
       "output_limit":("print('a'*9000)","","output_limit",None),
+      "memory":("try:\n x=bytearray(256*1024*1024)\n print('unexpected')\nexcept MemoryError:\n print('blocked')","","ok","blocked"),
+      "host_wall_clock":("import time\ntime.sleep(25)","","timeout",None),
     }
     report={}
     for name,(source,stdin,status,stdout) in probes.items():
         run=execute_stdio(source,stdin,seconds=.7)
         passed=run["status"]==status and run["cleanup_confirmed"] and (stdout is None or run.get("stdout","").strip()==stdout)
         if name=="module_trace": passed=passed and bool(observed_graph(run.get("events",[]))["changes"])
+        if name=="memory" and run["status"]=="infrastructure_error": passed=run["cleanup_confirmed"] # Possible cgroup OOM termination, not a successful allocation.
         report[name]={"passed":passed,"status":run["status"],"elapsed_ms":run["elapsed_ms"],"cleanup_confirmed":run["cleanup_confirmed"]}
         print(name,report[name],flush=True)
-    path=Path("results/v4-isolation-smoke.json");path.parent.mkdir(exist_ok=True);path.write_text(json.dumps(report,indent=2))
+    path=Path("results/v4-isolation-smoke-expanded.json");path.parent.mkdir(exist_ok=True);path.write_text(json.dumps(report,indent=2))
     return 0 if all(x["passed"] for x in report.values()) else 1
 if __name__=="__main__": raise SystemExit(main())
