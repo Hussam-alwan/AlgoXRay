@@ -4,3 +4,8 @@
 main{grid-template-columns:minmax(0,1fr)}.panel,#profiling{min-width:0}
 
 #graph-frame{max-width:220px}#graph-kind,#graph-layout{max-width:170px}#loops{max-height:240px;overflow:auto}#snapshot-changes{max-height:200px}
+
+.diagnostic-card{border:1px solid #bd923d;border-inline-start:4px solid #eab308;border-radius:10px;padding:14px;margin:12px 0}
+.diagnostic-card p{margin:.6rem 0}
+.finding-jump{margin:4px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+#execution-summary,#ai-state{line-height:1.7}

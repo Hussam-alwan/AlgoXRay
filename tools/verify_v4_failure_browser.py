@@ -9,7 +9,15 @@ def server(port):
  from algoxray.v4_provider import ProviderError
  class Outage:
   model="controlled-outage-test";usage={}
-  def propose(self,*args,**kwargs):raise ProviderError("controlled_test_provider_unavailable")
+  def propose(self,task,data,schema):
+   if "# profile-diagnosis-fixture" in data.get("source",""):
+    import ast
+    line=next(n.lineno for n in ast.walk(ast.parse(data["source"])) if isinstance(n,ast.While))
+    event=next(e for e in data["events"] if e["line"]==line and e.get("kind")=="line")
+    return {"hypotheses":[{"text":"Inspect the repeated loop bounds in the recorded events.","event_ids":[event["event_id"]],"line":line}],
+        "facts":[{"event_id":event["event_id"],"variable":"l","value":event["locals"]["l"]}],
+        "branches":[{"event_id":event["event_id"],"line":line,"condition":True}]}
+   raise ProviderError("controlled_test_provider_unavailable")
  v4_api.provider_for=lambda *args,**kwargs:Outage()
  v4_api.model_health=lambda:{"status":"unavailable","models":[]}
  import uvicorn
@@ -83,9 +91,33 @@ def test(url,out):
   assert page.locator("#graph .node").count()==0
   expect(page.locator("#step")).to_contain_text("No events");checks.append("syntax_exception_has_no_fabricated_trace")
   page.screenshot(path=str(out/"missing-trace.png"),full_page=True)
+  timeout_source="l=1\nr=2\nwhile l<r:\n    mid=(l+r)//2\n    l=mid\n"
+  page.locator("#source").fill(timeout_source)
+  with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=45000) as response:page.locator("#profile-run").click()
+  profile_outage=response.value.json()
+  assert profile_outage["kind"]=="timeout" and profile_outage["ai_status"]=="unavailable_or_invalid"
+  assert profile_outage["execution_diagnostics"]["findings"] and page.locator("#graph .node").count()>0
+  expect(page.locator("#ai-state")).to_contain_text("تعذّر")
+  expect(page.locator("#facts")).to_contain_text("تعذّر")
+  (out/"profile-outage.json").write_text(json.dumps(profile_outage,indent=2),encoding="utf-8")
+  checks.append("profile_opt_in_outage_keeps_timeout_evidence_and_explains_state")
+  page.locator("#source").fill(timeout_source+"# profile-diagnosis-fixture\n")
+  with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=45000) as response:page.locator("#profile-run").click()
+  profile_ai=response.value.json()
+  assert profile_ai["kind"]=="timeout" and profile_ai["ai_status"]=="ok"
+  assert profile_ai["ai_facts"][0]["status"]=="matches_recorded_snapshot"
+  assert profile_ai["ai_branches"][0]["status"]=="matches_recorded_condition"
+  expect(page.locator("#ai-state")).to_contain_text("اكتمل")
+  expect(page.locator("#facts")).to_contain_text("مطابق")
+  expect(page.locator("#branch-facts")).to_contain_text("مطابق")
+  assert "execution_status" in page.locator("#ai-context").text_content()
+  page.locator("#hypotheses .hypothesis").first.click()
+  expect(page.locator("#code .active")).to_contain_text("while")
+  (out/"profile-fixture.json").write_text(json.dumps(profile_ai,indent=2),encoding="utf-8")
+  checks.append("profile_checked_opt_in_hypotheses_facts_conditions_and_context")
   assert not errors,errors
   assert not external,external
   browser.close()
- report={"status":"passed","checks":checks,"page_errors":errors,"external_requests":external,"scope":"Real browser and isolated worker; controlled mocked provider outage and authored negative packages. No live cloud request or human study."}
+ report={"status":"passed","checks":checks,"page_errors":errors,"external_requests":external,"scope":"Real browser and isolated worker; controlled mocked provider outage and authored negative packages. Opt-in success uses a controlled structured proposal. No live cloud request or human study."}
  (out/"report.json").write_text(json.dumps(report,indent=2),encoding="utf-8");print(json.dumps(report),flush=True)
 if __name__=="__main__":main()

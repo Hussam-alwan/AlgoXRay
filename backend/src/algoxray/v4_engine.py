@@ -5,7 +5,7 @@ from .v4_isolation import execute_stdio
 from .v4_graph import observed_graph
 from .v4_profiling import attach_profile
 from .v4_loop_observations import with_loops
-from .v4_diagnostic_context import diagnostic_context,check_branches
+from .v4_diagnostic_context import diagnose_execution
 from .v4_compare import rank
 from .v4_cfg import output_chain
 from .v4_guidance import hypothesis_cases,suggestions,classify_probe
@@ -126,17 +126,8 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
                 if len(checked)>=3 or len(passing)>=2:break
         ranking=rank(witness["student"],passing)
     if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
-    hypotheses=[];facts=[];branches=[];context_meta={}; ai_status="disabled";ai_error=None
-    if provider is not None:
-        try:
-            context=diagnostic_context(p,source,witness,ranking)
-            supplied=context["events"]
-            context_meta={k:context[k] for k in ("identity","context_bytes","source_complete","statement_complete","input_complete","outputs_complete")}
-            proposal=bounded_propose(provider,"diagnosis",context,DIAGNOSIS_SCHEMA,cancel=cancel)
-            hypotheses=check_hypotheses(proposal,supplied);facts=check_facts(proposal,supplied);branches=check_branches(proposal,source,supplied);ai_status="ok"
-        except ProviderError as exc: ai_status="unavailable_or_invalid";ai_error=str(exc);hypotheses=[];facts=[];branches=[]
-        except ValueError: ai_status="unavailable_or_invalid";ai_error="invalid_model_output";hypotheses=[];facts=[];branches=[]
-    ai_usage=dict(getattr(provider,"usage",{}))
+    diagnosis=diagnose_execution(p,source,witness,provider,ranking,cancel)
+    hypotheses=diagnosis["hypotheses"];ai_status=diagnosis["ai_status"]
     if provider is not None and guided and not suggested and hypotheses and ai_status=="ok":
         extra=run_suggestions({"case":witness["case"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout")},hypotheses)
         if extra and extra["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":extra,"guidance":guidance}
@@ -146,5 +137,5 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
     reference_graph["output_chain"]=output_chain(p["reference"],witness["reference"],reference_graph)
     return {"status":"observed_mismatch","kind":witness["kind"],"package_sha256":digest(p),"original_case":original["case"],"witness":witness,
             "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":student_graph,"reference_graph":reference_graph,
-            "hypotheses":hypotheses,"ai_facts":facts,"ai_branches":branches,"ai_context":context_meta,"ai_status":ai_status,"ai_model":getattr(provider,"model",None),"ai_usage":ai_usage,"generator":generator,"guidance":guidance,"suspiciousness":ranking,"ai_error":ai_error,"elapsed_ms":round((time.monotonic()-start)*1000,2),
+            **diagnosis,"generator":generator,"guidance":guidance,"suspiciousness":ranking,"elapsed_ms":round((time.monotonic()-start)*1000,2),
             "scope":"Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."}

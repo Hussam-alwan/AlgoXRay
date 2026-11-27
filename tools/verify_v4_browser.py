@@ -193,6 +193,25 @@ def test(url,out):
         checks.append("loop_observations_disclose_partial_counts")
 
         checks.append("complete_timing_with_truncated_visual_trace")
+        page.locator("#ai").uncheck()
+        page.locator("#source").fill("l=1\nr=2\nwhile l<r:\n    mid=(l+r)//2\n    l=mid\n")
+        with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=35000) as response:
+            page.locator("#profile-run").click()
+        timeout_diagnosis=response.value.json()
+        assert timeout_diagnosis["kind"]=="timeout" and timeout_diagnosis["ai_status"]=="disabled"
+        finding=timeout_diagnosis["execution_diagnostics"]["findings"][0]
+        assert finding["condition_values"]=={"l":1,"r":2} and finding["assignments"][0]["line"]==5
+        expect(page.locator("#execution-findings")).to_contain_text("l = 1")
+        page.get_by_role("button",name="L5 · l=mid",exact=True).click()
+        assert page.locator("#code .profile-range").count()==1
+        expect(page.locator("#code .active")).to_contain_text("l=mid")
+        checks.append("timeout_progress_findings_and_assignment_source_link")
+        expect(page.locator("#ai-state")).to_contain_text("لم يُطلب")
+        expect(page.locator("#facts")).to_contain_text("لم يُطلب")
+        expect(page.locator("#probes")).to_contain_text("مدخل واحد")
+        checks.append("disabled_ai_panels_explain_unrequested_diagnosis")
+        page.locator("#execution-diagnostics").screenshot(path=str(out/"timeout-finding.png"))
+
         page.locator("#source").fill("while True: pass")
         with page.expect_response(lambda r:r.url.endswith("/v4/profile"),timeout=35000) as response:
             page.locator("#profile-run").click()

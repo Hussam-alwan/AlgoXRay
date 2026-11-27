@@ -11,7 +11,7 @@ async function refreshModels(){const h=await api("/api/v4/health");msg("health",
 $("refresh-models").onclick=()=>refreshModels().catch(e=>msg("health",e.message));
 $("model").onchange=()=>{$("cloud-consent").checked=false;refreshModels().catch(e=>msg("health",e.message))};
 
-function setBusy(value){busy=value;for(const id of ["approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
+function setBusy(value){busy=value;for(const id of ["approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
 async function packages(selected){const p=await api("/api/v4/packages");$("packages").replaceChildren();for(const x of p){const opt=document.createElement("option");opt.value=x.key;opt.textContent=x.manifest.title+" · "+x.key.slice(0,8);$("packages").append(opt)}if(selected)$("packages").value=selected;}
 function loadDemo(){activeDemo=$("demo").value;const d=demos[activeDemo];if(!d)return;$("package").value=JSON.stringify(d.package,null,2);$("statement").value=d.package.manifest.statement;$("source").value=d.mutant;$("reviewed").checked=false;$("trusted").checked=false;msg("approval","مسودة مثال؛ يجب المراجعة قبل الاعتماد.");}
 $("load").onclick=loadDemo;
@@ -23,7 +23,71 @@ $("draft-reference").onclick=async()=>{if(busy)return;setBusy(true);try{const p=
 $("approve").onclick=async()=>{if(busy)return;setBusy(true);msg("approval","فحص المرجع ضمن Docker...");try{let p=JSON.parse($("package").value);let r=await api("/api/v4/packages/approve",{package:p,owner_reviewed:$("reviewed").checked});msg("approval",JSON.stringify(r.review,null,2));if(r.key)await packages(r.key)}catch(e){msg("approval",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};
 $("run").onclick=async()=>{if(busy)return;setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;msg("status","تنفيذ الحالات والبحث وإعادة التحقق...");try{const source=$("source").value;result=await api("/api/v4/analyze",{package_key:$("packages").value,source,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),generator:$("generator").value,guided:$("guided").checked,spectrum:$("spectrum").checked,count:Number($("count").value),analysis_id:analysisId});msg("status",result.status+" · "+(result.attempts||0)+" attempts");if(result.status==="observed_mismatch"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show() }else msg("status",result.status+" — "+((result.scope||"No supported conclusion")+" | "+JSON.stringify(result.guidance||{})))}catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}};
 $("cancel").onclick=async()=>{const id=analysisId;if(!id)return;for(let i=0;i<12&&analysisId===id;i++){try{await api("/api/v4/analysis/"+id+"/cancel",{});msg("status","Cancellation requested");return}catch(e){await new Promise(r=>setTimeout(r,150))}}};
-function show(){$("repair-panel").hidden=result.status!=="observed_mismatch";msg("result-title",result.status==="profiled_execution"?"3. قياس تنفيذ واحد · "+result.kind:"3. الشاهد وأدلة التنفيذ");profileSelection=null;$("candidate").value="";$("patch-reviewed").checked=false;msg("patch-status","");msg("patch-diff","");msg("repair-history-view","");refreshRepairs().catch(()=>{});const w=result.witness;$("results").hidden=false;msg("stdin",w.stdin);msg("expected",w.reference.stdout);msg("actual",w.student.stdout||w.student.detail||w.student.status);msg("scope",result.scope+" | replay: "+result.replay_count+" | trace: "+w.student.trace_status+" | AI: "+result.ai_status+" · "+(result.ai_model||"")+" "+(result.ai_error||"")+" "+JSON.stringify(result.ai_usage||{}));$("hypotheses").replaceChildren();for(const h of result.hypotheses){const div=document.createElement("div");div.className="hypothesis";div.textContent=h.status+" — "+h.text+" ("+h.event_ids.join(", ")+")";if(h.status==="hypothesis")div.onclick=()=>{side="student";index=Math.max(0,w.student.events.findIndex(e=>e.event_id===h.event_ids[0]));render()};$("hypotheses").append(div)}if(!result.hypotheses.length)msg("hypotheses","لا توجد فرضيات متاحة؛ الأدلة لا تزال ظاهرة.");msg("facts",JSON.stringify(result.ai_facts||[],null,2));msg("branch-facts",JSON.stringify(result.ai_branches||[],null,2));msg("ai-context",JSON.stringify(result.ai_context||{},null,2));msg("probes",JSON.stringify(result.guidance||{},null,2));setupComparison();showRanking();render()}
+function show(){
+ $("repair-panel").hidden=result.status!=="observed_mismatch";
+ msg("result-title",result.status==="profiled_execution"?"3. قياس تنفيذ واحد · "+result.kind:"3. الشاهد وأدلة التنفيذ");
+ profileSelection=null;$("candidate").value="";$("patch-reviewed").checked=false;
+ for(const id of ["patch-status","patch-diff","repair-history-view"])msg(id,"");
+ refreshRepairs().catch(()=>{});const w=result.witness;$("results").hidden=false;
+ msg("stdin",w.stdin);msg("expected",w.reference.stdout);msg("actual",w.student.stdout||w.student.detail||w.student.status);
+ msg("scope",result.scope+" | replay: "+result.replay_count+" | trace: "+w.student.trace_status+" | AI: "+result.ai_status+" · "+(result.ai_model||""));
+ setupComparison();showRanking();render();showExecutionDiagnostics();showAI();
+}
+function jumpToEvidence(line,eventId,endLine=line){
+ side="student";const events=result.witness.student.events||[];
+ const pos=events.findIndex(e=>eventId?e.event_id===eventId:e.line===line);
+ if(pos>=0)index=pos;profileSelection={line,end_line:endLine};
+ $("graph-frame").value="all";$("graph-kind").value="all";render();
+ $("code").scrollIntoView({block:"center",behavior:"smooth"});
+}
+function evidenceButton(label,line,eventId,endLine){
+ const b=document.createElement("button");b.className="finding-jump";b.dir="ltr";b.textContent=label;
+ b.onclick=()=>jumpToEvidence(line,eventId,endLine||line);return b;
+}
+function showExecutionDiagnostics(){
+ const d=result.execution_diagnostics,panel=$("execution-diagnostics"),container=$("execution-findings");
+ panel.hidden=!d;container.replaceChildren();if(!d)return;
+ const timeout=d.status==="timeout";
+ msg("execution-summary",timeout?"تجاوز البرنامج مهلة التنفيذ وأُوقف. الملاحظات أدناه تربط الأعراض بالأسطر المسجلة؛ لا تثبت وحدها وجود حلقة لا نهائية أو سبب نهائي للخطأ.":result.kind==="match"?"طابق الخرج المرجع على هذا المدخل. القياس يصف تنفيذاً واحداً؛ لا يثبت صحة الحل لكل المدخلات.":"راجع حالة التنفيذ والمخرجات واللقطات المسجلة لهذا المدخل.");
+ for(const f of d.findings||[]){
+  const card=document.createElement("div");card.className="diagnostic-card";
+  const title=document.createElement("strong");title.textContent="تكرار قيم شرط الحلقة · L"+f.line+"–"+f.end_line;card.append(title);
+  const p=document.createElement("p");p.textContent="الشرط "+f.condition_source+" أعطى true بنفس القيم في "+f.observed_repeated_headers+" فحوص مسجلة متتالية: "+Object.entries(f.condition_values).map(([k,v])=>k+" = "+JSON.stringify(v)).join("،");card.append(p);
+  card.append(evidenceButton("L"+f.line+" · "+f.condition_source,f.line,f.last_event_id,f.end_line));
+  for(const a of f.assignments||[]){
+   const text=document.createElement("p");text.textContent="في السطر "+a.line+" بقيت "+a.variable+" = "+JSON.stringify(a.before)+" قبل التحديث وبعده. راجع هذا التحديث وحدود الحلقة.";card.append(text);
+   card.append(evidenceButton("L"+a.line+" · "+a.source,a.line,a.before_event_id));
+  }
+  const note=document.createElement("p");note.textContent="هذه مقارنة للقطات داخل الجزء المسجل"+(d.trace_status==="truncated"?"؛ التتبع مقتطع والأعداد المرصودة حدود دنيا.":".");card.append(note);container.append(card);
+ }
+ if(timeout&&!(d.findings||[]).length){const p=document.createElement("p");p.textContent="لم تكفِ اللقطات لإثبات نمط تكرار مدعوم لقيم شرط الحلقة. يمكن أن يكون السبب بطئاً أو انتظاراً أو تكراراً غير مدعوم؛ لا نحدد سطر خطأ بالتخمين.";container.append(p)}
+ if(timeout&&(d.timed_loops||[]).length){
+  const p=document.createElement("p");p.textContent="أكثر الحلقات زيارةً في القياس — كثرة الزيارات لا تثبت الخطأ:";container.append(p);
+  for(const loop of d.timed_loops)container.append(evidenceButton("L"+loop.line+"–"+loop.end_line+" · "+loop.kind+" · "+loop.hits+" visits",loop.line,null,loop.end_line));
+ }
+}
+function showAI(){
+ const state=result.ai_status||"disabled",ok=state==="ok";
+ const errors={local_model_unavailable:"الموديل المحلي غير متاح؛ تأكد من تشغيل Ollama.",model_busy:"الموديل مشغول بطلب آخر.",invalid_model_json:"رد الموديل لم يكن JSON صالحاً.",invalid_model_schema:"رد الموديل لم يطابق المخطط المطلوب.",invalid_model_output:"تعذّر التحقق من رد الموديل.",local_model_incomplete_response:"انتهت ميزانية الرد قبل اكتماله.",inference_cancelled:"أُلغي طلب الموديل.",inference_deadline:"انتهت مهلة طلب الموديل."};
+ const message=state==="disabled"?"لم يُطلب تحليل AI. فعّل «فرضيات الموديل المختار» ثم أعد البحث أو قياس الزمن.":ok?"اكتمل طلب الموديل. الفرضيات غير مؤكدة، والحقائق أدناه مفحوصة ضمن اللقطات المقدمة فقط.":"تعذّر تحليل AI: "+(errors[result.ai_error]||result.ai_error||state)+" أدلة التنفيذ تبقى متاحة.";
+ msg("ai-state",message);
+ $("hypotheses").replaceChildren();
+ for(const h of result.hypotheses||[]){
+  const div=document.createElement("div");div.className="hypothesis";div.textContent=(h.status==="hypothesis"?"فرضية غير مؤكدة":"إحالات غير مدعومة")+" — "+h.text+" ("+h.event_ids.join(", ")+")";
+  if(h.status==="hypothesis")div.onclick=()=>jumpToEvidence(h.line,h.event_ids[0]);
+  $("hypotheses").append(div);
+ }
+ if(!($("hypotheses").children.length))msg("hypotheses",ok?"الموديل لم يرجع فرضية؛ لا نستنتج سبباً من فراغ الرد.":message);
+ const statuses={matches_recorded_snapshot:"مطابق للقطة المسجلة",matches_recorded_condition:"مطابق للشرط المعاد حسابه",contradicted:"مناقض للقطة",unsupported:"غير مدعوم بالأدلة المقدمة"};
+ const facts=result.ai_facts||[],branches=result.ai_branches||[];
+ msg("facts",facts.length?facts.map(f=>f.event_id+" · "+f.variable+" = "+JSON.stringify(f.value)+" · "+(statuses[f.status]||f.status)).join("\n"):ok?"لم يرجع الموديل مطالبات بقيم متغيرات لفحصها.":message);
+ msg("branch-facts",branches.length?branches.map(f=>f.event_id+" · L"+f.line+" · الشرط المقترح "+f.condition+" · "+(statuses[f.status]||f.status)).join("\n"):ok?"لم يرجع الموديل مطالبات عن شروط if/while لفحصها.":message);
+ const context=result.ai_context||{};
+ msg("ai-context",Object.keys(context).length?JSON.stringify(context,null,2):state==="disabled"?"لم يُجهّز سياق للموديل لأن التحليل غير مفعّل.":"لا يتوفر سياق موديل محفوظ لهذا الطلب.");
+ if(result.status==="profiled_execution")msg("probes","اختبارات الفرضيات لا تُنفّذ ضمن قياس مدخل واحد. هي خيار مستقل «اختبارات موجهة بفرضيات AI» أثناء البحث عن الخطأ.");
+ else if(!result.guidance||result.guidance.status==="disabled")msg("probes","اختبارات الفرضيات غير مفعّلة. فعّل الخيار المستقل إذا أردت تنفيذ حالات إضافية مقترحة من الموديل.");
+ else msg("probes",JSON.stringify(result.guidance,null,2));
+}
 function setupComparison(){
  for(const s of ["student","reference"]){const events=result.witness[s].events||[];const slider=$("cmp-"+s);slider.max=Math.max(0,events.length-1);slider.value=Math.max(0,events.findIndex(e=>e.kind==="line"&&e.line>=1));drawComparison(s)}
  const view=$("matrix-view");view.replaceChildren();
@@ -151,10 +215,10 @@ $("profile-run").onclick=async()=>{
  setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;msg("status","قياس التنفيذ للطالب والمرجع...");
  try{
   const source=$("source").value;
-  result=await api("/api/v4/profile",{package_key:$("packages").value,source,case:caseValue,trusted_local_source:$("trusted").checked,analysis_id:analysisId});
+  result=await api("/api/v4/profile",{package_key:$("packages").value,source,case:caseValue,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),analysis_id:analysisId});
   msg("status",result.status+" · "+(result.kind||""));
   if(result.status==="profiled_execution"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show()}
- }catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false)}
+ }catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}
 };
 function profileRows(){
  const p=result?.[side+"_graph"]?.profile||{};

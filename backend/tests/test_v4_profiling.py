@@ -105,7 +105,7 @@ def test_profile_route_requires_review_and_valid_input_without_ai(monkeypatch, t
     monkeypatch.setattr(v4_api, "provider_for", lambda *a: (_ for _ in ()).throw(AssertionError("AI not needed")))
     app = FastAPI(); app.include_router(v4_api.router_for(lambda r: None, "test"))
     client = TestClient(app)
-    body = dict(package_key=key, source="print(int(input()))", use_ai=True)
+    body = dict(package_key=key, source="print(int(input()))", use_ai=False)
     assert client.post("/api/v4/profile", json=body).status_code == 403
     headers = {"X-AlgoXRay-Token": "test"}
     assert client.post("/api/v4/profile", json=body, headers=headers).status_code == 403

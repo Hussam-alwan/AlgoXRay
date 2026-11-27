@@ -21,6 +21,8 @@ from .v4_qwen_cloud import status as qwen_status
 from .v4_draft_review import review_draft,field_schema
 from .v4_package_audit import audit_package
 from .v4_loop_observations import with_loops
+from .v4_diagnostic_context import diagnose_execution
+from .v4_execution_diagnostics import execution_diagnostics
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
@@ -199,6 +201,7 @@ def router_for(require_loopback,token):
     def profile(body:Run,request:Request):
         guard(request)
         if not body.trusted_local_source:raise HTTPException(403,"Confirm local source review")
+        provider=select_provider(body.model,body.cloud_consent,body.use_cache) if body.use_ai else None
         if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
         c=threading.Event()
         if body.analysis_id:
@@ -215,12 +218,15 @@ def router_for(require_loopback,token):
             student=run(body.source,stdin,256)
             if student["status"]=="cancelled":return {"status":"cancelled"}
             matches=student["status"]=="ok" and equal(p["manifest"],student["stdout"],ref["stdout"])
+            witness=dict(case=case,stdin=stdin,student=student,reference=ref)
+            diagnosis=diagnose_execution(p,body.source,witness,provider,cancel=c)
+            if c.is_set():return {"status":"cancelled"}
             return dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "output_difference",
                 package_sha256=body.package_key,student_source=body.source,reference_source=p["reference"],
-                witness=dict(case=case,stdin=stdin,student=student,reference=ref),replay_count=0,attempts=1,
+                witness=witness,replay_count=0,attempts=1,
                 student_graph=with_loops(attach_profile(observed_graph(student.get("events",[]),body.source),student),body.source,student),
                 reference_graph=with_loops(attach_profile(observed_graph(ref.get("events",[]),p["reference"]),ref),p["reference"],ref),
-                hypotheses=[],ai_facts=[],ai_status="disabled",
+                **diagnosis,execution_diagnostics=execution_diagnostics(body.source,student),
                 scope="One instrumented input, no search or replay claim. Timing is not judge runtime or complexity proof.")
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:

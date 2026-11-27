@@ -4,7 +4,7 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from .v4_provider import ProviderError, MAX_REQUEST, MAX_RESPONSE, validated_result
 
-PROMPT_VERSION="v4-20261127-2"
+PROMPT_VERSION="v4-20261127-3"
 
 class MemoryCache:
     def __init__(self, max_entries=32, max_bytes=4*1024*1024, ttl=300, clock=time.monotonic):

@@ -31,3 +31,16 @@ def test_conditions_are_recomputed_and_contradictions_rejected():
 def test_calls_and_source_injection_cannot_be_evaluated_on_host():
     src="n=1\nif __import__('os').system('bad'):\n    pass\n"
     assert check_branches({"branches":[{"event_id":"E1","line":2,"condition":True}]},src,E)[0]["status"]=="unsupported"
+
+
+def test_timeout_context_includes_only_supplied_progress_anchors():
+    from test_v4_execution_diagnostics import SOURCE,stalled
+    w={"stdin":"1\\n","student":stalled(),"reference":{"stdout":"1\\n"}}
+    data=diagnostic_context(P,SOURCE,w)
+    assert data["recorded_progress"]
+    ids={e["event_id"] for e in data["events"]}
+    for f in data["recorded_progress"]:
+        assert set(f["event_ids"])<=ids and f["causal_verified"] is False
+        for a in f["unchanged_assignments"]:
+            assert a["before_event_id"] in ids and a["after_event_id"] in ids
+    assert data["context_bytes"]<=12000
