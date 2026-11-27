@@ -16,12 +16,15 @@ from .v4_engine import oracle
 from .v4_isolation import execute_stdio
 from .v4_graph import observed_graph
 from .v4_profiling import attach_profile
+from .v4_cache import CACHE
+from .v4_qwen_cloud import status as qwen_status
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     statement:str=Field(min_length=1,max_length=8000)
     model:str="qwen2.5-coder:7b"
     cloud_consent:bool=False
+    use_cache:bool=False
 class ImportProblem(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     url:str=Field(min_length=1,max_length=250)
@@ -30,6 +33,7 @@ class DraftReference(BaseModel):
     manifest:dict
     model:str="qwen2.5-coder:7b"
     cloud_consent:bool=False
+    use_cache:bool=False
 class Repair(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package_key:str
@@ -39,6 +43,7 @@ class Repair(BaseModel):
     reviewed:bool=False
     model:str="qwen2.5-coder:7b"
     cloud_consent:bool=False
+    use_cache:bool=False
 class Approve(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package:dict
@@ -51,6 +56,7 @@ class Run(BaseModel):
     use_ai:bool=False
     model:str="qwen2.5-coder:7b"
     cloud_consent:bool=False
+    use_cache:bool=False
     generator:str="boundary_random"
     guided:bool=False
     spectrum:bool=False
@@ -69,10 +75,14 @@ def router_for(require_loopback,token):
     @router.get("/health")
     def health(request:Request):
         require_loopback(request)
-        return {"status":"experimental","model":model_health(),"gemini":provider_status(),"openrouter":openrouter_status(),"groq":groq_status(),"public_execution":False,"guest_trace_authenticated":False}
-    def select_provider(model,consent):
-        try:return provider_for(model,consent)
+        return {"status":"experimental","model":model_health(),"gemini":provider_status(),"openrouter":openrouter_status(),"groq":groq_status(),"qwen_cloud":qwen_status(),"cache":CACHE.status(),"public_execution":False,"guest_trace_authenticated":False}
+    def select_provider(model,consent,cache=False):
+        try:return provider_for(model,consent,**({"use_cache":True} if cache else {}))
         except ProviderError as exc:raise HTTPException(403 if str(exc)=="cloud_consent_required" else 422,str(exc)) from None
+    @router.post("/cache/clear")
+    def clear_cache(request:Request):
+        guard(request);CACHE.clear()
+        return {"status":"cleared",**CACHE.status()}
     @router.get("/packages")
     def packages(request:Request):
         require_loopback(request);return store.list()
@@ -82,7 +92,7 @@ def router_for(require_loopback,token):
         schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kind":{"type":"string","enum":["int","word","ints","matrix"]},"min":{"type":"integer"},"max":{"type":"integer"},"alphabet":{"type":"string"},"length":{"type":"integer"},"length_from":{"type":"string"},"rows":{"type":"integer"},"rows_from":{"type":"string"},"cols":{"type":"integer"},"cols_from":{"type":"string"}},"required":["name","kind","min","max"],"additionalProperties":False}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"type":"string","enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
         instructions='Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. matrix fields have min,max, rows or rows_from, cols or cols_from (1..32 per dimension); matrix must occupy its own line group. lines is a list of rows of field names in original order. Example for one integer n between 1 and 9: fields=[{"name":"n","kind":"int","min":1,"max":9}], lines=[["n"]], output="tokens". Omit irrelevant optional fields: alphabet only for word; length or length_from only for ints; rows/cols dimensions only for matrix. id must be lowercase ASCII letters/digits/underscore. Never invent constraints.'
         try:
-            provider=select_provider(body.model,body.cloud_consent)
+            provider=select_provider(body.model,body.cloud_consent,body.use_cache)
             r=provider.propose("contract_draft",{"statement":body.statement,"grammar":instructions},schema)
             if set(r)!={"manifest"}:raise ValueError("Invalid draft envelope")
             if type(r["manifest"]) is not dict:raise ValueError("Invalid manifest")
@@ -98,7 +108,7 @@ def router_for(require_loopback,token):
     @router.post("/packages/reference")
     def reference_draft(body:DraftReference,request:Request):
         guard(request)
-        try:return draft_reference(select_provider(body.model,body.cloud_consent),body.manifest)
+        try:return draft_reference(select_provider(body.model,body.cloud_consent,body.use_cache),body.manifest)
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
         except ValueError as exc:raise HTTPException(422,str(exc)) from None
     @router.post("/packages/approve")
@@ -117,7 +127,7 @@ def router_for(require_loopback,token):
     def repair_propose(body:Repair,request:Request):
         guard(request)
         try:
-            provider=select_provider(body.model,body.cloud_consent)
+            provider=select_provider(body.model,body.cloud_consent,body.use_cache)
             return {**propose_repair(provider,store.load(body.package_key),body.source,body.case),"model":body.model,"usage":getattr(provider,"usage",{})}
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
         except (ValueError,OSError):raise HTTPException(422,"Proposal invalid")
@@ -153,7 +163,7 @@ def router_for(require_loopback,token):
     def analyze(body:Run,request:Request):
         guard(request)
         if not body.trusted_local_source:raise HTTPException(403,"Confirm local source review")
-        provider=select_provider(body.model,body.cloud_consent) if body.use_ai else None
+        provider=select_provider(body.model,body.cloud_consent,body.use_cache) if body.use_ai else None
         if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
         c=threading.Event()
         if body.analysis_id:

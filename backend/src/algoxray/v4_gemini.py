@@ -1,6 +1,7 @@
 """Opt-in Gemini adapter; fixed endpoint, local attempt budget, no automatic fallback."""
 import json,os,sqlite3,time,urllib.request,urllib.error
 from contextlib import closing
+import uuid
 from dataclasses import dataclass,field
 from pathlib import Path
 from .paths import ROOT
@@ -55,7 +56,7 @@ class GeminiProvider:
     ledger:Ledger=field(default_factory=Ledger)
     usage:dict=field(default_factory=dict,init=False)
     def propose(self,task,data,schema):
-        self.usage={}
+        self.usage={"request_id":uuid.uuid4().hex}
         if task not in TASKS or self.model not in MODELS:raise ProviderError("unsupported_model_or_task")
         if not 1<=self.timeout<=120:raise ProviderError("invalid_budget")
         key=get_key()
@@ -82,7 +83,7 @@ class GeminiProvider:
                 response=json.loads(content)
                 candidate=response["candidates"][0]
                 u=response.get("usageMetadata",{})
-                self.usage={k:v for k,v in u.items() if k in ("promptTokenCount","candidatesTokenCount","thoughtsTokenCount","totalTokenCount") and type(v) is int}
+                self.usage.update({k:v for k,v in u.items() if k in ("promptTokenCount","candidatesTokenCount","thoughtsTokenCount","totalTokenCount") and type(v) is int})
                 self.usage["elapsed_ms"]=round((time.monotonic()-started)*1000,2)
                 if candidate.get("finishReason")!="STOP":raise ProviderError("gemini_incomplete_response")
                 raw_text="".join(p.get("text","") for p in candidate["content"]["parts"] if not p.get("thought"))
@@ -92,9 +93,13 @@ class GeminiProvider:
             except (ValueError,KeyError,IndexError,TypeError):raise ProviderError("invalid_model_json") from None
         finally:LOCK.release()
 
-def provider_for(model,cloud_consent=False):
+def _provider_for_uncached(model,cloud_consent=False):
     from .v4_provider import OllamaProvider
     from .v4_groq import MODEL as GROQ_MODEL,GroqProvider
+    from .v4_qwen_cloud import MODEL as QWEN_MODEL,QwenCloudProvider
+    if model==QWEN_MODEL:
+        if cloud_consent is not True:raise ProviderError("cloud_consent_required")
+        return QwenCloudProvider()
     if model==GROQ_MODEL:
         if cloud_consent is not True:raise ProviderError("cloud_consent_required")
         return GroqProvider()
@@ -112,3 +117,13 @@ def provider_status():
     try:budget=Ledger().status()
     except (OSError,sqlite3.Error):budget={}
     return {"configured":bool(get_key()),"models":list(MODELS),"budget":budget,"scope":"Local app attempts in rolling windows only, not Google account quota. Other clients and earlier tests not counted."}
+
+def provider_for(model,cloud_consent=False,use_cache=False):
+    provider=_provider_for_uncached(model,cloud_consent)
+    if type(use_cache) is not bool:raise ProviderError("invalid_cache_setting")
+    if use_cache:
+        from .v4_provider import OllamaProvider
+        from .v4_cache import cache_local
+        if not isinstance(provider,OllamaProvider):raise ProviderError("cache_local_models_only")
+        return cache_local(provider,True)
+    return provider

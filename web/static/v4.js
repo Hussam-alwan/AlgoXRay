@@ -6,12 +6,12 @@ async function api(path,body){
  const response=await fetch(path,opts);const data=await response.json();if(!response.ok)throw Error(typeof data.detail==="string"?data.detail:JSON.stringify(data.detail));return data;
 }
 function msg(id,value){$(id).textContent=value}
-function aiOptions(){return {model:$("model").value,cloud_consent:$("cloud-consent").checked}}
-async function refreshModels(){const h=await api("/api/v4/health");msg("health","Ollama: "+h.model.status+" · "+h.model.models.join(", ")+" | Gemini: "+(h.gemini.configured?"key configured":"key missing")+" | OpenRouter: "+(h.openrouter.configured?"key configured":"key missing")+" | Groq: "+(h.groq.configured?"key configured":"key missing"));const q=({...h.gemini.budget,...h.openrouter.budget,...h.groq.budget})[$("model").value];msg("quota",q?"طلبات الموقع خلال آخر 24 ساعة: "+q.local_attempts_24h+"/"+q.local_cap_24h+" · آخر دقيقة: "+q.local_attempts_60s+"/"+q.local_cap_60s+" (ليست الحصة المتبقية لدى المزود)":"النموذج المحلي لا يستهلك حصة سحابية");}
+function aiOptions(){return {model:$("model").value,cloud_consent:$("cloud-consent").checked,use_cache:$("use-cache").checked&&$("model").value.startsWith("qwen2.5-coder:")}}
+async function refreshModels(){const h=await api("/api/v4/health");msg("health","Ollama: "+h.model.status+" · "+h.model.models.join(", ")+" | Gemini: "+(h.gemini.configured?"key configured":"key missing")+" | OpenRouter: "+(h.openrouter.configured?"key configured":"key missing")+" | Groq: "+(h.groq.configured?"key configured":"key missing"));msg("cache-state","Cache: "+h.cache.entries+"/"+h.cache.max_entries+" · "+h.cache.bytes+" bytes | Qwen Cloud: "+h.qwen_cloud.configuration_state);const q=({...h.gemini.budget,...h.openrouter.budget,...h.groq.budget,...h.qwen_cloud.budget})[$("model").value];msg("quota",q?"طلبات الموقع خلال آخر 24 ساعة: "+q.local_attempts_24h+"/"+q.local_cap_24h+" · آخر دقيقة: "+q.local_attempts_60s+"/"+q.local_cap_60s+" (ليست الحصة المتبقية لدى المزود)":"النموذج المحلي لا يستهلك حصة سحابية");}
 $("refresh-models").onclick=()=>refreshModels().catch(e=>msg("health",e.message));
 $("model").onchange=()=>{$("cloud-consent").checked=false;refreshModels().catch(e=>msg("health",e.message))};
 
-function setBusy(value){busy=value;for(const id of ["approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case"])$(id).disabled=value}
+function setBusy(value){busy=value;for(const id of ["approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","clear-cache","use-cache"])$(id).disabled=value}
 async function packages(selected){const p=await api("/api/v4/packages");$("packages").replaceChildren();for(const x of p){const opt=document.createElement("option");opt.value=x.key;opt.textContent=x.manifest.title+" · "+x.key.slice(0,8);$("packages").append(opt)}if(selected)$("packages").value=selected;}
 function loadDemo(){activeDemo=$("demo").value;const d=demos[activeDemo];if(!d)return;$("package").value=JSON.stringify(d.package,null,2);$("statement").value=d.package.manifest.statement;$("source").value=d.mutant;$("reviewed").checked=false;$("trusted").checked=false;msg("approval","مسودة مثال؛ يجب المراجعة قبل الاعتماد.");}
 $("load").onclick=loadDemo;
@@ -107,3 +107,5 @@ $("profile-csv").onclick=()=>{
  const csv=[columns,...profileRows().map(r=>columns.map(c=>r[c]))].map(r=>r.map(quote).join(",")).join("\r\n");
  const url=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="algoxray-"+side+"-timing.csv";a.click();URL.revokeObjectURL(url);
 };
+
+$("clear-cache").onclick=async()=>{if(busy)return;try{await api("/api/v4/cache/clear",{});await refreshModels()}catch(e){msg("cache-state",e.message)}};

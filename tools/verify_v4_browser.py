@@ -46,6 +46,20 @@ def test(url,out):
         assert response.value.status==403
         page.locator("#model").select_option("qwen2.5-coder:7b")
         checks.append("explicit_cloud_consent")
+        page.locator("#model").select_option("qwen-cloud")
+        with page.expect_response(lambda r:r.url.endswith("/packages/draft"),timeout=10000) as response:
+            page.locator("#draft").click()
+        assert response.value.status==403
+        page.locator("#model").select_option("qwen2.5-coder:7b")
+        checks.append("qwen_cloud_requires_explicit_consent")
+        with page.expect_response(lambda r:r.url.endswith("/cache/clear"),timeout=10000) as response:
+            page.locator("#clear-cache").click()
+        assert response.value.json()["entries"]==0
+        page.locator("#use-cache").check()
+        assert page.locator("#use-cache").is_checked()
+        page.locator("#use-cache").uncheck()
+        checks.append("local_memory_cache_controls")
+
         page.locator("#demo").select_option("sum")
         page.locator("#load").click()
         with page.expect_response(lambda r:r.url.endswith("/packages/approve"),timeout=10000) as response:

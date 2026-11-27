@@ -1,5 +1,6 @@
 """Allowlisted zero-price OpenRouter model; explicit cloud consent via provider factory."""
 import json,os,sqlite3,time,urllib.request,urllib.error
+import uuid
 from dataclasses import dataclass,field
 from .paths import ROOT
 from .v4_provider import ProviderError,TASKS,MAX_REQUEST,MAX_RESPONSE,LOCK,validated_result
@@ -26,7 +27,7 @@ class OpenRouterProvider:
     ledger:Ledger=field(default_factory=ledger)
     usage:dict=field(default_factory=dict,init=False)
     def propose(self,task,data,schema):
-        self.usage={}
+        self.usage={"request_id":uuid.uuid4().hex}
         if task not in TASKS or self.model!=MODEL:raise ProviderError("unsupported_model_or_task")
         if not 1<=self.timeout<=120:raise ProviderError("invalid_budget")
         key=get_key()
@@ -52,7 +53,7 @@ class OpenRouterProvider:
                 if response.get("model")!=self.model:raise ProviderError("unexpected_model")
                 if c.get("finish_reason")!="stop":raise ProviderError("openrouter_incomplete_response")
                 u=response.get("usage") or {}
-                self.usage={k:v for k,v in u.items() if k in ("prompt_tokens","completion_tokens","total_tokens") and type(v) is int}
+                self.usage.update({k:v for k,v in u.items() if k in ("prompt_tokens","completion_tokens","total_tokens") and type(v) is int})
                 self.usage["elapsed_ms"]=round((time.monotonic()-started)*1000,2)
                 result=json.loads(c["message"]["content"])
                 if type(result) is not dict:raise ValueError()

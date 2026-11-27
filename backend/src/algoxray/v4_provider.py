@@ -98,6 +98,18 @@ class OllamaProvider:
             self.usage["elapsed_ms"]=round((time.monotonic()-started)*1000,2)
             LOCK.release()
 
+def model_inventory():
+    try:
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self,*args,**kwargs):raise OSError("redirect blocked")
+        opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
+        with opener.open("http://127.0.0.1:11434/api/tags",timeout=2) as response:
+            raw=response.read(MAX_RESPONSE+1)
+        if len(raw)>MAX_RESPONSE:return []
+        data=json.loads(raw)
+        return [m for m in data["models"][:40] if type(m) is dict and type(m.get("name")) is str]
+    except (OSError,ValueError,KeyError,TypeError):return []
+
 def model_health():
     try:
         class NoRedirect(urllib.request.HTTPRedirectHandler):
