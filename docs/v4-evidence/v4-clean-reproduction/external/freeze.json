@@ -1,0 +1,7 @@
+{
+  "git_head": "58f44f39e3a415e8c38b9edbf8b4356ee984377d",
+  "manifest_sha256": "5b7cfe3b130d22f83dec7b66e4fb803f05cf5c9f8b77bae88cd8ec5069e515f3",
+  "seed": 2026,
+  "scope": "Seven paired external benchmark families; adapted function bodies, added stdio wrappers, bounded domains. Controls and bug locations are known. Not independent student submissions or unseen holdout. Source is external, task adapters and oracle implementations authored for this project.",
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]"
+}

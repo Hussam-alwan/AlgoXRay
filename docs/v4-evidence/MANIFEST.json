@@ -165,6 +165,26 @@
       "path": "v4-external-pilot/possible_change-fault.json",
       "sha256": "d6514e8a3f04a474e0fc024a9f9e734fc4b1a324cf146c58a5ea01faea0e4273",
       "bytes": 96345
+    },
+    {
+      "path": "v4-clean-reproduction/progress.json",
+      "sha256": "d14e86a507b14f2778ad1a461204ad8994bd0346aaad482002362f26240d7fc3",
+      "bytes": 544
+    },
+    {
+      "path": "v4-clean-reproduction/vertical.json",
+      "sha256": "e07e91a95cdbb04b3e635bc1a0b4955e63de64346f013c1883fc70efde89f02f",
+      "bytes": 393090
+    },
+    {
+      "path": "v4-clean-reproduction/external/freeze.json",
+      "sha256": "f77b7c73b743cfd2d29dd036b150fbfedec1e773e5c63640449b307cfc43c5b7",
+      "bytes": 570
+    },
+    {
+      "path": "v4-clean-reproduction/external/summary.json",
+      "sha256": "d076d63f36879243d7877958162b51b0d3f936edb832e596f8453c7889a43207",
+      "bytes": 3882
     }
   ]
 }
