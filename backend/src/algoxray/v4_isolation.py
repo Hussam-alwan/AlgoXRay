@@ -98,8 +98,8 @@ status, detail = "ok",None
 exit_code = 0
 failure_location = None
 if req.get("announce_benchmark_start"):
-    sys.stdout.write("ALGOXRAY_BENCHMARK_READY\n")
-    sys.stdout.flush()
+    sys.stdout.buffer.write(b"ALGOXRAY_BENCHMARK_READY\n")
+    sys.stdout.buffer.flush()
 execution_start_wall,execution_start_cpu=time.perf_counter_ns(),time.process_time_ns()
 try:
     code = compile(src,"submission.py","exec")
@@ -111,9 +111,19 @@ try:
 except Deadline: status,exit_code = "timeout",None
 except Limit: status,exit_code = "output_limit",None
 except SystemExit as exc:
-    if exc.code not in (None,0):
+    if isinstance(exc.code, int):
+        value = int.__int__(exc.code)
+        exit_code = value if -2147483648 <= value <= 2147483647 else 1
+    elif exc.code is not None:
+        exit_code = 1
+        try:
+            err.write(str(exc.code) + "\n")
+        except Limit:
+            status,exit_code = "output_limit",None
+        except BaseException:
+            pass
+    if exit_code:
         status,detail="exception","SystemExit"
-        exit_code=exc.code if type(exc.code) is int and -2147483648<=exc.code<=2147483647 else 1
 except BaseException as exc:
     status,detail="exception",type(exc).__name__
     exit_code=1

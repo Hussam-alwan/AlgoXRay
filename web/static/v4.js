@@ -348,25 +348,30 @@ function showBenchmark(){
   }tbody.append(tr);
  }
  const view=$("benchmark-chart");view.replaceChildren();
- const rows=b.points.filter(p=>Number.isFinite(p.size)&&Number.isFinite(p.summary.wall_ns?.median));
- if(rows.length<2){msg("benchmark-chart","At least two measured sizes are needed for a curve.");return}
- const xMin=Math.min(...b.points.map(p=>p.size)),xMax=Math.max(...b.points.map(p=>p.size));
- const yMax=Math.max(1,...rows.map(p=>p.summary.wall_ns.max));
+ const sizes=b.points.filter(p=>Number.isFinite(p.size));
+ if(sizes.length<2){msg("benchmark-chart","يلزم حجمان على الأقل لرسم منحنى.");return}
+ const xMin=sizes[0].size,xMax=sizes.at(-1).size;
+ const yMax=Math.max(1,...sizes.map(p=>p.summary.wall_ns?.max??0));
  const x=v=>50+520*(v-xMin)/Math.max(1,xMax-xMin),y=v=>215-175*v/yMax;
- const svg=svgEl("svg",{viewBox:"0 0 620 255",role:"img","aria-label":"Measured wall time medians by input size"});
+ const svg=svgEl("svg",{viewBox:"0 0 620 255",role:"img","aria-label":"وسيط زمن التنفيذ حسب الحجم. علامة × تشير إلى انتهاء المهلة وتظهر أسفل المحور دون قيمة زمنية."});
  svg.style.width="100%";svg.style.maxWidth="720px";
  svg.append(svgEl("path",{d:"M50 20 V215 H590",stroke:"currentColor",fill:"none"}));
  const units=svgEl("text",{x:55,y:15,fill:"currentColor","font-size":12});units.textContent="Wall time (ms)";svg.append(units);
  let previous=null;
- for(const p of b.points){
-  const wall=p.summary.wall_ns;
-  if(!wall||p.summary.completed!==p.summary.requested){previous=null;continue}
-  const px=x(p.size),py=y(wall.median);
+ for(const p of sizes){
+  const {wall_ns:wall,timeouts,completed,requested}=p.summary;
+  const px=x(p.size);
+  const label=svgEl("text",{x:px,y:239,fill:"currentColor","font-size":11,"text-anchor":"middle"});label.textContent=String(p.size);svg.append(label);
+  if(timeouts){
+   const mark=svgEl("text",{x:px,y:227,fill:"currentColor","font-size":14,"text-anchor":"middle",class:"benchmark-timeout"});
+   const tip=svgEl("title",{});tip.textContent=p.size+" · انتهاء المهلة في "+timeouts+" من "+requested;mark.textContent="×";mark.append(tip);svg.append(mark);
+  }
+  if(!wall||completed!==requested){previous=null;continue}
+  const py=y(wall.median);
   if(previous)svg.append(svgEl("line",{x1:previous[0],y1:previous[1],x2:px,y2:py,stroke:"#2563eb","stroke-width":2}));
   svg.append(svgEl("line",{x1:px,y1:y(wall.min),x2:px,y2:y(wall.max),stroke:"currentColor","stroke-width":1}));
   const circle=svgEl("circle",{cx:px,cy:py,r:4,fill:"#2563eb"}),tip=svgEl("title",{});
-  tip.textContent=p.size+": "+ms(wall.median)+" ms, "+p.correctness;circle.append(tip);svg.append(circle);
-  const label=svgEl("text",{x:px,y:235,fill:"currentColor","font-size":11,"text-anchor":"middle"});label.textContent=String(p.size);svg.append(label);
+  tip.textContent=p.size+": "+ms(wall.median)+" ms · MAD "+ms(wall.mad)+" ms · "+p.correctness;circle.append(tip);svg.append(circle);
   previous=[px,py];
  }
  view.append(svg);

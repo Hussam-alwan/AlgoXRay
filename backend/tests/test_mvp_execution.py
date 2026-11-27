@@ -74,3 +74,22 @@ def test_benchmark_host_deadline_starts_after_guest_ready(monkeypatch):
     assert startup["status"] == "infrastructure_error"
     assert startup["detail"] == "benchmark_worker_startup_timeout" and startup["startup_ms"] is None
     assert startup["cleanup_confirmed"]
+
+
+@pytest.mark.parametrize("mode", ["trace_profile", "benchmark_uninstrumented"])
+def test_output_limits_and_system_exit_stderr(mode):
+    def run(source):
+        return guest(source, mode=mode, trace_limit=128 if mode == "trace_profile" else 0)
+
+    for code in ("None", "0", "False"):
+        result = run(f"raise SystemExit({code})")
+        assert (result["status"], result["exit_code"], result["stderr"]) == ("ok", 0, "")
+    for code, expected in [("0.0", "0.0\n"), ("'stop'", "stop\n")]:
+        result = run(f"raise SystemExit({code})")
+        assert (result["status"], result["detail"], result["exit_code"], result["stderr"]) == (
+            "exception", "SystemExit", 1, expected,
+        )
+    for source in ("print('x' * 8193)", "import sys; sys.stderr.write('x' * 8193)", "raise SystemExit('x' * 8193)"):
+        result = run(source)
+        assert result["status"] == "output_limit" and result["exit_code"] is None
+        assert len(result["stdout"]) <= 8192 and len(result["stderr"]) <= 8192

@@ -1,0 +1,1300 @@
+{
+  "environment": "docker",
+  "host_python": "3.12.10",
+  "host_platform": "Windows-11-10.0.26300-SP0",
+  "protocol": "Fresh worker each call, n varies, m=7, 5 repetitions per point, wall and CPU inside the worker.",
+  "scope": "Public development fixture, finite-range timing, no research or platform-runtime claim.",
+  "curves": {
+    "linear": {
+      "status": "benchmark_observation",
+      "stop_reason": "completed",
+      "source_sha256": "9cc39139a68fe8f14b432fded838187d3f7f350cd327b370ee1e7577b523fb27",
+      "student_source": "n, m = map(int, input().split())\ntotal = 0\nfor _ in range(n):\n    total += n * m\nprint(total)\n",
+      "package_sha256": "b86a0871c71d9e5dbee3a972018c8d0b73d0516137b38b9548a66e116f9a23f8",
+      "size_field": "n",
+      "seed": 2026,
+      "repetitions": 5,
+      "seconds_per_run": 2,
+      "session_budget_seconds": 90,
+      "physical_executions": 30,
+      "elapsed_ms": 24281.0,
+      "points": [
+        {
+          "size": 128,
+          "case": {
+            "n": 128,
+            "m": 7
+          },
+          "stdin": "128 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 422.0,
+              "wall_ns": 177600,
+              "cpu_ns": 175400,
+              "host_ms": 641.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 143200,
+              "cpu_ns": 140900,
+              "host_ms": 609.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 406.0,
+              "wall_ns": 143600,
+              "cpu_ns": 142000,
+              "host_ms": 641.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 406.0,
+              "wall_ns": 140700,
+              "cpu_ns": 138500,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 390.0,
+              "wall_ns": 158900,
+              "cpu_ns": 156600,
+              "host_ms": 656.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 143600,
+              "min": 140700,
+              "max": 177600,
+              "mad": 2900
+            },
+            "cpu_ns": {
+              "median": 142000,
+              "min": 138500,
+              "max": 175400,
+              "mad": 3500
+            },
+            "host_ms": {
+              "median": 641.0,
+              "min": 609.0,
+              "max": 656.0,
+              "mad": 15.0
+            },
+            "startup_ms": {
+              "median": 406.0,
+              "min": 375.0,
+              "max": 422.0,
+              "mad": 16.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 256,
+          "case": {
+            "n": 256,
+            "m": 7
+          },
+          "stdin": "256 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 172900,
+              "cpu_ns": 170900,
+              "host_ms": 594.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 162600,
+              "cpu_ns": 160100,
+              "host_ms": 578.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 547.0,
+              "wall_ns": 163800,
+              "cpu_ns": 161500,
+              "host_ms": 750.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 422.0,
+              "wall_ns": 163200,
+              "cpu_ns": 161500,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 177400,
+              "cpu_ns": 176500,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 163800,
+              "min": 162600,
+              "max": 177400,
+              "mad": 1200
+            },
+            "cpu_ns": {
+              "median": 161500,
+              "min": 160100,
+              "max": 176500,
+              "mad": 1400
+            },
+            "host_ms": {
+              "median": 625.0,
+              "min": 578.0,
+              "max": 750.0,
+              "mad": 31.0
+            },
+            "startup_ms": {
+              "median": 375.0,
+              "min": 375.0,
+              "max": 547.0,
+              "mad": 0.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 512,
+          "case": {
+            "n": 512,
+            "m": 7
+          },
+          "stdin": "512 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 406.0,
+              "wall_ns": 198800,
+              "cpu_ns": 195800,
+              "host_ms": 609.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 438.0,
+              "wall_ns": 182900,
+              "cpu_ns": 180600,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 391.0,
+              "wall_ns": 176400,
+              "cpu_ns": 174400,
+              "host_ms": 610.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 406.0,
+              "wall_ns": 183000,
+              "cpu_ns": 180900,
+              "host_ms": 593.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 438.0,
+              "wall_ns": 184400,
+              "cpu_ns": 182000,
+              "host_ms": 672.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 183000,
+              "min": 176400,
+              "max": 198800,
+              "mad": 1400
+            },
+            "cpu_ns": {
+              "median": 180900,
+              "min": 174400,
+              "max": 195800,
+              "mad": 1100
+            },
+            "host_ms": {
+              "median": 610.0,
+              "min": 593.0,
+              "max": 672.0,
+              "mad": 15.0
+            },
+            "startup_ms": {
+              "median": 406.0,
+              "min": 391.0,
+              "max": 438.0,
+              "mad": 15.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 1024,
+          "case": {
+            "n": 1024,
+            "m": 7
+          },
+          "stdin": "1024 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 236700,
+              "cpu_ns": 234700,
+              "host_ms": 594.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 406.0,
+              "wall_ns": 315000,
+              "cpu_ns": 310200,
+              "host_ms": 609.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 252200,
+              "cpu_ns": 249900,
+              "host_ms": 578.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 391.0,
+              "wall_ns": 250300,
+              "cpu_ns": 248000,
+              "host_ms": 578.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 438.0,
+              "wall_ns": 53191600,
+              "cpu_ns": 974000,
+              "host_ms": 703.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 252200,
+              "min": 236700,
+              "max": 53191600,
+              "mad": 15500
+            },
+            "cpu_ns": {
+              "median": 249900,
+              "min": 234700,
+              "max": 974000,
+              "mad": 15200
+            },
+            "host_ms": {
+              "median": 594.0,
+              "min": 578.0,
+              "max": 703.0,
+              "mad": 16.0
+            },
+            "startup_ms": {
+              "median": 391.0,
+              "min": 375.0,
+              "max": 438.0,
+              "mad": 16.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 2048,
+          "case": {
+            "n": 2048,
+            "m": 7
+          },
+          "stdin": "2048 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 391.0,
+              "wall_ns": 399600,
+              "cpu_ns": 397600,
+              "host_ms": 656.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 391.0,
+              "wall_ns": 359900,
+              "cpu_ns": 357600,
+              "host_ms": 594.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 422.0,
+              "wall_ns": 360900,
+              "cpu_ns": 358900,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 360.0,
+              "wall_ns": 491900,
+              "cpu_ns": 489900,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 391.0,
+              "wall_ns": 401900,
+              "cpu_ns": 399100,
+              "host_ms": 578.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 399600,
+              "min": 359900,
+              "max": 491900,
+              "mad": 38700
+            },
+            "cpu_ns": {
+              "median": 397600,
+              "min": 357600,
+              "max": 489900,
+              "mad": 38700
+            },
+            "host_ms": {
+              "median": 625.0,
+              "min": 578.0,
+              "max": 656.0,
+              "mad": 31.0
+            },
+            "startup_ms": {
+              "median": 391.0,
+              "min": 360.0,
+              "max": 422.0,
+              "mad": 0.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        }
+      ],
+      "growth": {
+        "status": "incomplete_noisy_or_incorrect"
+      },
+      "scope": "Uninstrumented compile and execution wall/CPU; host time separate. Same input within each point; other fields generated by recorded boundary/random strategy. No guaranteed complexity class, platform time, or correctness.",
+      "analysis_id": "b52df9e49b964f7e802605ba5976cc15",
+      "worker_images": [
+        "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+      ],
+      "engine_source_files_sha256": "ab13acbdcf03fbc14027a74121db03bd8dc1b986d55fc2f55a26f896e006ad9f"
+    },
+    "quadratic": {
+      "status": "benchmark_observation",
+      "stop_reason": "completed",
+      "source_sha256": "8c10a3b8190ddf9736ce525dc949d8ca651e1108f78784dae9504012da7403a1",
+      "student_source": "n, m = map(int, input().split())\ntotal = 0\nfor _ in range(n):\n    for _ in range(n):\n        total += m\nprint(total)\n",
+      "package_sha256": "b86a0871c71d9e5dbee3a972018c8d0b73d0516137b38b9548a66e116f9a23f8",
+      "size_field": "n",
+      "seed": 2026,
+      "repetitions": 5,
+      "seconds_per_run": 2,
+      "session_budget_seconds": 90,
+      "physical_executions": 30,
+      "elapsed_ms": 23250.0,
+      "points": [
+        {
+          "size": 128,
+          "case": {
+            "n": 128,
+            "m": 7
+          },
+          "stdin": "128 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 344.0,
+              "wall_ns": 1412100,
+              "cpu_ns": 1410400,
+              "host_ms": 516.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 1425400,
+              "cpu_ns": 1423200,
+              "host_ms": 578.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 1502494,
+              "cpu_ns": 1501400,
+              "host_ms": 578.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 422.0,
+              "wall_ns": 1429100,
+              "cpu_ns": 1426900,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 359.0,
+              "wall_ns": 1577600,
+              "cpu_ns": 1576800,
+              "host_ms": 547.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "69f3e20ac9daa32606fbc7b2f16a3d3de48bb2b39639ed535228db3639385b08",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 1429100,
+              "min": 1412100,
+              "max": 1577600,
+              "mad": 17000
+            },
+            "cpu_ns": {
+              "median": 1426900,
+              "min": 1410400,
+              "max": 1576800,
+              "mad": 16500
+            },
+            "host_ms": {
+              "median": 578.0,
+              "min": 516.0,
+              "max": 625.0,
+              "mad": 31.0
+            },
+            "startup_ms": {
+              "median": 375.0,
+              "min": 344.0,
+              "max": 422.0,
+              "mad": 16.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 256,
+          "case": {
+            "n": 256,
+            "m": 7
+          },
+          "stdin": "256 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 343.0,
+              "wall_ns": 59201287,
+              "cpu_ns": 5733200,
+              "host_ms": 593.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 5390899,
+              "cpu_ns": 5390500,
+              "host_ms": 579.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 390.0,
+              "wall_ns": 6119899,
+              "cpu_ns": 6119600,
+              "host_ms": 671.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 438.0,
+              "wall_ns": 6196499,
+              "cpu_ns": 6195500,
+              "host_ms": 657.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 5409399,
+              "cpu_ns": 5408300,
+              "host_ms": 547.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "bbed901986f1640faa6ace5066d5cc2c137d122de44a66f992e5bde5a50438c1",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 6119899,
+              "min": 5390899,
+              "max": 59201287,
+              "mad": 710500
+            },
+            "cpu_ns": {
+              "median": 5733200,
+              "min": 5390500,
+              "max": 6195500,
+              "mad": 342700
+            },
+            "host_ms": {
+              "median": 593.0,
+              "min": 547.0,
+              "max": 671.0,
+              "mad": 46.0
+            },
+            "startup_ms": {
+              "median": 375.0,
+              "min": 343.0,
+              "max": 438.0,
+              "mad": 15.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 512,
+          "case": {
+            "n": 512,
+            "m": 7
+          },
+          "stdin": "512 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 391.0,
+              "wall_ns": 75925384,
+              "cpu_ns": 26758800,
+              "host_ms": 657.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 406.0,
+              "wall_ns": 79507484,
+              "cpu_ns": 27819700,
+              "host_ms": 671.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 72715985,
+              "cpu_ns": 23414500,
+              "host_ms": 641.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 359.0,
+              "wall_ns": 75939315,
+              "cpu_ns": 23744000,
+              "host_ms": 625.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 422.0,
+              "wall_ns": 74651215,
+              "cpu_ns": 25680400,
+              "host_ms": 703.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "f950a4d5e74efef9e6e365ec4480e6408b5760c02fbd0ef73dcdf2791f28cc36",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 75925384,
+              "min": 72715985,
+              "max": 79507484,
+              "mad": 1274169
+            },
+            "cpu_ns": {
+              "median": 25680400,
+              "min": 23414500,
+              "max": 27819700,
+              "mad": 1936400
+            },
+            "host_ms": {
+              "median": 657.0,
+              "min": 625.0,
+              "max": 703.0,
+              "mad": 16.0
+            },
+            "startup_ms": {
+              "median": 391.0,
+              "min": 359.0,
+              "max": 422.0,
+              "mad": 16.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 1024,
+          "case": {
+            "n": 1024,
+            "m": 7
+          },
+          "stdin": "1024 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 391.0,
+              "wall_ns": 203461039,
+              "cpu_ns": 102496300,
+              "host_ms": 781.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 422.0,
+              "wall_ns": 138077927,
+              "cpu_ns": 90329100,
+              "host_ms": 766.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 359.0,
+              "wall_ns": 197341938,
+              "cpu_ns": 96266300,
+              "host_ms": 781.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 192252936,
+              "cpu_ns": 93429700,
+              "host_ms": 782.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 282567654,
+              "cpu_ns": 132430900,
+              "host_ms": 875.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "773f38fee002c5375747b568e34ddca8b0c280d2695926a866832c5ad1aeaf05",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 197341938,
+              "min": 138077927,
+              "max": 282567654,
+              "mad": 6119101
+            },
+            "cpu_ns": {
+              "median": 96266300,
+              "min": 90329100,
+              "max": 132430900,
+              "mad": 5937200
+            },
+            "host_ms": {
+              "median": 781.0,
+              "min": 766.0,
+              "max": 875.0,
+              "mad": 1.0
+            },
+            "startup_ms": {
+              "median": 375.0,
+              "min": 359.0,
+              "max": 422.0,
+              "mad": 16.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        },
+        {
+          "size": 2048,
+          "case": {
+            "n": 2048,
+            "m": 7
+          },
+          "stdin": "2048 7\n",
+          "runs": [
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 816341756,
+              "cpu_ns": 413967600,
+              "host_ms": 1406.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 406.0,
+              "wall_ns": 801913282,
+              "cpu_ns": 402853800,
+              "host_ms": 1437.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 375.0,
+              "wall_ns": 802901682,
+              "cpu_ns": 401560100,
+              "host_ms": 1375.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 422.0,
+              "wall_ns": 804202783,
+              "cpu_ns": 404034800,
+              "host_ms": 1485.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            },
+            {
+              "status": "ok",
+              "timeout_basis": null,
+              "detail": null,
+              "startup_ms": 359.0,
+              "wall_ns": 867668697,
+              "cpu_ns": 417578100,
+              "host_ms": 1437.0,
+              "matches_reviewed_reference": true,
+              "stdout_sha256": "97b252addf2a794f4b8772cf9c0e40ea269d25c3b2a71779d1cf2a6c95713a66",
+              "cleanup_confirmed": true,
+              "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+            }
+          ],
+          "summary": {
+            "completed": 5,
+            "timeouts": 0,
+            "requested": 5,
+            "wall_ns": {
+              "median": 804202783,
+              "min": 801913282,
+              "max": 867668697,
+              "mad": 2289501
+            },
+            "cpu_ns": {
+              "median": 404034800,
+              "min": 401560100,
+              "max": 417578100,
+              "mad": 2474700
+            },
+            "host_ms": {
+              "median": 1437.0,
+              "min": 1375.0,
+              "max": 1485.0,
+              "mad": 31.0
+            },
+            "startup_ms": {
+              "median": 375.0,
+              "min": 359.0,
+              "max": 422.0,
+              "mad": 16.0
+            }
+          },
+          "correctness": "recorded_match",
+          "reference_status": "ok"
+        }
+      ],
+      "growth": {
+        "status": "incomplete_noisy_or_incorrect"
+      },
+      "scope": "Uninstrumented compile and execution wall/CPU; host time separate. Same input within each point; other fields generated by recorded boundary/random strategy. No guaranteed complexity class, platform time, or correctness.",
+      "analysis_id": "b2b78103fd74471da9a0ab8d6d94f7c0",
+      "worker_images": [
+        "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+      ],
+      "engine_source_files_sha256": "ab13acbdcf03fbc14027a74121db03bd8dc1b986d55fc2f55a26f896e006ad9f"
+    }
+  },
+  "profiling_comparison": {
+    "same_stdout": true,
+    "plain": {
+      "status": "ok",
+      "detail": null,
+      "stdout": "114688\n",
+      "stderr": "",
+      "trace_status": "disabled",
+      "profile": {
+        "version": 1,
+        "status": "disabled",
+        "method": "uninstrumented_execution",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 1541600,
+        "execution_cpu_ns": 1539900,
+        "callback_wall_ns": 0,
+        "callback_cpu_ns": 0,
+        "timed_events": 0,
+        "event_budget": 100000,
+        "lines": [],
+        "blocks": [],
+        "scope": "Compile and execution inside guest, without trace/profile callbacks. Not judge runtime."
+      },
+      "exit_code": 0,
+      "failure_location": null,
+      "mode": "benchmark_uninstrumented",
+      "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+      "source_sha256": "8c10a3b8190ddf9736ce525dc949d8ca651e1108f78784dae9504012da7403a1",
+      "input_sha256": "7d3dd8b240036e08b21cb9a7764ee190ac8f0a9c5dbe5577f3cce48608567d50",
+      "elapsed_ms": 578.0,
+      "requested_mode": "benchmark_uninstrumented",
+      "host_wall_limit_seconds": 10,
+      "trace_trust": "guest_observation_not_authenticated",
+      "cleanup_confirmed": true,
+      "startup_limit_seconds": 8,
+      "benchmark_wall_limit_seconds": 2,
+      "startup_ms": 375.0,
+      "event_count": 0
+    },
+    "traced": {
+      "status": "ok",
+      "detail": null,
+      "stdout": "114688\n",
+      "stderr": "",
+      "trace_status": "truncated",
+      "profile": {
+        "version": 1,
+        "status": "complete",
+        "method": "trace_segments_excluding_callback",
+        "clocks": {
+          "wall": "perf_counter_ns",
+          "cpu": "process_time_ns"
+        },
+        "execution_wall_ns": 596493136,
+        "execution_cpu_ns": 295625000,
+        "callback_wall_ns": 341936377,
+        "callback_cpu_ns": 243378500,
+        "timed_events": 33030,
+        "event_budget": 100000,
+        "lines": [
+          {
+            "frame_id": "F1",
+            "line": 1,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 26000,
+            "self_cpu_ns": 26000,
+            "inclusive_wall_ns": 26000,
+            "inclusive_cpu_ns": 26000
+          },
+          {
+            "frame_id": "F1",
+            "line": 2,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 3200,
+            "self_cpu_ns": 2700,
+            "inclusive_wall_ns": 3200,
+            "inclusive_cpu_ns": 2700
+          },
+          {
+            "frame_id": "F1",
+            "line": 3,
+            "function": "<module>",
+            "hits": 129,
+            "self_wall_ns": 299000,
+            "self_cpu_ns": 295500,
+            "inclusive_wall_ns": 299000,
+            "inclusive_cpu_ns": 295500
+          },
+          {
+            "frame_id": "F1",
+            "line": 4,
+            "function": "<module>",
+            "hits": 16512,
+            "self_wall_ns": 126830332,
+            "self_cpu_ns": 25978800,
+            "inclusive_wall_ns": 126830332,
+            "inclusive_cpu_ns": 25978800
+          },
+          {
+            "frame_id": "F1",
+            "line": 5,
+            "function": "<module>",
+            "hits": 16384,
+            "self_wall_ns": 127178827,
+            "self_cpu_ns": 25724500,
+            "inclusive_wall_ns": 127178827,
+            "inclusive_cpu_ns": 25724500
+          },
+          {
+            "frame_id": "F1",
+            "line": 6,
+            "function": "<module>",
+            "hits": 1,
+            "self_wall_ns": 30100,
+            "self_cpu_ns": 30300,
+            "inclusive_wall_ns": 30100,
+            "inclusive_cpu_ns": 30300
+          }
+        ],
+        "blocks": [
+          {
+            "id": "B1",
+            "kind": "module",
+            "name": "<module>",
+            "scope": 0,
+            "line": 1,
+            "end_line": 6,
+            "hits": 1,
+            "self_wall_ns": 254367459,
+            "self_cpu_ns": 52057800,
+            "inclusive_wall_ns": 254367459,
+            "inclusive_cpu_ns": 52057800
+          },
+          {
+            "id": "B2",
+            "kind": "for",
+            "name": "for",
+            "scope": 0,
+            "line": 3,
+            "end_line": 5,
+            "hits": 129,
+            "self_wall_ns": 254308159,
+            "self_cpu_ns": 51998800,
+            "inclusive_wall_ns": 254308159,
+            "inclusive_cpu_ns": 51998800
+          },
+          {
+            "id": "B3",
+            "kind": "for",
+            "name": "for",
+            "scope": 0,
+            "line": 4,
+            "end_line": 5,
+            "hits": 16512,
+            "self_wall_ns": 254009159,
+            "self_cpu_ns": 51703300,
+            "inclusive_wall_ns": 254009159,
+            "inclusive_cpu_ns": 51703300
+          }
+        ],
+        "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+      },
+      "exit_code": 0,
+      "failure_location": null,
+      "mode": "trace_profile",
+      "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+      "source_sha256": "8c10a3b8190ddf9736ce525dc949d8ca651e1108f78784dae9504012da7403a1",
+      "input_sha256": "7d3dd8b240036e08b21cb9a7764ee190ac8f0a9c5dbe5577f3cce48608567d50",
+      "elapsed_ms": 1157.0,
+      "requested_mode": "trace_profile",
+      "host_wall_limit_seconds": 10,
+      "trace_trust": "guest_observation_not_authenticated",
+      "cleanup_confirmed": true,
+      "event_count": 128
+    }
+  }
+}

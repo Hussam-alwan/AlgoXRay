@@ -15,3 +15,4 @@ main{grid-template-columns:minmax(0,1fr)}.panel,#profiling{min-width:0}
 #ast-tree{max-height:440px;overflow:auto;direction:ltr;border:1px solid #40516a;border-radius:8px;padding:8px}#ast-tree ul{list-style:none;padding-left:14px;margin:2px 0;border-left:1px solid #40516a}#ast-tree li{margin:4px 0}#ast-tree details{margin:2px 0 2px 10px}#ast-tree summary{font-size:12px;color:#94a3b8;margin:0}.ast-node{max-width:100%;overflow-wrap:anywhere;text-align:left;padding:3px 7px;font:12px monospace}#localization-rows,#bounds-findings{max-height:420px;overflow:auto}
 
 #branch-coverage,#branch-ranking{display:flex;flex-wrap:wrap;gap:6px;max-height:280px;overflow:auto}#branch-coverage button,#branch-ranking button{direction:ltr;font:12px monospace;white-space:normal;overflow-wrap:anywhere;max-width:100%}
+#scope{overflow-wrap:anywhere}

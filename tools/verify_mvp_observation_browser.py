@@ -71,13 +71,29 @@ def test(url):
         page.locator("#source").fill("print(1)")
         expect(page.locator("#benchmark-results")).to_be_hidden()
         checks.append("source_change_invalidates_measurement")
+
+        page.locator("#source").fill("import time\nn = int(input())\nif n >= 4: time.sleep(5)\nprint(sum(map(int, input().split())))")
+        page.locator("#size-values").fill("1,4")
+        page.locator("#timing-repetitions").fill("1")
+        page.locator("#trusted").check()
+        with page.expect_response(lambda r:r.url.endswith("/v4/benchmark"),timeout=45000) as response:
+            page.locator("#scaling-benchmark").click()
+        censored=response.value.json()
+        assert censored["points"][0]["summary"]["completed"]==1,censored
+        timed=censored["points"][1]
+        assert timed["summary"]["timeouts"]==1 and timed["summary"]["wall_ns"] is None,censored
+        assert timed["runs"][0]["timeout_basis"]=="host_benchmark_wall_clock",timed
+        assert timed["runs"][0]["cleanup_confirmed"] is True,timed
+        expect(page.locator("#benchmark-chart .benchmark-timeout")).to_have_count(1)
+        expect(page.locator("#benchmark-chart circle")).to_have_count(1)
+        checks.append("timeout_retained_and_marked_without_invented_runtime")
         assert not errors,errors
         assert not external,external
         browser.close()
     return {"status":"passed","checks":checks,"page_errors":errors,"external_requests":external,
             "scope":"Synthetic development smoke; local timings are not Codeforces timings or a complexity proof.",
             "manual_judgment":observed["judgment"],"sample_judgment":sample["judgment"],
-            "plain":plain,"scaled":scaled}
+            "plain":plain,"scaled":scaled,"censored":censored}
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser();parser.add_argument("--port",type=int,default=8794);parser.add_argument("--out",default="docs/mvp-evidence/observation-browser.json");args=parser.parse_args()

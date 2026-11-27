@@ -174,7 +174,12 @@ def test(url,out):
 
         page.locator("#profiling").screenshot(path=str(out/"profile-table.png"))
         page.set_viewport_size({"width":390,"height":844})
-        assert page.evaluate("document.body.scrollWidth")<=390
+        assert page.evaluate("document.body.scrollWidth")<=390, page.evaluate("""() => ({
+            width: document.body.scrollWidth,
+            overflowing: [...document.querySelectorAll('*')].filter(el =>
+                el.clientWidth && el.scrollWidth > el.clientWidth && getComputedStyle(el).overflowX === 'visible'
+            ).slice(0, 20).map(el => [el.tagName, el.id, el.className, el.clientWidth, el.scrollWidth])
+        })""")
         page.locator("#profiling").screenshot(path=str(out/"profile-mobile.png"))
         page.set_viewport_size({"width":1400,"height":1000})
         with page.expect_download() as dl:page.locator("#profile-csv").click()
