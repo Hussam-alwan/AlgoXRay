@@ -1,7 +1,8 @@
 """Playwright acceptance against the live V4 loopback instance."""
 import json
+import re
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright,expect
 from verify_browser import available_browser
 def main():
     url="http://127.0.0.1:8002"
@@ -17,14 +18,14 @@ def main():
         page.route("**/*",route)
         page.goto(url+"/v4")
         page.locator("#package").wait_for()
-        page.wait_for_function("document.querySelector('#package').value.includes('hamburgers')")
+        expect(page.locator("#package")).to_have_value(re.compile("hamburgers"),timeout=15000)
         page.locator("#demo").select_option("sum")
         page.locator("#load").click()
         page.locator("#reviewed").check()
         with page.expect_response(lambda r:r.url.endswith("/packages/approve"),timeout=35000) as response:
             page.locator("#approve").click()
         assert response.value.ok and response.value.json()["status"]=="approved_by_owner",response.value.json()
-        page.wait_for_function("document.querySelector('#packages').value.length===64")
+        expect(page.locator("#packages")).to_have_value(re.compile(r"^[a-f0-9]{64}$"),timeout=15000)
         checks.append("author_approval")
         page.locator("#trusted").check()
         page.locator("#count").fill("2")
