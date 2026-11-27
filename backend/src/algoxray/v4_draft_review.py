@@ -20,6 +20,10 @@ def review_draft(statement,manifest,evidence=(),unresolved=()):
         if literal:covered.add((field,attr))
     missing=[f["name"]+"."+a for f in manifest["fields"] for a in ATTRS if a in f and (f["name"],a) not in covered]
     pending=list(dict.fromkeys(list(unresolved)+["Review uncited or unmatched attribute: "+x for x in missing]))
+    if manifest.get("schema_version")==2:
+        if "repeat" in manifest:pending.append("Manual semantic review: repeated cases and count bounds.")
+        if manifest.get("relations"):pending.append("Manual semantic review: scalar relations and their direction.")
+        if any(f.get("sorted") or f.get("unique") for f in manifest["fields"]):pending.append("Manual semantic review: list ordering and uniqueness.")
     provenance={"statement_sha256":hashlib.sha256(statement.encode()).hexdigest(),"evidence":list(evidence),"unresolved":pending[:48]}
     return {"provenance":provenance,"checks":checks,"uncited_attributes":missing,
             "scope":"Exact quotation/literal checks only. Numeric direction, units and full mathematical fidelity require owner review."}
@@ -38,7 +42,7 @@ def validate_provenance(p):
     if checked["uncited_attributes"]:raise ValueError("Resolve unmatched constraint quotations before approval")
     if pending:raise ValueError("Resolve draft constraints before approving this package")
 
-def field_schema():
+def field_schema(version=1):
     """Mutually exclusive shapes: an int-list has fixed OR dependent length, never both."""
     name={"type":"string","pattern":"^[a-z][a-z0-9_]{0,30}$"}
     number={"type":"integer"}
@@ -52,4 +56,8 @@ def field_schema():
         for cols in ("cols","cols_from"):
             variants.append(variant("matrix",{rows:{"type":"string"} if rows.endswith("_from") else {"type":"integer","minimum":1,"maximum":32},
                                                cols:{"type":"string"} if cols.endswith("_from") else {"type":"integer","minimum":1,"maximum":32}}))
+    if version==2:
+        for variant in variants:
+            if variant["properties"]["kind"].get("const")=="ints":
+                variant["properties"].update(sorted={"type":"boolean"},unique={"type":"boolean"})
     return {"oneOf":variants}

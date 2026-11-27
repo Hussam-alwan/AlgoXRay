@@ -1,0 +1,132 @@
+{
+  "status": "passed",
+  "checks": [
+    "intake_allowlist",
+    "description_prepared_without_ai",
+    "approval_guard",
+    "v2_package_approved",
+    "v2_real_docker_reduction_ui",
+    "mobile_width"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Synthetic development fixture and owner-review simulation, not user study.",
+  "analysis": {
+    "status": "observed_mismatch",
+    "original_case": {
+      "t": 2,
+      "cases": [
+        {
+          "n": 2,
+          "a": [
+            0,
+            3
+          ]
+        },
+        {
+          "n": 3,
+          "a": [
+            1,
+            2,
+            4
+          ]
+        }
+      ]
+    },
+    "reduced_case": {
+      "t": 1,
+      "cases": [
+        {
+          "n": 1,
+          "a": [
+            2
+          ]
+        }
+      ]
+    },
+    "attempts": 11,
+    "executions": 22,
+    "reduction": {
+      "original_complexity": [
+        2,
+        5,
+        15
+      ],
+      "reduced_complexity": [
+        1,
+        1,
+        3
+      ],
+      "signature": {
+        "kind": "wrong_answer"
+      },
+      "budget": 4,
+      "probes": 4,
+      "accepted": [
+        {
+          "case": {
+            "t": 1,
+            "cases": [
+              {
+                "n": 3,
+                "a": [
+                  1,
+                  2,
+                  4
+                ]
+              }
+            ]
+          },
+          "complexity": [
+            1,
+            3,
+            10
+          ],
+          "stdin": "1\n3\n1 2 4\n"
+        },
+        {
+          "case": {
+            "t": 1,
+            "cases": [
+              {
+                "n": 1,
+                "a": [
+                  4
+                ]
+              }
+            ]
+          },
+          "complexity": [
+            1,
+            1,
+            5
+          ],
+          "stdin": "1\n1\n4\n"
+        },
+        {
+          "case": {
+            "t": 1,
+            "cases": [
+              {
+                "n": 1,
+                "a": [
+                  2
+                ]
+              }
+            ]
+          },
+          "complexity": [
+            1,
+            1,
+            3
+          ],
+          "stdin": "1\n1\n2\n"
+        }
+      ],
+      "stop_reason": "budget_exhausted",
+      "scope": "Best legal compatible witness found within budget; neither global minimality nor identical root cause proven.",
+      "original_replay_count": 3,
+      "reduced_replay_count": 3
+    }
+  }
+}

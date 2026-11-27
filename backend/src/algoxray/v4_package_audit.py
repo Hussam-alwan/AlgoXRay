@@ -6,6 +6,8 @@ from .v4_isolation import execute_stdio
 
 def small_cases(m,limit):
     """Enumerate only when a conservative upper bound fits; never materialize huge ranges."""
+    # V2 constraints and repeated bodies require a separate exhaustive enumerator.
+    if m.get("schema_version")==2:return None
     upper=1;prior={}
     for f in m["fields"]:
         span=f["max"]-f["min"]+1

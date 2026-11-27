@@ -9,6 +9,9 @@ def digest(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode()).hexdigest()
 
 def validate_manifest(m):
+    if type(m) is dict and "schema_version" in m:
+        from . import v4_spec_v2 as v2
+        return v2.validate_manifest(m)
     if type(m) is not dict or not {"id","title","statement","fields","lines","output"}<=set(m)<={"id","title","statement","fields","lines","output","tolerance"}:
         raise ValueError("Expected id,title,statement,fields,lines,output")
     if type(m["id"]) is not str or not re.fullmatch("[a-z0-9_]{1,60}",m["id"]): raise ValueError("Invalid id")
@@ -71,6 +74,9 @@ def validate_manifest(m):
 def dimension(f,axis,c):return f[axis] if axis in f else c[f[axis+"_from"]]
 
 def validate_case(m,case):
+    if type(m) is dict and "schema_version" in m:
+        from . import v4_spec_v2 as v2
+        return v2.validate_case(m,case)
     if type(case) is not dict or set(case)!={f["name"] for f in m["fields"]}: raise ValueError("Wrong case fields")
     for f in m["fields"]:
         v=case[f["name"]]; lo,hi=f["min"],f["max"]
@@ -85,6 +91,9 @@ def validate_case(m,case):
     return case
 
 def serialize(m,case):
+    if type(m) is dict and "schema_version" in m:
+        from . import v4_spec_v2 as v2
+        return v2.serialize(m,case)
     validate_case(m,case)
     def token(v):
         if type(v) is list and v and type(v[0]) is list:return "\n".join(" ".join(map(str,row)) for row in v)
@@ -94,6 +103,9 @@ def serialize(m,case):
     return s
 
 def generate(m,seed,count):
+    if type(m) is dict and "schema_version" in m:
+        from . import v4_spec_v2 as v2
+        yield from v2.generate(m,seed,count);return
     rng=random.Random(seed)
     for i in range(count):
         c={}
@@ -111,11 +123,17 @@ def generate(m,seed,count):
         yield validate_case(m,c)
 
 def complexity(m,c):
+    if type(m) is dict and "schema_version" in m:
+        from . import v4_spec_v2 as v2
+        return v2.complexity(m,c)
     """Lexicographic structural size, then magnitude of values."""
     from .v4_shrinking import complexity as measure
     return measure(m,c)
 
 def smaller(m,c):
+    if type(m) is dict and "schema_version" in m:
+        from . import v4_spec_v2 as v2
+        yield from v2.smaller(m,c);return
     from .v4_shrinking import candidates
     yield from candidates(m,c)
 
@@ -139,7 +157,7 @@ def equal(m,a,b):
     except (ValueError,InvalidOperation):return False
 
 def validate_package(p):
-    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt","provenance"}: raise ValueError("Expected manifest,reference,controls")
+    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt","provenance","intake"}: raise ValueError("Expected manifest,reference,controls")
     m=validate_manifest(p["manifest"])
     if type(p["reference"]) is not str or not 1<=len(p["reference"].encode())<=MAX_SOURCE: raise ValueError("Invalid reference")
     if "reference_alt" in p and (type(p["reference_alt"]) is not str or not 1<=len(p["reference_alt"].encode())<=MAX_SOURCE or p["reference_alt"]==p["reference"]):raise ValueError("Alternative reference must be distinct and bounded")
@@ -148,6 +166,9 @@ def validate_package(p):
         if type(c) is not dict or set(c)!={"case","expected"} or type(c["expected"]) is not str or len(c["expected"])>8192: raise ValueError("Invalid control")
         serialize(m,c["case"])
     if len({digest(c["case"]) for c in p["controls"]})!=len(p["controls"]): raise ValueError("Duplicate controls")
+    if "intake" in p:
+        from .v4_intake import validate_intake
+        validate_intake(p["intake"],m["statement"])
     if "provenance" in p:
         from .v4_draft_review import validate_provenance
         validate_provenance(p)

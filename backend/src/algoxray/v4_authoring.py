@@ -46,8 +46,16 @@ def parse_problem(html,url):
     p=Parser();p.feed(html)
     statement="\n".join(x.strip() for x in "".join(p.parts).splitlines() if x.strip())
     if not statement or len(statement)>8000:raise ValueError("Statement missing or exceeds supported 8000 characters; paste text manually")
-    pairs=[{"stdin":a,"stdout":b} for a,b in zip(p.samples["input"],p.samples["output"])]
-    return {"status":"imported_unreviewed","source_url":url,"statement":statement,"samples":pairs[:8],"warning":"Review extracted text, especially math and formatting, against the original. Samples are not independent reference validation."}
+    limitations=[]
+    if len(p.samples["input"])!=len(p.samples["output"]):
+        pairs=[]
+        limitations.append("Sample input/output counts differ; supply reviewed pairs manually.")
+    else:
+        pairs=[{"stdin":a,"stdout":b} for a,b in zip(p.samples["input"],p.samples["output"])]
+        if len(pairs)>8:limitations.append("Only the first 8 sample pairs are retained.")
+        if not pairs:limitations.append("No complete sample pairs extracted.")
+    return {"status":"imported_unreviewed","source_url":url,"statement":statement,"samples":pairs[:8],"limitations":limitations,
+            "warning":"Review extracted text, especially math and formatting, against the original. Samples are not independent reference validation."}
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self,*args,**kwargs):raise ValueError("Redirect blocked; paste text manually")
 def import_problem(value):

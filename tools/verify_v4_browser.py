@@ -36,7 +36,7 @@ def test(url,out):
         page.goto(url+"/v4")
         expect(page.locator("#package")).to_have_value(re.compile("hamburgers"),timeout=15000)
         page.locator("#problem-url").fill("https://example.com/problem")
-        with page.expect_response(lambda r:r.url.endswith("/packages/import"),timeout=10000) as response:
+        with page.expect_response(lambda r:r.url.endswith("/packages/intake"),timeout=10000) as response:
             page.locator("#import-problem").click()
         assert response.value.status==422
         checks.append("external_import_allowlist")

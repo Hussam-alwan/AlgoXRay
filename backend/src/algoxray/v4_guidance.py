@@ -19,16 +19,23 @@ def hypothesis_cases(m,seed,count):
                 v=draw(st.lists(number,min_size=length,max_size=length))
             c[f["name"]]=v
         return c
+    selected=cases()
+    if m.get("schema_version")==2:
+        from .v4_spec_v2 import strategy
+        selected=strategy(m)
     output=[]
     @hyp_seed(seed)
     @settings(max_examples=count,deadline=None,database=None,phases=(Phase.generate,))
-    @given(cases())
+    @given(selected)
     def collect(c):
         serialize(m,c);output.append(c)
     collect()
     return output[:count]
 
 def case_schema(m):
+    if m.get("schema_version")==2:
+        from .v4_spec_v2 import case_schema as extended_schema
+        return extended_schema(m)
     properties={}
     for f in m["fields"]:
         number={"type":"integer","minimum":f["min"],"maximum":f["max"]}
