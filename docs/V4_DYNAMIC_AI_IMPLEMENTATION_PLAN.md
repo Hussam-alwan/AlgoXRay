@@ -3,9 +3,21 @@ Status: active V4 continuation record, reconciled 27 November 2026. The bounded 
 Baseline: c84d0c9ba1eb1a4c7da857a5454a4ace90f8843d (option-b).
 Owner objective: debug previously unseen competitive-programming problems with actual execution, evidence-linked graphics and AI-assisted hypotheses, without adding problem-specific conditions to the engine for every new problem.
 
-## Active checkpoint - 27 November 2026
+## Current continuation - 27 November 2026
 
-This is the current plan. Core/Option B handoffs and earlier V4 status documents are historical. The latest verified runtime is `1aee128bfaf33313fb01e9dcf8d5ffd70859e13e`; the completion export identifies the exact runtime, ablation and packaging commits separately. V4 lives in `D:/icips-v4`, port 8002; V3 is preserved in `D:/icips`, port 8001.
+The active runtime is `5f58330538f3dda0f73435bc3640f79531cd0bf7`, deployed locally on 8002 and pushed to main/v4-dynamic-ai. V3 remains on 8001. Latest software evidence: 239 tests, 27 normal browser checks plus 7 failure/fixture checks, and a live local timeout/source-link smoke.
+
+[Timeout diagnosis and opt-in profiling AI](V4_TIMEOUT_DIAGNOSIS.md) documents the verified change. Local inference quality remains limited: an initial response contradicted itself; a later tuned response abstained. Both are retained in [the evidence inventory](v4-evidence/timeout-diagnosis-20261127/MANIFEST.json). No new independent accuracy claim or full seven-family re-evaluation is made.
+
+The owner's Engine/Agent roadmap was reviewed against source and evidence: [full Arabic comparison](ENGINE_AGENT_ROADMAP_COMPARISON_AR.md), [32-item machine-readable mapping](ENGINE_AGENT_ROADMAP_STATUS.json). The mapping classifies 14 items as implemented within bounded current scope, 14 partial and 4 missing. These counts are not a project-completion percentage or authorization to implement the proposed roadmap automatically.
+
+Priority gaps found: stdin.buffer compatibility, repeated reduction with FailureSignature, complete evidence bundle, branch coverage/feedback, then an explicit Agent state/tool/budget layer and measured adaptive ranking. Knowledge-base, language expansion and public execution require their own data/security design.
+
+Earlier clean-checkout reproduction and benchmark metrics below retain their original commits. They are not relabeled as new measurements of this continuation.
+
+## Earlier completion checkpoint - 27 November 2026
+
+This is the current plan. Core/Option B handoffs and earlier V4 status documents are historical. The verified runtime at that earlier checkpoint was `1aee128bfaf33313fb01e9dcf8d5ffd70859e13e`; the completion export identifies the exact runtime, ablation and packaging commits separately. V4 lives in `D:/icips-v4`, port 8002; V3 is preserved in `D:/icips`, port 8001.
 
 Owner additions: publish intended project code, tests, documentation and explicit synthetic/public evidence to both `main` and `v4-dynamic-ai`; measure execution time for each supported code block for CP. Credentials, private submissions, package stores, quota databases, environments and private reviewer keys stay outside Git.
 

@@ -1,0 +1,6922 @@
+{
+  "scope": "Authored bounded fixture, same machine. One input, no replay/search/causal-accuracy claim. No cloud calls.",
+  "git_head": "d78313502186745fb20c7d70028d222f87b0224b",
+  "package": {
+    "manifest": {
+      "id": "timeout_count_fixture",
+      "title": "Authored bounded count fixture",
+      "statement": "Read n integers and x; print the number of values at most x. n is 1 to 8, array values are 0 to 9, x is 0 to 10.",
+      "fields": [
+        {
+          "name": "n",
+          "kind": "int",
+          "min": 1,
+          "max": 8
+        },
+        {
+          "name": "a",
+          "kind": "ints",
+          "min": 0,
+          "max": 9,
+          "length_from": "n"
+        },
+        {
+          "name": "x",
+          "kind": "int",
+          "min": 0,
+          "max": 10
+        }
+      ],
+      "lines": [
+        [
+          "n"
+        ],
+        [
+          "a"
+        ],
+        [
+          "x"
+        ]
+      ],
+      "output": "tokens"
+    },
+    "reference": "n=int(input())\na=list(map(int,input().split()))\nx=int(input())\nprint(sum(1 for v in a if v<=x))\n",
+    "controls": [
+      {
+        "case": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ],
+          "x": 2
+        },
+        "expected": "2\n"
+      },
+      {
+        "case": {
+          "n": 1,
+          "a": [
+            0
+          ],
+          "x": 0
+        },
+        "expected": "1\n"
+      }
+    ]
+  },
+  "package_sha256": "f33558a63dc699b9cc93d63715df32f00be1256ad06fbcdffcb164f9f344928c",
+  "source": "n=int(input())\na=list(map(int,input().split()))\nx=int(input())\na.sort()\nl=0\nr=n\nwhile l<r:\n    mid=(l+r)//2\n    if a[mid]<=x:\n        l=mid\n    else:\n        r=mid\nprint(l)\n",
+  "fixed_source": "n=int(input())\na=list(map(int,input().split()))\nx=int(input())\na.sort()\nl=0\nr=n\nwhile l<r:\n    mid=(l+r)//2\n    if a[mid]<=x:\n        l=mid+1\n    else:\n        r=mid\nprint(l)\n",
+  "stdin": "4\n5 1 5 2\n2\n",
+  "reference": {
+    "status": "ok",
+    "detail": null,
+    "stdout": "2\n",
+    "stderr": "",
+    "events": [
+      {
+        "event_id": "E1",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 0,
+        "kind": "call",
+        "function": "<module>",
+        "snapshot_timing": "call",
+        "locals": {}
+      },
+      {
+        "event_id": "E2",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 1,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {}
+      },
+      {
+        "event_id": "E3",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 2,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4
+        }
+      },
+      {
+        "event_id": "E4",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 3,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ]
+        }
+      },
+      {
+        "event_id": "E5",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 4,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ],
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E6",
+        "frame_id": "F2",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "call",
+        "function": "<genexpr>",
+        "snapshot_timing": "call",
+        "locals": {},
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E7",
+        "frame_id": "F2",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "line",
+        "function": "<genexpr>",
+        "snapshot_timing": "before_line",
+        "locals": {},
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E8",
+        "frame_id": "F2",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "line",
+        "function": "<genexpr>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "v": 5
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E9",
+        "frame_id": "F2",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "return",
+        "function": "<genexpr>",
+        "snapshot_timing": "return",
+        "locals": {
+          "v": 1
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E10",
+        "frame_id": "F3",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "call",
+        "function": "<genexpr>",
+        "snapshot_timing": "call",
+        "locals": {
+          "v": 1
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E11",
+        "frame_id": "F3",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "line",
+        "function": "<genexpr>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "v": 1
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E12",
+        "frame_id": "F3",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "line",
+        "function": "<genexpr>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "v": 5
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E13",
+        "frame_id": "F3",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "return",
+        "function": "<genexpr>",
+        "snapshot_timing": "return",
+        "locals": {
+          "v": 2
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E14",
+        "frame_id": "F4",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "call",
+        "function": "<genexpr>",
+        "snapshot_timing": "call",
+        "locals": {
+          "v": 2
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E15",
+        "frame_id": "F4",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "line",
+        "function": "<genexpr>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "v": 2
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E16",
+        "frame_id": "F4",
+        "parent_frame_id": "F1",
+        "line": 4,
+        "kind": "return",
+        "function": "<genexpr>",
+        "snapshot_timing": "return",
+        "locals": {
+          "v": 2
+        },
+        "globals": {
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E17",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 4,
+        "kind": "return",
+        "function": "<module>",
+        "snapshot_timing": "return",
+        "locals": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ],
+          "x": 2
+        }
+      }
+    ],
+    "trace_status": "complete",
+    "profile": {
+      "version": 1,
+      "status": "complete",
+      "method": "trace_segments_excluding_callback",
+      "clocks": {
+        "wall": "perf_counter_ns",
+        "cpu": "process_time_ns"
+      },
+      "execution_wall_ns": 645898,
+      "execution_cpu_ns": 641500,
+      "callback_wall_ns": 369498,
+      "callback_cpu_ns": 370400,
+      "timed_events": 17,
+      "event_budget": 100000,
+      "lines": [
+        {
+          "frame_id": "F1",
+          "line": 1,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 8900,
+          "self_cpu_ns": 8700,
+          "inclusive_wall_ns": 8900,
+          "inclusive_cpu_ns": 8700
+        },
+        {
+          "frame_id": "F1",
+          "line": 2,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 6500,
+          "self_cpu_ns": 6400,
+          "inclusive_wall_ns": 6500,
+          "inclusive_cpu_ns": 6400
+        },
+        {
+          "frame_id": "F1",
+          "line": 3,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 4300,
+          "self_cpu_ns": 4200,
+          "inclusive_wall_ns": 4300,
+          "inclusive_cpu_ns": 4200
+        },
+        {
+          "frame_id": "F1",
+          "line": 4,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 19100,
+          "self_cpu_ns": 18800,
+          "inclusive_wall_ns": 40500,
+          "inclusive_cpu_ns": 39400
+        },
+        {
+          "frame_id": "F2",
+          "line": 4,
+          "function": "<genexpr>",
+          "hits": 2,
+          "self_wall_ns": 8200,
+          "self_cpu_ns": 8100,
+          "inclusive_wall_ns": 8200,
+          "inclusive_cpu_ns": 8100
+        },
+        {
+          "frame_id": "F3",
+          "line": 4,
+          "function": "<genexpr>",
+          "hits": 2,
+          "self_wall_ns": 4600,
+          "self_cpu_ns": 4300,
+          "inclusive_wall_ns": 4600,
+          "inclusive_cpu_ns": 4300
+        },
+        {
+          "frame_id": "F4",
+          "line": 4,
+          "function": "<genexpr>",
+          "hits": 1,
+          "self_wall_ns": 2100,
+          "self_cpu_ns": 2000,
+          "inclusive_wall_ns": 2100,
+          "inclusive_cpu_ns": 2000
+        }
+      ],
+      "blocks": [
+        {
+          "id": "B1",
+          "kind": "module",
+          "name": "<module>",
+          "scope": 0,
+          "line": 1,
+          "end_line": 4,
+          "hits": 1,
+          "self_wall_ns": 38800,
+          "self_cpu_ns": 38100,
+          "inclusive_wall_ns": 60200,
+          "inclusive_cpu_ns": 58700
+        }
+      ],
+      "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+    },
+    "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+    "source_sha256": "603431dc3fa427ef4157dc7ce8dca542d9e39f12ed1e26ec03d045fcd1c5f63f",
+    "input_sha256": "ffe3a743fcd275b684fa7e198ae526b4088c407145b929bce78e28ae0c98f7ca",
+    "elapsed_ms": 578.0,
+    "trace_trust": "guest_observation_not_authenticated",
+    "cleanup_confirmed": true
+  },
+  "student": {
+    "status": "timeout",
+    "detail": null,
+    "stdout": "",
+    "stderr": "",
+    "events": [
+      {
+        "event_id": "E1",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 0,
+        "kind": "call",
+        "function": "<module>",
+        "snapshot_timing": "call",
+        "locals": {}
+      },
+      {
+        "event_id": "E2",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 1,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {}
+      },
+      {
+        "event_id": "E3",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 2,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4
+        }
+      },
+      {
+        "event_id": "E4",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 3,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ]
+        }
+      },
+      {
+        "event_id": "E5",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 4,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ],
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E6",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 5,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E7",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 6,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0
+        }
+      },
+      {
+        "event_id": "E8",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4
+        }
+      },
+      {
+        "event_id": "E9",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4
+        }
+      },
+      {
+        "event_id": "E10",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E11",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 12,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E12",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E13",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E14",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E15",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E16",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E17",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E18",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E19",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E20",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E21",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E22",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E23",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E24",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E25",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E26",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E27",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E28",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E29",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E30",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E31",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E32",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E33",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E34",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E35",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E36",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E37",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E38",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E39",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E40",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E41",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E42",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E43",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E44",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E45",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E46",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E47",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E48",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E49",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E50",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E51",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E52",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E53",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E54",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E55",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E56",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E57",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E58",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E59",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E60",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E61",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E62",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E63",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E64",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E65",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E66",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E67",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E68",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E69",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E70",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E71",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E72",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E73",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E74",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E75",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E76",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E77",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E78",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E79",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E80",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E81",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E82",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E83",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E84",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E85",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E86",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E87",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E88",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E89",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E90",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E91",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E92",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E93",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E94",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E95",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E96",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E97",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E98",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E99",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E100",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E101",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E102",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E103",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E104",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E105",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E106",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E107",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E108",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E109",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E110",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E111",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E112",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E113",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E114",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E115",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E116",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E117",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E118",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E119",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E120",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E121",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E122",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E123",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E124",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E125",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E126",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E127",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E128",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E129",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E130",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E131",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E132",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E133",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E134",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E135",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E136",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E137",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E138",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E139",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E140",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E141",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E142",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E143",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E144",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E145",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E146",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E147",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E148",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E149",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E150",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E151",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E152",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E153",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E154",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E155",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E156",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E157",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E158",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E159",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E160",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E161",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E162",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E163",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E164",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E165",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E166",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E167",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E168",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E169",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E170",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E171",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E172",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E173",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E174",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E175",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E176",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E177",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E178",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E179",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E180",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E181",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E182",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E183",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E184",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E185",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E186",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E187",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E188",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E189",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E190",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E191",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E192",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E193",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E194",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E195",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E196",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E197",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E198",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E199",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E200",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E201",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E202",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E203",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E204",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E205",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E206",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E207",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E208",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E209",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E210",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E211",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E212",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E213",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E214",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E215",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E216",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E217",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E218",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E219",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E220",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E221",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E222",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E223",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E224",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E225",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E226",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E227",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E228",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E229",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E230",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E231",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E232",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E233",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E234",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E235",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E236",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E237",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E238",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E239",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E240",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E241",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E242",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E243",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E244",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E245",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E246",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E247",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E248",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E249",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E250",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E251",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E252",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E253",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E254",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E255",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E256",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 1,
+          "r": 2,
+          "mid": 1
+        }
+      }
+    ],
+    "trace_status": "truncated",
+    "profile": {
+      "version": 1,
+      "status": "partial",
+      "method": "trace_segments_excluding_callback",
+      "clocks": {
+        "wall": "perf_counter_ns",
+        "cpu": "process_time_ns"
+      },
+      "execution_wall_ns": 1000006919,
+      "execution_cpu_ns": 496486100,
+      "callback_wall_ns": 503407323,
+      "callback_cpu_ns": 404806900,
+      "timed_events": 57545,
+      "event_budget": 100000,
+      "lines": [
+        {
+          "frame_id": "F1",
+          "line": 1,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 8200,
+          "self_cpu_ns": 8000,
+          "inclusive_wall_ns": 8200,
+          "inclusive_cpu_ns": 8000
+        },
+        {
+          "frame_id": "F1",
+          "line": 2,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 7100,
+          "self_cpu_ns": 7000,
+          "inclusive_wall_ns": 7100,
+          "inclusive_cpu_ns": 7000
+        },
+        {
+          "frame_id": "F1",
+          "line": 3,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 4500,
+          "self_cpu_ns": 4300,
+          "inclusive_wall_ns": 4500,
+          "inclusive_cpu_ns": 4300
+        },
+        {
+          "frame_id": "F1",
+          "line": 4,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 2600,
+          "self_cpu_ns": 2400,
+          "inclusive_wall_ns": 2600,
+          "inclusive_cpu_ns": 2400
+        },
+        {
+          "frame_id": "F1",
+          "line": 5,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 2100,
+          "self_cpu_ns": 1900,
+          "inclusive_wall_ns": 2100,
+          "inclusive_cpu_ns": 1900
+        },
+        {
+          "frame_id": "F1",
+          "line": 6,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 1900,
+          "self_cpu_ns": 1700,
+          "inclusive_wall_ns": 1900,
+          "inclusive_cpu_ns": 1700
+        },
+        {
+          "frame_id": "F1",
+          "line": 7,
+          "function": "<module>",
+          "hits": 14385,
+          "self_wall_ns": 223066219,
+          "self_cpu_ns": 22727400,
+          "inclusive_wall_ns": 223066219,
+          "inclusive_cpu_ns": 22727400
+        },
+        {
+          "frame_id": "F1",
+          "line": 8,
+          "function": "<module>",
+          "hits": 14385,
+          "self_wall_ns": 126991622,
+          "self_cpu_ns": 23275300,
+          "inclusive_wall_ns": 126991622,
+          "inclusive_cpu_ns": 23275300
+        },
+        {
+          "frame_id": "F1",
+          "line": 9,
+          "function": "<module>",
+          "hits": 14384,
+          "self_wall_ns": 23441322,
+          "self_cpu_ns": 23085300,
+          "inclusive_wall_ns": 23441322,
+          "inclusive_cpu_ns": 23085300
+        },
+        {
+          "frame_id": "F1",
+          "line": 12,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 2500,
+          "self_cpu_ns": 2300,
+          "inclusive_wall_ns": 2500,
+          "inclusive_cpu_ns": 2300
+        },
+        {
+          "frame_id": "F1",
+          "line": 10,
+          "function": "<module>",
+          "hits": 14383,
+          "self_wall_ns": 122879033,
+          "self_cpu_ns": 22371200,
+          "inclusive_wall_ns": 122879033,
+          "inclusive_cpu_ns": 22371200
+        }
+      ],
+      "blocks": [
+        {
+          "id": "B1",
+          "kind": "module",
+          "name": "<module>",
+          "scope": 0,
+          "line": 1,
+          "end_line": 13,
+          "hits": 1,
+          "self_wall_ns": 496407096,
+          "self_cpu_ns": 91486800,
+          "inclusive_wall_ns": 496407096,
+          "inclusive_cpu_ns": 91486800
+        },
+        {
+          "id": "B2",
+          "kind": "while",
+          "name": "while",
+          "scope": 0,
+          "line": 7,
+          "end_line": 12,
+          "hits": 14385,
+          "self_wall_ns": 496380696,
+          "self_cpu_ns": 91461500,
+          "inclusive_wall_ns": 496380696,
+          "inclusive_cpu_ns": 91461500
+        },
+        {
+          "id": "B3",
+          "kind": "if",
+          "name": "if",
+          "scope": 0,
+          "line": 9,
+          "end_line": 12,
+          "hits": 14384,
+          "self_wall_ns": 146322855,
+          "self_cpu_ns": 45458800,
+          "inclusive_wall_ns": 146322855,
+          "inclusive_cpu_ns": 45458800
+        }
+      ],
+      "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+    },
+    "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+    "source_sha256": "0baaa98155c9ff48eb665329daede94e0398737819b2715f727a4689fbb6b6e6",
+    "input_sha256": "ffe3a743fcd275b684fa7e198ae526b4088c407145b929bce78e28ae0c98f7ca",
+    "elapsed_ms": 1516.0,
+    "trace_trust": "guest_observation_not_authenticated",
+    "cleanup_confirmed": true
+  },
+  "fixed": {
+    "status": "ok",
+    "detail": null,
+    "stdout": "2\n",
+    "stderr": "",
+    "events": [
+      {
+        "event_id": "E1",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 0,
+        "kind": "call",
+        "function": "<module>",
+        "snapshot_timing": "call",
+        "locals": {}
+      },
+      {
+        "event_id": "E2",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 1,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {}
+      },
+      {
+        "event_id": "E3",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 2,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4
+        }
+      },
+      {
+        "event_id": "E4",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 3,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ]
+        }
+      },
+      {
+        "event_id": "E5",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 4,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            5,
+            1,
+            5,
+            2
+          ],
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E6",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 5,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2
+        }
+      },
+      {
+        "event_id": "E7",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 6,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0
+        }
+      },
+      {
+        "event_id": "E8",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4
+        }
+      },
+      {
+        "event_id": "E9",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4
+        }
+      },
+      {
+        "event_id": "E10",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E11",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 12,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 4,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E12",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E13",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 8,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 2
+        }
+      },
+      {
+        "event_id": "E14",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 9,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E15",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 10,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 0,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E16",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 7,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 2,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E17",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 13,
+        "kind": "line",
+        "function": "<module>",
+        "snapshot_timing": "before_line",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 2,
+          "r": 2,
+          "mid": 1
+        }
+      },
+      {
+        "event_id": "E18",
+        "frame_id": "F1",
+        "parent_frame_id": null,
+        "line": 13,
+        "kind": "return",
+        "function": "<module>",
+        "snapshot_timing": "return",
+        "locals": {
+          "n": 4,
+          "a": [
+            1,
+            2,
+            5,
+            5
+          ],
+          "x": 2,
+          "l": 2,
+          "r": 2,
+          "mid": 1
+        }
+      }
+    ],
+    "trace_status": "complete",
+    "profile": {
+      "version": 1,
+      "status": "complete",
+      "method": "trace_segments_excluding_callback",
+      "clocks": {
+        "wall": "perf_counter_ns",
+        "cpu": "process_time_ns"
+      },
+      "execution_wall_ns": 892998,
+      "execution_cpu_ns": 890200,
+      "callback_wall_ns": 599398,
+      "callback_cpu_ns": 601900,
+      "timed_events": 18,
+      "event_budget": 100000,
+      "lines": [
+        {
+          "frame_id": "F1",
+          "line": 1,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 10200,
+          "self_cpu_ns": 10000,
+          "inclusive_wall_ns": 10200,
+          "inclusive_cpu_ns": 10000
+        },
+        {
+          "frame_id": "F1",
+          "line": 2,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 8500,
+          "self_cpu_ns": 8500,
+          "inclusive_wall_ns": 8500,
+          "inclusive_cpu_ns": 8500
+        },
+        {
+          "frame_id": "F1",
+          "line": 3,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 5300,
+          "self_cpu_ns": 5200,
+          "inclusive_wall_ns": 5300,
+          "inclusive_cpu_ns": 5200
+        },
+        {
+          "frame_id": "F1",
+          "line": 4,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 3400,
+          "self_cpu_ns": 3100,
+          "inclusive_wall_ns": 3400,
+          "inclusive_cpu_ns": 3100
+        },
+        {
+          "frame_id": "F1",
+          "line": 5,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 2500,
+          "self_cpu_ns": 2200,
+          "inclusive_wall_ns": 2500,
+          "inclusive_cpu_ns": 2200
+        },
+        {
+          "frame_id": "F1",
+          "line": 6,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 2400,
+          "self_cpu_ns": 2300,
+          "inclusive_wall_ns": 2400,
+          "inclusive_cpu_ns": 2300
+        },
+        {
+          "frame_id": "F1",
+          "line": 7,
+          "function": "<module>",
+          "hits": 3,
+          "self_wall_ns": 11300,
+          "self_cpu_ns": 10600,
+          "inclusive_wall_ns": 11300,
+          "inclusive_cpu_ns": 10600
+        },
+        {
+          "frame_id": "F1",
+          "line": 8,
+          "function": "<module>",
+          "hits": 2,
+          "self_wall_ns": 5300,
+          "self_cpu_ns": 4800,
+          "inclusive_wall_ns": 5300,
+          "inclusive_cpu_ns": 4800
+        },
+        {
+          "frame_id": "F1",
+          "line": 9,
+          "function": "<module>",
+          "hits": 2,
+          "self_wall_ns": 5700,
+          "self_cpu_ns": 5100,
+          "inclusive_wall_ns": 5700,
+          "inclusive_cpu_ns": 5100
+        },
+        {
+          "frame_id": "F1",
+          "line": 12,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 2700,
+          "self_cpu_ns": 2500,
+          "inclusive_wall_ns": 2700,
+          "inclusive_cpu_ns": 2500
+        },
+        {
+          "frame_id": "F1",
+          "line": 10,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 2800,
+          "self_cpu_ns": 2500,
+          "inclusive_wall_ns": 2800,
+          "inclusive_cpu_ns": 2500
+        },
+        {
+          "frame_id": "F1",
+          "line": 13,
+          "function": "<module>",
+          "hits": 1,
+          "self_wall_ns": 12200,
+          "self_cpu_ns": 12200,
+          "inclusive_wall_ns": 12200,
+          "inclusive_cpu_ns": 12200
+        }
+      ],
+      "blocks": [
+        {
+          "id": "B1",
+          "kind": "module",
+          "name": "<module>",
+          "scope": 0,
+          "line": 1,
+          "end_line": 13,
+          "hits": 1,
+          "self_wall_ns": 72300,
+          "self_cpu_ns": 69000,
+          "inclusive_wall_ns": 72300,
+          "inclusive_cpu_ns": 69000
+        },
+        {
+          "id": "B2",
+          "kind": "while",
+          "name": "while",
+          "scope": 0,
+          "line": 7,
+          "end_line": 12,
+          "hits": 3,
+          "self_wall_ns": 27800,
+          "self_cpu_ns": 25500,
+          "inclusive_wall_ns": 27800,
+          "inclusive_cpu_ns": 25500
+        },
+        {
+          "id": "B3",
+          "kind": "if",
+          "name": "if",
+          "scope": 0,
+          "line": 9,
+          "end_line": 12,
+          "hits": 2,
+          "self_wall_ns": 11200,
+          "self_cpu_ns": 10100,
+          "inclusive_wall_ns": 11200,
+          "inclusive_cpu_ns": 10100
+        }
+      ],
+      "scope": "Instrumented single-thread Python execution, not judge runtime. Self excludes traced child calls; inclusive includes them. Nested blocks and recursive inclusive times overlap; do not add rows. Loop hits count header visits, including the final condition check. Wall includes waiting and throttling; CPU excludes sleep. Unvisited blocks have zero hits. Guest observations are not authenticated."
+    },
+    "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+    "source_sha256": "293a0201c2b4ee61639c5b5aa1a0cb77e4ed13bac258d146cefd94b96a82b530",
+    "input_sha256": "ffe3a743fcd275b684fa7e198ae526b4088c407145b929bce78e28ae0c98f7ca",
+    "elapsed_ms": 578.0,
+    "trace_trust": "guest_observation_not_authenticated",
+    "cleanup_confirmed": true
+  },
+  "observations": {
+    "status": "timeout",
+    "trace_status": "truncated",
+    "source_sha256": "0baaa98155c9ff48eb665329daede94e0398737819b2715f727a4689fbb6b6e6",
+    "findings": [
+      {
+        "kind": "repeated_while_condition",
+        "line": 7,
+        "end_line": 12,
+        "frame_id": "F1",
+        "condition_source": "l<r",
+        "condition_values": {
+          "l": 1,
+          "r": 2
+        },
+        "condition_value": true,
+        "observed_repeated_headers": 61,
+        "first_event_id": "E16",
+        "last_event_id": "E256",
+        "event_ids": [
+          "E248",
+          "E252",
+          "E256"
+        ],
+        "assignments": [
+          {
+            "line": 10,
+            "variable": "l",
+            "before": 1,
+            "after": 1,
+            "source": "l=mid",
+            "reads": {
+              "mid": 1
+            },
+            "before_event_id": "E247",
+            "after_event_id": "E248",
+            "status": "matches_recorded_unchanged_assignment"
+          }
+        ],
+        "causal_verified": false
+      }
+    ],
+    "timed_loops": [
+      {
+        "line": 7,
+        "end_line": 12,
+        "kind": "while",
+        "hits": 14385
+      }
+    ],
+    "scope": "Recorded symptoms only. Repeated guard values and an unchanged assignment do not prove an infinite loop or root cause. A truncated trace covers only its recorded prefix.",
+    "last_recorded_event": {
+      "line": 7,
+      "event_id": "E256",
+      "frame_id": "F1"
+    }
+  },
+  "local_model": {
+    "name": "qwen2.5-coder:7b",
+    "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364"
+  },
+  "diagnosis": {
+    "hypotheses": [
+      {
+        "text": "The code is stuck in an infinite loop because the condition in line 9 is always true, causing the loop to repeat indefinitely.",
+        "event_ids": [
+          "E242",
+          "E244",
+          "E246",
+          "E248",
+          "E250",
+          "E252"
+        ],
+        "line": 9,
+        "status": "hypothesis",
+        "causal_verified": false
+      },
+      {
+        "text": "The code is not stuck in an infinite loop; it is simply taking too long to execute due to the large number of iterations in the loop.",
+        "event_ids": [
+          "E241",
+          "E243",
+          "E245",
+          "E247",
+          "E249",
+          "E251"
+        ],
+        "line": 8,
+        "status": "hypothesis",
+        "causal_verified": false
+      }
+    ],
+    "ai_facts": [
+      {
+        "event_id": "E241",
+        "variable": "l",
+        "value": 1,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E242",
+        "variable": "r",
+        "value": 2,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E243",
+        "variable": "mid",
+        "value": 1,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E244",
+        "variable": "l",
+        "value": 1,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E245",
+        "variable": "r",
+        "value": 2,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      },
+      {
+        "event_id": "E246",
+        "variable": "mid",
+        "value": 1,
+        "status": "matches_recorded_snapshot",
+        "causal_verified": false
+      }
+    ],
+    "ai_branches": [],
+    "ai_context": {
+      "identity": {
+        "package_sha256": "f33558a63dc699b9cc93d63715df32f00be1256ad06fbcdffcb164f9f344928c",
+        "source_sha256": "0baaa98155c9ff48eb665329daede94e0398737819b2715f727a4689fbb6b6e6",
+        "input_sha256": "ffe3a743fcd275b684fa7e198ae526b4088c407145b929bce78e28ae0c98f7ca"
+      },
+      "context_bytes": 7080,
+      "source_complete": true,
+      "statement_complete": true,
+      "input_complete": true,
+      "outputs_complete": true,
+      "execution_status": "timeout",
+      "trace_status": "truncated"
+    },
+    "ai_status": "ok",
+    "ai_error": null,
+    "ai_model": "qwen2.5-coder:7b",
+    "ai_usage": {
+      "request_id": "aa484f1a3c5a4f86904c1c0eadd4eac4",
+      "total_duration": 18522000300,
+      "load_duration": 7961781400,
+      "prompt_eval_count": 3040,
+      "prompt_eval_duration": 2547448000,
+      "eval_count": 367,
+      "eval_duration": 7982616000,
+      "elapsed_ms": 18563.0
+    }
+  },
+  "source_files": {
+    "backend/src/algoxray/v4_execution_diagnostics.py": "5b891fe22ff1c2bdc950d2b08a3b900119cb9b375d2eebcbb703406d9b9e93aa",
+    "backend/src/algoxray/v4_diagnostic_context.py": "5e720edcc71cfb8d7434801d6c0b771e98ec4b1c081f594269c0da34bc7d23cd",
+    "backend/src/algoxray/v4_api.py": "93382efbb98b34498b33836c24aa0959ac13b3440de47899f2385575d84102a8",
+    "backend/src/algoxray/v4_engine.py": "2d1c82acb7e4737a396ac9d7386e54631ccd9a885cee8e70bb6e5bdb8e16b8b7"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T16:42:38.410392+00:00",
+  "pid": 24440,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "tools/verify_v4_browser.py",
+    "--out",
+    "results/v4-timeout-explanation-browser",
+    "--port",
+    "8804"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T16:43:23.260040+00:00"
+}

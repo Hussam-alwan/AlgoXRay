@@ -1,0 +1,8 @@
+{
+  "source": "import sys\nprint(sys.stdin.buffer.read())\n",
+  "stdin": "123\n",
+  "observed_status": "exception",
+  "detail": "AttributeError",
+  "cleanup_confirmed": true,
+  "scope": "Observed directly during roadmap review; current StringIO stdin compatibility gap, not a user-solution fault."
+}

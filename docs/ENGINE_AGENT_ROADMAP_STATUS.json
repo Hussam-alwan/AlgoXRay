@@ -1,0 +1,274 @@
+{
+  "as_of": "2026-11-27",
+  "runtime_commit": "5f58330538f3dda0f73435bc3640f79531cd0bf7",
+  "source": {
+    "filename": "AlgoXRay_Engine_Agent_Roadmap_AR.md",
+    "bytes": 19983,
+    "sha256": "feff18a193e5a18a4742f6b3b0ffe3e587bc75da82cd0d7fec33fe50b16e7181",
+    "origin": "Matching roadmap copy in the owner's Downloads. Uploaded attachment has a (1) suffix; byte identity with the attachment was not independently checked."
+  },
+  "classification_scope": "done means implemented for the explicitly bounded current Python scope; no overall project percentage is inferred.",
+  "counts": {
+    "done": 14,
+    "partial": 14,
+    "missing": 4
+  },
+  "checklist": [
+    {
+      "id": "0.1",
+      "title": "جرد المكونات والملفات والمكتبات الموجودة وتحديد ما يعمل فعلياً.",
+      "status": "done",
+      "current": "جردت الوحدات والاعتمادات والمسارات والفحوص؛ هذه المراجعة توثّق الجرد.",
+      "gap": "لا إضافة قبل إعادة استعمال الموجود.",
+      "evidence": "backend/pyproject.toml"
+    },
+    {
+      "id": "0.2",
+      "title": "ربط كل مهمة أدناه بمكون حالي أو مهمة جديدة، وتجنب إعادة بناء الوظائف العاملة.",
+      "status": "done",
+      "current": "تربط الجداول في هذا التقرير جميع بنود القائمة بوحدات حالية أو فجوات محددة.",
+      "gap": "تُغلق بهذه المراجعة مهمة المطابقة، لا التنفيذ المستقبلي.",
+      "evidence": "docs/ENGINE_AGENT_ROADMAP_COMPARISON_AR.md"
+    },
+    {
+      "id": "0.3",
+      "title": "اختيار لغة واحدة كبداية ونطاق خوارزميات محدود للتقييم.",
+      "status": "done",
+      "current": "Python 3.12 هي لغة V4، مع خمس حزم عرض وتجربة عامة من سبع عائلات.",
+      "gap": "Java وC++ مراحل لاحقة.",
+      "evidence": "backend/pyproject.toml"
+    },
+    {
+      "id": "1.1",
+      "title": "توحيد Problem Specification والقيود والمدخلات والمخرجات.",
+      "status": "partial",
+      "current": "Manifest موحد بأنواع int/word/ints/matrix وأطوال تابعة وترميز مدخلات وسياسات مقارنة.",
+      "gap": "لا يدعم قيوداً عامة بين الحقول أو جميع صيغ CP وtestcases المتعددة.",
+      "evidence": "backend/src/algoxray/v4_contracts.py"
+    },
+    {
+      "id": "1.2",
+      "title": "بناء Execution Engine مع العزل والحدود الزمنية والذاكرة وحجم المخرجات.",
+      "status": "done",
+      "current": "عامل Docker مقيّد: شبكة معطلة، مستخدم محدود، root للقراءة، CPU/RAM/PID/time/output وتنظيف.",
+      "gap": "متحقق محلياً في نطاق Python؛ نشر عام يحتاج تدقيقاً مستقلاً، وتوافق stdin.buffer ناقص.",
+      "evidence": "backend/src/algoxray/v4_isolation.py"
+    },
+    {
+      "id": "1.3",
+      "title": "بناء Verification Engine باستخدام حل مرجعي موثوق أو خصائص معتمدة.",
+      "status": "done",
+      "current": "مقارنة بحل مرجعي راجعه المؤلف وضوابط معروفة؛ مرجع بديل وتوقف عند الاختلاف.",
+      "gap": "الثقة نسبية إلى المرجع؛ لا يثبت فحص الضوابط استقلال المرجع وصحته العامة.",
+      "evidence": "backend/src/algoxray/v4_engine.py"
+    },
+    {
+      "id": "1.4",
+      "title": "دعم حالات Compilation Error وRuntime Error وTimeout وWrong Answer بصورة منفصلة.",
+      "status": "partial",
+      "current": "Wrong answer وexception وtimeout وoutput_limit وinfrastructure_error مميزة؛ SyntaxError في detail.",
+      "gap": "نحتاج Outcome موحداً يفصل compile/syntax وruntime وOOM والبنية التحتية.",
+      "evidence": "backend/src/algoxray/v4_isolation.py"
+    },
+    {
+      "id": "1.5",
+      "title": "بناء تقارير قابلة لإعادة التنفيذ مع تسجيل الـseed وإصدارات الأدوات.",
+      "status": "partial",
+      "current": "المدخل والمصدر والبصمات والصورة مثبتة؛ تقارير التجارب تسجل seed ونسخ الأدوات.",
+      "gap": "تصدير تحليل V4 الفردي لا يجمع دائماً seed وكل ميزانيات الطلب ونسخ الأدوات في حزمة واحدة.",
+      "evidence": "backend/src/algoxray/v4_engine.py"
+    },
+    {
+      "id": "2.1",
+      "title": "دمج Parser مناسب وتحليل AST.",
+      "status": "done",
+      "current": "Python ast مدمج، مع CFG تركيبي وعلاقات محافظة.",
+      "gap": "لا حاجة لاستبداله قبل توسيع اللغة أو المحرر.",
+      "evidence": "backend/src/algoxray/v4_cfg.py"
+    },
+    {
+      "id": "2.2",
+      "title": "بناء مولدات اختبارات صالحة حسب القيود.",
+      "status": "done",
+      "current": "مولدات تتحقق من grammar وبذور ثابتة وأطوال تابعة؛ حدود النطاق صريحة.",
+      "gap": "صلاحية المدخل مضمونة بالنسبة للـmanifest فقط، لا لقيود مسألة غير ممثلة فيه.",
+      "evidence": "backend/src/algoxray/v4_contracts.py"
+    },
+    {
+      "id": "2.3",
+      "title": "إضافة Boundary / Random / Property-Based / Differential Testing.",
+      "status": "done",
+      "current": "Boundary/random وتوليد Hypothesis ومقارنة differential مع المرجع.",
+      "gap": "Hypothesis في V4 يعمل بمرحلة generate؛ shrinking الخاص به غير مستخدم هنا.",
+      "evidence": "backend/src/algoxray/v4_guidance.py"
+    },
+    {
+      "id": "2.4",
+      "title": "بناء Counterexample Discovery Engine.",
+      "status": "done",
+      "current": "شاهد wrong answer أو exception وتصغير محدود وثلاث إعادات؛ حالة unstable واضحة.",
+      "gap": "البحث يصنف timeout كـinconclusive؛ القياس يعرض المهلة دون ادعاء شاهد معاد ثلاث مرات.",
+      "evidence": "backend/src/algoxray/v4_engine.py"
+    },
+    {
+      "id": "2.5",
+      "title": "تطبيق Delta Debugging وتصغير القيم والبنية.",
+      "status": "partial",
+      "current": "مرشحات لتصغير القيم والأطوال والمصفوفات مع مقارنة حجم.",
+      "gap": "حلقة التصغير تقبل أول تحسن ثم تتوقف؛ لا ddmin ولا وصول إلى حد أدنى مثبت.",
+      "evidence": "backend/src/algoxray/v4_contracts.py"
+    },
+    {
+      "id": "2.6",
+      "title": "التحقق بعد كل خطوة تصغير من شرعية المدخلات واستمرار الفشل.",
+      "status": "partial",
+      "current": "كل مرشح يُتحقق من قانونيته، وإعادة التنفيذ تحفظ فئة wrong_answer أو exception.",
+      "gap": "نوع الاستثناء التفصيلي أو هوية العيب قد يتغيران؛ مطلوب FailureSignature وحلقة تصغير متكررة.",
+      "evidence": "backend/src/algoxray/v4_engine.py"
+    },
+    {
+      "id": "3.1",
+      "title": "تعريف Unified Trace Format.",
+      "status": "partial",
+      "current": "أحداث Python لها event/frame/line/kind ولقطات وبصمات.",
+      "gap": "لا بروتوكول متعدد اللغات بإصدارات وcompiler/source mapping موحّد بعد.",
+      "evidence": "backend/src/algoxray/v4_isolation.py"
+    },
+    {
+      "id": "3.2",
+      "title": "دمج أداة تتبع وتغطية خاصة باللغة الأولى.",
+      "status": "partial",
+      "current": "sys.settrace مع عدّ زيارات وتوقيت؛ تغطية أسطر من الآثار المكتملة.",
+      "gap": "لا قياس عام لتغطية الفروع؛ trace المقتطع لا يصلح لترتيب coverage كامل.",
+      "evidence": "backend/src/algoxray/v4_compare.py"
+    },
+    {
+      "id": "3.3",
+      "title": "بناء Fault Localization وترتيب الأسطر المشتبه بها.",
+      "status": "partial",
+      "current": "Ochiai محدود، علاقات بيانات/تحكم، سلسلة مخرجات محافظة وتشخيص تكرار شرط الحلقة.",
+      "gap": "لا تحديد عام أو دقة مثبتة للسبب الجذري، وheap/aliasing/calls غير مغطاة عموماً.",
+      "evidence": "backend/src/algoxray/v4_compare.py"
+    },
+    {
+      "id": "3.4",
+      "title": "ربط تشخيص الخطأ بحالات الاختبار وأحداث التنفيذ.",
+      "status": "done",
+      "current": "إحالات أحداث وأسطر مع فحص قيم وشروط؛ مصدر ومدخل مرتبطان ببصمات.",
+      "gap": "صلاحية الإحالة لا تصدّق المعنى السببي للنص الحر.",
+      "evidence": "backend/src/algoxray/v4_diagnostic_context.py"
+    },
+    {
+      "id": "3.5",
+      "title": "بناء Visualization للأنواع المدعومة.",
+      "status": "done",
+      "current": "رسم SVG مرصود، تنقل للكود، متغيرات وقوائم ومصفوفات، إطارات ومقارنة وتوقيت.",
+      "gap": "يخص الأنواع والحدود الموثقة؛ لا محاذاة دلالية عامة بين خوارزميتين.",
+      "evidence": "web/static/v4.js"
+    },
+    {
+      "id": "4.1",
+      "title": "تطبيق خوارزمية ترتيب الاختبارات التكيفية.",
+      "status": "missing",
+      "current": "لا تطبيق لخوارزمية ACDR أو score لترتيب الاختبارات.",
+      "gap": "يُبنى فوق المولدات والمقاييس الحالية مع baseline متساوي الميزانية.",
+      "evidence": "backend/src/algoxray/v4_engine.py"
+    },
+    {
+      "id": "4.2",
+      "title": "إضافة التغذية الراجعة من التغطية ونتائج التنفيذ.",
+      "status": "missing",
+      "current": "حساب suspiciousness يحصل بعد شاهد، وليس حلقة تغذية راجعة لاختيار الاختبار التالي.",
+      "gap": "تحتاج CasePool وCoverageFeedback وتحديث أولويات واستكشاف.",
+      "evidence": "backend/src/algoxray/v4_compare.py"
+    },
+    {
+      "id": "4.3",
+      "title": "بناء Agent State Machine وسجل الأدوات والفرضيات.",
+      "status": "missing",
+      "current": "API ينسّق pipeline مع قفل وإلغاء؛ لا Agent State Machine أو سجل أدوات وقرارات موحّد.",
+      "gap": "تعريف AnalysisState وToolResult وTransition/StopReason قبل إطار Agent.",
+      "evidence": "backend/src/algoxray/v4_api.py"
+    },
+    {
+      "id": "4.4",
+      "title": "ربط Gemini وGroq وOllama عبر واجهة مزود موحدة.",
+      "status": "done",
+      "current": "واجهة propose/factory ومزودون Ollama/Gemini/Groq/OpenRouter/Qwen Cloud مع schema وموافقة.",
+      "gap": "اختبار Qwen Cloud الحي منفصل؛ لا مفاتيح ولا fallback سحابي تلقائي.",
+      "evidence": "backend/src/algoxray/v4_provider.py"
+    },
+    {
+      "id": "4.5",
+      "title": "تطبيق ميزانية للوقت والتكلفة وعدد استدعاءات الأدوات وإعادة المحاولة.",
+      "status": "partial",
+      "current": "حدود للحالات والتصغير والتنفيذ والتوكنات وطلبات المزود؛ SQLite للميزانيات وإلغاء محلي.",
+      "gap": "لا ميزانية مجمعة لجلسة Agent أو تقدير مالي موحد أو ضمان إلغاء لدى المزود.",
+      "evidence": "backend/src/algoxray/v4_gemini.py"
+    },
+    {
+      "id": "4.6",
+      "title": "بناء Fix Verification واختبارات مستقلة للإصلاحات.",
+      "status": "partial",
+      "current": "witness + ضوابط + generated_regression ببذرة مختلفة، مع diff وتاريخ وإبقاء الأصل.",
+      "gap": "الحالات المولدة ليست holdout بحثياً مستقلاً؛ timeout ليس witness مقبولاً لمسار الإصلاح الحالي.",
+      "evidence": "backend/src/algoxray/v4_repair.py"
+    },
+    {
+      "id": "4.7",
+      "title": "توفير وضع Engine-only لا يحتاج إلى LLM للمسائل ذات المواصفات والمراجع الجاهزة.",
+      "status": "done",
+      "current": "البحث والمرجع والتتبع والرسم والقياس تعمل دون LLM للحزمة المعتمدة.",
+      "gap": "فهم مسألة غير ممثلة تلقائياً يبقى خارج هذا الضمان.",
+      "evidence": "backend/src/algoxray/v4_engine.py"
+    },
+    {
+      "id": "5.1",
+      "title": "بناء Benchmark يتضمن حلولاً صحيحة وخاطئة وحالات فشل متنوعة.",
+      "status": "partial",
+      "current": "خمس حزم عرض وسبع عائلات QuixBugs معدلة مع صحيح/خاطئ ومصدر مثبت.",
+      "gap": "نحتاج حلولاً مستقلة ومجموعة مخفية؛ لا تعدّ الأمثلة المترابطة مشاركين مستقلين.",
+      "evidence": "benchmarks/v4_external/manifest.json"
+    },
+    {
+      "id": "5.2",
+      "title": "مقارنة AI-only وEngine-only وEngine + AI وAdaptive Agent.",
+      "status": "partial",
+      "current": "مقارنة محلية source-only/witness/trace/verification من 21 استدعاء.",
+      "gap": "ليست مقارنة end-to-end لجميع AI-only/Engine-only/Adaptive Agent؛ لا Agent متكيف بعد.",
+      "evidence": "tools/evaluate_v4_context_ablation.py"
+    },
+    {
+      "id": "5.3",
+      "title": "تنفيذ Ablation Study لقياس مساهمة الترتيب التكيفي والتتبع والتصغير.",
+      "status": "partial",
+      "current": "أثر إضافة التتبع وفحص الرد دُرس على مجموعة مكشوفة.",
+      "gap": "لا ablation لتصغير المدخل أو ACDR أو سياسة القرار؛ التعليمات الحالية أحدث من الدراسة.",
+      "evidence": "docs/v4-evidence/completion-20261127/ablation/summary.json"
+    },
+    {
+      "id": "5.4",
+      "title": "قياس الأداء والأمان والتكلفة ومعدل النتائج الإيجابية الكاذبة.",
+      "status": "partial",
+      "current": "زمن وتوكنات، probe عزل، صفر اتهامات ضمن سبعة ضوابط في تجربة سابقة.",
+      "gap": "لا benchmark عام للذاكرة/التوسع، تكلفة مالية محققة، تدقيق أمن مستقل أو معدل false positives عام.",
+      "evidence": "docs/v4-evidence/completion-20261127/SOURCE_FREEZE.json"
+    },
+    {
+      "id": "5.5",
+      "title": "بناء Knowledge Base مع ضوابط الخصوصية والاحتفاظ بالبيانات.",
+      "status": "missing",
+      "current": "PackageStore/RepairStore/cache موجودة، ولا توجد KB تبحث عن أخطاء مشابهة.",
+      "gap": "الاحتفاظ والخصوصية وحقوق الأكواد وتقييم الاسترجاع شروط قبل تجميع البيانات.",
+      "evidence": "backend/src/algoxray/v4_repair.py"
+    },
+    {
+      "id": "5.6",
+      "title": "إعداد تقرير بالنتائج الفعلية والقيود والفجوات المتبقية.",
+      "status": "done",
+      "current": "تقارير وraw evidence وبصمات وحدود منشورة؛ هذه المراجعة تضيف خريطة الفجوات.",
+      "gap": "اعتماد المؤتمر والتقييم البشري منفصلان عن توثيق النتائج.",
+      "evidence": "docs/V4_DYNAMIC_AI_IMPLEMENTATION_PLAN.md"
+    }
+  ]
+}

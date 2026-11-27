@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "runtime_commit": "5f58330538f3dda0f73435bc3640f79531cd0bf7",
+  "loop_line": 17,
+  "update_line": 20,
+  "recorded_values": {
+    "l": 1,
+    "r": 2
+  },
+  "unchanged_value": 1,
+  "ai_status": "disabled",
+  "page_errors": [],
+  "v3_http": 200,
+  "scope": "Live local UI using the already-approved count package and an intentionally authored l=mid mutation; not retrieval or diagnosis of the user's unsaved editor."
+}

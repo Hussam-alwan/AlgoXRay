@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T16:46:43.895677+00:00",
+  "pid": 28236,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "tools/verify_v4_timeout_diagnosis.py",
+    "--out",
+    "results/v4-timeout-explanation-local-final",
+    "--local-ai"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T16:46:50.693959+00:00"
+}

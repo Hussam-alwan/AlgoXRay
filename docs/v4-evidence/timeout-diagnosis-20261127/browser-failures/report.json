@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "checks": [
+    "provider_outage_keeps_replayed_witness_and_graph",
+    "correct_control_not_accused_during_provider_outage",
+    "unsupported_contract_rejected",
+    "later_reference_disagreement_blocks_accusation",
+    "syntax_exception_has_no_fabricated_trace",
+    "profile_opt_in_outage_keeps_timeout_evidence_and_explains_state",
+    "profile_checked_opt_in_hypotheses_facts_conditions_and_context"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Real browser and isolated worker; controlled mocked provider outage and authored negative packages. Opt-in success uses a controlled structured proposal. No live cloud request or human study."
+}

@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "started_at": "2026-11-27T16:46:43.979547+00:00",
+  "pid": 18476,
+  "command": [
+    "./.venv/Scripts/python.exe",
+    "-m",
+    "pytest",
+    "backend/tests",
+    "-q"
+  ],
+  "exit_code": 0,
+  "finished_at": "2026-11-27T16:47:04.341126+00:00"
+}

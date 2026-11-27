@@ -1,0 +1,24 @@
+{
+  "created_at": "2026-11-27T17:06:20.633904+00:00",
+  "runtime_commit": "5f58330538f3dda0f73435bc3640f79531cd0bf7",
+  "packaging_parent_commit": "5f58330538f3dda0f73435bc3640f79531cd0bf7",
+  "source_files": {
+    "backend/src/algoxray/v4_api.py": "93382efbb98b34498b33836c24aa0959ac13b3440de47899f2385575d84102a8",
+    "backend/src/algoxray/v4_cache.py": "3fb1647db35c40aa0dcb34d53bcbb26d83a503074aee6a2202583c6f1c1ef498",
+    "backend/src/algoxray/v4_diagnostic_context.py": "1cc16bd38d6ba8868ece0ccac23695508896b4a90ea13dac50ecd7b388fd65f3",
+    "backend/src/algoxray/v4_engine.py": "2d1c82acb7e4737a396ac9d7386e54631ccd9a885cee8e70bb6e5bdb8e16b8b7",
+    "backend/src/algoxray/v4_execution_diagnostics.py": "5b891fe22ff1c2bdc950d2b08a3b900119cb9b375d2eebcbb703406d9b9e93aa",
+    "backend/src/algoxray/v4_provider.py": "0e9186b3616509c7e8bf0e6ed283569ee508aa420e2c9e84d39887e4d043f978",
+    "web/static/v4.css": "b63890ee20d923031f333937280d73b8550e25c2b32ee9d55396a6cbd1b047e5",
+    "web/static/v4.js": "8a99d8bb49970ccd1f1f691ccb606a0c985a25d16ba7efd6a713620399f991eb",
+    "web/v4.html": "b7012d4c815b7e001d0a879ac2d79cbe2242cf5044b57a5785804cf8d42887a3"
+  },
+  "tests": 239,
+  "browser_checks": {
+    "normal": 27,
+    "failure_and_fixture": 7
+  },
+  "live_status": "passed",
+  "local_model_observations": "Initial valid response contained conflicting unverified hypotheses; later tuned response abstained. Both retained. No causal accuracy claim.",
+  "scope": "Authored synthetic examples and a live summary for an intentional l=mid mutation. No user's unsaved editor captured, private package stores, credentials or cloud calls."
+}

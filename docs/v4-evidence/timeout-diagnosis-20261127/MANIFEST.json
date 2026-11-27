@@ -1,0 +1,85 @@
+{
+  "scope": "Authored synthetic examples and a live summary for an intentional l=mid mutation. No user's unsaved editor captured, private package stores, credentials or cloud calls.",
+  "files": [
+    {
+      "path": "unit-tests.txt",
+      "sha256": "1e3a77b934d613d3fddc9046e280242de6f1de72ea38c80cd79dda533363864a",
+      "bytes": 809
+    },
+    {
+      "path": "browser/report.json",
+      "sha256": "c0b35dc195b3cb76afbfe1a570212a5bc15826f208c42eae4081a7f1914023c7",
+      "bytes": 1217
+    },
+    {
+      "path": "browser/timeout-finding.png",
+      "sha256": "9f318b6b51017e8373f87b6848b49af63a994130a1b7085661c2856a2c303cd3",
+      "bytes": 24193
+    },
+    {
+      "path": "browser-failures/report.json",
+      "sha256": "92115b281ac581a91ad711bce3650a88c51cc954b2cdc18508aee8cf0c30613c",
+      "bytes": 704
+    },
+    {
+      "path": "browser-failures/profile-outage.json",
+      "sha256": "764e1741936e2f099dcb0fd9afb1ac95933adef38f32039e00cca1ceb9190f1d",
+      "bytes": 266790
+    },
+    {
+      "path": "browser-failures/profile-fixture.json",
+      "sha256": "62cbd08b4cca9ba6dc49df373233a0c96506b5aba11cf1b3b4119289f07f283b",
+      "bytes": 267467
+    },
+    {
+      "path": "local/initial-conflicting-hypotheses.json",
+      "sha256": "d58e4790370a8b414ba41a0b8c8d9d5b817feb8c052f11505177c1f8692f6c4f",
+      "bytes": 150038
+    },
+    {
+      "path": "local/final-abstention.json",
+      "sha256": "b30c628b96e89f962880e583bab823bce6f42f3e3733cfa008df4f38320b2fa2",
+      "bytes": 148141
+    },
+    {
+      "path": "live.json",
+      "sha256": "360b60c3dc6ca662c918fbded37a557eea06c25f6ac7b7cf6921692459faa62b",
+      "bytes": 455
+    },
+    {
+      "path": "jobs/timeout-explanation-final-unit.json",
+      "sha256": "c721fdb4006896aa2cc9c0fcc3ce4db4016dee469ff5fc025246813a0e64335b",
+      "bytes": 284
+    },
+    {
+      "path": "jobs/timeout-explanation-browser.json",
+      "sha256": "38eae65846602b2ee6fb481bce30dc11b9a2aa9073e7e3fb9e9f366b2f0260e5",
+      "bytes": 349
+    },
+    {
+      "path": "jobs/timeout-explanation-final-failbrowser.json",
+      "sha256": "6e4e5debee4093636aad413a4eddb0cfaa2bd301b08e3b97e928ddc89b82391b",
+      "bytes": 367
+    },
+    {
+      "path": "jobs/timeout-explanation-local.json",
+      "sha256": "74eab9d563c56911b9c8609911a3d4eb802511ec433aece058375dbfe6b4d2a1",
+      "bytes": 348
+    },
+    {
+      "path": "jobs/timeout-explanation-local-final.json",
+      "sha256": "44eff6cb1801f40e67c99d768fa62ab8145ef5828a98af290b0a12fd34c43c3a",
+      "bytes": 354
+    },
+    {
+      "path": "SOURCE_FREEZE.json",
+      "sha256": "ecb82b8a6fe25074dae236358492151f03c5ac7de1c1c99c16651f10b52486e0",
+      "bytes": 1641
+    },
+    {
+      "path": "compatibility-probe.json",
+      "sha256": "36c2cf6dfa5e694b0bf22f657d174cfa4e6d4a065ad8e157f9472f540f956ead",
+      "bytes": 300
+    }
+  ]
+}
