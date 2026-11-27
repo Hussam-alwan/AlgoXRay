@@ -23,6 +23,7 @@ Owner additions: publish all intended project changes to GitHub, and measure exe
 
 ### Verification snapshot
 
+- Clean checkout and fresh virtual environment completed all seven reproduction steps at b65f596; all 11 worker isolation probes and three extra credential/mount/PID probes passed on the continuation. This remains same-machine evidence, not an independent security assessment.
 - 182/182 tests on Windows after schema hardening; one existing Starlette deprecation warning. Earlier Linux baseline 167/167, profiling checkpoint 174/174. Counts are software tests, not students or independent programs.
 - 19/19 browser journeys, with no page errors or external browser requests. An initial mobile table overflow failed; fixed and the failed report is retained.
 - Five authored demos passed; paired public pilot found 7/7 faulty variants, 0/7 corrected controls accused, 21 replay matches. These are exposed public adaptations, not an unseen student corpus.

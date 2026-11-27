@@ -13,3 +13,5 @@
 fixtures/**/*.py -text !eol
 benchmarks/core/submissions/*.py -text !eol
 results/** -text !eol
+# Evidence inventories hash exact bytes, including CSV and Windows test logs.
+docs/v4-evidence/** -text !eol

@@ -11,4 +11,4 @@ This is a reviewable experimental release, not a submitted camera-ready paper. T
 
 The package preserves previous manuscripts and results. The new tests do not retroactively establish any unverified result from an older submission. Author approval, actual venue formatting and any communication/submission to the committee remain pending. No participant ratings, independent unseen student dataset, learning effects or general causal localization accuracy are reported.
 
-Build the PDFs with `python tools/build_v4_delivery.py` in a documentation environment with ReportLab and a Unicode font. They are review drafts; no venue template compliance is claimed.
+Build the PDFs with `python tools/build_v4_delivery.py` in a documentation environment with ReportLab 4.4.9. They are review drafts; no venue template compliance is claimed.

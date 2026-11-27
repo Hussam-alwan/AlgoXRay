@@ -1,0 +1,10 @@
+{
+  "manuscript.pdf": {
+    "bytes": 10449,
+    "sha256": "dec78b3d94e21eb17b0eb10a8eabd61c6e3ea2ce3f0a3de657550c80da415bf6"
+  },
+  "poster.pdf": {
+    "bytes": 30849,
+    "sha256": "27417cfdf584f3456191ea0fe2ead22f5469c2d210f3532efcf03f44d59c8f55"
+  }
+}
