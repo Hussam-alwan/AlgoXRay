@@ -190,5 +190,162 @@
     },
     "correct": "s=input()\nprint(s.count('A'))\n",
     "mutant": "s=input()\nprint(s.count('B'))\n"
+  },
+  "matrix": {
+    "package": {
+      "manifest": {
+        "id": "matrix_sum",
+        "title": "Matrix sum",
+        "statement": "Read r c (1..4), then r rows of c integers in -3..4. Print the sum of all entries.",
+        "fields": [
+          {
+            "name": "r",
+            "kind": "int",
+            "min": 1,
+            "max": 4
+          },
+          {
+            "name": "c",
+            "kind": "int",
+            "min": 1,
+            "max": 4
+          },
+          {
+            "name": "a",
+            "kind": "matrix",
+            "min": -3,
+            "max": 4,
+            "rows_from": "r",
+            "cols_from": "c"
+          }
+        ],
+        "lines": [
+          [
+            "r",
+            "c"
+          ],
+          [
+            "a"
+          ]
+        ],
+        "output": "tokens"
+      },
+      "reference": "r,c=map(int,input().split())\na=[list(map(int,input().split())) for _ in range(r)]\nprint(sum(sum(row) for row in a))\n",
+      "reference_alt": "r,c=map(int,input().split())\ntotal=0\nfor i in range(r):\n    for x in map(int,input().split()):\n        total+=x\nprint(total)\n",
+      "controls": [
+        {
+          "case": {
+            "r": 2,
+            "c": 2,
+            "a": [
+              [
+                1,
+                2
+              ],
+              [
+                3,
+                4
+              ]
+            ]
+          },
+          "expected": "10"
+        },
+        {
+          "case": {
+            "r": 1,
+            "c": 3,
+            "a": [
+              [
+                -3,
+                1,
+                4
+              ]
+            ]
+          },
+          "expected": "2"
+        }
+      ]
+    },
+    "correct": "r,c=map(int,input().split())\na=[list(map(int,input().split())) for _ in range(r)]\nprint(sum(sum(row) for row in a))\n",
+    "mutant": "r,c=map(int,input().split())\na=[list(map(int,input().split())) for _ in range(r)]\nprint(sum(sum(row[:-1]) for row in a))\n"
+  },
+  "reachability": {
+    "package": {
+      "manifest": {
+        "id": "graph_reachability",
+        "title": "Directed graph reachability",
+        "statement": "Read n (1..4), then an n by n directed adjacency matrix of 0/1 values. Count vertices reachable from vertex 0, including vertex 0. Self loops are allowed.",
+        "fields": [
+          {
+            "name": "n",
+            "kind": "int",
+            "min": 1,
+            "max": 4
+          },
+          {
+            "name": "a",
+            "kind": "matrix",
+            "min": 0,
+            "max": 1,
+            "rows_from": "n",
+            "cols_from": "n"
+          }
+        ],
+        "lines": [
+          [
+            "n"
+          ],
+          [
+            "a"
+          ]
+        ],
+        "output": "tokens"
+      },
+      "reference": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nseen={0}\nqueue=[0]\nwhile queue:\n    u=queue.pop(0)\n    for v in range(n):\n        if a[u][v] and v not in seen:\n            seen.add(v)\n            queue.append(v)\nprint(len(seen))\n",
+      "reference_alt": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nreach=[False]*n\nreach[0]=True\nfor _ in range(n):\n    for u in range(n):\n        for v in range(n):\n            if reach[u] and a[u][v]:\n                reach[v]=True\nprint(sum(reach))\n",
+      "controls": [
+        {
+          "case": {
+            "n": 3,
+            "a": [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "expected": "3"
+        },
+        {
+          "case": {
+            "n": 2,
+            "a": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ]
+            ]
+          },
+          "expected": "1"
+        }
+      ]
+    },
+    "correct": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nseen={0}\nqueue=[0]\nwhile queue:\n    u=queue.pop(0)\n    for v in range(n):\n        if a[u][v] and v not in seen:\n            seen.add(v)\n            queue.append(v)\nprint(len(seen))\n",
+    "mutant": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nseen={0}\nqueue=[0]\nwhile queue:\n    u=queue.pop(0)\n    for v in range(n-1):\n        if a[u][v] and v not in seen:\n            seen.add(v)\n            queue.append(v)\nprint(len(seen))\n"
   }
 }

@@ -9,7 +9,11 @@ from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_
 
 def oracle(p,stdin,run,trace_limit=0):
     first=run(p["reference"],stdin,trace_limit)
-    if first["status"]!="ok" or "reference_alt" not in p:return first
+    if first["status"]!="ok":return first
+    for c in p["controls"]:
+        if serialize(p["manifest"],c["case"])==stdin and not equal(p["manifest"],first["stdout"],c["expected"]):
+            return {"status":"oracle_disagreement","primary":first,"known_expected":c["expected"]}
+    if "reference_alt" not in p:return first
     second=run(p["reference_alt"],stdin,0)
     if second["status"]=="cancelled":return second
     if second["status"]!="ok" or not equal(p["manifest"],first["stdout"],second["stdout"]):
@@ -111,7 +115,8 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
         except ValueError: ai_status="unavailable_or_invalid";ai_error="invalid_model_output";hypotheses=[];facts=[]
     ai_usage=dict(getattr(provider,"usage",{}))
     if provider is not None and guided and not suggested and hypotheses and ai_status=="ok":
-        run_suggestions({"case":witness["case"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout")},hypotheses)
+        extra=run_suggestions({"case":witness["case"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout")},hypotheses)
+        if extra and extra["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":extra,"guidance":guidance}
     ranking={"status":"disabled","ranked":[]}
     if spectrum:
         passing=[]
@@ -124,6 +129,7 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
                 checked.add(key)
                 extra=pair(c,128)
                 if extra["kind"]=="cancelled":break
+                if extra["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":extra}
                 if extra["kind"]=="match" and extra["student"].get("trace_status")=="complete":passing.append(extra["student"])
                 if len(checked)>=3 or len(passing)>=2:break
         ranking=rank(witness["student"],passing)

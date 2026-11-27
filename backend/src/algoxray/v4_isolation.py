@@ -34,12 +34,12 @@ class Output(io.StringIO):
     def write(self, s):
         if self.tell() + len(s) > 8192: raise Limit("output limit")
         return super().write(s)
-def snap(v):
+def snap(v,depth=0):
     if type(v) is int and v.bit_length() <= 256: return v
     if type(v) is bool or v is None: return v
     if type(v) is str and len(v) <= 160: return v
-    if type(v) in (list, tuple) and len(v) <= 24 and all(type(x) in (int,bool,str,type(None)) for x in v):
-        return [snap(x) for x in v]
+    if depth<2 and type(v) in (list, tuple) and len(v) <= 24 and all(type(x) in (int,bool,str,type(None),list,tuple) for x in v):
+        return [snap(x,depth+1) for x in v]
     return {"unavailable": True}
 def trace(f, kind, arg):
     global counter, truncated, trace_bytes
