@@ -124,7 +124,7 @@ DIAGNOSIS_SCHEMA={"type":"object","properties":{"hypotheses":{"type":"array","ma
 
 def check_hypotheses(response,events):
     """Check shape and anchor existence only. Free-text causality remains unverified."""
-    if type(response) is not dict or not {"hypotheses"}<=set(response)<={"hypotheses","facts"} or type(response["hypotheses"]) is not list or len(response["hypotheses"])>3:
+    if type(response) is not dict or not {"hypotheses"}<=set(response)<={"hypotheses","facts","branches"} or type(response["hypotheses"]) is not list or len(response["hypotheses"])>3:
         raise ProviderError("invalid_hypothesis_schema")
     known={e["event_id"]:e for e in events if type(e) is dict and "event_id" in e}
     checked=[]
@@ -151,3 +151,5 @@ def check_facts(response,events):
         valid=f["variable"] in loc and type(loc[f["variable"]]) is type(f["value"]) and loc[f["variable"]]==f["value"]
         result.append({**f,"status":"matches_recorded_snapshot" if valid else "unsupported","causal_verified":False})
     return result
+
+DIAGNOSIS_SCHEMA["properties"]["branches"]={"type":"array","maxItems":6,"items":{"type":"object","properties":{"event_id":{"type":"string"},"line":{"type":"integer"},"condition":{"type":"boolean"}},"required":["event_id","line","condition"],"additionalProperties":False}}
