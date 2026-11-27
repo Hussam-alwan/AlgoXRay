@@ -4,6 +4,7 @@ from .v4_contracts import validate_package,serialize,generate,smaller,equal,dige
 from .v4_isolation import execute_stdio
 from .v4_graph import observed_graph
 from .v4_compare import rank
+from .v4_cfg import output_chain
 from .v4_guidance import hypothesis_cases,suggestions,classify_probe
 from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_facts,ProviderError
 
@@ -134,7 +135,10 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
                 if len(checked)>=3 or len(passing)>=2:break
         ranking=rank(witness["student"],passing)
     if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
+    student_graph=observed_graph(student_events,source);reference_graph=observed_graph(reference_events,p["reference"])
+    student_graph["output_chain"]=output_chain(source,witness["student"],student_graph)
+    reference_graph["output_chain"]=output_chain(p["reference"],witness["reference"],reference_graph)
     return {"status":"observed_mismatch","kind":witness["kind"],"package_sha256":digest(p),"original_case":original["case"],"witness":witness,
-            "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":observed_graph(student_events,source),"reference_graph":observed_graph(reference_events,p["reference"]),
+            "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":student_graph,"reference_graph":reference_graph,
             "hypotheses":hypotheses,"ai_facts":facts,"ai_status":ai_status,"ai_model":getattr(provider,"model",None),"ai_usage":ai_usage,"generator":generator,"guidance":guidance,"suspiciousness":ranking,"ai_error":ai_error,"elapsed_ms":round((time.monotonic()-start)*1000,2),
             "scope":"Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."}
