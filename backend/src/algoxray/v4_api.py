@@ -9,6 +9,7 @@ from .v4_provider import OllamaProvider,model_health,ProviderError
 from .v4_repair import propose_repair,verify_repair
 from .v4_gemini import provider_for,provider_status
 from .v4_openrouter import status as openrouter_status
+from .v4_groq import status as groq_status
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
@@ -50,7 +51,7 @@ def router_for(require_loopback,token):
     @router.get("/health")
     def health(request:Request):
         require_loopback(request)
-        return {"status":"experimental","model":model_health(),"gemini":provider_status(),"openrouter":openrouter_status(),"public_execution":False,"guest_trace_authenticated":False}
+        return {"status":"experimental","model":model_health(),"gemini":provider_status(),"openrouter":openrouter_status(),"groq":groq_status(),"public_execution":False,"guest_trace_authenticated":False}
     def select_provider(model,consent):
         try:return provider_for(model,consent)
         except ProviderError as exc:raise HTTPException(403 if str(exc)=="cloud_consent_required" else 422,str(exc)) from None

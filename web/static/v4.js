@@ -7,7 +7,7 @@ async function api(path,body){
 }
 function msg(id,value){$(id).textContent=value}
 function aiOptions(){return {model:$("model").value,cloud_consent:$("cloud-consent").checked}}
-async function refreshModels(){const h=await api("/api/v4/health");msg("health","Ollama: "+h.model.status+" · "+h.model.models.join(", ")+" | Gemini: "+(h.gemini.configured?"key configured":"key missing")+" | OpenRouter: "+(h.openrouter.configured?"key configured":"key missing"));const q=({...h.gemini.budget,...h.openrouter.budget})[$("model").value];msg("quota",q?"طلبات الموقع خلال آخر 24 ساعة: "+q.local_attempts_24h+"/"+q.local_cap_24h+" · آخر دقيقة: "+q.local_attempts_60s+"/"+q.local_cap_60s+" (ليست الحصة المتبقية لدى المزود)":"النموذج المحلي لا يستهلك حصة سحابية");}
+async function refreshModels(){const h=await api("/api/v4/health");msg("health","Ollama: "+h.model.status+" · "+h.model.models.join(", ")+" | Gemini: "+(h.gemini.configured?"key configured":"key missing")+" | OpenRouter: "+(h.openrouter.configured?"key configured":"key missing")+" | Groq: "+(h.groq.configured?"key configured":"key missing"));const q=({...h.gemini.budget,...h.openrouter.budget,...h.groq.budget})[$("model").value];msg("quota",q?"طلبات الموقع خلال آخر 24 ساعة: "+q.local_attempts_24h+"/"+q.local_cap_24h+" · آخر دقيقة: "+q.local_attempts_60s+"/"+q.local_cap_60s+" (ليست الحصة المتبقية لدى المزود)":"النموذج المحلي لا يستهلك حصة سحابية");}
 $("refresh-models").onclick=()=>refreshModels().catch(e=>msg("health",e.message));
 $("model").onchange=()=>{$("cloud-consent").checked=false;refreshModels().catch(e=>msg("health",e.message))};
 

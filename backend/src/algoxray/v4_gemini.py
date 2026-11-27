@@ -94,6 +94,10 @@ class GeminiProvider:
 
 def provider_for(model,cloud_consent=False):
     from .v4_provider import OllamaProvider
+    from .v4_groq import MODEL as GROQ_MODEL,GroqProvider
+    if model==GROQ_MODEL:
+        if cloud_consent is not True:raise ProviderError("cloud_consent_required")
+        return GroqProvider()
     from .v4_openrouter import MODEL,OpenRouterProvider
     if model==MODEL:
         if cloud_consent is not True:raise ProviderError("cloud_consent_required")
