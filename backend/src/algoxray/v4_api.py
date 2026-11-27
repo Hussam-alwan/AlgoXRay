@@ -23,6 +23,70 @@ class Run(BaseModel):
     count:int=Field(default=6,ge=1,le=12)
     seed:int=Field(default=2026,ge=0,le=2**32-1)
     case:dict|None=None
+    analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}
+
+def router_for(require_loopback,token):
+    router=APIRouter(prefix="/api/v4");lock=threading.Lock();active={};active_lock=threading.Lock()
+    store=PackageStore(ROOT/"results"/"v4-packages")
+    def guard(request):
+        require_loopback(request)
+        if not secrets.compare_digest(request.headers.get("x-algoxray-token",""),token):raise HTTPException(403,"Local author session required")
+    @router.get("/health")
+    def health(request:Request):
+        require_loopback(request)
+        return {"status":"experimental","model":model_health(),"public_execution":False,"guest_trace_authenticated":False}
+    @router.get("/packages")
+    def packages(request:Request):
+        require_loopback(request);return store.list()
+    @router.post("/packages/draft")
+    def draft(body:Draft,request:Request):
+        guard(request)
+        schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object"}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
+        instructions="Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. lines is a list of rows of field names in original order. Do not invent constraints; return no manifest if unsupported."
+        try:
+            r=OllamaProvider().propose("contract_draft",{"statement":body.statement,"grammar":instructions},schema)
+            if set(r)!={"manifest"}:raise ValueError("Invalid draft envelope")
+            m=validate_manifest(r["manifest"])
+            return {"status":"draft_unreviewed","manifest":m,"warning":"Check against original problem; supply independently reviewed reference and controls."}
+        except (ProviderError,ValueError,TypeError,KeyError):raise HTTPException(422,"Local model unavailable or unsupported draft; use manual authoring")
+    @router.post("/packages/approve")
+    def approve(body:Approve,request:Request):
+        guard(request)
+        if not body.owner_reviewed:raise HTTPException(403,"Independent owner review required")
+        if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
+        try:
+            validate_package(body.package)
+            result=review(body.package)
+            if not result["passed"]:return {"status":"rejected","review":result}
+            return {"status":"approved_by_owner","key":store.save(body.package),"review":result}
+        except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
+        finally:lock.release()
+    @router.post("/analysis/{analysis_id}/cancel")
+    def cancel_analysis(analysis_id:str,request:Request):
+        guard(request)
+        with active_lock:
+            c=active.get(analysis_id)
+            if c is None:raise HTTPException(404,"No active V4 analysis")
+            c.set()
+        return {"status":"cancellation_requested"}
+    @router.post("/analyze")
+    def analyze(body:Run,request:Request):
+        guard(request)
+        if not body.trusted_local_source:raise HTTPException(403,"Confirm local source review")
+        if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
+        c=threading.Event()
+        if body.analysis_id:
+            with active_lock:active[body.analysis_id]=c
+        try:
+            p=store.load(body.package_key)
+            return analyze_package(p,body.source,count=body.count,seed=body.seed,case=body.case,provider=OllamaProvider() if body.use_ai else None,cancel=c)
+        except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
+        finally:
+            if body.analysis_id:
+                with active_lock:active.pop(body.analysis_id,None)
+            lock.release()
+    return router
+)
 
 def router_for(require_loopback,token):
     router=APIRouter(prefix="/api/v4");lock=threading.Lock()

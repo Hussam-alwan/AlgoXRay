@@ -68,7 +68,7 @@ DIAGNOSIS_SCHEMA={"type":"object","properties":{"hypotheses":{"type":"array","ma
 
 def check_hypotheses(response,events):
     """Check shape and anchor existence only. Free-text causality remains unverified."""
-    if type(response) is not dict or set(response)!={"hypotheses"} or type(response["hypotheses"]) is not list or len(response["hypotheses"])>3:
+    if type(response) is not dict or not {"hypotheses"}<=set(response)<={"hypotheses","facts"} or type(response["hypotheses"]) is not list or len(response["hypotheses"])>3:
         raise ProviderError("invalid_hypothesis_schema")
     known={e["event_id"]:e for e in events if type(e) is dict and "event_id" in e}
     checked=[]
@@ -78,3 +78,20 @@ def check_hypotheses(response,events):
         valid=all(x in known for x in h["event_ids"]) and any(known[x]["line"]==h["line"] for x in h["event_ids"] if x in known)
         checked.append({**h,"status":"hypothesis" if valid else "unsupported","causal_verified":False})
     return checked
+
+# Extend the structured output schema with machine-checkable value claims.
+DIAGNOSIS_SCHEMA["properties"]["facts"]={"type":"array","maxItems":6,"items":{"type":"object","properties":{"event_id":{"type":"string"},"variable":{"type":"string"},"value":{"type":["integer","boolean","string","null"]}},"required":["event_id","variable","value"],"additionalProperties":False}}
+DIAGNOSIS_SCHEMA["required"].append("facts")
+
+def check_facts(response,events):
+    facts=response.get("facts",[])
+    if type(facts) is not list or len(facts)>6:raise ProviderError("invalid_fact_schema")
+    by_id={e["event_id"]:e for e in events if type(e) is dict and type(e.get("event_id")) is str}
+    result=[]
+    for f in facts:
+        if type(f) is not dict or set(f)!={"event_id","variable","value"} or type(f["event_id"]) is not str or type(f["variable"]) is not str or type(f["value"]) not in (int,bool,str,type(None)):raise ProviderError("invalid_fact_schema")
+        ev=by_id.get(f["event_id"])
+        loc=ev.get("locals",{}) if ev else {}
+        valid=f["variable"] in loc and type(loc[f["variable"]]) is type(f["value"]) and loc[f["variable"]]==f["value"]
+        result.append({**f,"status":"matches_recorded_snapshot" if valid else "unsupported","causal_verified":False})
+    return result
