@@ -7,10 +7,13 @@ from .v4_contracts import PackageStore,validate_package,validate_manifest
 from .v4_engine import review,analyze_package
 from .v4_provider import OllamaProvider,model_health,ProviderError
 from .v4_repair import propose_repair,verify_repair
+from .v4_gemini import provider_for,provider_status
 
 class Draft(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     statement:str=Field(min_length=1,max_length=8000)
+    model:str="qwen2.5-coder:7b"
+    cloud_consent:bool=False
 class Repair(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package_key:str
@@ -18,6 +21,8 @@ class Repair(BaseModel):
     case:dict
     candidate:str|None=Field(default=None,min_length=1,max_length=32768)
     reviewed:bool=False
+    model:str="qwen2.5-coder:7b"
+    cloud_consent:bool=False
 class Approve(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     package:dict
@@ -28,6 +33,8 @@ class Run(BaseModel):
     source:str=Field(min_length=1,max_length=32768)
     trusted_local_source:bool=False
     use_ai:bool=False
+    model:str="qwen2.5-coder:7b"
+    cloud_consent:bool=False
     count:int=Field(default=6,ge=1,le=12)
     seed:int=Field(default=2026,ge=0,le=2**32-1)
     case:dict|None=None
@@ -42,7 +49,10 @@ def router_for(require_loopback,token):
     @router.get("/health")
     def health(request:Request):
         require_loopback(request)
-        return {"status":"experimental","model":model_health(),"public_execution":False,"guest_trace_authenticated":False}
+        return {"status":"experimental","model":model_health(),"gemini":provider_status(),"public_execution":False,"guest_trace_authenticated":False}
+    def select_provider(model,consent):
+        try:return provider_for(model,consent)
+        except ProviderError as exc:raise HTTPException(403 if str(exc)=="cloud_consent_required" else 422,str(exc)) from None
     @router.get("/packages")
     def packages(request:Request):
         require_loopback(request);return store.list()
@@ -52,11 +62,13 @@ def router_for(require_loopback,token):
         schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object"}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
         instructions="Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. lines is a list of rows of field names in original order. Do not invent constraints; return no manifest if unsupported."
         try:
-            r=OllamaProvider().propose("contract_draft",{"statement":body.statement,"grammar":instructions},schema)
+            provider=select_provider(body.model,body.cloud_consent)
+            r=provider.propose("contract_draft",{"statement":body.statement,"grammar":instructions},schema)
             if set(r)!={"manifest"}:raise ValueError("Invalid draft envelope")
             m=validate_manifest(r["manifest"])
-            return {"status":"draft_unreviewed","manifest":m,"warning":"Check against original problem; supply independently reviewed reference and controls."}
-        except (ProviderError,ValueError,TypeError,KeyError):raise HTTPException(422,"Local model unavailable or unsupported draft; use manual authoring")
+            return {"status":"draft_unreviewed","manifest":m,"model":body.model,"usage":getattr(provider,"usage",{}),"warning":"Check against original problem; supply independently reviewed reference and controls."}
+        except ProviderError as exc:raise HTTPException(422,str(exc)) from None
+        except (ValueError,TypeError,KeyError):raise HTTPException(422,"Unsupported or invalid draft; use manual authoring")
     @router.post("/packages/approve")
     def approve(body:Approve,request:Request):
         guard(request)
@@ -72,8 +84,11 @@ def router_for(require_loopback,token):
     @router.post("/repair/propose")
     def repair_propose(body:Repair,request:Request):
         guard(request)
-        try:return propose_repair(OllamaProvider(),store.load(body.package_key),body.source,body.case)
-        except (ProviderError,ValueError,OSError):raise HTTPException(422,"Local model unavailable or proposal invalid")
+        try:
+            provider=select_provider(body.model,body.cloud_consent)
+            return {**propose_repair(provider,store.load(body.package_key),body.source,body.case),"model":body.model,"usage":getattr(provider,"usage",{})}
+        except ProviderError as exc:raise HTTPException(422,str(exc)) from None
+        except (ValueError,OSError):raise HTTPException(422,"Proposal invalid")
     @router.post("/repair/verify")
     def repair_verify(body:Repair,request:Request):
         guard(request)
@@ -94,13 +109,14 @@ def router_for(require_loopback,token):
     def analyze(body:Run,request:Request):
         guard(request)
         if not body.trusted_local_source:raise HTTPException(403,"Confirm local source review")
+        provider=select_provider(body.model,body.cloud_consent) if body.use_ai else None
         if not lock.acquire(blocking=False):raise HTTPException(409,"V4 busy")
         c=threading.Event()
         if body.analysis_id:
             with active_lock:active[body.analysis_id]=c
         try:
             p=store.load(body.package_key)
-            return analyze_package(p,body.source,count=body.count,seed=body.seed,case=body.case,provider=OllamaProvider() if body.use_ai else None,cancel=c)
+            return analyze_package(p,body.source,count=body.count,seed=body.seed,case=body.case,provider=provider,cancel=c)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:

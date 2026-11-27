@@ -63,14 +63,15 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=3,case=None,provider
     witness=replay[0]
     student_events=witness["student"].get("events",[])
     reference_events=witness["reference"].get("events",[])
-    hypotheses=[];facts=[]; ai_status="disabled"
+    hypotheses=[];facts=[]; ai_status="disabled";ai_error=None
     if provider is not None:
         try:
             proposal=provider.propose("diagnosis",{"statement":m["statement"],"source":source,"stdin":witness["stdin"],"expected":witness["reference"]["stdout"],"actual":witness["student"].get("stdout"),"events":student_events[-24:]},DIAGNOSIS_SCHEMA)
             hypotheses=check_hypotheses(proposal,student_events);facts=check_facts(proposal,student_events);ai_status="ok"
-        except (ProviderError,ValueError): ai_status="unavailable_or_invalid"
+        except ProviderError as exc: ai_status="unavailable_or_invalid";ai_error=str(exc);hypotheses=[];facts=[]
+        except ValueError: ai_status="unavailable_or_invalid";ai_error="invalid_model_output";hypotheses=[];facts=[]
     if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
     return {"status":"observed_mismatch","kind":witness["kind"],"package_sha256":digest(p),"original_case":original["case"],"witness":witness,
             "reference_source":p["reference"],"student_source":source,"replay_count":3,"attempts":attempts,"student_graph":observed_graph(student_events,source),"reference_graph":observed_graph(reference_events,p["reference"]),
-            "hypotheses":hypotheses,"ai_facts":facts,"ai_status":ai_status,"elapsed_ms":round((time.monotonic()-start)*1000,2),
+            "hypotheses":hypotheses,"ai_facts":facts,"ai_status":ai_status,"ai_model":getattr(provider,"model",None),"ai_usage":getattr(provider,"usage",{}),"ai_error":ai_error,"elapsed_ms":round((time.monotonic()-start)*1000,2),
             "scope":"Replay-stable observation relative to owner-reviewed reference; guest evidence not authenticated; no root-cause proof."}
