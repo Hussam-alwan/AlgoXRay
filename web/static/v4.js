@@ -11,7 +11,7 @@ async function refreshModels(){const h=await api("/api/v4/health");msg("health",
 $("refresh-models").onclick=()=>refreshModels().catch(e=>msg("health",e.message));
 $("model").onchange=()=>{$("cloud-consent").checked=false;refreshModels().catch(e=>msg("health",e.message))};
 
-function setBusy(value){busy=value;for(const id of ["candidate","patch-reviewed","package","reviewed","trusted","packages","demo","generator","guided","spectrum","count","reduce-count","observe-run","plain-benchmark","scaling-benchmark","manual-stdin","manual-expected","sample-reviewed","sample-comparison","size-field","size-values","timing-repetitions","timing-seconds","prepare-statement","statement","statement-kind","manual-samples","draft-schema","problem-url","approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
+function setBusy(value){busy=value;if(value){lastRunReport=null;$("run-report-panel").hidden=true}for(const id of ["session-seconds","analysis-case","run-report-import","prepare-replay","run-report-export","candidate","patch-reviewed","package","reviewed","trusted","packages","demo","generator","guided","spectrum","count","reduce-count","observe-run","plain-benchmark","scaling-benchmark","manual-stdin","manual-expected","sample-reviewed","sample-comparison","size-field","size-values","timing-repetitions","timing-seconds","prepare-statement","statement","statement-kind","manual-samples","draft-schema","problem-url","approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
 async function packages(selected){const p=await api("/api/v4/packages");$("packages").replaceChildren();for(const x of p){const opt=document.createElement("option");opt.value=x.key;opt.textContent=x.manifest.title+" · "+x.key.slice(0,8);$("packages").append(opt)}if(selected)$("packages").value=selected;}
 function loadDemo(){activeIntake=null;preparedStatement=null;$("intake-review").hidden=true;$("manual-samples").value="";activeDemo=$("demo").value;const d=demos[activeDemo];if(!d)return;$("package").value=JSON.stringify(d.package,null,2);$("statement").value=d.package.manifest.statement;$("source").value=d.mutant;$("reviewed").checked=false;$("trusted").checked=false;msg("approval","مسودة مثال؛ يجب المراجعة قبل الاعتماد.");}
 $("load").onclick=loadDemo;
@@ -36,7 +36,7 @@ $("draft").onclick=async()=>{if(busy)return;setBusy(true);msg("approval","تول
 $("import-problem").onclick=async()=>{if(busy)return;setBusy(true);try{const r=await api("/api/v4/packages/intake",{kind:"codeforces",url:$("problem-url").value});$("statement").value=r.statement;$("manual-samples").value=JSON.stringify(r.samples,null,2);displayIntake(r);$("import-samples").hidden=false;msg("import-samples",JSON.stringify({source:r.source_url,samples:r.samples},null,2));$("reviewed").checked=false;msg("approval",r.warning)}catch(e){msg("approval",e.message)}finally{setBusy(false)}};
 $("draft-reference").onclick=async()=>{if(busy)return;setBusy(true);try{const p=JSON.parse($("package").value);const r=await api("/api/v4/packages/reference",{manifest:p.manifest,...aiOptions()});p.reference=r.reference;delete p.reference_alt;p.controls=[];$("package").value=JSON.stringify(p,null,2);$("reviewed").checked=false;msg("approval",r.warning+" — "+r.rationale)}catch(e){msg("approval",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};
 $("approve").onclick=async()=>{if(busy)return;setBusy(true);msg("approval","فحص المرجع ضمن Docker...");try{let p=JSON.parse($("package").value);let r=await api("/api/v4/packages/approve",{package:p,owner_reviewed:$("reviewed").checked});msg("approval",JSON.stringify(r.review,null,2));if(r.key)await packages(r.key)}catch(e){msg("approval",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};
-$("run").onclick=async()=>{if(busy)return;setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;$("benchmark-results").hidden=true;msg("status","تنفيذ الحالات والبحث وإعادة التحقق...");try{const source=$("source").value;result=await api("/api/v4/analyze",{package_key:$("packages").value,source,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),generator:$("generator").value,guided:$("guided").checked,spectrum:$("spectrum").checked,count:Number($("count").value),reduce_calls:Number($("reduce-count").value),analysis_id:analysisId});msg("status",result.status+" · "+(result.attempts||0)+" attempts");if(result.status==="observed_mismatch"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show() }else msg("status",result.status+" — "+((result.scope||"No supported conclusion")+" | "+JSON.stringify(result.guidance||{})))}catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}};
+$("run").onclick=async()=>{if(busy)return;let caseValue=null;try{caseValue=$("analysis-case").value.trim()?JSON.parse($("analysis-case").value):null}catch(e){msg("status","Invalid JSON test case");return}setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;$("benchmark-results").hidden=true;msg("status","تنفيذ الحالات والبحث وإعادة التحقق...");try{const source=$("source").value;result=await api("/api/v4/analyze",{package_key:$("packages").value,source,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),generator:$("generator").value,guided:$("guided").checked,spectrum:$("spectrum").checked,count:Number($("count").value),reduce_calls:Number($("reduce-count").value),case:caseValue,session_seconds:Number($("session-seconds").value),analysis_id:analysisId});if(result.analysis_id!==analysisId||source!==$("source").value)return;showRunReport(result);msg("status",result.status+" · "+(result.attempts||0)+" attempts");if(result.status==="observed_mismatch"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show() }else msg("status",result.status+" — "+((result.scope||"No supported conclusion")+" | "+JSON.stringify(result.guidance||{})))}catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}};
 $("cancel").onclick=async()=>{const id=analysisId;if(!id)return;for(let i=0;i<12&&analysisId===id;i++){try{await api("/api/v4/analysis/"+id+"/cancel",{});msg("status","Cancellation requested");return}catch(e){await new Promise(r=>setTimeout(r,150))}}};
 function show(){
  $("repair-panel").hidden=result.status!=="observed_mismatch";
@@ -238,11 +238,11 @@ $("verify-patch").onclick=async()=>{
  try{
   const r=await api("/api/v4/repair/verify",{...repairBody(),candidate,reviewed:$("patch-reviewed").checked,analysis_id:analysisId});
   if(r.analysis_id!==analysisId||candidate!==$("candidate").value)return;
-  msg("patch-status",JSON.stringify(r,null,2));await refreshRepairs()
+  showRunReport(r);msg("patch-status",JSON.stringify(r,null,2));await refreshRepairs()
  }catch(e){msg("patch-status",e.message)}
  finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}
 };
-$("candidate").addEventListener("input",()=>{$("patch-reviewed").checked=false;msg("patch-status","");msg("patch-diff","")});
+$("candidate").addEventListener("input",()=>{if(lastRunReport?.run_report?.operation==="repair"){lastRunReport=null;$("run-report-panel").hidden=true}$("patch-reviewed").checked=false;msg("patch-status","");msg("patch-diff","")});
 
 async function refreshRepairs(){
  if(!result)return;
@@ -251,9 +251,11 @@ async function refreshRepairs(){
 }
 $("load-repair").onclick=async()=>{try{const key=$("repair-history").value;if(!key)return;const r=await api("/api/v4/repair/version/"+key);msg("repair-history-view",JSON.stringify(r,null,2))}catch(e){msg("repair-history-view",e.message)}};
 
-function invalidateResult(){if(!busy){result=null;benchmarkResult=null;$("results").hidden=true;$("benchmark-results").hidden=true;profileSelection=null}}
+function invalidateResult(){if(!busy){lastRunReport=null;$("run-report-panel").hidden=true;result=null;benchmarkResult=null;$("results").hidden=true;$("benchmark-results").hidden=true;profileSelection=null}}
 $("source").addEventListener("input",invalidateResult);
 $("profile-case").addEventListener("input",invalidateResult);
+for(const id of ["analysis-case","session-seconds"])$(id).addEventListener("input",invalidateResult);
+$("packages").addEventListener("change",invalidateResult);
 for(const id of ["manual-stdin","manual-expected","size-field","size-values","timing-repetitions","timing-seconds"])$(id).addEventListener("input",invalidateResult);
 $("sample-reviewed").addEventListener("change",invalidateResult);
 $("sample-comparison").addEventListener("change",invalidateResult);
@@ -266,7 +268,9 @@ $("profile-run").onclick=async()=>{
  setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;$("benchmark-results").hidden=true;msg("status","قياس التنفيذ للطالب والمرجع...");
  try{
   const source=$("source").value;
-  result=await api("/api/v4/profile",{package_key:$("packages").value,source,case:caseValue,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),analysis_id:analysisId});
+  result=await api("/api/v4/profile",{package_key:$("packages").value,source,case:caseValue,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),session_seconds:Number($("session-seconds").value),analysis_id:analysisId});
+  if(result.analysis_id!==analysisId||source!==$("source").value)return;
+  showRunReport(result);
   msg("status",result.status+" · "+(result.kind||""));
   if(result.status==="profiled_execution"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show()}
  }catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}
@@ -313,6 +317,7 @@ async function runIndependent(path,body){
   const source=$("source").value;
   const data=await api(path,{...body,source,trusted_local_source:$("trusted").checked,analysis_id:analysisId});
   if(data.analysis_id!==analysisId||source!==$("source").value)return;
+  showRunReport(data);
   msg("status",data.status+" · "+(data.kind||data.stop_reason||""));
   if(data.status==="manual_observation"){
    result=data;sources={student:source,reference:""};side="student";index=0;show();
@@ -458,3 +463,76 @@ function showBranchRanking(){
  }
  if(!rows.children.length)msg("branch-ranking","ترتيب الفروع يحتاج عينات ناجحة وفاشلة كاملة؛ غير متاح في هذا الطلب.");
 }
+
+let lastRunReport=null, importedReport=null, importGeneration=0;
+const reportLimit=8*1024*1024;
+async function reportHash(value){
+ const bytes=new TextEncoder().encode(value);
+ return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",bytes)),v=>v.toString(16).padStart(2,"0")).join("");
+}
+function showRunReport(data){
+ const r=data.run_report;if(!r||r.version!==1)return;
+ lastRunReport=data;$("run-report-panel").hidden=false;
+ msg("run-report-summary",r.operation+" | "+r.status+" | "+r.stop_reason+" | "+r.physical_executions+" worker calls | "+r.elapsed_ms+" ms");
+ const tbody=$("run-report-stages").tBodies[0];tbody.replaceChildren();
+ for(const stage of r.stages||[]){
+  const tr=document.createElement("tr");
+  for(const v of [stage.name,stage.status,stage.elapsed_ms,stage.executions]){
+   const td=document.createElement("td");td.textContent=String(v??"");tr.append(td)
+  }tbody.append(tr)
+ }
+ msg("run-report-detail",JSON.stringify(r,null,2));
+}
+$("run-report-export").onclick=async()=>{
+ const data=lastRunReport;if(!data)return;
+ try{
+  const payload=JSON.stringify(data);
+  const blob=new Blob([JSON.stringify({format:"algoxray_mvp_report",version:1,sha256:await reportHash(payload),payload})],{type:"application/json"});
+  if(blob.size>reportLimit)throw Error("Report exceeds 8 MiB export limit");
+  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="algoxray-run-"+data.run_report.run_id+".json";a.click();URL.revokeObjectURL(url)
+ }catch(e){msg("run-report-summary",e.message)}
+};
+$("run-report-import").onchange=async()=>{
+ const generation=++importGeneration;
+ importedReport=null;$("prepare-replay").hidden=true;$("reopen-details").hidden=true;
+ const file=$("run-report-import").files[0];if(!file)return;
+ try{
+  if(file.size>reportLimit)throw Error("Report exceeds 8 MiB limit");
+  const e=JSON.parse(await file.text());
+  if(e.format!=="algoxray_mvp_report"||e.version!==1||typeof e.payload!=="string"||await reportHash(e.payload)!==e.sha256)throw Error("Invalid envelope or content hash");
+  const data=JSON.parse(e.payload),r=data.run_report;
+  if(!r||r.version!==1||typeof data.student_source!=="string"||new TextEncoder().encode(data.student_source).length>32768||await reportHash(data.student_source)!==r.source_sha256)throw Error("Invalid source identity");
+  if(generation!==importGeneration)return;
+  importedReport=data;msg("reopen-summary","Content hash checked; imported observations are NOT authenticated. "+r.operation+" | "+r.status+" | "+r.stop_reason);
+  msg("reopen-detail",JSON.stringify(data,null,2));$("reopen-details").hidden=false;
+  $("prepare-replay").hidden=!["analysis","profile","observe"].includes(r.operation)
+ }catch(e){if(generation===importGeneration)msg("reopen-summary",e.message)}
+};
+$("prepare-replay").onclick=()=>{
+ if(busy||!importedReport)return;
+ const data=importedReport,r=data.run_report,p=r.parameters||{};
+ if(r.operation!=="observe"&&(!/^[a-f0-9]{64}$/.test(r.package_sha256||"")||!Array.from($("packages").options).some(o=>o.value===r.package_sha256))){
+  msg("reopen-summary","The identical locally approved package is required; imported files cannot approve it.");return
+ }
+ invalidateResult();$("source").value=data.student_source;$("trusted").checked=false;$("ai").checked=false;$("guided").checked=false;$("cloud-consent").checked=false;$("sample-reviewed").checked=false;$("patch-reviewed").checked=false;
+ if(r.operation==="observe"){
+  $("manual-stdin").value=typeof p.stdin==="string"?p.stdin:"";
+  $("manual-expected").value="";
+  if(Number.isFinite(p.seconds)&&p.seconds>=.05&&p.seconds<=3)$("timing-seconds").value=String(p.seconds)
+ }else{
+  $("packages").value=r.package_sha256;
+  const c=data.witness?.case??data.partial_observation?.witness?.case??p.case??null;
+  $(r.operation==="profile"?"profile-case":"analysis-case").value=c===null?"":JSON.stringify(c);
+  // Replay the selected witness itself, not a new shrinking experiment.
+  // For a search without a witness, restore the available search settings.
+  if(r.operation==="analysis"){
+   if(c!==null)$("reduce-count").value="0";
+   else if(Number.isInteger(p.reduce_calls)&&p.reduce_calls>=0&&p.reduce_calls<=32)$("reduce-count").value=String(p.reduce_calls);
+   if(Number.isInteger(p.count)&&p.count>=1&&p.count<=12)$("count").value=String(p.count);
+   if(["boundary_random","hypothesis"].includes(p.generator))$("generator").value=p.generator;
+   $("spectrum").checked=Boolean(p.spectrum);
+  }
+  if(Number.isFinite(r.limits?.session_wall_seconds)&&r.limits.session_wall_seconds>=1&&r.limits.session_wall_seconds<=300)$("session-seconds").value=String(r.limits.session_wall_seconds);
+ }
+ msg("reopen-summary","Prepared locally; source review and a new explicit Run/Profile/Observe action are required. AI and imported approvals are disabled.")
+};

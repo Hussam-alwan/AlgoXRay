@@ -2,7 +2,7 @@
 title: "AlgoXRay — الخطة التنفيذية الحية للـMVP والتقييم البحثي"
 document_id: "algoxray-mvp-master-plan"
 canonical_filename: "AlgoXRay_MVP_Master_Plan_AR.md"
-version: "2.0.7"
+version: "2.0.8"
 updated: "2026-11-27"
 timezone: "Europe/Istanbul"
 document_status: "IN_PROGRESS"
@@ -10,7 +10,7 @@ implementation_status: "PARTIALLY_VERIFIED"
 repository: "https://github.com/Hussam-alwan/AlgoXRay"
 baseline_branch: "v4-dynamic-ai"
 baseline_commit: "333cf3d1b4c1015f836a14b4304a3a4aedae1abb"
-next_work_package: "MVP-15: versioned run reports, stage budgets and replay; MVP-00/12/13 measurement limits"
+next_work_package: "MVP-00/12/13: performance protocol and measured growth; integrated acceptance"
 ---
 
 # AlgoXRay — الخطة التنفيذية الحية للـMVP والتقييم البحثي
@@ -384,7 +384,7 @@ wall time وCPU time مختلفان؛ نسجل حدود القياس وما إذ
 
 | الحزمة | الناتج | الحالة | الاعتماد اللازم للإغلاق | المالك | دليل الإنجاز الجديد |
 |---|---|---|---|---|---|
-| MVP-00 | baseline والفجوات والميزانيات | IN_PROGRESS | — | هندسة | 281 اختباراً ناجحاً؛ فحوص حية للمسألة والتصغير والرسوم والأداء والحكم والتشخيص؛ تبقى بروتوكول القياسات والقبول النهائي |
+| MVP-00 | baseline والفجوات والميزانيات | IN_PROGRESS | — | هندسة | 285 اختباراً ناجحاً؛ فحوص حية للمسألة والتصغير والرسوم والأداء والحكم والتشخيص والتقارير؛ تبقى بروتوكول القياسات والقبول النهائي |
 | MVP-01 | إدخال رابط/نص/شرح جديد | IN_PROGRESS | MVP-00 | هندسة + واجهة | intake موحد للرابط/النص/الشرح، حفظ المصدر والعينات؛ استيراد حي وواجهة؛ مسودة V2 بمزود محاكى فقط |
 | MVP-02 | ProblemSpec عام قابل للتحقق | IN_PROGRESS | MVP-01 | هندسة | V2: T وترتيب/تفرد وعلاقات أعداد، مولدان ومصغر؛ 8 فحوص موجهة ورحلة Docker+متصفح؛ تبقى قيود إضافية ضمن النطاق وقياس |
 | MVP-03 | ملف كامل وتوافق I/O | IN_PROGRESS | MVP-00 | هندسة | I/O والبرنامج الكامل وموضع الاستثناء؛ timeout وإلغاء وتنظيف Docker؛ تبقى حالات الخرج والموارد والتوافق الأوسع |
@@ -399,7 +399,7 @@ wall time وCPU time مختلفان؛ نسجل حدود القياس وما إذ
 | MVP-12 | قياس عادي وprofiling منفصل | IN_PROGRESS | MVP-03، MVP-08 | هندسة | وضع بلا تتبع مثبت + تكرارات فعلية وtimeout/cancel؛ الفصل في الواجهة؛ تبقى بروتوكول وقياسات أوسع |
 | MVP-13 | أحجام ومنحنيات ونمو مقيد | IN_PROGRESS | MVP-02، MVP-12 | هندسة + واجهة | منحنى أحجام قانونية وmedian/min/max وCPU وwall وfit محافظ؛ متصفح/Docker؛ لم يثبت Big-O؛ تبقى حالات نمو وضجيج أوسع |
 | MVP-14 | تحقق تعديل البرنامج الكامل | IN_PROGRESS | MVP-06، MVP-07، MVP-09 | هندسة | إعادة الشاهدين قبل الإصلاح، suite/version/hash وتكرار حالات مميز، رفض الإصلاح الجزئي وإبطال عند تعديل المرشح؛ متصفح وDocker |
-| MVP-15 | حالة وإلغاء وميزانيات وتقارير | IN_PROGRESS | MVP-03 | هندسة + واجهة | إلغاء تحقق الإصلاح وربط الطلب والمرشح؛ قفل المدخلات أثناء التشغيل؛ تبقى مراحل وميزانيات وتقارير موحدة |
+| MVP-15 | حالة وإلغاء وميزانيات وتقارير | IN_PROGRESS | MVP-03 | هندسة + واجهة | RunLedger v1: سجل المراحل والميزانيات والتقارير وإعادة فتحها؛ 4 فحوص متصفح ناجحة؛ تبقى اختبارات القبول المتكاملة |
 | MVP-16 | تكامل وإصدار عرض قابل للإعادة | PLANNED | MVP-01 إلى MVP-15 | هندسة + واجهة | — |
 | RES-01 | أعمال قريبة وسؤال ومؤتمر | READY | تحديد المسار قبل اختيار جهة الإرسال | بحث + حسام | مصادر أولية فقط |
 | RES-02 | بيانات وبروتوكول وتقسيم مجمد | READY | يغلق قبل القياس النهائي | بحث | لم تُنشأ مجموعة جديدة |
@@ -951,6 +951,14 @@ wall time وCPU time مختلفان؛ نسجل حدود القياس وما إذ
 - EVD-MVP-015: python tools/verify_mvp_branch_ai_browser.py، 3 فحوص متصفح ناجحة على Docker (0 page errors, 0 external requests). خطأ الشرط n>=0 على n=0، رابط فرع وحالة مقتطعة، مزود محاكى يرسل فرضية ساكنة وإحالة وهمية وقيمة خاطئة؛ رفض غير المدعوم ورصد التناقض وبقاء الأدلة عند تعطل المزود. [التقرير](mvp-evidence/branch-ai-browser.json). ليس اختبار دقة نموذج.
 - EVD-MVP-016: python tools/verify_mvp_local_diagnosis.py، نموذج Ollama المحلي qwen2.5-coder:7b، context=4096 وtemperature=0، لا سحابة. observed_mismatch، ai_status=ok لكن hypotheses/facts/branches جميعها فارغة؛ امتنع النموذج عن الشرح رغم توافر الشاهد، وليس نجاحاً لجودة التشخيص. elapsed=12047ms، prompt tokens=1874، eval tokens=12. [التقرير](mvp-evidence/branch-ai-local.json). نموذج/مثال تطوير واحد؛ يجب تقييم الفائدة مستقلاً ولا تُغيّر فرضيات المحرك لتعويض الامتناع.
 - التالي MVP-15: عقد تقرير ذي إصدار وهوية ومدخلات/ميزانيات ومراحل غير منفذة وإعادة فتح/إعادة تشغيل، ثم حدود الأداء والتحقق المتكامل. لا إغلاق شامل لحزم IN_PROGRESS، ولا تجربة مستخدمين/دراسة نهائية.
+
+### 2.0.8 - Run reports and explicit replay
+
+- MVP-15: RunLedger v1 records operation, source/package/manifest and engine hashes, environment, parameters, stage statuses, elapsed time, worker roles, counts, input identities, worker image and cleanup when available. Time/call budgets are checkpoints, not hard real-time ceilings. Partial observations are not new verified verdicts.
+- Local JSON envelope v1 with SHA256 content/source identities and an 8 MiB limit. Imported reports are unauthenticated and grant no execution or cloud approval. Explicit replay preparation supports analysis/profile/observe only, requires the matching approved local package where applicable, clears execution/AI consent, and disables shrinking when replaying a witness. No automatic benchmark or repair replay.
+- EVD-MVP-017: test_mvp_run_report.py, 4 focused tests; full backend suite 285 passed, 1 Starlette warning (19.72s). Simulated clock verifies budget exhaustion and partial evidence; cancellation before launch, distinct inputs and call limits.
+- EVD-MVP-018: tools/verify_mvp_run_report_browser.py, real local Docker/browser, 4 checks passed, 0 page errors, 0 external requests. No-witness report, import without execution, explicit replay n=2 with new run ID, changed payload rejected. [Evidence](mvp-evidence/run-report-browser.json). Synthetic development fixture, not independent security/research evaluation.
+- MVP-15 remains IN_PROGRESS pending integrated resource/regression checks. Next MVP-00/12/13: measurement protocol, timing limits, contrasting growth workloads and integrated acceptance.
 
 ### 11.1 الأدلة حتى هذه النسخة
 

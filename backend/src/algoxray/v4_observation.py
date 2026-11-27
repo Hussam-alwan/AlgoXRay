@@ -15,6 +15,7 @@ from .v4_loop_observations import with_loops
 from .v4_cfg import output_chain
 from .v4_execution_diagnostics import execution_diagnostics
 from .v4_contracts import validate_manifest,generate,serialize,equal,digest
+from .v4_run_report import RunLedger,BudgetExhausted
 
 def sha(value):
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -26,14 +27,20 @@ def validate_text(source,stdin):
         raise ValueError("Input size outside supported bounds")
 
 def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
-                   comparison="tokens",seconds=1.0,mode="trace_profile",run=execute_stdio,cancel=None):
+                   comparison="tokens",seconds=1.0,mode="trace_profile",run=execute_stdio,cancel=None,run_id=None):
+    ledger=RunLedger("observe",source,run_id=run_id,session_seconds=30,max_executions=1,
+        parameters={"stdin":stdin,"expected_reviewed":expected_reviewed,"comparison":comparison,"mode":mode,"seconds":seconds})
+    ledger.enter("validation")
     validate_text(source,stdin)
     if comparison not in ("tokens","exact"):raise ValueError("Unsupported sample comparison")
     if expected is not None and (type(expected) is not str or len(expected.encode("utf-8"))>8192):
         raise ValueError("Expected sample exceeds bounds")
     if mode not in ("trace_profile","benchmark_uninstrumented"):raise ValueError("Unsupported execution mode")
-    result=run(source,stdin,trace_limit=256 if mode=="trace_profile" else 0,
+    ledger.enter("student")
+    result=ledger.execute(run,"student",source,stdin,trace_limit=256 if mode=="trace_profile" else 0,
                mode=mode,seconds=seconds,cancel=cancel)
+    if result["status"]=="cancelled":
+        return ledger.finish({"status":"cancelled"})
     status=result["status"]
     outcome="syntax_error" if status=="exception" and result.get("detail") in ("SyntaxError","IndentationError","TabError") else "runtime_error" if status=="exception" else status
     if expected is None or not expected_reviewed:
@@ -45,6 +52,7 @@ def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
                   "authority":"user_reviewed_sample"}
     judgment.update(policy=comparison,expected=expected if expected_reviewed else None,
                     input_validity="not_verified_against_problem",general_correctness_claim=False)
+    ledger.enter("structure")
     graph=with_loops(attach_profile(observed_graph(result.get("events",[]),source),result),source,result)
     graph["output_chain"]=output_chain(source,result,graph)
     from .v4_branches import observed_branches
@@ -53,7 +61,7 @@ def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
     progress=execution_diagnostics(source,result)
     localization=localize(source,{"student":result},graph,diagnostics=progress)
 
-    return {"status":"cancelled" if status=="cancelled" else "manual_observation",
+    return ledger.finish({"status":"manual_observation",
             "kind":outcome,"judgment":judgment,"source_sha256":sha(source),"student_source":source,
             "mode":mode,"witness":{"stdin":stdin,"case":None,"student":result,
                      "reference":{"status":"not_run","stdout":"","events":[],"trace_status":"not_run"}},
@@ -61,7 +69,7 @@ def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
             "reference_graph":observed_graph([],""),
             "execution_diagnostics":progress,"evidence_localization":localization,
             "replay_count":0,"attempts":1,"ai_status":"disabled",
-            "scope":"One manually supplied input; legality and general correctness not verified. No reference program ran. Sample comparison, if requested and reviewed, is an observation only."}
+            "scope":"One manually supplied input; legality and general correctness not verified. No reference program ran. Sample comparison, if requested and reviewed, is an observation only."})
 
 def generated_size_inputs(m,size_field,sizes,seed):
     """Constrain an explicitly selected scalar or T, never replace original constraints."""
@@ -115,17 +123,23 @@ def empirical_exponent(points,repeats):
             "scope":"Empirical finite-range wall-time fit, not a Big-O proof or judge prediction."}
 
 def benchmark_source(source,inputs,*,repeats=3,seconds=1.0,seed=2026,package=None,
-                     size_field=None,run=execute_stdio,cancel=None,total_seconds=90):
+                     size_field=None,run=execute_stdio,cancel=None,total_seconds=90,run_id=None):
     from .v4_engine import oracle
     from .v4_checker import judge_output
     if type(repeats) is not int or not 1<=repeats<=5:raise ValueError("Choose 1..5 repetitions")
     if type(inputs) is not list or not 1<=len(inputs)<=5:raise ValueError("Choose 1..5 inputs")
     for row in inputs:validate_text(source,row["stdin"])
+    ledger=RunLedger("benchmark",source,package=package,run_id=run_id,session_seconds=total_seconds,
+        max_executions=len(inputs)*(repeats+2),
+        parameters={"inputs":inputs,"size_field":size_field,"seed":seed,"repetitions":repeats,"seconds":seconds})
+    ledger.enter("validation")
+    ledger.enter("measurement")
     start=time.monotonic();points=[];executions=0;stop="completed"
-    def invoke(src,stdin,limit):
+    def invoke(src,stdin,limit,role="reference"):
         nonlocal executions
+        r=ledger.execute(run,role,src,stdin,trace_limit=0,mode="benchmark_uninstrumented",seconds=seconds,cancel=cancel)
         executions+=1
-        return run(src,stdin,trace_limit=0,mode="benchmark_uninstrumented",seconds=seconds,cancel=cancel)
+        return r
     def stopped():
         if cancel is not None and cancel.is_set():return "cancelled"
         if time.monotonic()-start>=total_seconds:return "session_budget_exhausted"
@@ -133,13 +147,18 @@ def benchmark_source(source,inputs,*,repeats=3,seconds=1.0,seed=2026,package=Non
     for row in inputs:
         stop=stopped() or "completed"
         if stop!="completed":break
-        ref=oracle(package,row["stdin"],invoke,case=row["case"]) if package else None
+        try:ref=oracle(package,row["stdin"],invoke,case=row["case"]) if package else None
+        except BudgetExhausted as exc:
+            stop=str(exc);break
         expected=ref.get("stdout") if ref and ref["status"]=="ok" else None
         runs=[]
         for _ in range(repeats):
             stop=stopped() or "completed"
             if stop!="completed":break
-            result=invoke(source,row["stdin"],0);profile=result.get("profile",{})
+            try:result=invoke(source,row["stdin"],0,role="student")
+            except BudgetExhausted as exc:
+                stop=str(exc);break
+            profile=result.get("profile",{})
             if result["status"]=="cancelled":
                 stop="cancelled";break
             valid=profile.get("method")=="uninstrumented_execution" and result["status"]=="ok"
@@ -159,10 +178,10 @@ def benchmark_source(source,inputs,*,repeats=3,seconds=1.0,seed=2026,package=Non
                        "reference_status":ref.get("status") if ref else "not_run"})
         if stop!="completed":break
     if cancel is not None and cancel.is_set():stop="cancelled"
-    return {"status":"benchmark_observation","stop_reason":stop,"source_sha256":sha(source),
+    return ledger.finish({"status":"benchmark_observation","stop_reason":stop,"source_sha256":sha(source),
             "student_source":source,"package_sha256":digest(package) if package else None,
             "size_field":size_field,"seed":seed,"repetitions":repeats,"seconds_per_run":seconds,
             "session_budget_seconds":total_seconds,"physical_executions":executions,
             "elapsed_ms":round((time.monotonic()-start)*1000,2),"points":points,
             "growth":empirical_exponent(points,repeats) if stop=="completed" and size_field else {"status":"not_applicable_or_incomplete"},
-            "scope":"Uninstrumented compile and execution wall/CPU; host time separate. Same input within each point; other fields generated by recorded boundary/random strategy. No guaranteed complexity class, platform time, or correctness."}
+            "scope":"Uninstrumented compile and execution wall/CPU; host time separate. Same input within each point; other fields generated by recorded boundary/random strategy. No guaranteed complexity class, platform time, or correctness."})

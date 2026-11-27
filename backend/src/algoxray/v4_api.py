@@ -80,6 +80,7 @@ class Run(BaseModel):
     spectrum:bool=False
     count:int=Field(default=6,ge=1,le=12)
     reduce_calls:int=Field(default=12,ge=0,le=32)
+    session_seconds:float=Field(default=240.0,ge=1,le=300)
     seed:int=Field(default=2026,ge=0,le=2**32-1)
     case:dict|None=None
     analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
@@ -233,8 +234,8 @@ def router_for(require_loopback,token):
             with active_lock:active[body.analysis_id]=c
         try:
             result=verify_repair(store.load(body.package_key),body.source,body.candidate,body.case,
-                                 original_case=body.original_case,cancel=c)
-            return {**result,"history_key":repairs.save(body.package_key,body.source,body.candidate,result),"analysis_id":body.analysis_id}
+                                 original_case=body.original_case,cancel=c,run_id=body.analysis_id)
+            return {**result,"history_key":repairs.save(body.package_key,body.source,body.candidate,result),"analysis_id":result.get("analysis_id") or body.analysis_id}
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:
@@ -249,7 +250,7 @@ def router_for(require_loopback,token):
             with active_lock:active[body.analysis_id]=c
         try:
             result=action(c)
-            return {**result,"analysis_id":body.analysis_id}
+            return {**result,"analysis_id":result.get("analysis_id") or body.analysis_id}
         except (ValueError,OSError,TypeError,KeyError) as exc:raise HTTPException(422,str(exc)[:240]) from None
         finally:
             if body.analysis_id:
@@ -261,7 +262,7 @@ def router_for(require_loopback,token):
         from .v4_observation import observe_source
         return local_observation(body,request,lambda c:observe_source(
             body.source,body.stdin,expected=body.expected,expected_reviewed=body.expected_reviewed,
-            comparison=body.comparison,mode=body.mode,seconds=body.seconds,cancel=c))
+            comparison=body.comparison,mode=body.mode,seconds=body.seconds,cancel=c,run_id=body.analysis_id))
 
     @router.post("/benchmark")
     def benchmark(body:Benchmark,request:Request):
@@ -279,7 +280,7 @@ def router_for(require_loopback,token):
                 inputs=[{"size":None,"case":None,"stdin":body.stdin}]
             return benchmark_source(body.source,inputs,repeats=body.repetitions,
                                     seconds=body.seconds,seed=body.seed,package=package,
-                                    size_field=body.size_field,cancel=c)
+                                    size_field=body.size_field,cancel=c,run_id=body.analysis_id)
         return local_observation(body,request,execute)
 
     @router.post("/analysis/{analysis_id}/cancel")
@@ -301,7 +302,7 @@ def router_for(require_loopback,token):
             with active_lock:active[body.analysis_id]=c
         try:
             p=store.load(body.package_key)
-            return analyze_package(p,body.source,count=body.count,seed=body.seed,reduce_calls=body.reduce_calls,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum)
+            return analyze_package(p,body.source,count=body.count,seed=body.seed,reduce_calls=body.reduce_calls,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum,session_seconds=body.session_seconds,run_id=body.analysis_id)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:
@@ -316,20 +317,31 @@ def router_for(require_loopback,token):
         c=threading.Event()
         if body.analysis_id:
             with active_lock:active[body.analysis_id]=c
+        from .v4_run_report import RunLedger,BudgetExhausted
+        ledger=None
         try:
             p=store.load(body.package_key)
+            ledger=RunLedger("profile",body.source,package=p,run_id=body.analysis_id,session_seconds=body.session_seconds,max_executions=3,
+                parameters={"case":body.case,"ai_requested":body.use_ai,"model":getattr(provider,"model",None),"trace_limit":256})
+            ledger.enter("validation")
+            if not body.use_ai:ledger.skip("diagnosis","not_requested")
             case=body.case if body.case is not None else p["controls"][0]["case"]
             stdin=serialize(p["manifest"],case)
+            ledger.parameters["case"]=case
+            ledger.enter("reference")
             def run(src,stdin,limit):
-                return execute_stdio(src,stdin,trace_limit=limit,cancel=c)
+                return ledger.execute(execute_stdio,"reference",src,stdin,trace_limit=limit,cancel=c)
             ref=oracle(p,stdin,run,256,case=case)
-            if ref["status"]=="cancelled":return {"status":"cancelled"}
-            if ref["status"]!="ok":return {"status":"oracle_unavailable","reference":ref}
-            student=run(body.source,stdin,256)
-            if student["status"]=="cancelled":return {"status":"cancelled"}
+            if ref["status"]=="cancelled":return ledger.finish({"status":"cancelled"})
+            if ref["status"]!="ok":return ledger.finish({"status":"oracle_unavailable","reference":ref})
+            ledger.enter("student")
+            student=ledger.execute(execute_stdio,"student",body.source,stdin,trace_limit=256,cancel=c)
+            if student["status"]=="cancelled":return ledger.finish({"status":"cancelled"})
             judgment=judge_output(p,case,student.get("stdout"),ref.get("stdout")) if student["status"]=="ok" else None
             matches=judgment is not None and judgment["status"]=="accepted"
             witness=dict(case=case,stdin=stdin,student=student,reference=ref,judgment=judgment,kind="wrong_answer" if judgment and judgment["status"]=="rejected" else "observation")
+            ledger.partial={"witness":witness,"replay_verified":False}
+            ledger.enter("structure")
             from .v4_localization import localize
             student_graph=with_loops(attach_profile(observed_graph(student.get("events",[]),body.source),student),body.source,student)
             from .v4_cfg import output_chain
@@ -338,15 +350,21 @@ def router_for(require_loopback,token):
             from .v4_branches import observed_branches
             student_graph["branches"]=observed_branches(body.source,student,cfg=student_graph["static_cfg"])
             localization=localize(body.source,witness,student_graph,diagnostics=progress)
+            ledger.partial.update(student_graph=student_graph,evidence_localization=localization)
+            if body.use_ai:
+                ledger.enter("diagnosis");ledger.check()
             diagnosis=diagnose_execution(p,body.source,witness,provider,cancel=c,localization=localization,branches=student_graph["branches"])
-            if c.is_set():return {"status":"cancelled"}
-            return dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "oracle_unavailable" if judgment and judgment["status"]=="unavailable" else "output_difference",
+            if body.use_ai and diagnosis["ai_status"]!="ok":ledger.close_stage("partial")
+            if c.is_set():return ledger.finish({"status":"cancelled"})
+            return ledger.finish(dict(status="profiled_execution",kind="match" if matches else student["status"] if student["status"]!="ok" else "oracle_unavailable" if judgment and judgment["status"]=="unavailable" else "output_difference",
                 package_sha256=body.package_key,student_source=body.source,reference_source=p["reference"],
                 witness=witness,replay_count=0,attempts=1,
                 student_graph=student_graph,
                 reference_graph=with_loops(attach_profile(observed_graph(ref.get("events",[]),p["reference"]),ref),p["reference"],ref),
                 **diagnosis,execution_diagnostics=progress,evidence_localization=localization,
-                scope="One instrumented input, no search or replay claim. Timing is not judge runtime or complexity proof.")
+                scope="One instrumented input, no search or replay claim. Timing is not judge runtime or complexity proof."))
+        except BudgetExhausted as exc:
+            return ledger.finish({"status":"inconclusive","stop_reason":str(exc),"scope":"Stopped at a session budget checkpoint."},stop_reason=str(exc))
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:

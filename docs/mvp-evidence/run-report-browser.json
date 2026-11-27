@@ -1,0 +1,621 @@
+{
+  "status": "passed",
+  "checks": [
+    "no_witness_report",
+    "local_import_prepares_without_execution",
+    "explicit_replay_new_run_identity",
+    "tampered_hash_rejected"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Real local browser and Docker; replay requires explicit source review; checksum is not authenticity.",
+  "no_witness": {
+    "version": 1,
+    "run_id": "a9af730065c14746b45d5272b850e988",
+    "operation": "analysis",
+    "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+    "package_sha256": "8d5cf7929da29d08c1acaf446f143dd5ad6619ffa751b3521bebc41f251d0531",
+    "spec_version": 1,
+    "parameters": {
+      "seed": 2026,
+      "count": 3,
+      "reduce_calls": 0,
+      "case": {
+        "n": 2
+      },
+      "generator": "boundary_random",
+      "spectrum": false,
+      "guided": false,
+      "ai_requested": false,
+      "model": null,
+      "trace_limit": 128,
+      "replays": 3
+    },
+    "status": "no_witness_found",
+    "stop_reason": "no_witness_found",
+    "elapsed_ms": 1125.0,
+    "physical_executions": 2,
+    "distinct_worker_inputs": 1,
+    "pair_attempts": 1,
+    "engine_source_files_sha256": "fdd8ace6823be020811049d868f560d6941ba6e8cdba2c3b53948986cad97573",
+    "host_python": "3.12.10",
+    "host_system": "Windows",
+    "limits": {
+      "session_wall_seconds": 240.0,
+      "max_worker_calls": 72,
+      "enforcement": "Checked between calls; in-flight calls and cleanup may finish after the boundary."
+    },
+    "stages": [
+      {
+        "name": "validation",
+        "status": "completed",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 1
+      },
+      {
+        "name": "search",
+        "status": "completed",
+        "elapsed_ms": 1125.0,
+        "executions": 2,
+        "visits": 1
+      },
+      {
+        "name": "guided_search",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "shrink",
+        "status": "not_run",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0
+      },
+      {
+        "name": "replay",
+        "status": "not_run",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0
+      },
+      {
+        "name": "spectrum",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "structure",
+        "status": "not_run",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0
+      },
+      {
+        "name": "diagnosis",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "guided_confirmation",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      }
+    ],
+    "workers": [
+      {
+        "number": 1,
+        "stage": "search",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 0,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 547.0,
+        "call_ms": 547.0
+      },
+      {
+        "number": 2,
+        "stage": "search",
+        "role": "student",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 0,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 578.0,
+        "call_ms": 578.0
+      }
+    ],
+    "image_ids": [
+      "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+    ],
+    "scope": "Local observational report. Hashes identify content, not authenticity. Imported reports never grant execution approval.",
+    "manifest_sha256": "ef052850c134e210734fac42b80f95755451fdc8675d3da84076173aa4ea6694"
+  },
+  "original": {
+    "version": 1,
+    "run_id": "51f0cb2630434e9195cc3609596c5193",
+    "operation": "analysis",
+    "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+    "package_sha256": "8d5cf7929da29d08c1acaf446f143dd5ad6619ffa751b3521bebc41f251d0531",
+    "spec_version": 1,
+    "parameters": {
+      "seed": 2026,
+      "count": 3,
+      "reduce_calls": 0,
+      "case": {
+        "n": 2
+      },
+      "generator": "boundary_random",
+      "spectrum": false,
+      "guided": false,
+      "ai_requested": false,
+      "model": null,
+      "trace_limit": 128,
+      "replays": 3
+    },
+    "status": "observed_mismatch",
+    "stop_reason": "observed_mismatch",
+    "elapsed_ms": 4922.0,
+    "physical_executions": 8,
+    "distinct_worker_inputs": 1,
+    "pair_attempts": 4,
+    "engine_source_files_sha256": "fdd8ace6823be020811049d868f560d6941ba6e8cdba2c3b53948986cad97573",
+    "host_python": "3.12.10",
+    "host_system": "Windows",
+    "limits": {
+      "session_wall_seconds": 240.0,
+      "max_worker_calls": 72,
+      "enforcement": "Checked between calls; in-flight calls and cleanup may finish after the boundary."
+    },
+    "stages": [
+      {
+        "name": "validation",
+        "status": "completed",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 1
+      },
+      {
+        "name": "search",
+        "status": "completed",
+        "elapsed_ms": 1328.0,
+        "executions": 2,
+        "visits": 1
+      },
+      {
+        "name": "guided_search",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "shrink",
+        "status": "completed",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 1
+      },
+      {
+        "name": "replay",
+        "status": "completed",
+        "elapsed_ms": 3594.0,
+        "executions": 6,
+        "visits": 1
+      },
+      {
+        "name": "spectrum",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "structure",
+        "status": "completed",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 1
+      },
+      {
+        "name": "diagnosis",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "guided_confirmation",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      }
+    ],
+    "workers": [
+      {
+        "number": 1,
+        "stage": "search",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 0,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 640.0,
+        "call_ms": 640.0
+      },
+      {
+        "number": 2,
+        "stage": "search",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 0,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 688.0,
+        "call_ms": 688.0
+      },
+      {
+        "number": 3,
+        "stage": "replay",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 656.0,
+        "call_ms": 656.0
+      },
+      {
+        "number": 4,
+        "stage": "replay",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 625.0,
+        "call_ms": 625.0
+      },
+      {
+        "number": 5,
+        "stage": "replay",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 563.0,
+        "call_ms": 563.0
+      },
+      {
+        "number": 6,
+        "stage": "replay",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 578.0,
+        "call_ms": 578.0
+      },
+      {
+        "number": 7,
+        "stage": "replay",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 578.0,
+        "call_ms": 578.0
+      },
+      {
+        "number": 8,
+        "stage": "replay",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 594.0,
+        "call_ms": 594.0
+      }
+    ],
+    "image_ids": [
+      "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+    ],
+    "scope": "Local observational report. Hashes identify content, not authenticity. Imported reports never grant execution approval.",
+    "manifest_sha256": "ef052850c134e210734fac42b80f95755451fdc8675d3da84076173aa4ea6694"
+  },
+  "replay": {
+    "version": 1,
+    "run_id": "453d9798f8a14445b53d96b7cd4ce742",
+    "operation": "analysis",
+    "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+    "package_sha256": "8d5cf7929da29d08c1acaf446f143dd5ad6619ffa751b3521bebc41f251d0531",
+    "spec_version": 1,
+    "parameters": {
+      "seed": 2026,
+      "count": 3,
+      "reduce_calls": 0,
+      "case": {
+        "n": 2
+      },
+      "generator": "boundary_random",
+      "spectrum": false,
+      "guided": false,
+      "ai_requested": false,
+      "model": null,
+      "trace_limit": 128,
+      "replays": 3
+    },
+    "status": "observed_mismatch",
+    "stop_reason": "observed_mismatch",
+    "elapsed_ms": 4657.0,
+    "physical_executions": 8,
+    "distinct_worker_inputs": 1,
+    "pair_attempts": 4,
+    "engine_source_files_sha256": "fdd8ace6823be020811049d868f560d6941ba6e8cdba2c3b53948986cad97573",
+    "host_python": "3.12.10",
+    "host_system": "Windows",
+    "limits": {
+      "session_wall_seconds": 240.0,
+      "max_worker_calls": 72,
+      "enforcement": "Checked between calls; in-flight calls and cleanup may finish after the boundary."
+    },
+    "stages": [
+      {
+        "name": "validation",
+        "status": "completed",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 1
+      },
+      {
+        "name": "search",
+        "status": "completed",
+        "elapsed_ms": 1313.0,
+        "executions": 2,
+        "visits": 1
+      },
+      {
+        "name": "guided_search",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "shrink",
+        "status": "completed",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 1
+      },
+      {
+        "name": "replay",
+        "status": "completed",
+        "elapsed_ms": 3344.0,
+        "executions": 6,
+        "visits": 1
+      },
+      {
+        "name": "spectrum",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "structure",
+        "status": "completed",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 1
+      },
+      {
+        "name": "diagnosis",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      },
+      {
+        "name": "guided_confirmation",
+        "status": "skipped",
+        "elapsed_ms": 0.0,
+        "executions": 0,
+        "visits": 0,
+        "reason": "not_requested"
+      }
+    ],
+    "workers": [
+      {
+        "number": 1,
+        "stage": "search",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 0,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 719.0,
+        "call_ms": 719.0
+      },
+      {
+        "number": 2,
+        "stage": "search",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 0,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 594.0,
+        "call_ms": 594.0
+      },
+      {
+        "number": 3,
+        "stage": "replay",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 578.0,
+        "call_ms": 578.0
+      },
+      {
+        "number": 4,
+        "stage": "replay",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 516.0,
+        "call_ms": 516.0
+      },
+      {
+        "number": 5,
+        "stage": "replay",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 531.0,
+        "call_ms": 531.0
+      },
+      {
+        "number": 6,
+        "stage": "replay",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 594.0,
+        "call_ms": 594.0
+      },
+      {
+        "number": 7,
+        "stage": "replay",
+        "role": "reference",
+        "source_sha256": "a5ea5f38bd438f7d147f59e21d39773d515111c9eb8779ad69390422c3c1797b",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 547.0,
+        "call_ms": 547.0
+      },
+      {
+        "number": 8,
+        "stage": "replay",
+        "role": "student",
+        "source_sha256": "36a1c6a6f308016cfeea382371e935017b3a7c7fd54b481318aff18847e2ae60",
+        "input_sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "requested_mode": "trace_profile",
+        "seconds": 1.0,
+        "trace_limit": 128,
+        "status": "ok",
+        "cleanup_confirmed": true,
+        "image_id": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+        "host_elapsed_ms": 578.0,
+        "call_ms": 578.0
+      }
+    ],
+    "image_ids": [
+      "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107"
+    ],
+    "scope": "Local observational report. Hashes identify content, not authenticity. Imported reports never grant execution approval.",
+    "manifest_sha256": "ef052850c134e210734fac42b80f95755451fdc8675d3da84076173aa4ea6694"
+  }
+}
