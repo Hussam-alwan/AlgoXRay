@@ -1,0 +1,233 @@
+{
+  "status": "passed",
+  "checks": [
+    "local_file_load_no_execution",
+    "unimported_link_cannot_reuse_previous_problem",
+    "real_100_to_3_visual_shrink_and_input_navigation",
+    "ranked_source_and_observed_index_omission",
+    "playback_and_hotspots_reuse_recorded_evidence",
+    "mobile_result_width"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Synthetic live Docker development example; not human usability or research accuracy evidence.",
+  "original": {
+    "n": 100,
+    "a": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "reduced": {
+    "n": 3,
+    "a": [
+      1,
+      1,
+      1
+    ]
+  },
+  "reduction": {
+    "original_complexity": [
+      100,
+      200
+    ],
+    "reduced_complexity": [
+      3,
+      6
+    ],
+    "signature": {
+      "kind": "wrong_answer"
+    },
+    "budget": 1,
+    "probes": 1,
+    "accepted": [
+      {
+        "case": {
+          "n": 3,
+          "a": [
+            1,
+            1,
+            1
+          ]
+        },
+        "complexity": [
+          3,
+          6
+        ],
+        "stdin": "3\n1 1 1\n"
+      }
+    ],
+    "stop_reason": "budget_exhausted",
+    "scope": "Best legal compatible witness found within budget; neither global minimality nor identical root cause proven.",
+    "original_replay_count": 3,
+    "reduced_replay_count": 3
+  },
+  "localization": {
+    "status": "candidate_locations",
+    "source_sha256": "31cabb2d15ff9b737326204b3f8d856a48b026e04c3cf403e53af0859782d7d8",
+    "effect_site": {
+      "line": 6,
+      "event_id": "E10",
+      "kind": "output_snapshot_compatible",
+      "causal_verified": false
+    },
+    "ranked": [
+      {
+        "line": 4,
+        "score": 2.5,
+        "signals": [
+          {
+            "kind": "range_index_omission",
+            "weight": 2.5,
+            "event_ids": [
+              "E5",
+              "E6",
+              "E8"
+            ],
+            "detail": "Recomputed range omits some list indices; task requirement must be checked."
+          }
+        ],
+        "event_ids": [
+          "E5",
+          "E6",
+          "E8"
+        ],
+        "status": "suspected_location",
+        "causal_verified": false
+      }
+    ],
+    "loop_bounds": [
+      {
+        "kind": "range_skips_array_indices",
+        "line": 4,
+        "end_line": 5,
+        "frame_id": "F1",
+        "header_event_id": "E5",
+        "array": "a",
+        "array_length": 3,
+        "range_source": "range(n-1)",
+        "computed_indices": [
+          0,
+          1
+        ],
+        "observed_read_indices": [
+          0,
+          1
+        ],
+        "omitted_indices": [
+          2
+        ],
+        "event_ids": [
+          "E5",
+          "E6",
+          "E8"
+        ],
+        "status": "snapshot_compatible_range_and_recorded_reads",
+        "hypothesis": "Check whether the task requires processing the omitted indices. Skipping them is not inherently erroneous.",
+        "causal_verified": false
+      }
+    ],
+    "trace_status": "complete",
+    "causal_fault_proven": false,
+    "scope": "Heuristic evidence ranking, not calibrated probability or root-cause proof. Unrecorded code or missing conditions may be responsible; no unique line is guaranteed."
+  },
+  "student_trace_status": "complete"
+}

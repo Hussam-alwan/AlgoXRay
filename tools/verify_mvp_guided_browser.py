@@ -21,6 +21,7 @@ def test(url,folder):
         expect(page.locator('[data-mode="full"]')).to_have_attribute("aria-pressed","true")
         expect(page.locator("#ux-run-full")).to_be_visible()
         expect(page.locator("#trusted")).to_be_hidden()
+        page.locator("#ux-tools > summary").click()
         page.locator("#ux-separate-modes > summary").click()
         page.locator('[data-mode="diagnose"]').click()
         expect(page.locator('[data-mode="diagnose"]')).to_have_attribute("aria-pressed","true")

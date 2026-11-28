@@ -27,6 +27,7 @@ def test(url,folder):
         page.screenshot(path=str(folder/"comprehensive-initial.jpg"),type="jpeg",quality=70)
         checks.append("default_comprehensive_no_automatic_execution")
         # Keep a small deterministic fixture, and minimize test execution time.
+        page.locator("#ux-tools > summary").click()
         page.locator("#ux-analysis-options > summary").click()
         page.locator("#analysis-case").fill('{"n":3,"a":[1,2,3]}')
         page.locator("#reduce-count").fill("0")
@@ -34,6 +35,7 @@ def test(url,folder):
         page.locator("#ux-timing-options > summary").click()
         page.locator("#timing-repetitions").fill("1")
         page.locator("#ux-timing-options > summary").click()
+        page.locator("#ux-tools > summary").click()
         # First action on a new draft may validate structure only.
         before=len(posts)
         page.locator("#ux-run-full").click()
@@ -73,8 +75,26 @@ def test(url,folder):
         page.locator("#ux-full-result").scroll_into_view_if_needed()
         page.screenshot(path=str(folder/"comprehensive-result.jpg"),type="jpeg",quality=70)
         checks.append("wrong_solution_single_action_shared_witness_and_uninstrumented_measurement")
+        expect(page.locator("#ux-story-details")).not_to_have_attribute("open","")
+        expect(page.locator("#story-timeline")).to_be_visible()
+        expect(page.locator("#story-rail button")).to_have_count(len(a["witness"]["student"]["events"]))
+        events=a["witness"]["student"]["events"]
+        chosen=next(i for i,e in enumerate(events) if isinstance(e.get("locals",{}).get("a"),list))
+        page.locator("#story-rail button").nth(chosen).click()
+        expect(page.locator("#story-step")).to_have_text(f"{chosen+1} / {len(events)}")
+        expect(page.locator('[data-variable="a"] .story-cell strong')).to_have_text(["1","2","3"])
+        expect(page.locator("#story-shrink-bars .story-bar-row")).to_have_count(1+len(a["reduction"]["accepted"]))
+        expect(page.locator("#story-performance-bars .story-bar-row")).to_have_count(len(b["points"][0]["runs"]))
+        n=len(posts)
+        page.locator("#story-next").click()
+        assert len(posts)==n
+        page.locator("#story-timeline").scroll_into_view_if_needed()
+        page.screenshot(path=str(folder/"story-timeline.jpg"),type="jpeg",quality=75)
+        checks.append("visual_trace_array_cells_shrink_and_timing_from_report")
+
         # Changing code discards old comprehensive result. Same approved package
         # is reused, and the passing trace comes from the first search pair.
+        page.locator("#ux-problem-library > summary").click()
         page.locator("#correct").click()
         expect(page.locator("#ux-full-result")).to_be_hidden()
         expect(page.locator("#results")).to_be_hidden()
@@ -91,6 +111,10 @@ def test(url,folder):
         expect(page.locator("#results")).to_be_visible()
         expect(page.locator("#benchmark-results")).to_be_visible()
         checks.append("passing_solution_reuses_search_pair_no_extra_profile_or_approval")
+        expect(page.locator("#story-findings")).to_have_count(0)
+        expect(page.locator("#story-timeline")).to_be_visible()
+        checks.append("passing_trace_not_labeled_as_fault")
+
         # Exact already-approved draft can be reused without another approval.
         page.locator("#ux-full-target").select_option("draft")
         page.locator("#ux-package-review").evaluate("(el)=>el.open=false")
@@ -117,6 +141,27 @@ def test(url,folder):
         page.locator("#ux-run-full").click()
         assert posts[start:]==[],posts[start:]
         checks.append("invalid_and_stale_draft_blocked_before_execution")
+        # Reference/controls form validation is non-executing and does not grant approval.
+        page.locator("#statement").fill(json.loads(old)["manifest"]["statement"])
+        page.locator("#package").fill(old)
+        page.locator("#ux-package-review").evaluate("(el)=>el.open=true")
+        page.locator("#ux-human-review").evaluate("(el)=>el.open=true")
+        expect(page.locator("#ux-reference-source")).to_have_value(json.loads(old)["reference"])
+        first=page.locator("#ux-control-form-list .ux-human-test textarea").first
+        initial=first.input_value()
+        first.fill("999")
+        start=len(posts)
+        page.locator("#ux-save-controls").click()
+        assert posts[start:]==[]
+        first.fill(initial)
+        with page.expect_response(lambda r:r.url.endswith("/packages/preflight"),timeout=15000) as response:
+            page.locator("#ux-save-controls").click()
+        assert response.value.status==200
+        expect(page.locator("#ux-save-controls")).to_be_enabled()
+        assert posts[start:]==["/api/v4/packages/preflight"],posts[start:]
+        assert json.loads(page.locator("#package").input_value())==json.loads(old)
+        checks.append("structured_review_form_preflight_only")
+
         # Test a failed timing request preserves diagnosis and export, no implicit retry.
         page.locator("#statement").fill(json.loads(old)["manifest"]["statement"])
         page.locator("#ux-full-target").select_option("approved")
