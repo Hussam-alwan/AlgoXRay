@@ -25,6 +25,29 @@ def test_branch_spectrum_observed_and_partial():
     assert r["branches"]["ranked"][0]["witness_event_pairs"]
     assert rank({**fail,"trace_status":"truncated"},[good],source=SOURCE)["ranked"]==[]
     assert not observed_branches(SOURCE,{**fail,"trace_status":"truncated"})["complete_spectrum_eligible"]
+
+
+def test_ochiai_matches_published_rational_sort_example():
+    # Abreu et al. (2007), §2.3. Blocks are represented as line events.
+    def trace(*blocks):
+        return {"trace_status": "complete", "events": [
+            {"kind": "line", "line": block} for block in blocks
+        ]}
+
+    failure = trace(1, 2, 3, 4, 5)
+    passing = [
+        trace(1), trace(1, 2), trace(1, 2, 3, 4, 5),
+        trace(1, 2, 3, 4, 5), trace(1, 2, 3, 5),
+    ]
+    result = rank(failure, passing)
+
+    assert result["status"] == "observed_spectrum"
+    assert result["failing_count"] == 1
+    assert result["passing_count"] == 5
+    assert [row["line"] for row in result["ranked"]] == [4, 3, 5, 2, 1]
+    assert [row["ochiai"] for row in result["ranked"]] == [0.577350, 0.5, 0.5, 0.447214, 0.408248]
+
+
 def test_ambiguous_same_line_not_claimed():
     source="n=1\nif n: x=2; y=3\nprint(n)\n"
     r=observed_branches(source,guest(source,""))
