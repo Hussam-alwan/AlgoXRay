@@ -1,0 +1,73 @@
+{
+  "status": "passed",
+  "checks": [
+    "observed_array_positions_and_numeric_bars",
+    "recomputed_read_write_flow_and_evidence_navigation",
+    "prediction_and_key_steps_do_not_execute",
+    "actual_recursive_parent_frames_and_return_limit",
+    "actual_matrix_cell_updates_dictionary_and_set",
+    "duplicate_partial_and_unsafe_numeric_abstention_growth_gaps",
+    "mobile_matrix_and_step_explanation",
+    "live_legal_growth_chart_and_no_complexity_claim"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Three synthetic development programs and a reviewed development benchmark executed in local Docker and browser; negative rendering fixtures; no independent research or human usability data.",
+  "programs": {
+    "sort": {
+      "events": 37,
+      "stdout": "[1, 2, 3, 4] 10\n"
+    },
+    "recursion": {
+      "events": 26,
+      "stdout": "24\n"
+    },
+    "dp": {
+      "events": 44,
+      "stdout": "6\n"
+    },
+    "growth": {
+      "points": [
+        {
+          "size": 1,
+          "wall_ns": {
+            "median": 149400,
+            "min": 149400,
+            "max": 149400,
+            "mad": 0
+          },
+          "correctness": "recorded_match"
+        },
+        {
+          "size": 4,
+          "wall_ns": {
+            "median": 111996,
+            "min": 111996,
+            "max": 111996,
+            "mad": 0
+          },
+          "correctness": "recorded_match"
+        },
+        {
+          "size": 12,
+          "wall_ns": {
+            "median": 133996,
+            "min": 133996,
+            "max": 133996,
+            "mad": 0
+          },
+          "correctness": "recorded_match"
+        }
+      ],
+      "fit": "insufficient_points_or_repetitions"
+    }
+  },
+  "negative_display_fixtures": {
+    "dup": false,
+    "partial": false,
+    "big": false,
+    "unsafe": false,
+    "points": 2,
+    "links": 0
+  }
+}

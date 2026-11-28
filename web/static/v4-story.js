@@ -11,7 +11,7 @@ window.AlgoXRayStory=(()=>{
  const section=(title,sub)=>add(el("section","story-section"),el("h3","",title),sub?p(sub):null);
  const known=v=>v!==undefined&&!(v&&typeof v==="object"&&v.unavailable);
  const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
- const textValue=v=>!known(v)?"غير مسجل":typeof v==="string"?JSON.stringify(v):v===null?"None":typeof v==="boolean"?(v?"True":"False"):typeof v==="object"?JSON.stringify(v):String(v);
+ const textValue=v=>window.AlgoXRayLearning.value(v);
  const labelKind={line:"قبل السطر",call:"دخول الدالة",return:"عودة",exception:"استثناء"};
  const signalLabels={
   reported_exception_location:"العامل أبلغ عن استثناء في هذا السطر.",
@@ -23,14 +23,15 @@ window.AlgoXRayStory=(()=>{
   range_index_omission:"نطاق الحلقة يتجاوز بعض فهارس القائمة المسجلة."
  };
  function values(v,old){
+  const structured=window.AlgoXRayLearning.tableValue(v,old);if(structured)return structured;
   const a=Array.isArray(v)?v:(v&&["list","tuple"].includes(v.kind)&&Array.isArray(v.items)?v.items:null);
   if(a){
    const wrap=el("div","story-array");wrap.dir="ltr";wrap.setAttribute("role","list");
-   const prev=Array.isArray(old)?old:null;
+   const prev=Array.isArray(old)?old:old&&["list","tuple"].includes(old.kind)&&Array.isArray(old.items)?old.items:null;
    for(let i=0;i<Math.min(a.length,24);i++){
     const item=add(el("div","story-cell"),el("span","",i),el("strong","",textValue(a[i])));
     item.setAttribute("role","listitem");
-    if(prev&&i<prev.length&&known(prev[i])&&known(a[i])&&!same(prev[i],a[i]))item.classList.add("story-changed");
+    if(prev&&i<prev.length&&window.AlgoXRayLearning.changed(prev[i],a[i]))item.classList.add("story-changed");
     wrap.append(item);
    }
    if(v.truncated||a.length>24)wrap.append(el("span","story-more","… "+(v.size??a.length)+" items"));
@@ -66,7 +67,13 @@ window.AlgoXRayStory=(()=>{
   const detail=button("عرض السطر في المخطط التفصيلي",()=>{const e=events[pos];onEvidence?.(e.line,e.event_id)});
   const delta=el("div","story-values");delta.id="story-values";
   add(code,el("h4","","السطر المحدد"),line,meta,detail);add(data,el("h4","","القيم في هذه اللحظة"),delta);
-  add(grid,code,data);add(actions,prev,progress,play,next);add(host,actions,slider,rail,grid,
+  const learning=window.AlgoXRayLearning.build(report,events,lines,i=>{stop();select(i)});
+  const inspector=learning.host;
+  const explanation=inspector.querySelector("#learning-explain"),relation=inspector.querySelector("#learning-relations");
+  code.append(inspector.querySelector("#learning-source"));
+  data.append(inspector.querySelector("#learning-frames"));
+  const prediction=inspector.querySelector("#learning-predict"),keyNav=inspector.querySelector(".learning-key-nav");
+  add(grid,code,data);add(actions,prev,progress,play,next);add(host,actions,slider,rail,keyNav,add(el("div","learning-overview"),explanation,relation),grid,prediction,
     p(w.trace_status==="complete"?"الخطوات المسجلة لهذا التنفيذ كاملة ضمن نطاق العامل.":"التتبع جزئي أو غير مكتمل؛ الرسم يعرض فقط الأحداث المتوفرة."));
   let pos=0;
   function select(i){
@@ -79,22 +86,28 @@ window.AlgoXRayStory=(()=>{
    const previous=events.slice(0,i).reverse().find(x=>x.frame_id===e.frame_id);
    const prior=previous?.locals||{};
    const names=Object.keys(current);
-   const changed=names.filter(k=>known(current[k])&&(!known(prior[k])||!same(current[k],prior[k])));
+   const changed=names.filter(k=>known(current[k])&&(!known(prior[k])||window.AlgoXRayLearning.changed(prior[k],current[k])));
    const ordered=[...changed,...names.filter(k=>!changed.includes(k))];
    delta.replaceChildren();
+   let chartShown=false;
    for(const k of ordered.slice(0,12)){
-    const v=current[k],old=prior[k],different=known(v)&&known(old)&&!same(v,old);
+    const v=current[k],old=prior[k],different=window.AlgoXRayLearning.changed(old,v);
     const card=el("div","story-variable");card.dataset.variable=k;
     add(card,add(el("div","story-var-title"),mono("strong",k),different?el("span","story-change-label","تغيّر مرصود"):null));
     if(different){
      const before=add(el("div","story-snapshot"),el("span","story-note","لقطة "+previous.event_id),values(old));
      const after=add(el("div","story-snapshot"),el("span","story-note","لقطة "+e.event_id),values(v,old));
      add(card,add(el("div","story-transition"),before,el("span","story-arrow","→"),after));
-    }else card.append(values(v));
+    }else card.append(values(v,old));
+    if(!chartShown){
+     const chart=window.AlgoXRayLearning.numericBars(v,old);
+     if(chart){chartShown=true;const d=el("details","learning-array-details");d.open=Boolean(chart.querySelector(".learning-reorder"));add(d,el("summary","","رسم القيم العددية"),chart);card.append(d)}
+    }
     delta.append(card);
    }
    if(!ordered.length)delta.append(p("لم تُسجل متغيرات محلية في هذه اللقطة."));
    if(ordered.length>12||e.snapshot_meta?.omitted_locals)delta.append(p("بعض القيم غير معروضة أو غير مسجلة. راجع اللقطة التفصيلية."));
+   learning.render(i);
    // Scroll only the rail, never move the page unexpectedly.
    const selected=rail.children[i];
    if(selected)rail.scrollLeft=selected.offsetLeft-rail.clientWidth/2+selected.offsetWidth/2;
@@ -152,6 +165,12 @@ window.AlgoXRayStory=(()=>{
   }
   const bounds=(loc.loop_bounds||[]).find(b=>Number.isInteger(b.array_length)&&b.array_length>0&&b.array_length<=24&&Array.isArray(b.omitted_indices)&&Array.isArray(b.observed_read_indices));
   if(bounds){
+   const skipped=bounds.omitted_indices.filter(Number.isInteger);
+   const reads=bounds.observed_read_indices.filter(Number.isInteger);
+   if(skipped.length){
+    const note=add(el("div","learning-fault-explanation"),el("strong","","ماذا توضّح الحلقة في حالة الفشل؟"),p("القراءات التي تدعمها اللقطات: "+reads.join("، ")+". الفهارس خارج النطاق المحسوب: "+skipped.join("، ")+". راجع هل يفترض أن تشمل الحلقة هذه العناصر."));
+    host.append(note);
+   }
    const strip=el("div","story-array story-range");strip.dir="ltr";
    for(let i=0;i<bounds.array_length;i++){
     const read=bounds.observed_read_indices.includes(i),omitted=bounds.omitted_indices.includes(i);
@@ -240,6 +259,7 @@ window.AlgoXRayStory=(()=>{
    bars.append(row);
   }
   host.append(bars);
+  const curve=window.AlgoXRayLearning.growth(report);if(curve)host.append(curve);
   const point=points[0],s=point.summary||{};
   if(!scaling){
    const cards=el("div","story-time-summary");
