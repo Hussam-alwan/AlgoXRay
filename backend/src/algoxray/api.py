@@ -255,4 +255,10 @@ app.include_router(router_for(require_loopback,custom_code_token))
 def v4_page():
     return FileResponse(WEB / "v4.html")
 
+@app.get("/v4/catalog", include_in_schema=False)
+def v4_catalog_page(request: Request):
+    require_loopback(request)
+    return FileResponse(WEB / "v4-catalog.html")
+
+
 app.mount("/static", StaticFiles(directory=WEB / "static"), name="static")

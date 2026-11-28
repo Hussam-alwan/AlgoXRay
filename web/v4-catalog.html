@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>كتالوج المسائل | AlgoXRay</title>
+  <link rel="stylesheet" href="/static/v4.css">
+  <link rel="stylesheet" href="/static/v4-catalog.css">
+  <script src="/static/v4-catalog.js" defer></script>
+</head>
+<body>
+<header class="catalog-header">
+  <div><strong dir="ltr">AlgoXRay</strong><span>كتالوج المسائل</span></div>
+  <small>نسخة العرض المحلي</small>
+</header>
+<main class="catalog">
+  <section class="catalog-input" aria-label="تحليل حل">
+    <aside class="panel problem">
+      <label for="problem">المسألة</label>
+      <select id="problem" dir="ltr" aria-describedby="statement"></select>
+      <p id="statement"></p>
+      <a id="problem-link" target="_blank" rel="noopener">نص المسألة الأصلي ↗</a>
+      <small id="trust"></small>
+    </aside>
+    <form class="panel editor" id="editor">
+      <label for="student-source">حلّك بلغة Python</label>
+      <textarea id="student-source" rows="9" dir="ltr" spellcheck="false" placeholder="Paste your Python code here"></textarea>
+      <details id="specific-input">
+        <summary>تتبّع مدخل محدد</summary>
+        <label for="manual-input">المدخل بصيغة المسألة</label>
+        <textarea id="manual-input" rows="3" dir="ltr" spellcheck="false"></textarea>
+        <button id="trace-run" type="button">تتبّع هذا المدخل</button>
+      </details>
+      <div class="editor-actions">
+        <button type="submit" id="analyze" class="primary">حلّل الكود</button>
+        <button type="button" id="cancel" hidden>إلغاء</button>
+        <span id="status" role="status"></span>
+      </div>
+    </form>
+  </section>
+  <section class="panel catalog-results" id="results" hidden>
+    <div class="result-head">
+      <div><h1 id="verdict"></h1><p id="run-summary"></p></div>
+      <button type="button" id="export">تنزيل التقرير</button>
+    </div>
+    <div class="catalog-tabs" role="tablist" aria-label="تفاصيل النتيجة">
+      <button type="button" id="tab-judgment" role="tab" aria-controls="judgment" aria-selected="true">النتيجة والاختبارات</button>
+      <button type="button" id="tab-trace" role="tab" aria-controls="trace" aria-selected="false" tabindex="-1">تتبّع التنفيذ</button>
+      <button type="button" id="tab-hints" role="tab" aria-controls="hints" aria-selected="false" tabindex="-1">التلميحات</button>
+      <button type="button" id="tab-repair" role="tab" aria-controls="repair" aria-selected="false" tabindex="-1">إعادة التحقق</button>
+    </div>
+    <div id="judgment" role="tabpanel" aria-labelledby="tab-judgment">
+      <div class="triplet" id="witness">
+        <div><h2>المدخل</h2><pre id="stdin"></pre></div>
+        <div><h2>خرج حلّك</h2><pre id="actual"></pre></div>
+        <div><h2>الخرج المتوقع</h2><pre id="expected"></pre></div>
+      </div>
+      <section id="lanterns" hidden>
+        <h2>تغطية الشارع</h2>
+        <canvas id="lantern-plot" role="img" aria-describedby="lantern-summary"></canvas>
+        <p id="lantern-summary"></p>
+      </section>
+      <details id="reduction" hidden>
+        <summary id="reduction-summary"></summary>
+        <h2>المدخل الأصلي</h2><pre id="original-input"></pre>
+        <p id="reduction-detail"></p>
+      </details>
+      <h2 id="levels-title">مستويات الاختبار</h2>
+      <ul id="levels" aria-labelledby="levels-title"></ul>
+      <p id="counters"></p>
+    </div>
+    <div id="trace" role="tabpanel" aria-labelledby="tab-trace" hidden>
+      <p id="trace-summary"></p>
+      <div class="trace-controls" id="trace-controls">
+        <button type="button" id="previous-event">السابق</button>
+        <label for="step">خطوة التنفيذ</label>
+        <input type="range" id="step" min="1" value="1">
+        <button type="button" id="next-event">التالي</button>
+      </div>
+      <p id="event-label"></p>
+      <ol id="event-path" aria-label="مسار أحداث التنفيذ" dir="ltr"></ol>
+      <div class="triplet trace-columns">
+        <div><h2>سطر الكود</h2><pre id="active-line"></pre></div>
+        <div><h2>القيم المرصودة</h2><pre id="locals"></pre></div>
+      </div>
+    </div>
+    <div id="hints" role="tabpanel" aria-labelledby="tab-hints" hidden>
+      <ol id="hint-list"></ol>
+      <p id="no-hints">التلميحات تظهر عندما يتأكد شاهد فشل.</p>
+      <button type="button" id="next-hint">أظهر التلميح التالي</button>
+    </div>
+    <div id="repair" role="tabpanel" aria-labelledby="tab-repair" hidden>
+      <p id="repair-help">بعد اكتشاف حالة فشل، الصق الحل المعدّل لاختباره على الشاهد وحالات إضافية.</p>
+      <form id="repair-form">
+        <label for="candidate">الحل المعدّل</label>
+        <textarea id="candidate" rows="8" dir="ltr" spellcheck="false"></textarea>
+        <button type="submit" id="recheck">تحقّق من التصحيح</button>
+      </form>
+      <p id="recheck-result" role="status"></p>
+      <ul id="checks"></ul>
+    </div>
+  </section>
+</main>
+</body>
+</html>

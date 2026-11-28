@@ -16,7 +16,7 @@
  const disclosure=(title,id,items,open=false)=>{const d=node("details","ux-disclosure");d.id=id;d.open=open;const c=node("div","ux-disclosure-content");append(d,node("summary","",title),c);append(c,...items);return d};
  const link=node("a","",expert?"الواجهة المبسطة":"وضع الخبير");
  link.href=expert?"/v4":"/v4?view=expert";link.target="_blank";link.rel="noopener";link.title="فتح في تبويب جديد، مع إبقاء عملك الحالي";
- const headerActions=node("div","ux-header-actions");append(headerActions,header.querySelector("a"),link);header.append(headerActions);
+ const headerActions=node("div","ux-header-actions");append(headerActions,header.querySelector("a"),by("student-catalog"),link);header.append(headerActions);
  if(expert)return;
  document.body.classList.add("guided-workspace");
  header.querySelector("p").textContent="فهم الخوارزميات، بالأدلة.";
@@ -91,7 +91,7 @@
  const savedProblem=disclosure("أمثلة ومسائل محفوظة","ux-problem-library",[targetLabel,approved,available,example]);
  const approvalMessage=node("p","ux-status-message");approvalMessage.hidden=true;
  const approvalDetails=disclosure("تفاصيل فحص المسألة","ux-approval-details",[approval]);approvalDetails.hidden=true;
- const ph=problem.querySelector("h2");packageReview.lastElementChild.append(newProblem,preflightNote);
+ const ph=problem.querySelector("h2");packageReview.lastElementChild.append(newProblem,preflightNote,by("catalog-authoring"));
  const manualProblem=disclosure("نص المسألة والأمثلة المحفوظة","ux-manual-problem",[
   problemHint,currentProblem,draftEntry,preparationHelp,savedProblem,packageReview,approvalMessage,approvalDetails
  ]);

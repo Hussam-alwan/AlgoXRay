@@ -597,3 +597,48 @@ $("prepare-replay").onclick=()=>{
  }
  msg("reopen-summary","Prepared locally; source review and a new explicit Run/Profile/Observe action are required. AI and imported approvals are disabled.")
 };
+
+async function publishedCatalog() {
+ const entries = await api("/api/v4/catalog");
+ $("catalog-published").replaceChildren(...entries.map(item => new Option(item.title + " · v" + item.version, item.key)));
+}
+$("catalog-authoring").addEventListener("toggle", () => {
+ if ($("catalog-authoring").open) publishedCatalog().catch(error => msg("catalog-author-status", error.message));
+});
+async function catalogMutation(enabled) {
+ if (busy) return;
+ setBusy(true);
+ $("catalog-publish").disabled = $("catalog-disable").disabled = true;
+ try {
+  let key = $("catalog-published").value;
+  if (enabled) {
+   const p = JSON.parse($("package").value);
+   const origin = $("catalog-origin").value.trim();
+   if (!origin) throw Error("اكتب مصدر المرجع قبل النشر.");
+   p.catalog = {
+    version: $("catalog-version").valueAsNumber, reference_language: "python", reference_origin: origin,
+    trust_basis: $("catalog-accepted").checked ? "accepted_reported_by_curator" : "curator_supplied_reference",
+    url: $("catalog-url").value || $("problem-url").value || "", visualization: p.catalog?.visualization || "execution"
+   };
+   p.test_plan ??= {version: 1, patterns: {}};
+   p.controls = p.controls.map(control => ({...control, origin: control.origin || "owner_reviewed"}));
+   const result = await api("/api/v4/packages/approve", {package: p, owner_reviewed: $("reviewed").checked});
+   if (!result.key) {
+    msg("approval", JSON.stringify(result.review, null, 2));
+    throw Error("فشلت مراجعة المرجع على بعض الاختبارات المعلومة.");
+   }
+   key = result.key;
+  }
+  if (!key) throw Error("اختر النسخة التي تريد تعطيلها.");
+  const result = await api("/api/v4/catalog/publish", {package_key: key, enabled});
+  msg("catalog-author-status", enabled ? "أصبحت المسألة متاحة في كتالوج الطالب." : "عُطّلت النسخة " + result.problem.version + ".");
+  await publishedCatalog();
+ } catch(error) {
+  msg("catalog-author-status", error.message);
+ } finally {
+  $("catalog-publish").disabled = $("catalog-disable").disabled = false;
+  setBusy(false);
+ }
+}
+$("catalog-publish").addEventListener("click", () => catalogMutation(true));
+$("catalog-disable").addEventListener("click", () => catalogMutation(false));

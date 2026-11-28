@@ -58,11 +58,16 @@ def semantic_answer(manifest,checker,case,output):
 
 def judge_output(package,case,actual,expected):
     """Tri-state judgment. A checker failure must never become wrong_answer."""
-    from .v4_contracts import equal
+    from .v4_contracts import equal, numeric_output
     checker=package.get("checker")
     if checker is None:
         if type(actual) is not str or type(expected) is not str:
             return {"status":"unavailable","authority":"reviewed_reference","reason":"missing_output"}
+        if package["manifest"]["output"] == "float_tokens":
+            try:
+                numeric_output(package["manifest"], expected)
+            except ValueError:
+                return {"status": "unavailable", "authority": "reviewed_reference", "reason": "reference_or_control_invalid"}
         return {"status":"accepted" if equal(package["manifest"],actual,expected) else "rejected",
                 "authority":"reviewed_reference","policy":package["manifest"]["output"]}
     base={"authority":"owner_reviewed_semantic_checker","policy":checker.get("kind") if type(checker) is dict else None,

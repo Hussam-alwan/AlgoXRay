@@ -1,10 +1,12 @@
 """Opt-in loopback author workbench; no public or automatic AI-code execution."""
 import os, secrets, threading
+from typing import Literal
 from fastapi import APIRouter,HTTPException,Request
 from pydantic import BaseModel,ConfigDict,Field
 from .paths import ROOT
-from .v4_contracts import PackageStore,validate_package,validate_manifest
+from .v4_contracts import PackageStore, parse_stdin, validate_package, validate_manifest
 from .v4_engine import review,analyze_package
+from .v4_catalog import Catalog, student_analysis
 from .v4_provider import OllamaProvider,model_health,ProviderError
 from .v4_repair import propose_repair,verify_repair,RepairStore
 from .v4_gemini import provider_for,provider_status
@@ -86,6 +88,25 @@ class Run(BaseModel):
     case:dict|None=None
     analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
 
+class CatalogRun(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    problem_id: str = Field(pattern=r"^[a-z0-9_]{1,60}$")
+    package_key: str = Field(pattern=r"^[a-f0-9]{64}$")
+    source: str = Field(min_length=1, max_length=32768)
+    analysis_id: str = Field(pattern=r"^[a-f0-9]{32}$")
+    seed: int = Field(default=2026, ge=0, le=2**32-1)
+    mode: Literal["search", "trace"] = "search"
+    stdin: str | None = Field(default=None, max_length=16384)
+
+class CatalogRepair(CatalogRun):
+    candidate: str = Field(min_length=1, max_length=32768)
+    original_stdin: str | None = Field(default=None, max_length=16384)
+
+class CatalogPublish(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    package_key: str = Field(pattern=r"^[a-f0-9]{64}$")
+    enabled: bool = True
+
 class Observation(BaseModel):
     model_config=ConfigDict(extra="forbid",strict=True)
     source:str=Field(min_length=1,max_length=32768)
@@ -127,10 +148,93 @@ class CodeforcesRun(BaseModel):
 def router_for(require_loopback,token):
     router=APIRouter(prefix="/api/v4");lock=threading.Lock();active={};active_lock=threading.Lock()
     store=PackageStore(os.getenv("ALGOXRAY_V4_PACKAGE_STORE") or ROOT/"results"/"v4-packages")
+    catalog = Catalog(store)
+    catalog_active: dict[str, threading.Event] = {}
     repairs=RepairStore(os.getenv("ALGOXRAY_V4_REPAIR_STORE") or (store.root.parent/(store.root.name+"-repairs")))
     def guard(request):
         require_loopback(request)
         if not secrets.compare_digest(request.headers.get("x-algoxray-token",""),token):raise HTTPException(403,"Local author session required")
+    def operator_package(key):
+        package = store.load(key)
+        if "catalog" in package:
+            raise ValueError("Use the local catalog to run this package")
+        return package
+
+    @router.get("/catalog")
+    def list_catalog(request: Request):
+        require_loopback(request)
+        return catalog.list()
+
+    @router.post("/catalog/publish")
+    def publish_catalog(body: CatalogPublish, request: Request):
+        guard(request)
+        if not lock.acquire(blocking=False):
+            raise HTTPException(409, "V4 busy")
+        try:
+            return catalog.publish(body.package_key, body.enabled)
+        except (ValueError, OSError) as exc:
+            raise HTTPException(422, str(exc)) from None
+        finally:
+            lock.release()
+
+    def catalog_operation(body, request, action):
+        require_loopback(request)
+        if not lock.acquire(blocking=False):
+            raise HTTPException(409, "V4 busy")
+        cancel = threading.Event()
+        with active_lock:
+            catalog_active[body.analysis_id] = cancel
+        try:
+            package = catalog.load(body.problem_id, body.package_key)
+            return action(package, cancel)
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)[:240]) from None
+        except OSError:
+            raise HTTPException(503, "Local catalog storage unavailable") from None
+        finally:
+            with active_lock:
+                catalog_active.pop(body.analysis_id, None)
+            lock.release()
+
+    @router.post("/catalog/analyze")
+    def analyze_catalog(body: CatalogRun, request: Request):
+        def analyze(package, cancel):
+            if (body.stdin is None) != (body.mode == "search"):
+                raise ValueError("Search takes only source; trace requires an input")
+            case = parse_stdin(package["manifest"], body.stdin) if body.stdin is not None else None
+            result = analyze_package(package, body.source, seed=body.seed, count=12, reduce_calls=16 if case is None else 0,
+                                     case=case, generator="catalog", capture_example=True, cancel=cancel,
+                                     session_seconds=180, run_id=body.analysis_id)
+            return student_analysis(package, result)
+        return catalog_operation(body, request, analyze)
+
+    @router.post("/catalog/recheck")
+    def recheck_catalog(body: CatalogRepair, request: Request):
+        def recheck(package, cancel):
+            if body.mode != "trace" or body.stdin is None:
+                raise ValueError("Rechecking requires the previous witness input")
+            manifest = package["manifest"]
+            case = parse_stdin(manifest, body.stdin)
+            original = parse_stdin(manifest, body.original_stdin) if body.original_stdin is not None else None
+            result = verify_repair(package, body.source, body.candidate, case, seed=body.seed, count=6,
+                                   original_case=original, cancel=cancel, run_id=body.analysis_id)
+            public = student_analysis(package, result)
+            for name in ("checks", "witness_reproductions", "candidate_sha256", "suite_sha256", "candidate_source", "planned_cases"):
+                if name in result:
+                    public[name] = result[name]
+            return public
+        return catalog_operation(body, request, recheck)
+
+    @router.post("/catalog/{analysis_id}/cancel")
+    def cancel_catalog(analysis_id: str, request: Request):
+        require_loopback(request)
+        with active_lock:
+            c = catalog_active.get(analysis_id)
+            if c is None:
+                raise HTTPException(404, "No active analysis")
+            c.set()
+        return {"status": "cancellation_requested"}
+
     @router.get("/health")
     def health(request:Request):
         require_loopback(request)
@@ -149,7 +253,7 @@ def router_for(require_loopback,token):
         return describe()
     @router.get("/packages")
     def packages(request:Request):
-        require_loopback(request);return store.list()
+        require_loopback(request);return store.list(exclude_catalog=True)
     @router.post("/packages/intake")
     def problem_intake(body:Intake,request:Request):
         guard(request)
@@ -159,8 +263,14 @@ def router_for(require_loopback,token):
     @router.post("/packages/draft")
     def draft(body:Draft,request:Request):
         guard(request)
-        schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kind":{"type":"string","enum":["int","word","ints","matrix"]},"min":{"type":"integer"},"max":{"type":"integer"},"alphabet":{"type":"string"},"length":{"type":"integer"},"length_from":{"type":"string"},"rows":{"type":"integer"},"rows_from":{"type":"string"},"cols":{"type":"integer"},"cols_from":{"type":"string"}},"required":["name","kind","min","max"],"additionalProperties":False}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"type":"string","enum":["tokens","exact"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
-        schema["properties"]["manifest"]["properties"]["fields"]["items"]=field_schema(body.schema_version)
+        schema={"type":"object","properties":{"manifest":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"statement":{"type":"string"},"fields":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kind":{"type":"string","enum":["int","word","ints","matrix"]},"min":{"type":"integer"},"max":{"type":"integer"},"alphabet":{"type":"string"},"length":{"type":"integer"},"length_from":{"type":"string"},"rows":{"type":"integer"},"rows_from":{"type":"string"},"cols":{"type":"integer"},"cols_from":{"type":"string"}},"required":["name","kind","min","max"],"additionalProperties":False}},"lines":{"type":"array","items":{"type":"array","items":{"type":"string"}}},"output":{"type":"string","enum":["tokens","exact","float_tokens"]}},"required":["id","title","statement","fields","lines","output"],"additionalProperties":False}},"required":["manifest"],"additionalProperties":False}
+        manifest_properties = schema["properties"]["manifest"]["properties"]
+        manifest_properties["fields"]["items"] = field_schema(body.schema_version)
+        tolerance = {"type": "number", "minimum": 0, "maximum": .01}
+        manifest_properties["tolerance"] = {"type": "object", "properties": {"abs": tolerance, "rel": tolerance},
+                                            "required": ["abs", "rel"], "additionalProperties": False}
+        manifest_properties["output_count"] = {"type": "integer", "minimum": 1, "maximum": 1024}
+        manifest_properties["relative_to"] = {"type": "string", "enum": ["max_magnitude", "expected"]}
         if body.schema_version==2:
             manifest_schema=schema["properties"]["manifest"]
             manifest_schema["properties"].update(
@@ -171,9 +281,9 @@ def router_for(require_loopback,token):
         schema["properties"]["evidence"]={"type":"array","maxItems":48,"items":{"type":"object","properties":{"field":{"type":"string"},"attribute":{"type":"string","enum":["min","max","alphabet","length","length_from","rows","rows_from","cols","cols_from"]},"quote":{"type":"string","minLength":1,"maxLength":600}},"required":["field","attribute","quote"],"additionalProperties":False}}
         schema["properties"]["unresolved"]={"type":"array","maxItems":16,"items":{"type":"string","minLength":1,"maxLength":400}}
         schema["required"]=["manifest","evidence","unresolved"]
-        instructions='Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. matrix fields have min,max, rows or rows_from, cols or cols_from (1..32 per dimension); matrix must occupy its own line group. lines is a list of rows of field names in original order. Example for one integer n between 1 and 9: fields=[{"name":"n","kind":"int","min":1,"max":9}], lines=[["n"]], output="tokens". Omit irrelevant optional fields: alphabet only for word; length or length_from only for ints; rows/cols dimensions only for matrix. id must be lowercase ASCII letters/digits/underscore. Never invent constraints. A list whose size is an earlier input variable MUST use length_from, never a fixed length. For example: fields=[{"name":"size","kind":"int","min":1,"max":20},{"name":"values","kind":"ints","min":0,"max":1000,"length_from":"size"}], lines=[["size"],["values"]]. For every numeric bound, alphabet and size dependency return an evidence entry {field,attribute,quote} with an exact quotation from the supplied statement. List unrepresentable or ambiguous requirements in unresolved. Do not replace original large limits with convenient smaller ones.'
+        instructions='Draft a bounded input grammar. Fields are ordered: {name,kind:int,min,max}; {name,kind:word,min,max,alphabet} where min/max are length; {name,kind:ints,min,max,length} or length_from previous int field. matrix fields have min,max, rows or rows_from, cols or cols_from (1..32 per dimension); matrix must occupy its own line group. lines is a list of rows of field names in original order. Example for one integer n between 1 and 9: fields=[{"name":"n","kind":"int","min":1,"max":9}], lines=[["n"]], output="tokens". Omit irrelevant optional fields: alphabet only for word; length or length_from only for ints; rows/cols dimensions only for matrix. id must be lowercase ASCII letters/digits/underscore. Never invent constraints. If the statement requires numeric tolerance, use output=float_tokens, include the explicit abs/rel tolerance and output_count when fixed. A list whose size is an earlier input variable MUST use length_from, never a fixed length. For example: fields=[{"name":"size","kind":"int","min":1,"max":20},{"name":"values","kind":"ints","min":0,"max":1000,"length_from":"size"}], lines=[["size"],["values"]]. For every numeric bound, alphabet and size dependency return an evidence entry {field,attribute,quote} with an exact quotation from the supplied statement. List unrepresentable or ambiguous requirements in unresolved. Do not replace original large limits with convenient smaller ones.'
         if body.schema_version==2:
-            instructions += ' V2: set schema_version=2. For a single leading T and repeated identical input bodies, add repeat={min,max} (1..16) and fields/lines describe ONE body only; do not include T in fields. Integer lists may use sorted=true and unique=true. Scalar relations compare earlier left field to later right field, op le/lt/ge/gt/eq. Never ignore cross-case total-size constraints, nested repetitions, graphs or unsupported semantics: list them in unresolved. Do not shrink the original problem domain to fit the worker; report an unresolved constraint instead. All new V2 constraints require explicit human semantic review.'
+            instructions += ' V2: set schema_version=2. For a single leading T and repeated identical input bodies, add repeat={min,max} (1..16) and fields/lines describe ONE body only; do not include T in fields. Integer lists may use sorted=true, unique=true, min_from or max_from pointing to an earlier integer field; up to 1000 elements within the worker byte budget. Scalar relations compare earlier left field to later right field, op le/lt/ge/gt/eq. Never ignore cross-case total-size constraints, nested repetitions, graphs or unsupported semantics: list them in unresolved. Do not shrink the original problem domain to fit the worker; report an unresolved constraint instead. All new V2 constraints require explicit human semantic review.'
         r=None
         try:
             if body.intake is not None:
@@ -242,13 +352,13 @@ def router_for(require_loopback,token):
         guard(request)
         try:
             provider=select_provider(body.model,body.cloud_consent,body.use_cache)
-            return {**propose_repair(provider,store.load(body.package_key),body.source,body.case),"model":body.model,"usage":getattr(provider,"usage",{})}
+            return {**propose_repair(provider,operator_package(body.package_key),body.source,body.case),"model":body.model,"usage":getattr(provider,"usage",{})}
         except ProviderError as exc:raise HTTPException(422,str(exc)) from None
         except (ValueError,OSError):raise HTTPException(422,"Proposal invalid")
     @router.get("/repairs/{package_key}")
     def repair_history(package_key:str,request:Request):
         require_loopback(request)
-        try:store.load(package_key);return repairs.list(package_key)
+        try:operator_package(package_key);return repairs.list(package_key)
         except (ValueError,OSError):raise HTTPException(422,"Unknown package") from None
     @router.get("/repair/version/{key}")
     def repair_version(key:str,request:Request):
@@ -264,7 +374,7 @@ def router_for(require_loopback,token):
         if body.analysis_id:
             with active_lock:active[body.analysis_id]=c
         try:
-            result=verify_repair(store.load(body.package_key),body.source,body.candidate,body.case,
+            result=verify_repair(operator_package(body.package_key),body.source,body.candidate,body.case,
                                  original_case=body.original_case,cancel=c,run_id=body.analysis_id)
             return {**result,"history_key":repairs.save(body.package_key,body.source,body.candidate,result),"analysis_id":result.get("analysis_id") or body.analysis_id}
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
@@ -312,7 +422,7 @@ def router_for(require_loopback,token):
             if body.package_key is not None:
                 if body.stdin is not None:
                     raise ValueError("Choose package and case or size field/sizes, not manual stdin")
-                package=store.load(body.package_key)
+                package=operator_package(body.package_key)
                 if body.case is not None:
                     if body.size_field is not None or body.sizes is not None:
                         raise ValueError("Choose exact case or scaling sizes, not both")
@@ -349,7 +459,7 @@ def router_for(require_loopback,token):
         if body.analysis_id:
             with active_lock:active[body.analysis_id]=c
         try:
-            p=store.load(body.package_key)
+            p=operator_package(body.package_key)
             return analyze_package(p,body.source,count=body.count,seed=body.seed,reduce_calls=body.reduce_calls,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum,session_seconds=body.session_seconds,run_id=body.analysis_id,capture_example=body.capture_example)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
@@ -368,7 +478,7 @@ def router_for(require_loopback,token):
         from .v4_run_report import RunLedger,BudgetExhausted
         ledger=None
         try:
-            p=store.load(body.package_key)
+            p=operator_package(body.package_key)
             ledger=RunLedger("profile",body.source,package=p,run_id=body.analysis_id,session_seconds=body.session_seconds,max_executions=3,
                 parameters={"case":body.case,"ai_requested":body.use_ai,"model":getattr(provider,"model",None),"trace_limit":256})
             ledger.enter("validation")

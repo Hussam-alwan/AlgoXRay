@@ -8,11 +8,13 @@ from .v4_isolation import MAX_INPUT,MAX_SOURCE
 def digest(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(",",":"),ensure_ascii=True,allow_nan=False).encode()).hexdigest()
 
-def validate_manifest(m):
+MAX_LIST_LENGTH = 1000
+
+def validate_manifest(m, *, list_limit=100):
     if type(m) is dict and "schema_version" in m:
         from . import v4_spec_v2 as v2
         return v2.validate_manifest(m)
-    if type(m) is not dict or not {"id","title","statement","fields","lines","output"}<=set(m)<={"id","title","statement","fields","lines","output","tolerance"}:
+    if type(m) is not dict or not {"id","title","statement","fields","lines","output"}<=set(m)<={"id","title","statement","fields","lines","output","tolerance","output_count","relative_to"}:
         raise ValueError("Expected id,title,statement,fields,lines,output")
     if type(m["id"]) is not str or not re.fullmatch("[a-z0-9_]{1,60}",m["id"]): raise ValueError("Invalid id")
     for k,cap in (("title",120),("statement",8000)):
@@ -22,7 +24,12 @@ def validate_manifest(m):
         tolerance=m.get("tolerance")
         if type(tolerance) is not dict or set(tolerance)!={"abs","rel"} or any(type(v) not in (int,float) or not math.isfinite(v) or not 0<=v<=.01 for v in tolerance.values()):
             raise ValueError("Supply explicit finite abs/rel tolerances in [0,.01]")
-    elif "tolerance" in m:raise ValueError("Tolerance is only supported by float_tokens")
+        if "output_count" in m and (type(m["output_count"]) is not int or not 1 <= m["output_count"] <= 1024):
+            raise ValueError("Float output_count must be between 1 and 1024")
+        if m.get("relative_to", "max_magnitude") not in ("max_magnitude", "expected"):
+            raise ValueError("Invalid numeric relative tolerance basis")
+    elif {"tolerance", "output_count", "relative_to"} & m.keys():
+        raise ValueError("Numeric output options require float_tokens")
     if type(m["fields"]) is not list or not 1<=len(m["fields"])<=16: raise ValueError("Invalid fields")
     prior={}
     for f in m["fields"]:
@@ -36,10 +43,10 @@ def validate_manifest(m):
         elif k=="ints":
             if set(f) not in (base|{"length"},base|{"length_from"}) or type(f["min"]) is not int or type(f["max"]) is not int or not -10**15<=f["min"]<=f["max"]<=10**15: raise ValueError("Invalid list bounds")
             if "length" in f:
-                if type(f["length"]) is not int or not 0<=f["length"]<=100: raise ValueError("Invalid list length")
+                if type(f["length"]) is not int or not 0<=f["length"]<=list_limit: raise ValueError("Invalid list length")
             else:
                 p=prior.get(f["length_from"]) if type(f["length_from"]) is str else None
-                if not p or p["kind"]!="int" or not 0<=p["min"]<=p["max"]<=100: raise ValueError("Invalid dependent length")
+                if not p or p["kind"]!="int" or not 0<=p["min"]<=p["max"]<=list_limit: raise ValueError("Invalid dependent length")
         elif k=="matrix":
             if not base<=set(f) or set(f)-base-{"rows","rows_from","cols","cols_from"} or type(f["min"]) is not int or type(f["max"]) is not int or not -10**15<=f["min"]<=f["max"]<=10**15:raise ValueError("Invalid matrix bounds")
             for axis in ("rows","cols"):
@@ -137,37 +144,132 @@ def smaller(m,c):
     from .v4_shrinking import candidates
     yield from candidates(m,c)
 
+def numeric_output(manifest, output):
+    tokens = output.split()
+    count = manifest.get("output_count")
+    if count is not None and len(tokens) != count:
+        raise ValueError("Unexpected number of numeric output tokens")
+    values = []
+    for token in tokens:
+        if len(token) > 128 or not re.fullmatch(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]{1,3})?", token):
+            raise ValueError("Unsupported numeric token")
+        value = Decimal(token)
+        if not value.is_finite() or abs(value.as_tuple().exponent) > 256:
+            raise ValueError("Unsupported numeric magnitude")
+        values.append(value)
+    return values
+
 def equal(m,a,b):
     if m["output"]=="tokens":return a.split()==b.split()
     if m["output"]=="unordered_tokens":return Counter(a.split())==Counter(b.split())
     if m["output"]=="exact":return a==b
     if m["output"]!="float_tokens":return False
-    left,right=a.split(),b.split()
-    if len(left)!=len(right):return False
-    def number(token):
-        if len(token)>128 or not re.fullmatch(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d{1,3})?",token):raise ValueError("Unsupported numeric token")
-        value=Decimal(token)
-        if not value.is_finite() or abs(value.as_tuple().exponent)>256:raise ValueError("Unsupported numeric magnitude")
-        return value
     try:
+        left, right = numeric_output(m, a), numeric_output(m, b)
+        if len(left) != len(right):
+            return False
         with localcontext() as ctx:
-            ctx.prec=512
-            absolute=Decimal(str(m["tolerance"]["abs"]));relative=Decimal(str(m["tolerance"]["rel"]))
-            return all(abs(number(x)-number(y))<=max(absolute,relative*max(abs(number(x)),abs(number(y)))) for x,y in zip(left,right))
-    except (ValueError,InvalidOperation):return False
+            ctx.prec = 768
+            absolute = Decimal(str(m["tolerance"]["abs"]))
+            relative = Decimal(str(m["tolerance"]["rel"]))
+            return all(abs(actual - expected) <= max(absolute, relative * (abs(expected) if m.get("relative_to") == "expected" else max(abs(actual), abs(expected))))
+                       for actual, expected in zip(left, right))
+    except (ValueError, InvalidOperation):
+        return False
+
+def parse_stdin(manifest, stdin):
+    """Parse the declared line layout and reject extra lines or tokens."""
+    if type(stdin) is not str or len(stdin.encode("utf-8")) > MAX_INPUT:
+        raise ValueError("Input too large or invalid")
+    rows = iter(stdin.splitlines())
+    fields = {field["name"]: field for field in manifest["fields"]}
+
+    def read_row():
+        try:
+            return next(rows).split()
+        except StopIteration:
+            raise ValueError("Missing input line") from None
+
+    def integers(tokens):
+        if any(not re.fullmatch(r"[+-]?[0-9]{1,16}", token) for token in tokens):
+            raise ValueError("Expected bounded integer tokens")
+        return [int(token) for token in tokens]
+
+    def body():
+        case = {}
+        for line in manifest["lines"]:
+            tokens = read_row()
+            for name in line:
+                field = fields[name]
+                kind = field["kind"]
+                if kind == "matrix":
+                    matrix = [integers(tokens)]
+                    for _ in range(1, dimension(field, "rows", case)):
+                        matrix.append(integers(read_row()))
+                    case[name] = matrix
+                    tokens = []
+                elif kind == "ints":
+                    length = dimension(field, "length", case)
+                    if not 0 <= length <= MAX_LIST_LENGTH or len(tokens) < length:
+                        raise ValueError("Wrong number of tokens for " + name)
+                    case[name] = integers(tokens[:length])
+                    tokens = tokens[length:]
+                elif kind == "int":
+                    if not tokens:
+                        raise ValueError("Missing integer " + name)
+                    case[name] = integers(tokens[:1])[0]
+                    if not field["min"] <= case[name] <= field["max"]:
+                        raise ValueError("Illegal " + name)
+                    tokens = tokens[1:]
+                else:
+                    # Serialization leaves an empty slot for empty words. With
+                    # multiple optional words there is no unambiguous whitespace grammar.
+                    if field["min"] == 0 and len(line) != 1:
+                        raise ValueError("An optional word requires its own line for text input")
+                    case[name] = tokens[0] if tokens else ""
+                    tokens = tokens[1:]
+            if tokens:
+                raise ValueError("Unexpected extra input tokens")
+        return case
+
+    if "repeat" in manifest:
+        count = integers(read_row())
+        if len(count) != 1 or not manifest["repeat"]["min"] <= count[0] <= manifest["repeat"]["max"]:
+            raise ValueError("Invalid repeated case count")
+        case = {"t": count[0], "cases": [body() for _ in range(count[0])]}
+    else:
+        case = body()
+    if any(row.strip() for row in rows):
+        raise ValueError("Unexpected extra input lines")
+    return validate_case(manifest, case)
 
 def validate_package(p):
-    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt","provenance","intake","checker"}: raise ValueError("Expected manifest,reference,controls")
+    if type(p) is not dict or not {"manifest","reference","controls"}<=set(p)<={"manifest","reference","controls","reference_alt","provenance","intake","checker","catalog","test_plan"}: raise ValueError("Expected manifest,reference,controls")
     m=validate_manifest(p["manifest"])
     if "checker" in p:
         from .v4_checker import validate_checker,semantic_answer
         validate_checker(m,p["checker"])
     if type(p["reference"]) is not str or not 1<=len(p["reference"].encode())<=MAX_SOURCE: raise ValueError("Invalid reference")
     if "reference_alt" in p and (type(p["reference_alt"]) is not str or not 1<=len(p["reference_alt"].encode())<=MAX_SOURCE or p["reference_alt"]==p["reference"]):raise ValueError("Alternative reference must be distinct and bounded")
-    if type(p["controls"]) is not list or not 2<=len(p["controls"])<=8: raise ValueError("Supply 2–8 independently known controls")
+    catalog = p.get("catalog")
+    if catalog is not None:
+        from .v4_catalog import validate_catalog_metadata
+        validate_catalog_metadata(p)
+    if "test_plan" in p:
+        from .v4_test_plan import validate_test_plan
+        validate_test_plan(p)
+    min_controls = 1 if catalog else 2
+    if type(p["controls"]) is not list or not min_controls <= len(p["controls"]) <= 8:
+        raise ValueError(f"Supply {min_controls}–8 independently known controls")
     for c in p["controls"]:
-        if type(c) is not dict or set(c)!={"case","expected"} or type(c["expected"]) is not str or len(c["expected"])>8192: raise ValueError("Invalid control")
+        if type(c) is not dict or set(c) not in ({"case","expected"}, {"case","expected","origin"}) or type(c["expected"]) is not str or len(c["expected"])>8192: raise ValueError("Invalid control")
+        if "origin" in c and c["origin"] not in ("published", "independent_calculation", "owner_reviewed"):
+            raise ValueError("A control requires an independently known expected output")
+        if catalog and "origin" not in c:
+            raise ValueError("Catalog controls require an explicit source")
         serialize(m,c["case"])
+        if m["output"] == "float_tokens":
+            numeric_output(m, c["expected"])
         if "checker" in p and semantic_answer(m,p["checker"],c["case"],c["expected"])["status"]!="accepted":
             raise ValueError("Control violates semantic checker")
     if len({digest(c["case"]) for c in p["controls"]})!=len(p["controls"]): raise ValueError("Duplicate controls")
@@ -197,10 +299,12 @@ class PackageStore:
         p=json.loads(path.read_text(encoding="utf-8"))
         if digest(p)!=key: raise ValueError("Package hash mismatch")
         return validate_package(p)
-    def list(self):
+    def list(self, *, exclude_catalog=False):
         output=[]
         for f in sorted(self.root.glob("*.json")):
             try:
-                p=self.load(f.stem);output.append({"key":f.stem,"manifest":p["manifest"]})
+                p=self.load(f.stem)
+                if not exclude_catalog or "catalog" not in p:
+                    output.append({"key":f.stem,"manifest":p["manifest"]})
             except (ValueError,OSError): continue
         return output

@@ -50,7 +50,7 @@ def field_schema(version=1):
         properties={"name":name,"kind":{"const":kind},"min":number,"max":number,**extra}
         return {"type":"object","properties":properties,"required":list(properties),"additionalProperties":False}
     variants=[variant("int",{}),variant("word",{"alphabet":{"type":"string"}}),
-              variant("ints",{"length":{"type":"integer","minimum":0,"maximum":100}}),
+              variant("ints",{"length":{"type":"integer","minimum":0,"maximum":1000 if version == 2 else 100}}),
               variant("ints",{"length_from":{"type":"string"}})]
     for rows in ("rows","rows_from"):
         for cols in ("cols","cols_from"):
@@ -59,5 +59,6 @@ def field_schema(version=1):
     if version==2:
         for variant in variants:
             if variant["properties"]["kind"].get("const")=="ints":
-                variant["properties"].update(sorted={"type":"boolean"},unique={"type":"boolean"})
+                variant["properties"].update(sorted={"type":"boolean"}, unique={"type":"boolean"},
+                                             min_from={"type":"string"}, max_from={"type":"string"})
     return {"oneOf":variants}

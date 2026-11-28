@@ -1,4 +1,4 @@
-"""Bounded version 2 stdin grammar: repeated bodies, list constraints, scalar relations.
+"""Bounded version 2 stdin grammar: repeated bodies, list constraints, scalar and element bounds.
 
 Legacy contracts retain their original shape. Aggregate cross-case constraints
 and arbitrary predicates are unsupported, not silently approximated.
@@ -8,11 +8,12 @@ import random
 VERSION=2
 MAX_CASES=16
 FLAGS=("sorted","unique")
+ELEMENT_BOUNDS=("min_from","max_from")
 OPS={"le","lt","ge","gt","eq"}
 
 def legacy_body(m):
     return {**{k:v for k,v in m.items() if k not in ("schema_version","repeat","relations","fields")},
-            "fields":[{k:v for k,v in f.items() if k not in FLAGS} for f in m["fields"]]}
+            "fields":[{k:v for k,v in f.items() if k not in FLAGS + ELEMENT_BOUNDS} for f in m["fields"]]}
 
 def bounds(m,f,values):
     low,high=f["min"],f["max"]
@@ -23,23 +24,43 @@ def bounds(m,f,values):
         if op in ("ge","gt","eq"):high=min(high,x-(op=="gt"))
     return low,high
 
+def element_bounds(field, values):
+    low, high = field["min"], field["max"]
+    if "min_from" in field:
+        low = max(low, values[field["min_from"]])
+    if "max_from" in field:
+        high = min(high, values[field["max_from"]])
+    return low, high
+
 def validate_manifest(m):
-    from .v4_contracts import validate_manifest as legacy_validate
+    from .v4_contracts import MAX_LIST_LENGTH, validate_manifest as legacy_validate
     from .v4_isolation import MAX_INPUT
     if type(m.get("schema_version")) is not int or m["schema_version"]!=VERSION:
         raise ValueError("Unsupported schema_version; use legacy or 2")
     if type(m.get("fields")) is not list or any(type(f) is not dict for f in m["fields"]):
         raise ValueError("Invalid fields")
-    legacy_validate(legacy_body(m))
+    legacy_validate(legacy_body(m), list_limit=MAX_LIST_LENGTH)
     prior={}
     for f in m["fields"]:
-        if any(k in f for k in FLAGS):
-            if f["kind"]!="ints" or any(type(f[k]) is not bool for k in FLAGS if k in f):
-                raise ValueError("sorted/unique require integer list and boolean flags")
-            if f.get("unique"):
-                largest=f["length"] if "length" in f else prior[f["length_from"]]["max"]
-                if largest>f["max"]-f["min"]+1:
-                    raise ValueError("Unique list length exceeds available values")
+        if any(k in f for k in FLAGS) and (f["kind"] != "ints" or any(type(f[k]) is not bool for k in FLAGS if k in f)):
+            raise ValueError("sorted/unique require integer list and boolean flags")
+        low, high = f["min"], f["max"]
+        for key in ELEMENT_BOUNDS:
+            if key not in f:
+                continue
+            name = f[key]
+            if f["kind"] != "ints" or type(name) is not str or prior.get(name, {}).get("kind") != "int":
+                raise ValueError("Element bounds require an earlier integer field")
+            if key == "min_from":
+                low = max(low, prior[name]["max"])
+            else:
+                high = min(high, prior[name]["min"])
+        if low > high:
+            raise ValueError("Element bounds do not guarantee a constructible interval")
+        if f.get("unique"):
+            largest = f["length"] if "length" in f else prior[f["length_from"]]["max"]
+            if largest > high - low + 1:
+                raise ValueError("Unique list length exceeds available values")
         prior[f["name"]]=f
     repeat=m.get("repeat")
     if "repeat" in m:
@@ -96,6 +117,9 @@ def validate_body(m,c):
     for f in m["fields"]:
         v=c[f["name"]]
         if f["kind"]=="ints":
+            lo, hi = element_bounds(f, c)
+            if any(not lo <= item <= hi for item in v):
+                raise ValueError("Element bound violated: " + f["name"])
             if f.get("sorted") and any(a>b for a,b in zip(v,v[1:])):raise ValueError("List must be sorted: "+f["name"])
             if f.get("unique") and len(set(v))!=len(v):raise ValueError("List must be unique: "+f["name"])
         if f["kind"]=="int":
@@ -135,6 +159,7 @@ def generate(m,seed,count):
             elif kind=="matrix":
                 v=[[number(lo,hi,i) for _ in range(dimension(f,"cols",c))] for _ in range(dimension(f,"rows",c))]
             else:
+                lo, hi = element_bounds(f, c)
                 n=f["length"] if "length" in f else c[f["length_from"]]
                 if f.get("unique"):
                     v=list(range(lo,lo+n)) if i==0 else list(range(hi-n+1,hi+1)) if i==1 else rng.sample(range(lo,hi+1),n)
@@ -164,8 +189,9 @@ def strategy(m):
                 rows,cols=dimension(f,"rows",c),dimension(f,"cols",c)
                 v=draw(st.lists(st.lists(numbers,min_size=cols,max_size=cols),min_size=rows,max_size=rows))
             else:
+                lo, hi = element_bounds(f, c)
                 n=f["length"] if "length" in f else c[f["length_from"]]
-                v=draw(st.lists(numbers,min_size=n,max_size=n,unique=f.get("unique",False)))
+                v=draw(st.lists(st.integers(lo, hi),min_size=n,max_size=n,unique=f.get("unique",False)))
                 if f.get("sorted"):v.sort()
             c[f["name"]]=v
         return c
@@ -186,15 +212,15 @@ def complexity(m,c):
 def smaller(m,c):
     from .v4_shrinking import candidates,deletion_windows
     from .v4_contracts import digest
-    validate_case(m,c);base=legacy_body(m)
+    validate_case(m,c)
     def options():
         if "repeat" not in m:
-            yield from candidates(base,c);return
+            yield from candidates(m,c);return
         for a,b in deletion_windows(c["t"],m["repeat"]["min"]):
             cases=c["cases"][:a]+c["cases"][b:]
             yield {"t":len(cases),"cases":cases}
         for i,item in enumerate(c["cases"]):
-            for x in candidates(base,item):
+            for x in candidates({k: v for k, v in m.items() if k != "repeat"},item):
                 yield {"t":c["t"],"cases":c["cases"][:i]+[x]+c["cases"][i+1:]}
     seen=set();original=complexity(m,c)
     for x in options():
@@ -220,7 +246,7 @@ def capabilities():
     return {"schema_versions":[1,2],"legacy_version":"implicit when schema_version is absent",
             "field_kinds":["int","word","ints","matrix"],
             "v2":{"repeat":{"min":1,"max":MAX_CASES,"shape":{"t":"integer","cases":"array of body cases"}},
-                  "list_flags":["sorted","unique"],"scalar_relation_ops":sorted(OPS),
+                  "list_flags":["sorted","unique"],"list_element_bounds":["min_from","max_from"],"max_list_length":1000,"scalar_relation_ops":sorted(OPS),
                   "relations":"Earlier integer compared to later integer; conservative constructible intervals.",
                   "generation":["boundary_random","hypothesis"],"shrinking":"Validate every candidate."},
             "semantic_checkers":[{"kind":"two_sum_indices","version":1,"scope":"Single body, two distinct indices summing to target or explicit no-solution token; owner review required."}],

@@ -19,7 +19,7 @@ window.AlgoXRayReviewForm=(()=>{
     if(!f||typeof f.name!=="string"||! /^[a-z][a-z0-9_]{0,30}$/.test(f.name))throw Error("اسم حقل غير صالح.");
     if(f.kind==="int")c[f.name]=integer();
     else if(f.kind==="word")c[f.name]=take();
-    else if(f.kind==="ints")c[f.name]=Array.from({length:dim(f,"length",c,100)},integer);
+    else if(f.kind==="ints")c[f.name]=Array.from({length:dim(f,"length",c,m.schema_version===2?1000:100)},integer);
     else if(f.kind==="matrix")c[f.name]=Array.from({length:dim(f,"rows",c,32)},()=>Array.from({length:dim(f,"cols",c,32)},integer));
     else throw Error("نوع مدخل غير مدعوم في النموذج.");
    }

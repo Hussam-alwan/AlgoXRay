@@ -1,0 +1,65 @@
+{
+  "manifest": {
+    "id": "cf4a",
+    "title": "4A · Watermelon",
+    "statement": "هل يمكن تقسيم وزن بطيخة إلى حصتين موجبتين وزن كل منهما عدد زوجي؟ اقرأ الوزن من سطر واحد واطبع YES أو NO.",
+    "schema_version": 2,
+    "fields": [
+      {
+        "name": "w",
+        "kind": "int",
+        "min": 1,
+        "max": 100
+      }
+    ],
+    "lines": [
+      [
+        "w"
+      ]
+    ],
+    "output": "tokens"
+  },
+  "reference": "weight = int(input())\nprint('YES' if weight % 2 == 0 and weight >= 4 else 'NO')\n",
+  "controls": [
+    {
+      "case": {
+        "w": 8
+      },
+      "expected": "YES",
+      "origin": "published"
+    },
+    {
+      "case": {
+        "w": 2
+      },
+      "expected": "NO",
+      "origin": "independent_calculation"
+    },
+    {
+      "case": {
+        "w": 3
+      },
+      "expected": "NO",
+      "origin": "independent_calculation"
+    },
+    {
+      "case": {
+        "w": 4
+      },
+      "expected": "YES",
+      "origin": "independent_calculation"
+    }
+  ],
+  "catalog": {
+    "version": 1,
+    "url": "https://codeforces.com/problemset/problem/4/A",
+    "reference_language": "python",
+    "reference_origin": "Original reference written for AlgoXRay; no Codeforces submission claimed",
+    "trust_basis": "development_reference",
+    "visualization": "execution"
+  },
+  "test_plan": {
+    "version": 1,
+    "patterns": {}
+  }
+}

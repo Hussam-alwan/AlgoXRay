@@ -5,6 +5,7 @@ from .v4_contracts import validate_package,serialize,generate,smaller,equal,dige
 from .v4_isolation import execute_stdio
 from .v4_shrinking import failure_signature
 from .v4_checker import judge_output
+from .v4_test_plan import LEVELS, plan, unique_proposals
 from .v4_run_report import RunLedger,BudgetExhausted
 from .v4_graph import observed_graph
 from .v4_profiling import attach_profile
@@ -18,7 +19,7 @@ from .v4_provider import OllamaProvider,DIAGNOSIS_SCHEMA,check_hypotheses,check_
 def oracle(p,stdin,run,trace_limit=0,*,case=None):
     first=run(p["reference"],stdin,trace_limit)
     if first["status"]!="ok":return first
-    if "checker" in p:
+    if "checker" in p or p["manifest"]["output"] == "float_tokens":
         judgment=judge_output(p,case,first.get("stdout"),first.get("stdout"))
         if judgment["status"]!="accepted":
             return {"status":"oracle_disagreement","primary":first,"judgment":judgment}
@@ -83,13 +84,20 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
     validate_package(p);m=p["manifest"]
     if type(count) is not int or not 1<=count<=12 or type(reduce_calls) is not int or not 0<=reduce_calls<=32: raise ValueError("Invalid analysis budget")
     if type(seed) is not int or not 0<=seed<=2**32-1: raise ValueError("Invalid seed")
-    if generator not in ("boundary_random","hypothesis"):raise ValueError("Unsupported generator")
+    if generator not in ("boundary_random", "hypothesis", "catalog", "uniform_random"):
+        raise ValueError("Unsupported generator")
+    catalog_search = generator in ("catalog", "uniform_random")
+    if catalog_search and "test_plan" not in p:
+        raise ValueError("Catalog generator requires a test plan")
     start=time.monotonic(); attempts=0; executions=0
     guidance={"status":"disabled","rejected":0,"probes":[]};suggested=False
     def invoke(src,stdin,trace_limit,role="reference"):
         nonlocal executions
         executions+=1
-        return ledger.execute(run,role,src,stdin,trace_limit=trace_limit,**({"cancel":cancel} if cancel is not None else {}))
+        options = {"cancel": cancel} if cancel is not None else {}
+        if catalog_search and trace_limit == 0:
+            options["mode"] = "benchmark_uninstrumented"
+        return ledger.execute(run, role, src, stdin, trace_limit=trace_limit, **options)
     def pair(c,trace_limit=0):
         nonlocal attempts
         attempts+=1;ledger.pair_attempts+=1
@@ -108,18 +116,44 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         elif status=="exception": kind="exception"
         else: kind="inconclusive"
         return {"kind":kind,"case":c,"stdin":stdin,"student":actual,"reference":ref,"judgment":judgment}
-    cases=[case] if case is not None else [c["case"] for c in p["controls"]]+list(hypothesis_cases(m,seed,count) if generator=="hypothesis" else generate(m,seed,count))
+    search = None
+    if catalog_search:
+        search = {"generator_version": p["test_plan"]["version"], "seed": seed,
+                  "proposed": 0, "rejected_invalid": 0, "duplicate": 0, "unique_executed": 0,
+                  "generated_budget": count, "saved_controls": len(p["controls"]),
+                  "levels": dict.fromkeys(LEVELS, 0), "tests": []}
+        ledger.search = search
+        if case is not None:
+            serialize(m, case)
+            proposals = ({"case": case, "level": None, "origin": "specific_input", "strategy": "manual"},)
+        else:
+            proposals = plan(p, seed, count, generator)
+        cases = ((row["case"], row) for row, _ in unique_proposals(m, proposals, search))
+    else:
+        generated = hypothesis_cases(m, seed, count) if generator == "hypothesis" else generate(m, seed, count)
+        candidates = [case] if case is not None else [control["case"] for control in p["controls"]] + list(generated)
+        cases = ((candidate, None) for candidate in candidates)
     ledger.enter("search")
     seen=set();found=None;example=None;inconclusive=Counter()
-    for c in cases:
+    for c, proposal in cases:
         key=digest(c)
         if key in seen: continue
         seen.add(key)
-        result=pair(c,128 if capture_example and example is None else 0)
+        result=pair(c,128 if capture_example and example is None and not catalog_search else 0)
+        if search is not None and result["kind"] != "cancelled":
+            search["unique_executed"] += 1
+            if proposal["level"] is not None:
+                search["levels"][proposal["level"]] += 1
+            search["tests"].append({**{k: v for k, v in proposal.items() if k != "case"},
+                                    "input_sha256": digest(result["stdin"]), "outcome": result["kind"]})
         if result["kind"]=="cancelled":return {"status":"cancelled","attempts":attempts}
         if result["kind"]=="oracle_unavailable":
             return {"status":"oracle_unavailable","detail":result,"attempts":attempts}
-        if result["kind"] in ("wrong_answer","exception"): found=result;break
+        if result["kind"] in ("wrong_answer","exception"):
+            found=result
+            if search is not None:
+                search["selected_case_origin"] = search["tests"][-1]
+            break
         if capture_example and example is None:example=result
         if result["kind"]=="inconclusive": inconclusive[result["student"]["status"]]+=1
     def run_suggestions(witness=None,hypotheses=()):
@@ -157,10 +191,17 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         if example is not None:
             ledger.enter("structure")
             ledger.check()
+            if catalog_search:
+                example = pair(example["case"], 128)
+                if example["kind"] == "cancelled":
+                    return {"status": "cancelled", "attempts": attempts}
+                if example["kind"] != "match":
+                    return {"status": "oracle_unavailable" if example["kind"] == "oracle_unavailable" else "unstable",
+                            "detail": example, "attempts": attempts}
             response["example_observation"]=observed_example(p,source,example)
         return response
     original=found
-    ledger.partial={"witness":original,"replay_verified":False}
+    ledger.partial={"witness":original,"original_case": original["case"],"replay_verified":False}
     ledger.enter("shrink")
     signature=failure_signature(original)
     budget=reduce_calls
@@ -196,8 +237,8 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
 
     def replay_case(expected,trace_limit,label):
         first=None
-        for _ in range(3):
-            replayed=pair(expected["case"],trace_limit)
+        for index in range(3):
+            replayed=pair(expected["case"],trace_limit if index == 0 else 0)
             kind=replayed["kind"]
             if kind=="cancelled":
                 return None,{"status":kind,"attempts":attempts}
@@ -210,15 +251,24 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         return first,None
 
     ledger.enter("replay")
-    if accepted:
-        _,failure=replay_case(original,0,"Original")
-        if failure:return failure
-        reduction["original_replay_count"]=3
+    reduction["reduced_replay_count"] = 0
+    reduction["original_replay_count"] = 0
+    reduction["original_replay_status"] = "pending" if accepted else "same_as_reduced"
+    ledger.partial.update(witness=found, reduction=reduction)
     witness,failure=replay_case(found,128,"Best witness")
     if failure:return failure
     reduction["reduced_replay_count"]=3
     seen.add(digest(witness["case"]))
-    ledger.partial={"witness":witness,"original_case":original["case"],"reduction":reduction,"replay_verified":True}
+    ledger.partial.update(witness=witness,replay_verified=True)
+    if accepted:
+        _, failure = replay_case(original, 0, "Original")
+        if failure:
+            if not catalog_search or failure["status"] != "unstable":
+                return failure
+            reduction["original_replay_status"] = failure["status"]
+        else:
+            reduction["original_replay_count"] = 3
+            reduction["original_replay_status"] = "verified"
     student_events=witness["student"].get("events",[])
     reference_events=witness["reference"].get("events",[])
     ranking={"status":"disabled","ranked":[]}

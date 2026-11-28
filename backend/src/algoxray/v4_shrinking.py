@@ -40,6 +40,8 @@ def numeric_values(value, low, high):
             yield v
 
 def candidates(manifest, case):
+    from .v4_spec_v2 import bounds, element_bounds
+
     validate_case(manifest, case)
     fields = manifest["fields"]
     original = complexity(manifest, case)
@@ -88,6 +90,12 @@ def candidates(manifest, case):
         v = case[name]
         low, high = field["min"], field["max"]
         if kind == "int":
+            low, high = bounds(manifest, field, case)
+            for dependent in fields:
+                if dependent.get("max_from") == name and case[dependent["name"]]:
+                    low = max(low, max(case[dependent["name"]]))
+                if dependent.get("min_from") == name and case[dependent["name"]]:
+                    high = min(high, min(case[dependent["name"]]))
             options = numeric_values(v, low, high)
         elif kind == "word":
             def words():
@@ -99,6 +107,7 @@ def candidates(manifest, case):
                     yield v[:i] + first + v[i+1:]
             options = words()
         else:
+            low, high = element_bounds(field, case)
             target = min(high, max(low, 0))
             def arrays():
                 if kind == "matrix":

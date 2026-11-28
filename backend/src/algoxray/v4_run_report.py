@@ -22,7 +22,7 @@ class RunLedger:
         self.session_seconds=session_seconds;self.max_executions=max_executions
         self.clock=clock;self.started=clock();self.current=None;self.stage_start=None
         self.stages={name:{"name":name,"status":"not_run","elapsed_ms":0.0,"executions":0,"visits":0} for name in STAGES[operation]}
-        self.workers=[];self.inputs=set();self.partial=None;self.pair_attempts=0
+        self.workers=[];self.inputs=set();self.partial=None;self.pair_attempts=0;self.search=None
         self.engine_files={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(Path(__file__).parent.glob('v4_*.py'))}
     def elapsed(self):return round((self.clock()-self.started)*1000,3)
     def check(self,*,worker=False):
@@ -84,5 +84,7 @@ class RunLedger:
         if self.package:report["manifest_sha256"]=digest(self.package["manifest"])
         if interrupted and self.partial is not None and "witness" not in result and "checks" not in result:
             result={**result,"partial_observation":self.partial}
+        if self.search is not None:
+            result = {**result, "search": self.search}
         return {**result,"analysis_id":self.id,"student_source":result.get("student_source",self.source),
                 "package_sha256":result.get("package_sha256",package_hash),"run_report":report}

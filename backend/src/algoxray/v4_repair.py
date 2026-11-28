@@ -43,7 +43,12 @@ def _verify_repair(p,source,candidate,case,seed,count,run,original_case,cancel,l
         actual=invoke(src,serialize(m,c),0,role=role)
         judgment=judge_output(p,c,actual.get("stdout"),ref.get("stdout")) if actual["status"]=="ok" else None
         return actual,judgment
-    named=supplied+[("owner_control",c["case"]) for c in p["controls"]]+[("generated_regression",c) for c in generate(m,seed,count)]
+    if "test_plan" in p:
+        from .v4_test_plan import construct
+        regression = [construct(m, (seed + i) & 0xFFFFFFFF, "varied", p["test_plan"]["patterns"]) for i in range(count)]
+    else:
+        regression = generate(m, seed, count)
+    named=supplied+[("owner_control",c["case"]) for c in p["controls"]]+[("generated_regression",c) for c in regression]
     cases={}
     for label,c in named:
         serialize(m,c)
