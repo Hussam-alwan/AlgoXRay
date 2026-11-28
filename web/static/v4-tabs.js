@@ -15,7 +15,7 @@ window.AlgoXRayTabs=(()=>{
   unstable:"تعذر تثبيت الشاهد",not_passed_or_inconclusive:"لم يكتمل التحقق"
  };
  function mount(o){
-  const {main,intro,workspace,toolsPanel,results,fullPanel,fullProgress,cancel,benchPanel,benchDetails,advancedResult,reports,fullExport,footer}=o;
+  const {main,intro,workspace,toolsPanel,results,fullPanel,fullProgress,cancel,benchPanel,benchDetails,advancedResult,reports,fullExport,footer,sampleDashboard}=o;
   const host=el("div","ux-tab-workspace");host.id="ux-tab-workspace";
   const anchor=el("div","ux-tab-anchor");anchor.id="ux-tab-anchor";
   const sticky=el("div","ux-tab-sticky"),nav=el("div","ux-tab-list");
@@ -52,7 +52,7 @@ window.AlgoXRayTabs=(()=>{
   const techPanel=add(el("section","panel ux-tab-tech"),el("h2","","أدلة التنفيذ"),advancedResult);
   const benchTech=add(el("section","panel ux-tab-tech"),el("h2","","أدلة القياس"),benchDetails);
   add(panels.input,intro,workspace,settingsLink);
-  add(panels.summary,results,single,quick,fullPanel);
+  add(panels.summary,sampleDashboard,results,single,quick,fullPanel);
   add(panels.execution,execSlot,emptyExec);
   add(panels.fault,faultSlot,emptyFault);
   add(panels.performance,benchPanel,hotSlot,emptyPerf);

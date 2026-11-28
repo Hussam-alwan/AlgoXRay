@@ -105,6 +105,31 @@
 .story-compare-snapshot{max-height:285px;overflow:auto}
 .guided-workspace .story-compare-snapshot pre{margin:0 0 7px;padding:6px 8px}
 .story-compare-value{padding:5px 0;border-top:1px solid var(--ux-line)}
+.story-coverage{display:grid;gap:6px}
+.guided-workspace button.story-coverage-row{display:grid;grid-template-columns:minmax(85px,.7fr) minmax(0,1fr) 60px;gap:9px;align-items:center;text-align:start;background:#f7f9fd}
+.story-coverage-row>span:last-child{direction:ltr;text-align:center;color:var(--ux-muted);font-size:12px}
+.story-coverage-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin:12px 0 0;font-size:12px;color:var(--ux-muted)}
+.story-coverage-legend span::before{content:"";width:10px;height:10px;background:var(--case-tone,#a2b3cc);display:inline-block;border-radius:3px;margin-inline-end:4px}
+.story-coverage-track{display:flex;gap:3px;min-width:0;min-height:15px}
+.story-coverage-segment{background:var(--case-tone,#a2b3cc);color:white;border-radius:4px;min-width:10px;text-align:center;font-size:11px;padding-inline:2px}
+[data-status="match"]{--case-tone:#1f7459;--case-wash:#eef8f3}
+[data-status="different"],[data-status="failed"]{--case-tone:#a72f37;--case-wash:#fff3f4}
+[data-status="observed"]{--case-tone:#355fa2;--case-wash:#f2f6ff}
+[data-status="pending"]{--case-tone:#5f6d7d;--case-wash:#f1f5f9}
+[data-status="expected"]{--case-tone:#256353;--case-wash:#f0f8f5}
+.story-case-flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.35fr) auto minmax(0,1fr);gap:8px;align-items:center;margin:12px 0}
+.story-flow-card{display:grid;gap:4px;align-self:stretch;align-content:start;min-width:0;background:var(--case-wash,#f4f7fc);border:1px solid var(--ux-line);border-inline-start:3px solid var(--case-tone,#9db3d6);border-radius:8px;padding:8px}
+.story-flow-card[data-status="expected"]{grid-column:5}
+.story-flow-card strong{font-size:12px}
+.story-flow-card code{white-space:pre-wrap;overflow-wrap:anywhere;max-height:100px;overflow:auto}
+.story-flow-card .story-note{margin:2px 0}
+.story-flow-arrow{color:var(--ux-primary);font-size:20px}
+@media(max-width:490px){
+ .story-case-flow{grid-template-columns:minmax(0,1fr)}
+ .story-flow-card[data-status="expected"]{grid-column:auto}
+ .story-flow-arrow{text-align:center;transform:rotate(-90deg);line-height:1}
+ .guided-workspace button.story-coverage-row{grid-template-columns:minmax(85px,1fr) minmax(0,1fr) 48px;gap:5px;padding-inline:8px}
+}
 .story-fault-review{margin-top:16px}
 .story-fault-grid{align-items:start}
 .story-fault-grid .story-code-map{margin:0}

@@ -44,7 +44,11 @@ def diagnostic_context(package,source,witness,ranking=None,max_bytes=12000,*,loc
     data["context_version"]=2
     data["instruction"]+=" The structured findings are engine observations or heuristic candidates, not proof. For a candidate on unexecuted code, set basis=static; for a suspected missing condition, set basis=missing_condition and cite an existing source line as the proposed location. Never invent an executed event or claim a missing line was executed. Free-text hypotheses are not verified facts. A semantic checker may accept multiple outputs; its reference output is just one valid example."
     if package is None:
-        data["instruction"]+=" The expected output here is one published Codeforces sample. No reference program or semantic checker ran. Never equate a different output with a wrong answer or promise acceptance on other tests."
+        authority=witness.get("judgment",{}).get("authority")
+        if authority=="watermelon_rule":
+            data["instruction"]+=" The expected output was computed by the local Watermelon rule for this input. Explain only this recorded comparison and never promise official acceptance."
+        else:
+            data["instruction"]+=" If present, the expected output is one published Codeforces sample. Never equate a different sample output with a wrong answer or promise official acceptance."
     if witness.get("judgment"):data["judgment"]=witness["judgment"]
     if reduction:
         data["reduction"]={k:reduction[k] for k in ("original_complexity","reduced_complexity","signature","stop_reason","scope") if k in reduction}

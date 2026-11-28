@@ -21,7 +21,11 @@ body.guided-workspace{background:var(--ux-bg);color:var(--ux-ink);font:15px/1.75
 .guided-workspace .ux-auto-url input{width:100%;direction:ltr}
 .guided-workspace #import-problem{width:100%;min-height:46px}
 #ux-auto-note{margin:10px 0 0}
-.ux-sample-list{margin-block:8px 14px;padding-inline-start:24px;color:var(--ux-muted);font-size:13px}
+.ux-case-dashboard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.ux-sample-table{width:100%;font-size:13px;table-layout:fixed}
+.ux-sample-table td,.ux-sample-table th{border-bottom:1px solid var(--ux-line);padding:8px;vertical-align:top;text-align:start;overflow-wrap:anywhere}
+.ux-sample-table td code{white-space:pre-wrap;max-height:100px;overflow:auto;display:block}
+@media(max-width:1040px){.ux-case-dashboard{grid-template-columns:minmax(0,1fr)}}
 .ux-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .guided-workspace .ux-mode{display:flex;flex-direction:column;gap:5px;align-items:flex-start;text-align:start;min-width:0;padding:17px 18px;background:white;color:var(--ux-ink);border:1px solid var(--ux-line);border-radius:var(--ux-radius);min-height:108px;box-shadow:0 2px 5px #182c4c06;white-space:normal}
 .ux-mode strong{font-size:16px}

@@ -1,11 +1,11 @@
 from threading import Event
 
 from algoxray.v4_authoring import normalize_url
-from algoxray.v4_codeforces import inspect_samples
+from algoxray.v4_codeforces import LEVELS, WATERMELON_URL, inspect_samples, plan_cases
 from algoxray.v4_provider import MockProvider, ProviderError
 
 
-URL = "https://codeforces.com/problemset/problem/4/A"
+URL = "https://codeforces.com/problemset/problem/7/B"
 SOURCE = "n = int(input())\nprint('YES')\n"
 SAMPLES = [{"stdin": "8", "stdout": "YES"}, {"stdin": "2", "stdout": "NO"}]
 
@@ -70,3 +70,43 @@ def test_no_public_sample_or_preempted_run_never_executes():
     stopped = inspect_samples(URL, SOURCE, prepare=imported, run=reject, cancel=cancel)
     assert stopped["run_report"]["stop_reason"] == "cancelled"
     assert stopped["run_report"]["physical_executions"] == 0
+
+
+def test_watermelon_regression_exposes_weight_two_after_matching_public_example():
+    source = 'n = int(input())\nprint("YES" if n % 2 == 0 else "NO")\n'
+
+    def watermelon(*args, **kwargs):
+        return {**imported(*args, **kwargs), "samples": SAMPLES[:1]}
+
+    def run(code, stdin, **kwargs):
+        assert code == source
+        weight = int(stdin)
+        return {"status": "ok", "stdout": "NO\n" if weight % 2 else "YES\n", "trace_status": "complete",
+                "events": [{"event_id": "E1", "line": 2, "kind": "line", "frame_id": "F1",
+                            "snapshot_timing": "before_line", "locals": {"n": weight}}]}
+
+    data = inspect_samples(WATERMELON_URL, source, prepare=watermelon, run=run)
+    assert [level["id"] for level in data["levels"]] == list(LEVELS)
+    assert all(level["planned"] for level in data["levels"])
+    checks = data["checks"]
+    assert len(checks) == len({c["stdin"] for c in checks}) == 11
+    assert checks[0]["stdin"] == "8\n" and checks[0]["same_output"]
+    assert next(c for c in checks if c["level"] == "minimum")["stdin"] == "1\n"
+    assert next(c for c in checks if c["level"] == "maximum")["stdin"] == "100\n"
+    assert data["judgment"]["status"] == "checked_difference"
+    assert data["witness"]["stdin"] == "2\n"
+    assert data["witness"]["student"]["stdout"] == "YES\n"
+    assert data["judgment"]["expected"] == "NO"
+    assert data["decision"] == {"line": 2, "event_id": "E1", "reads": {"n": 2},
+                                "test": "n % 2 == 0", "outcome": True}
+
+
+def test_unverified_integer_range_runs_values_without_inventing_expected_outputs():
+    statement = "Input\nThe only input line contains an integer n (1 ≤ n ≤ 50).\nOutput\nAn answer."
+    problem = {**imported("codeforces", url=URL), "statement": statement}
+    cases, domain = plan_cases(problem)
+    assert domain == {"min": 1, "max": 50, "authority": "statement_integer_bounds"}
+    assert any(c["level"] == "maximum" and c["stdin"] == "50\n" for c in cases)
+    assert all(c["expected"] is None for c in cases if c["level"] != "published")
+    ambiguous = {**problem, "statement": statement.replace("\nOutput", "\nA second line follows.\nOutput")}
+    assert plan_cases(ambiguous)[1] is None

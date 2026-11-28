@@ -22,7 +22,7 @@
  header.querySelector("p").textContent="فهم الخوارزميات، بالأدلة.";
  const classic=headerActions.querySelector("a");classic.textContent="النسخة السابقة";classic.target="_blank";classic.rel="noopener";
  const problem=by("demo").closest(".panel"),codePanel=by("source").closest(".panel"),settings=by("health").closest(".status");
- const intro=append(node("div","ux-intro"),node("h2","","جرّب حلّك على Codeforces"),desc("ألصق رابط المسألة وكود Python لتشاهد تنفيذ حلّك على الأمثلة المنشورة."));
+ const intro=append(node("div","ux-intro"),node("h2","","جرّب حلّك على Codeforces"),desc("ألصق رابط المسألة وكود Python لفحص الأمثلة وحالات الحدود المدعومة."));
  const modes=node("div","ux-modes");modes.setAttribute("role","group");modes.setAttribute("aria-label","هدف التحليل");
  let mode="full",tabs=null;
  const modeButtons=[];
@@ -212,7 +212,7 @@
  const fullButton=node("button","ux-primary");fullButton.id="ux-run-full";fullButton.type="button";
  const fullConsent=desc("");fullConsent.id="ux-full-consent";
  importButton.textContent="استيراد النص وتشغيل الحل";importButton.classList.add("ux-primary");
- const autoNote=desc("بالضغط تؤكد أنك تثق بالكود الظاهر وتشغّله محلياً على أمثلة Codeforces المنشورة.");autoNote.id="ux-auto-note";
+ const autoNote=desc("بالضغط تؤكد أنك تثق بالكود الظاهر وتشغّله محلياً على مدخلات الاختبار.");autoNote.id="ux-auto-note";
  const actionRow=append(node("div","ux-actions"),importButton,fullButton,run,observe,benchmark,cancel);
  const friendly=node("p","ux-status-message","");friendly.hidden=true;friendly.id="ux-friendly-status";friendly.setAttribute("role","status");
  const ch=codePanel.querySelector("h2"),editor=append(node("div","ux-editor-title"),node("span","","solution.py"),fileButton,sourceFile);
@@ -347,12 +347,13 @@
  const fullExport=node("button","","حفظ التقرير الشامل");
  fullExport.type="button";fullExport.hidden=true;
  fullExport.id="ux-full-export";
- const sampleList=node("ul","ux-sample-list");sampleList.id="ux-sample-list";sampleList.hidden=true;
+ const sampleList=disclosure("تفاصيل الحالات المختبرة","ux-sample-list",[]);sampleList.hidden=true;
+ const sampleDashboard=node("div","ux-case-dashboard");sampleDashboard.id="ux-case-dashboard";sampleDashboard.hidden=true;
  append(fullPanel,fullTitle,fullProgress,fullCards,sampleList,desc("زمن التشغيل العادي يُقاس دون التتبع على المدخل المختار. عدد مرات التشغيل الفعلية يظل مسجلاً في الأدلة."),fullExport);
  workspace.after(fullPanel);
  fullPanel.after(results,by("benchmark-results"),toolsPanel);
  let fullActive=false,fullCancelled=false,fullReport=null;
- function clearFull(){if(fullActive)return;fullReport=null;fullPanel.hidden=true;fullExport.hidden=true}
+ function clearFull(){if(fullActive)return;fullReport=null;fullPanel.hidden=true;fullExport.hidden=true;sampleDashboard.hidden=true;sampleDashboard.replaceChildren()}
  function invalidateFull(){if(fullActive||busy)return;if(fullReport)invalidateResult();clearFull()}
  const originalBusy=setBusy;setBusy=function(value){
   originalBusy(value);for(const b of modeButtons)b.disabled=value;
@@ -380,7 +381,7 @@
  function beginFull(title,message){
   clearFull();fullActive=true;fullCancelled=false;
   fullReport={format:"algoxray_comprehensive_report",version:1,id:crypto.randomUUID().replaceAll("-",""),status:"running",phases:[],scope:"Local composite report; individual phase reports retain their own IDs and budgets."};
-  fullTitle.textContent=title;fullPanel.hidden=false;sampleList.hidden=true;sampleList.replaceChildren();
+  fullTitle.textContent=title;fullPanel.hidden=false;sampleList.hidden=true;sampleList.open=false;sampleList.lastElementChild.replaceChildren();
   for(const v of Object.values(fullValues)){v.textContent="بانتظار التنفيذ";delete v.parentElement.dataset.tone}
   fullProgress.textContent=message;fullProgress.dataset.tone="neutral";
   results.hidden=true;benchPanel.hidden=true;result=null;benchmarkResult=null;
@@ -416,15 +417,37 @@
  }
  const sampleStatuses={exception:"توقف البرنامج بخطأ",timeout:"تجاوز المهلة المحلية"};
  function sampleLabel(check){
-  if(check.status==="ok")return check.same_output?"طابق الخرج المنشور":"خرج مختلف عن المثال";
-  return sampleStatuses[check.status]||"تعذّر تشغيل المثال";
+  if(check.status!=="ok")return sampleStatuses[check.status]||"تعذّر تشغيل الحالة";
+  if(check.same_output===null)return "سُجّل الخرج دون مقارنة";
+  if(check.authority==="watermelon_rule")return check.same_output?"طابق الجواب المحسوب":"خالف الجواب المحسوب";
+  return check.same_output?"طابق الخرج المنشور":"خرج مختلف عن المثال";
+ }
+ function showSampleCases(checks,level){
+  const host=sampleList.lastElementChild;
+  host.replaceChildren();
+  if(level){
+   const all=node("button","","عرض كل الحالات");all.type="button";all.onclick=()=>showSampleCases(checks);
+   host.append(node("h3","",window.AlgoXRayStory.levelLabels[level]),all);
+  }
+  const table=node("table","ux-sample-table"),head=node("thead"),row=node("tr"),body=node("tbody");
+  for(const title of ["المدخل","الجواب المتوقع","خرج برنامجك","النتيجة"]){const cell=node("th","",title);cell.scope="col";row.append(cell)}
+  head.append(row);
+  for(const check of checks){
+   if(level&&check.level!==level&&!check.also_levels?.includes(level))continue;
+   const line=node("tr");
+   for(const value of [check.stdin,check.expected??"غير متوفر",check.actual||"—"]){
+    const code=node("code","",value);code.dir="auto";line.append(append(node("td"),code));
+   }
+   line.append(node("td","",sampleLabel(check)));body.append(line);
+  }
+  host.append(append(node("div","timing-scroll"),append(table,head,body)));
  }
  importButton.onclick=async()=>{
   if(busy)return;
   const url=problemUrl.value.trim(),code=source.value;
   if(!url){msg("status","ألصق رابط مسألة Codeforces.");problemUrl.focus();return}
   if(!code.trim()){msg("status","ألصق كود Python أو حمّل ملفه.");source.focus();return}
-  beginFull("نتيجة أمثلة Codeforces","جارٍ استيراد المسألة وتشغيل أمثلتها المنشورة…");
+  beginFull("نتيجة اختبارات Codeforces","جارٍ استيراد المسألة وتشغيل حالات الاختبار المدعومة…");
   const settings=aiOptions(),local=settings.model.startsWith("qwen2.5-coder:");
   const allowCloud=by("ai").checked&&settings.cloud_consent;
   const modelOptions=local||allowCloud?settings:{model:"qwen2.5-coder:7b",cloud_consent:false,use_cache:false};
@@ -434,23 +457,33 @@
    if(!data)return;
    fullTitle.textContent=data.problem.statement.split("\n")[0];
    showRunReport(data);
-   const checks=data.checks,matched=checks.filter(c=>c.same_output===true).length,total=data.problem.samples.length;
+   const checks=data.checks,matched=checks.filter(c=>c.same_output===true).length;
+   const compared=checks.filter(c=>c.same_output!==null).length;
+   const runtimeIssues=checks.filter(c=>["exception","timeout"].includes(c.status)).length;
    sampleList.hidden=!checks.length;
-   for(const check of checks)sampleList.append(node("li","","المثال "+check.number+" · "+sampleLabel(check)));
-   fullValues.diagnosis.textContent=total?`${matched} من ${total} أمثلة طابقت الخرج المنشور`:"تعذر استخراج أمثلة كاملة من الصفحة";
-   fullValues.diagnosis.parentElement.dataset.tone=total>0&&matched===total?"positive":"warning";
+   if(checks.length)showSampleCases(checks);
+   fullValues.diagnosis.textContent=checks.length?`${checks.length} حالة شُغّلت · ${matched}/${compared} طابقت الجواب المتوفر`:"لا توجد حالات مسجّلة";
+   if(runtimeIssues)fullValues.diagnosis.textContent+=` · ${runtimeIssues} مشكلات تشغيل`;
+   fullValues.diagnosis.parentElement.dataset.tone=compared>0&&compared===checks.length&&matched===compared?"positive":"warning";
+   sampleDashboard.append(window.AlgoXRayStory.sampleCoverage(data,level=>{
+    showSampleCases(checks,level);sampleList.open=true;sampleList.scrollIntoView({block:"start"});
+   }));
    if(data.witness){
-    result={...data,sample_attention:data.judgment.status==="example_difference"||["syntax_error","runtime_error","timeout"].includes(data.kind)};
+    result={...data,sample_attention:data.judgment.status.endsWith("_difference")||["syntax_error","runtime_error","timeout"].includes(data.kind)};
     sources={student:code,reference:""};side="student";index=0;show();
-    fullValues.trace.textContent=data.witness.student.events?.length?"الخطوات المسجلة للمثال "+data.selected_sample:"لم تُسجّل خطوات لهذا المثال";
+    sampleDashboard.append(window.AlgoXRayStory.sampleFlow(data,()=>tabs.select("execution",true)));
+    fullValues.trace.textContent=data.witness.student.events?.length?"الخطوات المسجلة للحالة "+data.selected_sample:"لم تُسجّل خطوات لهذه الحالة";
    }else fullValues.trace.textContent="لا تتوفر خطوات للعرض";
+   sampleDashboard.hidden=false;
    const stop=data.run_report.stop_reason;
    if(fullCancelled||stop==="cancelled")return;
    const canMeasure=data.witness?.student.status==="ok"&&stop==="completed";
    const measured=canMeasure&&await measureFull({stdin:data.witness.stdin},code,data);
    if(!canMeasure)fullValues.timing.textContent="تعذّر قياس تشغيل مكتمل";
    fullReport.status=measured?"completed":"partial";
-   fullProgress.textContent=total?"النتائج تخص الأمثلة المنشورة. Codeforces يتحقق من الحل على اختبارات إضافية.":"استوردنا المسألة، ولم نجد أزواج مدخل وخرج يمكن تشغيلها.";
+   fullProgress.textContent=data.domain?.authority==="watermelon_rule"?"الأجوبة الإضافية حُسبت محلياً من قاعدة Watermelon.":
+    data.domain?"الحالات الإضافية تفحص التنفيذ. المقارنة مع الجواب متاحة للأمثلة المنشورة فقط.":
+    checks.length?"النتائج تخص الأمثلة المنشورة. صيغة المدخلات الحالية غير مدعومة للتوليد التلقائي.":"استوردنا المسألة، وتعذّر استخراج أمثلة كاملة.";
    if(stop==="worker_unavailable")fullProgress.textContent="استوردنا المسألة، لكن محرك التشغيل المحلي غير متاح.";
    if(stop.endsWith("budget_exhausted"))fullProgress.textContent="انتهت مهلة الفحص. الملخص يعرض الأمثلة التي شُغّلت.";
    fullProgress.dataset.tone=measured?"neutral":"warning";
@@ -548,11 +581,16 @@
  const originalShow=show;show=function(){
   originalShow();
   const manualResult=result.status==="manual_observation",profileResult=result.status==="profiled_execution",sample=result.status==="codeforces_samples";
-  resultTitle.textContent=sample?"المثال "+result.selected_sample+" من Codeforces":manualResult?"نتيجة تتبع البرنامج":result.reused_search_trace?"مثال من التنفيذ الذي تم اختباره":profileResult?"نتيجة قياس التنفيذ":"وجدنا حالة فشل قابلة للمراجعة";
-  triplet.classList.toggle("ux-mismatch",result.status==="observed_mismatch"&&result.kind!=="exception");
+  const chosen=sample?result.checks.find(c=>c.number===result.selected_sample):null;
+  if(sample){
+   if(chosen.expected===null)msg("expected","غير متوفر");
+   if(chosen.status==="ok")msg("actual",chosen.actual||"(بدون خرج)");
+  }
+  resultTitle.textContent=sample?"الحالة المختارة · "+window.AlgoXRayStory.levelLabels[chosen.level]:manualResult?"نتيجة تتبع البرنامج":result.reused_search_trace?"مثال من التنفيذ الذي تم اختباره":profileResult?"نتيجة قياس التنفيذ":"وجدنا حالة فشل قابلة للمراجعة";
+  triplet.classList.toggle("ux-mismatch",(result.status==="observed_mismatch"&&result.kind!=="exception")||result.judgment?.status==="checked_difference");
   by("expected").parentElement.classList.add("ux-expected");
   by("actual").parentElement.classList.add("ux-actual");
-  resultCaution.textContent=sample?sampleLabel(result.checks.find(c=>c.number===result.selected_sample)):manualResult?"النتيجة تخص المدخل اليدوي الذي أدخلته.":result.reused_search_trace?
+  resultCaution.textContent=sample?sampleLabel(chosen):manualResult?"النتيجة تخص المدخل اليدوي الذي أدخلته.":result.reused_search_trace?
    "هذه عينة من الحالات المجربة. راجع نتيجة البحث في ملخص التحليل.":profileResult?
    "النتيجة تخص هذا المدخل. قياس الأسطر متاح في تبويب الأداء.":"أعاد المحرك التحقق من الفشل على هذا المدخل.";
   advancedResult.open=mode!=="full";trace.open=true;comparison.open=false;profiling.open=profileResult;aiResults.open=Boolean(result.hypotheses?.length);
@@ -560,7 +598,7 @@
   if(tabs)tabs.installStory(story);else storySlot.replaceChildren(story);
   if(!manualResult){
    by("actual").previousElementSibling.textContent="خرج برنامجك";
-   by("expected").previousElementSibling.textContent=sample?"الخرج المنشور في المثال":result.witness.judgment?.reference_output_is_example?"مثال لخرج مقبول":"الخرج المرجعي";
+   by("expected").previousElementSibling.textContent=sample?(chosen.authority==="codeforces_public_example"?"الخرج المنشور في المثال":"الجواب المحسوب"):result.witness.judgment?.reference_output_is_example?"مثال لخرج مقبول":"الخرج المرجعي";
   }
   if(result.reused_search_trace)msg("ai-state","تم استخدام تتبع من البحث نفسه؛ لم يُطلب تشخيص AI إضافي لهذه الحالة.");
   raw.open=false;
@@ -586,7 +624,7 @@
  function syncStatus(){const raw=status.textContent.trim(),key=raw.split(/[\s·]/)[0],v=readableStatuses[key];friendly.hidden=!v;if(v){friendly.textContent=v[0];friendly.dataset.tone=v[1]}}
  new MutationObserver(syncStatus).observe(status,{childList:true,characterData:true,subtree:true});
  tabs=window.AlgoXRayTabs.mount({
-  main,intro,workspace,toolsPanel,results,fullPanel,fullProgress,cancel,benchPanel,benchDetails,advancedResult,reports,fullExport,footer,
+  main,intro,workspace,toolsPanel,results,fullPanel,fullProgress,cancel,benchPanel,benchDetails,advancedResult,reports,fullExport,footer,sampleDashboard,
   state:()=>({busy,fullActive,fullReport,result,reportHidden:by("run-report-panel").hidden}),
   stopTechnicalPlayback:()=>stopTracePlayback()
  });

@@ -137,7 +137,10 @@ window.AlgoXRayStory=(()=>{
    e.preventDefault();stop();select(target);rail.children[target].focus({preventScroll:true});
   });
   slider.oninput=()=>{stop();select(Number(slider.value))};
-  const firstArray=events.findIndex(e=>Object.values(e.locals||{}).some(v=>Array.isArray(v)||v?.kind==="list"));const first=firstArray>=0?firstArray:events.findIndex(e=>Object.keys(e.locals||{}).length);select(first<0?0:first);
+  const decisionStep=report.decision?events.findIndex(e=>e.event_id===report.decision.event_id):-1;
+  const firstArray=events.findIndex(e=>Object.values(e.locals||{}).some(v=>Array.isArray(v)||v?.kind==="list"));
+  const first=decisionStep>=0?decisionStep:firstArray>=0?firstArray:events.findIndex(e=>Object.keys(e.locals||{}).length);
+  select(first<0?0:first);
   return {host,stop,selectEvent:id=>{stop();return select(events.findIndex(e=>e.event_id===id))},selectLine:n=>{stop();return select(events.findIndex(e=>e.line===n))}};
  }
  function compareWitness(report){
@@ -195,7 +198,7 @@ window.AlgoXRayStory=(()=>{
  function findings(report,trace,onTrace){
   const loc=report.evidence_localization||{},rows=Array.isArray(loc.ranked)?loc.ranked:[];
   const sample=report.status==="codeforces_samples";
-  const host=section(sample?"ماذا حدث على المثال المنشور؟":"ماذا حدث في حالة الفشل؟");
+  const host=section(sample?"ماذا حدث على مدخل الاختبار؟":"ماذا حدث في حالة الفشل؟");
   host.id="story-findings";
   if(report.status!=="observed_mismatch"&&!report.sample_attention){
    host.append(p("هذه لقطة من التنفيذ، وليست حالة فشل مثبتة؛ لن نعرض أسطراً على أنها أخطاء."));
@@ -203,6 +206,8 @@ window.AlgoXRayStory=(()=>{
   }
   if(sample){
    if(report.judgment.status==="example_difference")host.append(p("خرج البرنامج مختلف عن المثال المنشور. بعض المسائل تقبل أكثر من خرج، لذلك راجع النتيجة حسب نص المسألة."));
+   if(report.judgment.status==="checked_difference")host.append(p("خرج البرنامج خالف الجواب الذي حسبته قاعدة المسألة لهذا المدخل."));
+   host.append(sampleFlow(report,()=>{if(report.decision)trace.selectEvent?.(report.decision.event_id);onTrace?.();trace.host.scrollIntoView({block:"start"})}));
    if(report.kind==="timeout")host.append(p("تجاوز التنفيذ المهلة المحلية على هذا المدخل."));
   }else host.append(compareWitness(report));
   const lines=(report.student_source||"").split(/\r\n?|\n/);
@@ -320,6 +325,61 @@ window.AlgoXRayStory=(()=>{
   add(host,trace.host,hotspots(report,trace,onTrace));host.stopPlayback=()=>trace.stop?.();
   return host;
  }
+ const levelLabels={published:"الأمثلة المنشورة",minimum:"أصغر قيمة",maximum:"أكبر قيمة",near_limits:"قرب الحدود",middle:"منتصف النطاق",varied:"قيم متنوعة"};
+ const statusLabels={match:"طابق",different:"اختلف",observed:"خرج بلا مقارنة",failed:"خطأ تشغيل",pending:"لم يُشغّل"};
+ function checkStatus(check){
+  if(check.status!=="ok")return "failed";
+  if(check.same_output===null)return "observed";
+  return check.same_output?"match":"different";
+ }
+ function sampleCoverage(report,onLevel){
+  const host=section("مستويات الاختبار الستة"),legend=el("div","story-coverage-legend");
+  for(const [status,label] of Object.entries(statusLabels)){
+   const entry=el("span","",label);entry.dataset.status=status;legend.append(entry);
+  }
+  const rows=el("div","story-coverage");
+  for(const level of report.levels){
+   const checks=report.checks.filter(c=>c.level===level.id||c.also_levels?.includes(level.id));
+   const label=levelLabels[level.id],pattern=el("span","story-coverage-track");
+   const totals={};
+   for(const check of checks){const status=checkStatus(check);totals[status]=(totals[status]||0)+1}
+   if(level.planned>checks.length)totals.pending=level.planned-checks.length;
+   for(const [status,count] of Object.entries(totals)){
+    const segment=el("span","story-coverage-segment",count);segment.dataset.status=status;
+    segment.style.flexGrow=String(count);segment.title=statusLabels[status]+" "+count;pattern.append(segment);
+   }
+   const row=button("",()=>onLevel(level.id));row.classList.add("story-coverage-row");row.disabled=!checks.length;row.dataset.level=level.id;
+   row.setAttribute("aria-label",label+"، "+(Object.entries(totals).map(([status,count])=>statusLabels[status]+" "+count).join("، ")||"لا يوجد مدخل منفذ"));
+   add(row,el("strong","",label),pattern,el("span","",level.planned?checks.length+" / "+level.planned:"غير متاح"));rows.append(row);
+  }
+  const note=report.domain?`النطاق ${report.domain.min} إلى ${report.domain.max}. اضغط أي مستوى لعرض مدخلاته.`:
+   "الأمثلة المنشورة متاحة وفق ما استوردناه. توليد الحالات الإضافية يتطلب نطاق مدخلات مدعوماً.";
+  return add(host,rows,legend,p(note));
+ }
+ function sampleFlow(report,onTrace){
+  const check=report.checks.find(c=>c.number===report.selected_sample);
+  const host=section("من المدخل إلى الخرج");
+  if(!check)return host;
+  const card=(title,value)=>add(el("div","story-flow-card"),el("strong","",title),mono("code",value));
+  const decision=report.decision;
+  const chain=el("div","story-case-flow");
+  const step=decision?card("الشرط عند السطر "+decision.line,decision.test):
+   card("التنفيذ المسجّل",(report.witness.student.events?.length||0)+" حدث");
+  if(decision){
+   const values=Object.entries(decision.reads).map(([name,value])=>name+" = "+value).join(" · ");
+   if(values)step.append(mono("code",values));
+   step.append(el("span","story-note",decision.outcome?"أعطى الشرط: صحيح":"أعطى الشرط: خطأ"));
+  }
+  const actual=card("خرج برنامجك",check.status==="ok"?(check.actual.trim()||"(بدون خرج)"):check.status==="timeout"?"تجاوز المهلة":"توقف التشغيل");
+  const expected=card(check.authority==="codeforces_public_example"?"الخرج المنشور":"الجواب المحسوب",check.expected);
+  actual.dataset.status=checkStatus(check);
+  if(check.expected!==null)expected.dataset.status="expected";
+  add(chain,card("المدخل",check.stdin.trim()||"(فارغ)"),el("span","story-flow-arrow","←"),step,el("span","story-flow-arrow","←"),actual,
+   check.expected!==null?expected:null);
+  host.append(chain);
+  if(report.witness.student.events?.length)host.append(button("شاهد هذه الخطوة بالتتبّع",onTrace));
+  return host;
+ }
  function performance(report){
   const host=section("زمن التشغيل دون تتبع","القياس يخص تنفيذ البرنامج على المدخلات المختارة.");
   host.id="story-performance";
@@ -357,5 +417,5 @@ window.AlgoXRayStory=(()=>{
   if(report.stop_reason!=="completed")host.append(p("القياس غير مكتمل: "+report.stop_reason));
   return host;
  }
- return {execution,performance};
+ return {execution,performance,sampleCoverage,sampleFlow,levelLabels};
 })();
