@@ -6,6 +6,7 @@ accuracy. Only recorded line/event anchors are presented as observations.
 import ast
 import re
 from .v4_dataflow import evaluate
+from .v4_source_structure import python_source_lines
 
 def loop_bounds_evidence(source,execution,graph):
     try:tree=ast.parse(source)
@@ -64,7 +65,7 @@ def localize(source,witness,graph,ranking=None,diagnostics=None):
     kind=witness.get("kind","observation")
     known={e["event_id"]:e for e in execution.get("events",[])
            if type(e) is dict and type(e.get("event_id")) is str and type(e.get("line")) is int}
-    max_line=len(source.splitlines())
+    max_line=len(python_source_lines(source))
     rows={}
     def add(line,signal,weight,events,detail):
         if type(line) is not int or not 1<=line<=max_line:return

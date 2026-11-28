@@ -1,6 +1,7 @@
 """Optional user-reviewed patch. Test success is not a proof of general correctness."""
 import hashlib,difflib,json
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from .v4_contracts import validate_package,serialize,generate,equal,digest
 from .v4_isolation import execute_stdio,MAX_SOURCE
 from .v4_provider import ProviderError
@@ -102,10 +103,17 @@ class RepairStore:
         record={"package_key":package_key,"source":source,"candidate":candidate,"result":result}
         key=digest(record);self.root.mkdir(parents=True,exist_ok=True)
         target=self.root/(key+".json")
+        if target.exists():
+            self.load(key)
+            return key
+        staged=NamedTemporaryFile(mode="w",encoding="utf-8",dir=self.root,prefix=".repair-",delete=False)
+        temporary=Path(staged.name)
         try:
-            with target.open("x",encoding="utf-8") as f:json.dump(record,f,ensure_ascii=True)
-        except FileExistsError:
-            if digest(self.load(key))!=key:raise ValueError("Repair history hash mismatch")
+            with staged:
+                json.dump(record,staged,ensure_ascii=True)
+            temporary.replace(target)
+        finally:
+            temporary.unlink(missing_ok=True)
         return key
     def load(self,key):
         import re

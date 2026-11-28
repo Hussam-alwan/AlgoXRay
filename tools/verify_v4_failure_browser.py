@@ -83,6 +83,13 @@ def test(url,out):
   with page.expect_response(lambda r:r.url.endswith("/v4/analyze"),timeout=90000) as response:page.locator("#run").click()
   value=response.value.json();assert value["status"]=="oracle_unavailable" and value["detail"]["reference"]["status"]=="oracle_disagreement",value
   expect(page.locator("#results")).to_be_hidden();checks.append("later_reference_disagreement_blocks_accusation")
+  page.locator("#manual-stdin").fill("2\n1 1\n")
+  with page.expect_response(lambda r:r.url.endswith("/v4/observe"),timeout=35000) as response:page.locator("#observe-run").click()
+  manual=response.value.json()
+  assert manual["status"]=="manual_observation" and manual["judgment"]["status"]=="oracle_unavailable",manual
+  assert manual["witness"]["student"]["stdout"]=="2\n"
+  expect(page.locator("#graph .node").first).to_be_visible()
+  checks.append("manual_trace_available_after_reference_disagreement")
   page.locator("#package").fill(json.dumps(package));approve()
   page.locator("#source").fill("def broken(:\n    pass\n")
   with page.expect_response(lambda r:r.url.endswith("/v4/analyze"),timeout=90000) as response:page.locator("#run").click()

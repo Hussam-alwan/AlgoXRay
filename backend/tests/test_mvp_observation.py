@@ -38,9 +38,10 @@ def test_manual_syntax_and_uninstrumented():
 def fake(src,stdin,*,mode,trace_limit,seconds,cancel):
     assert mode=="benchmark_uninstrumented" and trace_limit==0
     n,*a=map(int,stdin.split());total=sum(a)
+    cost = n*n*(10 if src=="bad" else 100)
     return {"status":"ok","stdout":str(total if src!="bad" else total+1),"elapsed_ms":20,"cleanup_confirmed":True,
-            "profile":{"method":"uninstrumented_execution","execution_wall_ns":n*n*100,
-                       "execution_cpu_ns":n*n*80}}
+            "profile":{"method":"uninstrumented_execution","execution_wall_ns":cost,
+                       "execution_cpu_ns":cost*4//5}}
 
 def test_legal_scaling_and_correctness():
     sizes=[5,10,20];inputs=generated_size_inputs(M,"n",sizes,2026)
@@ -52,6 +53,8 @@ def test_legal_scaling_and_correctness():
     assert r["growth"]["wall_log_log_exponent"]==2
     bad=benchmark_source("bad",inputs,repeats=3,package=P,size_field="n",run=fake)
     assert all(p["correctness"]=="recorded_mismatch" for p in bad["points"])
+    assert all(b["summary"]["wall_ns"]["median"] < g["summary"]["wall_ns"]["median"]
+               for b, g in zip(bad["points"], r["points"]))
     assert bad["growth"]["status"]=="incomplete_noisy_or_incorrect"
 
 def test_bad_sizes_and_timeout_retention():
@@ -110,6 +113,28 @@ def test_growth_abstains_for_narrow_range_and_unstable_measurements():
     result = benchmark_source("good", sizes, repeats=3, size_field="n", run=noisy)
     assert result["growth"]["status"] == "incomplete_noisy_or_incorrect"
     assert all(len(p["runs"]) == p["summary"]["completed"] == 3 for p in result["points"])
+
+
+def test_in_flight_cancellation_preserves_completed_measurements():
+    cancel = threading.Event()
+    calls = 0
+
+    def run(source, stdin, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            kwargs["cancel"].set()
+            return {"status": "cancelled", "cleanup_confirmed": True}
+        return fake(source, stdin, **kwargs)
+
+    points = generated_size_inputs(M, "n", [4, 8], 2026)
+    result = benchmark_source("good", points, repeats=3, size_field="n", run=run, cancel=cancel)
+    assert result["stop_reason"] == "cancelled" and result["physical_executions"] == 2
+    assert len(result["points"]) == 1 and result["points"][0]["summary"]["completed"] == 1
+    assert result["growth"]["status"] == "not_applicable_or_incomplete"
+    assert result["run_report"]["stages"][-1]["status"] == "partial"
+    stopped = result["run_report"]["workers"][-1]
+    assert stopped["status"] == "cancelled" and stopped["cleanup_confirmed"] is True
 
 def test_manual_api_requires_review(monkeypatch):
     from fastapi import FastAPI

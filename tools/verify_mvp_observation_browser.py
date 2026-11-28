@@ -4,6 +4,11 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright,expect
 from verify_browser import available_browser
 
+def worker_ids(*, include_stopped=False):
+    command=["docker","ps","--filter","name=algoxray-v4-","--format","{{.ID}}"]
+    if include_stopped:command.append("--all")
+    return set(subprocess.check_output(command,text=True,timeout=5).split())
+
 def test(url):
     errors=[];external=[];checks=[]
     with sync_playwright() as p:
@@ -87,13 +92,37 @@ def test(url):
         expect(page.locator("#benchmark-chart .benchmark-timeout")).to_have_count(1)
         expect(page.locator("#benchmark-chart circle")).to_have_count(1)
         checks.append("timeout_retained_and_marked_without_invented_runtime")
+
+        page.locator("#source").fill("import time\ntime.sleep(5)\n")
+        page.locator("#timing-seconds").fill("3")
+        page.locator("#trusted").check()
+        existing_workers=worker_ids()
+        with page.expect_response(lambda r:r.url.endswith("/v4/benchmark"),timeout=45000) as response:
+            page.locator("#plain-benchmark").click()
+            deadline=time.monotonic()+7
+            new_workers=set()
+            while not new_workers and time.monotonic()<deadline:
+                new_workers=worker_ids()-existing_workers
+                if not new_workers:time.sleep(.05)
+            assert len(new_workers)==1,new_workers
+            worker_id=next(iter(new_workers))
+            config=json.loads(subprocess.check_output(["docker","inspect","--format","{{json .HostConfig}}",worker_id],text=True,timeout=5))
+            limits={key:config[key] for key in ("Memory","MemorySwap","NanoCpus","PidsLimit","NetworkMode","ReadonlyRootfs")}
+            page.locator("#cancel").click()
+        cancelled=response.value.json()
+        assert limits=={"Memory":128*1024**2,"MemorySwap":128*1024**2,"NanoCpus":500_000_000,
+                        "PidsLimit":32,"NetworkMode":"none","ReadonlyRootfs":True},limits
+        assert cancelled["stop_reason"]=="cancelled",cancelled
+        assert cancelled["run_report"]["workers"][-1]["cleanup_confirmed"] is True,cancelled
+        assert worker_id not in worker_ids(include_stopped=True)
+        checks.append("active_benchmark_cancel_and_worker_limits")
         assert not errors,errors
         assert not external,external
         browser.close()
     return {"status":"passed","checks":checks,"page_errors":errors,"external_requests":external,
             "scope":"Synthetic development smoke; local timings are not Codeforces timings or a complexity proof.",
             "manual_judgment":observed["judgment"],"sample_judgment":sample["judgment"],
-            "plain":plain,"scaled":scaled,"censored":censored}
+            "plain":plain,"scaled":scaled,"censored":censored,"cancelled":cancelled,"worker_limits":limits}
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser();parser.add_argument("--port",type=int,default=8794);parser.add_argument("--out",default="docs/mvp-evidence/observation-browser.json");args=parser.parse_args()

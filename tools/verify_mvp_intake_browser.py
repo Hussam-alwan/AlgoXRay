@@ -69,6 +69,17 @@ def test(url):
         page.set_viewport_size({"width":390,"height":844})
         assert page.evaluate("document.body.scrollWidth")<=390
         checks.append("mobile_width")
+        page.locator("#candidate").fill(REFERENCE)
+        page.locator("#patch-reviewed").check()
+        with page.expect_response(lambda r:r.url.endswith("/v4/repair/verify"),timeout=90000) as response:
+            page.locator("#verify-patch").click()
+        repaired=response.value.json()
+        assert repaired["status"]=="passed_named_tests",repaired
+        assert all(row["status"]=="reproduced" for row in repaired["witness_reproductions"])
+        assert {row["kind"] for row in repaired["witness_reproductions"]}=={"witness","original_witness"}
+        expect(page.locator("#source")).to_have_value(STUDENT)
+        expect(page.locator("#patch-status")).to_contain_text(repaired["suite_sha256"])
+        checks.append("intake_witness_to_repair_on_both_cases")
         assert not errors,errors
         assert not external,external
         browser.close()
@@ -76,13 +87,16 @@ def test(url):
             "scope":"Synthetic development fixture and owner-review simulation, not user study.",
             "analysis":{"status":result["status"],"original_case":result["original_case"],
                         "reduced_case":result["witness"]["case"],"attempts":result["attempts"],
-                        "executions":result["executions"],"reduction":result["reduction"]}}
+                        "executions":result["executions"],"reduction":result["reduction"]},
+            "repair":{"status":repaired["status"],"suite_sha256":repaired["suite_sha256"],
+                      "planned_cases":repaired["planned_cases"],"executions":repaired["executions"]}}
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser();parser.add_argument("--port",type=int,default=8795);parser.add_argument("--out",default="docs/mvp-evidence/intake-v2-browser.json");args=parser.parse_args()
     url=f"http://127.0.0.1:{args.port}"
     with tempfile.TemporaryDirectory(prefix="algoxray-mvp-browser-") as temp:
-        env={**os.environ,"ALGOXRAY_V4_PACKAGE_STORE":str(Path(temp)/"packages")}
+        env={**os.environ,"ALGOXRAY_V4_PACKAGE_STORE":str(Path(temp)/"packages"),
+             "ALGOXRAY_V4_REPAIR_STORE":str(Path(temp)/"repairs")}
         with (Path(temp)/"server.log").open("wb") as log:
             server=subprocess.Popen([sys.executable,"-m","uvicorn","algoxray.api:app","--host","127.0.0.1","--port",str(args.port)],env=env,stdout=log,stderr=subprocess.STDOUT)
             try:

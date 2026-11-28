@@ -2,6 +2,7 @@
 import ast,hashlib,json
 from .v4_contracts import digest
 from .v4_dataflow import evaluate,relations
+from .v4_source_structure import python_source_lines
 
 def sha(value):return hashlib.sha256(value.encode()).hexdigest()
 def diagnostic_context(package,source,witness,ranking=None,max_bytes=12000,*,localization=None,reduction=None,branches=None):
@@ -22,7 +23,7 @@ def diagnostic_context(package,source,witness,ranking=None,max_bytes=12000,*,loc
                 locals_[name]=value
             if len(locals_)>=8:break
         supplied.append({k:e[k] for k in ("event_id","frame_id","parent_frame_id","line","kind","function") if k in e}|{"locals":locals_})
-    lines=source.splitlines()
+    lines=python_source_lines(source)
     used={n for e in supplied for n in range(max(1,e["line"]-1),min(len(lines),e["line"]+1)+1)}
     excerpt=[{"line":n,"text":lines[n-1][:180]} for n in sorted(used)[:32]]
     statement=manifest["statement"]
@@ -137,7 +138,7 @@ def diagnose_execution(package,source,witness,provider=None,ranking=None,cancel=
         supplied=context["events"]
         result["ai_context"]={k:context[k] for k in ("identity","context_bytes","source_complete","statement_complete","input_complete","outputs_complete","execution_status","trace_status")}
         proposal=bounded_propose(provider,"diagnosis",context,DIAGNOSIS_SCHEMA,cancel=cancel)
-        supplied_lines=set(range(1,len(source.splitlines())+1)) if context["source_complete"] else {x["line"] for x in context["source_excerpt"]}
+        supplied_lines=set(range(1,len(python_source_lines(source))+1)) if context["source_complete"] else {x["line"] for x in context["source_excerpt"]}
         hypotheses=check_hypotheses(proposal,supplied,supplied_lines)
         facts=check_facts(proposal,supplied)
         checked_branches=check_branches(proposal,source,supplied)

@@ -11,6 +11,11 @@ VERSION=1
 MAX_NODES=512
 MAX_DEPTH=64
 
+def python_source_lines(source):
+    """Split at the physical newlines recognized by Python."""
+    lines=re.split(r"\r\n?|\n",source)
+    return lines[:-1] if lines[-1]=="" else lines
+
 def source_structure(source,events=()):
     identity=hashlib.sha256(source.encode("utf-8")).hexdigest()
     result={"version":VERSION,"language":"python","source_sha256":identity,
@@ -21,7 +26,7 @@ def source_structure(source,events=()):
         result.update(status="syntax_error" if isinstance(exc,SyntaxError) else "unavailable")
         if isinstance(exc,SyntaxError):result["error"]={"line":exc.lineno,"column":exc.offset,"message":exc.msg[:180]}
         return result
-    lines=re.split(r"\r\n?|\n",source)
+    lines=python_source_lines(source)
     encoded=[line.encode("utf-8") for line in lines]
     stack=[(tree,None,"root",None,0,None)]
     while stack:
