@@ -317,7 +317,7 @@
  const growthParent=growth.parentNode;growthParent.append(disclosure("تفاصيل نموذج النمو وحدوده","ux-benchmark-growth",[growth]));
  const benchSlot=node("div");benchSlot.id="ux-bench-story-slot";
  const benchDetails=disclosure("الأرقام والتقرير التفصيلي","ux-bench-details",Array.from(benchPanel.childNodes).filter(n=>n!==benchHeading));
- benchPanel.replaceChildren(benchHeading,benchSlot,benchDetails);
+ benchPanel.replaceChildren(benchSlot,benchDetails);
  const originalBenchmark=showBenchmark;showBenchmark=function(){
   originalBenchmark();
   if(!benchmarkResult)return;
@@ -477,7 +477,9 @@
   triplet.classList.toggle("ux-mismatch",result.status==="observed_mismatch"&&result.kind!=="exception");
   by("expected").parentElement.classList.add("ux-expected");
   by("actual").parentElement.classList.add("ux-actual");
-  resultCaution.textContent=manualResult?"تتبع مدخل يدوي؛ لا يثبت صحة الحل ولا قانونية المدخل.":profileResult?"الزمن أثناء التتبع يصف تنفيذاً واحداً، وليس زمن المسابقة.":"هذه حالة فشل مرصودة؛ مواضع الاشتباه والفرضيات لا تثبت السبب الجذري.";
+  resultCaution.textContent=manualResult?"النتيجة تخص المدخل اليدوي الذي أدخلته.":result.reused_search_trace?
+   "هذه عينة من الحالات المجربة. راجع نتيجة البحث في ملخص التحليل.":profileResult?
+   "النتيجة تخص هذا المدخل. قياس الأسطر متاح في تبويب الأداء.":"أعاد المحرك التحقق من الفشل على هذا المدخل.";
   advancedResult.open=mode!=="full";trace.open=true;comparison.open=false;profiling.open=profileResult;aiResults.open=Boolean(result.hypotheses?.length);
   const story=window.AlgoXRayStory.execution(result,(line,id)=>jumpToEvidence(line,id),()=>tabs?.select("execution",true));
   if(tabs)tabs.installStory(story);else storySlot.replaceChildren(story);

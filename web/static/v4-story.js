@@ -10,7 +10,6 @@ window.AlgoXRayStory=(()=>{
  const mono=(tag,t)=>{const n=el(tag,"story-mono",t);n.dir="ltr";return n};
  const section=(title,sub)=>add(el("section","story-section"),el("h3","",title),sub?p(sub):null);
  const known=v=>v!==undefined&&!(v&&typeof v==="object"&&v.unavailable);
- const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
  const textValue=v=>window.AlgoXRayLearning.value(v);
  const labelKind={line:"قبل السطر",call:"دخول الدالة",return:"عودة",exception:"استثناء"};
  const signalLabels={
@@ -43,10 +42,10 @@ window.AlgoXRayStory=(()=>{
  }
  function timeline(report,onEvidence){
   const w=report.witness?.student||{},events=Array.isArray(w.events)?w.events:[],lines=(report.student_source||"").split(/\r\n?|\n/);
-  const host=section("كيف نفّذ برنامجك؟","حرّك المؤشر أو اختر خطوة لرؤية السطر والقيم المسجلة. اللقطات قبل تنفيذ السطر؛ لا نفترض قيم الأسطر غير المسجلة.");
+  const host=section("كيف نفّذ برنامجك؟");
   host.id="story-timeline";
   if(!events.length){host.append(p("لا توجد خطوات مسجلة لهذا التنفيذ."));return {host,select:()=>false}}
-  const actions=el("div","story-transport"),prev=button("السابق",()=>select(pos-1)),next=button("التالي",()=>select(pos+1));
+  const actions=el("div","story-transport"),prev=button("السابق",()=>{stop();select(pos-1)}),next=button("التالي",()=>{stop();select(pos+1)});
   prev.id="story-prev";next.id="story-next";
   const progress=el("strong","story-counter");progress.id="story-step";
   let playback=null;
@@ -60,30 +59,36 @@ window.AlgoXRayStory=(()=>{
    },650);
   });play.id="story-play";
   function stop(){if(playback!==null)clearInterval(playback);playback=null;play.textContent="تشغيل الخطوات"}
-  const slider=el("input","story-slider");slider.type="range";slider.id="story-slider";slider.min="0";slider.max=String(events.length-1);slider.setAttribute("aria-label","خطوة التنفيذ المسجلة");
+  const slider=el("input","story-slider");slider.type="range";slider.dir="ltr";slider.id="story-slider";slider.min="0";slider.max=String(events.length-1);slider.setAttribute("aria-label","خطوة التنفيذ المسجلة");
   const rail=el("div","story-rail");rail.id="story-rail";rail.setAttribute("aria-label","أحداث التنفيذ");
   const grid=el("div","story-step-grid"),code=el("div","story-step-code"),data=el("div","story-step-data");
-  const line=mono("pre","");line.id="story-line";const meta=p("");meta.id="story-frame";
+  const line=mono("pre","");line.classList.add("story-line-fallback");const meta=p("");meta.id="story-frame";
   const detail=button("عرض السطر في المخطط التفصيلي",()=>{const e=events[pos];onEvidence?.(e.line,e.event_id)});
   const delta=el("div","story-values");delta.id="story-values";
-  add(code,el("h4","","السطر المحدد"),line,meta,detail);add(data,el("h4","","القيم في هذه اللحظة"),delta);
-  const learning=window.AlgoXRayLearning.build(report,events,lines,i=>{stop();select(i)});
+  add(code,el("h4","","الكود عند الخطوة"),meta);
+  const previousByFrame=new Map();
+  const previousEvents=events.map(e=>{const previous=previousByFrame.get(e.frame_id);previousByFrame.set(e.frame_id,e);return previous});
+  const learning=window.AlgoXRayLearning.build(report,events,previousEvents,lines,i=>{stop();select(i)});
   const inspector=learning.host;
   const explanation=inspector.querySelector("#learning-explain"),relation=inspector.querySelector("#learning-relations");
-  code.append(inspector.querySelector("#learning-source"));
-  data.append(inspector.querySelector("#learning-frames"));
+  const context=inspector.querySelector("#learning-source"),frames=inspector.querySelector("#learning-frames");
+  add(code,context,line,detail);add(data,explanation,relation,delta);
   const prediction=inspector.querySelector("#learning-predict"),keyNav=inspector.querySelector(".learning-key-nav");
-  add(grid,code,data);add(actions,prev,progress,play,next);add(host,actions,slider,rail,keyNav,add(el("div","learning-overview"),explanation,relation),grid,prediction,
-    p(w.trace_status==="complete"?"الخطوات المسجلة لهذا التنفيذ كاملة ضمن نطاق العامل.":"التتبع جزئي أو غير مكتمل؛ الرسم يعرض فقط الأحداث المتوفرة."));
+  if(w.trace_status!=="complete")host.append(el("p","story-trace-status","التتبع جزئي أو غير مكتمل. يعرض الرسم الأحداث المتوفرة."));
+  add(grid,code,data);
+  add(actions,add(el("div","story-step-buttons"),prev,play,next),progress,keyNav);
+  add(host,add(el("div","story-controls"),actions,slider,rail),grid,prediction,frames);
   let pos=0;
   function select(i){
    if(!Number.isInteger(i)||i<0||i>=events.length)return false;
+   const previousChip=rail.children[pos];
+   if(previousChip){previousChip.removeAttribute("aria-current");previousChip.tabIndex=-1}
    pos=i;const e=events[i];slider.value=String(i);progress.textContent=(i+1)+" / "+events.length;
+   slider.setAttribute("aria-valuetext",`الخطوة ${i+1} من ${events.length}`);
    prev.disabled=i===0;next.disabled=i===events.length-1;
    line.textContent=e.line>0?"L"+e.line+"  "+(lines[e.line-1]??""):"بداية إطار التنفيذ";meta.textContent=(labelKind[e.kind]||"حدث مسجل")+" · "+e.event_id+" · "+(e.function||"")+" · "+(e.frame_id||"");
-   for(const b of rail.children){const active=Number(b.dataset.pos)===i;b.setAttribute("aria-current",active?"step":"false");}
    const current=e.locals||{};
-   const previous=events.slice(0,i).reverse().find(x=>x.frame_id===e.frame_id);
+   const previous=previousEvents[i];
    const prior=previous?.locals||{};
    const names=Object.keys(current);
    const changed=names.filter(k=>known(current[k])&&(!known(prior[k])||window.AlgoXRayLearning.changed(prior[k],current[k])));
@@ -95,40 +100,107 @@ window.AlgoXRayStory=(()=>{
     const card=el("div","story-variable");card.dataset.variable=k;
     add(card,add(el("div","story-var-title"),mono("strong",k),different?el("span","story-change-label","تغيّر مرصود"):null));
     if(different){
-     const before=add(el("div","story-snapshot"),el("span","story-note","لقطة "+previous.event_id),values(old));
-     const after=add(el("div","story-snapshot"),el("span","story-note","لقطة "+e.event_id),values(v,old));
+     const before=add(el("div","story-snapshot"),el("span","story-note","اللقطة السابقة"),values(old));
+     const after=add(el("div","story-snapshot"),el("span","story-note","اللقطة الحالية"),values(v,old));
      add(card,add(el("div","story-transition"),before,el("span","story-arrow","→"),after));
     }else card.append(values(v,old));
     if(!chartShown){
      const chart=window.AlgoXRayLearning.numericBars(v,old);
-     if(chart){chartShown=true;const d=el("details","learning-array-details");d.open=Boolean(chart.querySelector(".learning-reorder"));add(d,el("summary","","رسم القيم العددية"),chart);card.append(d)}
+     if(chart){
+      chartShown=true;
+      const d=el("details","learning-array-details");d.open=Boolean(chart.querySelector(".learning-reorder"));
+      add(d,el("summary","",d.open?"تغيّرت مواضع القيم":"رسم القيم العددية"),chart);
+      if(d.open)card.querySelector(".story-var-title").after(d);else card.append(d);
+     }
     }
     delta.append(card);
    }
    if(!ordered.length)delta.append(p("لم تُسجل متغيرات محلية في هذه اللقطة."));
    if(ordered.length>12||e.snapshot_meta?.omitted_locals)delta.append(p("بعض القيم غير معروضة أو غير مسجلة. راجع اللقطة التفصيلية."));
    learning.render(i);
+   const activeLine=context.querySelector('[aria-current="step"]');
+   line.hidden=Boolean(activeLine);line.id=activeLine?"":"story-line";
+   if(activeLine)activeLine.id="story-line";
    // Scroll only the rail, never move the page unexpectedly.
    const selected=rail.children[i];
-   if(selected)rail.scrollLeft=selected.offsetLeft-rail.clientWidth/2+selected.offsetWidth/2;
+   if(selected){selected.setAttribute("aria-current","step");selected.tabIndex=0;rail.scrollLeft=selected.offsetLeft-rail.clientWidth/2+selected.offsetWidth/2}
    return true;
   }
   events.forEach((e,i)=>{
-   const b=button("",()=>{stop();select(i)});b.classList.add("story-step-chip");b.dataset.pos=String(i);b.dataset.eventId=e.event_id;b.dir="ltr";
+   const b=button("",()=>{stop();select(i)});b.classList.add("story-step-chip");b.dataset.pos=String(i);b.dataset.eventId=e.event_id;b.dir="ltr";b.tabIndex=-1;
    add(b,el("small","",e.event_id),el("strong","","L"+e.line));b.title=(labelKind[e.kind]||e.kind)+" · "+e.function;rail.append(b);
+  });
+  rail.addEventListener("keydown",e=>{
+   if(!e.target.closest(".story-step-chip"))return;
+   const target={ArrowLeft:Math.max(0,pos-1),ArrowRight:Math.min(events.length-1,pos+1),Home:0,End:events.length-1}[e.key];
+   if(!Number.isInteger(target))return;
+   e.preventDefault();stop();select(target);rail.children[target].focus({preventScroll:true});
   });
   slider.oninput=()=>{stop();select(Number(slider.value))};
   const firstArray=events.findIndex(e=>Object.values(e.locals||{}).some(v=>Array.isArray(v)||v?.kind==="list"));const first=firstArray>=0?firstArray:events.findIndex(e=>Object.keys(e.locals||{}).length);select(first<0?0:first);
   return {host,stop,selectEvent:id=>{stop();return select(events.findIndex(e=>e.event_id===id))},selectLine:n=>{stop();return select(events.findIndex(e=>e.line===n))}};
  }
+ function compareWitness(report){
+  const witness=report.witness;
+  const host=el("div","story-witness");
+  const mismatch=report.kind==="wrong_answer";
+  const sample=witness.judgment?.reference_output_is_example;
+  const observed=witness.student;
+  const expected=witness.reference;
+  const output=(title,run,tone)=>{
+   const text=run?.stdout;
+   const body=typeof text==="string"&&text.length?text:
+    run?.status==="ok"?"(بدون خرج)":run?.detail||"الخرج غير متاح";
+   const cell=add(el("div","story-io-cell"),el("h4","",title),mono("pre",body));
+   cell.dataset.tone=tone;
+   return cell;
+  };
+  const input=add(el("details","story-witness-input"),el("summary","","مدخل حالة الفشل"),mono("pre",witness.stdin||""));
+  const outputs=add(el("div","story-witness-outputs"),output("خرج برنامجك",observed,mismatch?"mismatch":""),
+    output(sample?"مثال لخرج مقبول":"الخرج المرجعي",expected,"reference"));
+  const traces=el("details","story-witness-traces");
+  add(traces,el("summary","","قارن خطوات الحل والمرجع"),p("المساران على المدخل نفسه. حرّك مؤشر كل مسار بشكل مستقل."));
+  const columns=el("div","story-compare-columns");
+  for(const [run,title,source] of [[observed,"برنامجك",report.student_source],[expected,"الحل المرجعي",report.reference_source]]){
+   const panel=add(el("div","story-compare-path"),el("h4","",title));
+   const events=run?.events||[];
+   if(!events.length){
+    panel.append(p(run?.trace_status==="disabled"?"لم يُسجّل تتبع لهذا المسار.":"لا توجد خطوات محفوظة لهذا المسار."));
+   }else{
+    const lines=(source||"").split(/\r\n?|\n/);
+    const count=el("span","story-counter"),range=el("input","story-slider");
+    range.type="range";range.dir="ltr";range.min="0";range.max=String(events.length-1);
+    range.value=String(Math.max(0,events.findIndex(e=>e.kind==="line")));
+    range.setAttribute("aria-label","خطوات "+title);
+    const snapshot=el("div","story-compare-snapshot");
+    range.oninput=()=>{
+     const index=Number(range.value),event=events[index];
+     count.textContent=(index+1)+" / "+events.length;
+     range.setAttribute("aria-valuetext",`الخطوة ${index+1} من ${events.length}`);
+     snapshot.replaceChildren(p((labelKind[event.kind]||"حدث مسجل")+" · "+event.event_id));
+     if(lines[event.line-1]!==undefined&&source)snapshot.append(mono("pre","L"+event.line+"  "+lines[event.line-1]));
+     const entries=Object.entries(event.locals||{});
+     for(const [name,value] of entries.slice(0,6))snapshot.append(add(el("div","story-compare-value"),mono("strong",name),values(value)));
+     if(!entries.length)snapshot.append(p("لا توجد قيم محلية مسجلة في هذه اللقطة."));
+     if(entries.length>6||event.snapshot_meta?.omitted_locals)snapshot.append(p("بعض القيم غير معروضة أو غير مسجلة."));
+    };
+    if(run.trace_status!=="complete")panel.append(p("هذا التتبع جزئي أو غير مكتمل."));
+    add(panel,count,range,snapshot);range.oninput();
+   }
+   columns.append(panel);
+  }
+  traces.append(columns);
+  return add(host,outputs,input,traces);
+ }
  function findings(report,trace,onTrace){
   const loc=report.evidence_localization||{},rows=Array.isArray(loc.ranked)?loc.ranked:[];
-  const host=section("أين أراجع الكود؟","ترتيب مبني على إشارات الأدلة المتاحة، لا نسبة احتمال ولا إثبات للسبب.");
+  const host=section("ماذا حدث في حالة الفشل؟");
   host.id="story-findings";
   if(report.status!=="observed_mismatch"){
    host.append(p("هذه لقطة من التنفيذ، وليست حالة فشل مثبتة؛ لن نعرض أسطراً على أنها أخطاء."));
    return host;
   }
+  host.append(compareWitness(report));
   const lines=(report.student_source||"").split(/\r\n?|\n/);
   const candidates=rows.filter(r=>Number.isInteger(r.line)&&r.line>0&&r.line<=lines.length).slice(0,3);
   const judgment=report.witness?.judgment,reasonText={
@@ -139,6 +211,9 @@ window.AlgoXRayStory=(()=>{
   };
   if(judgment?.status==="rejected"&&reasonText[judgment.reason])host.append(p(reasonText[judgment.reason]));
   if(report.kind==="exception"&&report.witness?.student?.detail)host.append(p("توقف البرنامج بسبب استثناء أبلغ عنه العامل: "+report.witness.student.detail+"."));
+  const review=add(el("div","story-fault-review"),el("h4","","سطور تستحق المراجعة"),p("الترتيب مبني على الأدلة المتوفرة. قد يكون السبب في موضع آخر."));
+  host.append(review);
+  const reviewGrid=el("div","story-fault-grid"),reviewActions=el("div","story-fault-actions");
   if(candidates.length){
    const center=candidates[0].line,first=Math.max(1,center-4),last=Math.min(lines.length,center+6),map=el("div","story-code-map");map.id="story-code-map";map.dir="ltr";
    for(let i=first;i<=last;i++){
@@ -147,7 +222,7 @@ window.AlgoXRayStory=(()=>{
     add(row,el("span","story-line-number",i),mono("code",lines[i-1]||" "),rank>=0?el("span","story-rank",rank+1):null);
     map.append(row);
    }
-   add(host,p("ترشيحات على الكود الفعلي (الأرقام ترتيب المراجعة فقط)."),map);
+   add(review,add(reviewGrid,map,reviewActions));
   }
   if(!candidates.length)host.append(p("وجدنا اختلافاً أو استثناء، لكن الأدلة لا تكفي لتحديد موضع السبب. قد يكون شرط أو سطر مفقوداً."));
   for(const [i,r] of candidates.entries()){
@@ -157,27 +232,25 @@ window.AlgoXRayStory=(()=>{
     if(selected){onTrace?.();trace.host.scrollIntoView({block:"start"})}
     else onMissing.textContent="لا توجد لقطة لهذا السطر؛ الملاحظة تخص المصدر فقط.";
    });
-   const onMissing=p("");b.classList.add("story-finding");b.dataset.line=String(r.line);b.dataset.rank=String(i+1);
+   const onMissing=p("");onMissing.setAttribute("role","status");b.classList.add("story-finding");b.dataset.line=String(r.line);b.dataset.rank=String(i+1);
    const evidence=(r.signals||[]).map(s=>signalLabels[s.kind]).filter(Boolean);
-   add(b,add(el("div","story-finding-top"),el("span","","مرشح "+(i+1)),mono("strong","L"+r.line)),
-     mono("pre",lines[r.line-1]),el("span","story-note",evidence.join(" ")||"إشارة مسجلة في تقرير المحرك."));
-   add(host,b,onMissing);
+   add(b,add(el("div","story-finding-top"),el("span","","شاهد دليل السطر"),mono("strong","L"+r.line)),
+     el("span","story-note",evidence.join(" ")||"إشارة مسجلة في تقرير المحرك."));
+   add(reviewActions,b,onMissing);
   }
   const bounds=(loc.loop_bounds||[]).find(b=>Number.isInteger(b.array_length)&&b.array_length>0&&b.array_length<=24&&Array.isArray(b.omitted_indices)&&Array.isArray(b.observed_read_indices));
   if(bounds){
    const skipped=bounds.omitted_indices.filter(Number.isInteger);
-   const reads=bounds.observed_read_indices.filter(Number.isInteger);
    if(skipped.length){
-    const note=add(el("div","learning-fault-explanation"),el("strong","","ماذا توضّح الحلقة في حالة الفشل؟"),p("القراءات التي تدعمها اللقطات: "+reads.join("، ")+". الفهارس خارج النطاق المحسوب: "+skipped.join("، ")+". راجع هل يفترض أن تشمل الحلقة هذه العناصر."));
+    const note=add(el("div","learning-fault-explanation"),el("strong","","ماذا توضّح الحلقة؟"),p("راجع هل تتطلب المسألة معالجة الفهارس خارج نطاق الحلقة."));
     host.append(note);
    }
    const strip=el("div","story-array story-range");strip.dir="ltr";
    for(let i=0;i<bounds.array_length;i++){
     const read=bounds.observed_read_indices.includes(i),omitted=bounds.omitted_indices.includes(i);
-    const v=add(el("div","story-cell"),el("span","","index"),el("strong","",i));v.classList.add(read?"story-read":omitted?"story-skipped":"story-unknown");strip.append(v);
+    const v=add(el("div","story-cell"),el("strong","",i),el("span","",read?"قراءة مرصودة":omitted?"خارج النطاق":"غير مؤكد"));v.classList.add(read?"story-read":omitted?"story-skipped":"story-unknown");strip.append(v);
    }
-   add(host,el("h4","","فهارس القائمة "+bounds.array+" في الحلقة"),strip,
-    p("الأخضر: قراءات مدعومة. البرتقالي: فهارس خارج النطاق المحسوب للحلقة. تحقق إن كانت المسألة تتطلب معالجتها."));
+   add(host,el("h4","","فهارس القائمة "+bounds.array+" في الحلقة"),strip);
   }
   const hypotheses=(report.hypotheses||[]).filter(h=>h.status==="hypothesis"&&!h.conflicting_claims).slice(0,2);
   for(const h of hypotheses){
@@ -222,7 +295,7 @@ window.AlgoXRayStory=(()=>{
   if(!profile||!Array.isArray(profile.lines))return null;
   const rows=profile.lines.filter(r=>Number.isFinite(r.self_wall_ns)&&r.self_wall_ns>0&&Number.isInteger(r.line)).sort((a,b)=>b.self_wall_ns-a.self_wall_ns).slice(0,4);
   if(!rows.length)return null;
-  const host=section("أين استغرق التنفيذ وقتاً؟","زمن السطر الذاتي أثناء التتبع، باستثناء زمن استدعاءات الطفل المسجلة. ليس زمن التشغيل العادي. "+(profile.status==="complete"?"القياس مكتمل ضمن نطاق العامل.":"القياس جزئي."));
+  const host=section("زمن الأسطر أثناء التتبع","زمن تنفيذ السطر نفسه، باستثناء وقت الاستدعاءات المسجلة. "+(profile.status==="complete"?"":"القياس جزئي."));
   host.id="story-hotspots";const bars=el("div","story-bars");const max=rows[0].self_wall_ns;
   for(const r of rows){
    const b=button("",()=>{
@@ -243,13 +316,13 @@ window.AlgoXRayStory=(()=>{
   return host;
  }
  function performance(report){
-  const host=section("زمن التشغيل الفعلي","قياسات دون تتبع؛ الأعمدة تمثل تشغيلات مستقلة أو وسيط الزمن لكل حجم عند قياس النمو. لا نخلط زمن الحاوية أو التتبع مع زمن البرنامج.");
+  const host=section("زمن التشغيل دون تتبع","القياس يخص تنفيذ البرنامج على المدخلات المختارة.");
   host.id="story-performance";
   const points=Array.isArray(report?.points)?report.points:[];
   if(!points.length){host.append(p("لا توجد قياسات مكتملة."));return host}
   const scaling=points.length>1&&points.every(p=>Number.isFinite(p.size));
-  const rows=scaling?points.map(q=>({label:(report.size_field||"size")+" = "+q.size,value:q.summary?.wall_ns?.median,status:q.summary?.completed===q.summary?.requested?"ok":"partial",suffix:q.summary?.completed+"/"+q.summary?.requested})):
-   (points[0].runs||[]).map((q,i)=>({label:"تشغيل "+(i+1),value:q.wall_ns,status:q.status,suffix:q.status}));
+  const rows=scaling?points.map(q=>({label:(report.size_field||"size")+" = "+q.size,value:q.summary?.wall_ns?.median,status:q.summary?.completed===q.summary?.requested?"ok":"partial"})):
+   (points[0].runs||[]).map((q,i)=>({label:"تشغيل "+(i+1),value:q.wall_ns,status:q.status}));
   const valid=rows.filter(q=>Number.isFinite(q.value)&&q.value>=0&&q.status==="ok");
   const max=Math.max(1,...valid.map(q=>q.value));
   const bars=el("div","story-bars");bars.id="story-performance-bars";
@@ -258,16 +331,20 @@ window.AlgoXRayStory=(()=>{
    const row=add(el("div","story-bar-row"),el("span","",r.label),add(el("div","story-bar-track"),fill),mono("strong",ok?(r.value/1e6).toFixed(4)+" ms":r.status==="timeout"?"انتهت المهلة":"غير مكتمل"));
    bars.append(row);
   }
-  host.append(bars);
-  const curve=window.AlgoXRayLearning.growth(report);if(curve)host.append(curve);
+  const curve=window.AlgoXRayLearning.growth(report);
   const point=points[0],s=point.summary||{};
   if(!scaling){
    const cards=el("div","story-time-summary");
-   for(const [title,v] of [["الوسيط",s.wall_ns?.median],["الأقل",s.wall_ns?.min],["الأعلى",s.wall_ns?.max]]){
-    add(cards,add(el("div","story-metric"),el("span","",title),mono("strong",Number.isFinite(v)?(v/1e6).toFixed(4)+" ms":"—")));
-   }host.append(cards);
-   host.append(p("هذا مدخل واحد؛ لا يمكن استنتاج معدل نمو الزمن أو التعقيد منه."));
+   if(Number.isFinite(s.wall_ns?.median)){
+    for(const [title,v] of [["الوسيط",s.wall_ns?.median],["الأقل",s.wall_ns?.min],["الأعلى",s.wall_ns?.max]]){
+     add(cards,add(el("div","story-metric"),el("span","",title),mono("strong",Number.isFinite(v)?(v/1e6).toFixed(4)+" ms":"—")));
+    }
+    host.append(cards);
+   }else host.append(p("لم يكتمل أي تشغيل صالح لقياس الزمن."));
+   if(rows.length)host.append(bars);
+   if(valid.length)host.append(p("هذا القياس لمدخل واحد. تقدير النمو يحتاج إلى أحجام مختلفة."));
   }else{
+   host.append(curve||bars);
    const g=report.growth||{};
    host.append(p(Number.isFinite(g.wall_log_log_exponent)?"ميل النمو المرصود على الأحجام المقاسة: "+g.wall_log_log_exponent.toFixed(2)+"؛ ليس إثباتاً لفئة التعقيد.":"البيانات غير كافية أو غير مستقرة لتقدير نمو موثوق."));
   }

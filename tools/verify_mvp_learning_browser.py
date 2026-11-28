@@ -55,8 +55,14 @@ def test(url,folder):
         expected=[(a.index(v),i) for i,v in enumerate(b) if a.index(v)!=i]
         actual=page.locator('[data-variable="a"] .learning-movement').evaluate_all("(els)=>els.map(e=>[Number(e.dataset.from),Number(e.dataset.to)])")
         assert actual==[list(x) for x in expected],(actual,expected)
+        expect(page.locator('[data-variable="a"] .learning-position-map svg path')).to_have_count(len(expected)*2)
         expect(page.locator('[data-variable="a"] .learning-number-row strong')).to_have_text(list(map(str,b)))
         page.screenshot(path=str(folder/"learning-sort.jpg"),type="jpeg",quality=75)
+        selected=page.locator('#story-rail [aria-current="step"]')
+        selected.focus()
+        selected.press("ArrowRight")
+        expect(page.locator('#story-rail [aria-current="step"]')).to_have_attribute("data-pos",str(idx+1))
+        assert page.locator('#story-rail [tabindex="0"]').count()==1
         checks.append("observed_array_positions_and_numeric_bars")
         relation=next(r for r in sort["student_graph"]["relations"]["data"] if r["write"]["name"]=="total")
         i=next(i for i,e in enumerate(ev) if e["event_id"]==relation["after_event_id"])
@@ -127,6 +133,16 @@ def test(url,folder):
         }""")
         assert fixture=={"dup":False,"partial":False,"big":False,"unsafe":False,"points":2,"links":0},fixture
         checks.append("duplicate_partial_and_unsafe_numeric_abstention_growth_gaps")
+        missing=page.evaluate("""()=>{
+          const story=AlgoXRayStory.execution({status:'observed_mismatch',kind:'wrong_answer',student_source:'print(0)',
+            witness:{student:{status:'ok',trace_status:'truncated',stdout:'0',events:[{line:1,kind:'line',frame_id:'F1',event_id:'E0'}]},
+                     reference:{status:'ok',trace_status:'disabled',stdout:'1',events:[]}}});
+          const timing=AlgoXRayStory.performance({points:[{runs:[{status:'timeout'}],summary:{completed:0,requested:1}}]});
+          return [story.querySelector('.story-trace-status').textContent,story.querySelectorAll('.story-compare-path input').length,
+            story.querySelector('.story-compare-path:last-child').textContent,timing.textContent];
+        }""")
+        assert "جزئي" in missing[0] and missing[1]==1 and "لم يُسجّل" in missing[2] and "لم يكتمل أي تشغيل" in missing[3],missing
+        checks.append("explicit_partial_trace_missing_reference_and_missing_timing")
         # Mobile actual nested trace display.
         page.set_viewport_size({"width":390,"height":844})
         select(i)
@@ -167,10 +183,21 @@ def test(url,folder):
         assert all(q["summary"]["completed"]==1 and q["correctness"]=="recorded_match" for q in measured["points"])
         expect(page.locator("#ux-tab-summary")).to_have_attribute("aria-selected","true")
         tab("performance")
+        active_tab=page.locator("#ux-tab-performance")
+        active_tab.hover()
+        expect(active_tab).to_have_css("background-color","rgb(36, 72, 173)")
         expect(page.locator("#learning-growth")).to_be_visible()
         expect(page.locator("#learning-growth circle")).to_have_count(3)
         assert page.locator("#learning-growth g[data-size]").evaluate_all("(nodes)=>nodes.map(e=>Number(e.dataset.size))")==[1,4,12]
         assert measured["growth"]["status"]=="insufficient_points_or_repetitions"
+        before=list(posts)
+        selection=page.locator('#learning-growth button[data-size="12"]')
+        selection.focus()
+        selection.press("Enter")
+        expect(selection).to_have_attribute("aria-pressed","true")
+        median=measured["points"][2]["summary"]["wall_ns"]["median"]
+        expect(page.locator("#learning-growth .learning-growth-detail strong").first).to_have_text(f"{median/1e6:.4f} ms")
+        assert posts==before
         page.locator("#learning-growth").scroll_into_view_if_needed()
         page.screenshot(path=str(folder/"learning-growth.jpg"),type="jpeg",quality=75)
         record["growth"]={"points":[{"size":q["size"],"wall_ns":q["summary"]["wall_ns"],"correctness":q["correctness"]} for q in measured["points"]],"fit":measured["growth"]["status"]}

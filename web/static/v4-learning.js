@@ -9,6 +9,7 @@ window.AlgoXRayLearning=(()=>{
  const mono=(tag,t)=>{const n=el(tag,"learning-mono",t);n.dir="ltr";return n};
  const btn=(title,action)=>{const n=el("button","learning-button",title);n.type="button";n.onclick=action;return n};
  const own=(o,k)=>Object.prototype.hasOwnProperty.call(o||{},k);
+ const svg=(tag,attrs,text)=>{const n=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n};
  // JSON numbers above JS safe integer precision may already have been rounded.
  const numeric=v=>typeof v==="number"&&Number.isFinite(v)&&(!Number.isInteger(v)||Number.isSafeInteger(v));
  const scalar=v=>v===null||typeof v==="boolean"||typeof v==="string"||numeric(v);
@@ -42,11 +43,14 @@ window.AlgoXRayLearning=(()=>{
     for(let j=0;j<width;j++){
      const exists=j<row.length,cur=row[j],before=prior?.[i]?.[j];
      const cell=el("td","",exists?value(cur):"—");cell.dataset.row=String(i);cell.dataset.col=String(j);
-     if(exists&&scalar(before)&&scalar(cur)&&!same(before,cur)){cell.classList.add("learning-cell-changed");cell.title=value(before)+" → "+value(cur)}
+     if(exists&&scalar(before)&&scalar(cur)&&!same(before,cur)){
+      cell.classList.add("learning-cell-changed");cell.title=value(before)+" → "+value(cur);
+      cell.setAttribute("aria-label",`الصف ${i}، العمود ${j}، تغيّر من ${value(before)} إلى ${value(cur)}`);
+     }
      tr.append(cell);
     }body.append(tr)
    });
-   tbl.append(body);add(h,tbl,p(v?.truncated?"جدول جزئي: يعرض الصفوف المسجلة فقط.":"صفوف وأعمدة اللقطة المسجلة؛ التلوين يوضح الخلايا التي اختلفت عن اللقطة السابقة المتاحة."));
+   tbl.append(body);add(h,tbl,v?.truncated?p("جدول جزئي: يعرض الصفوف المسجلة فقط."):null);
    return h;
   }
   if(v?.kind==="dict"&&Array.isArray(v.entries)){
@@ -63,6 +67,26 @@ window.AlgoXRayLearning=(()=>{
    return add(el("div","learning-set-wrap"),wrap,p("مجموعة عناصر؛ ترتيب العرض ليس ترتيب التنفيذ."+(v.truncated?" اللقطة جزئية.":"")));
   }
   return null;
+ }
+ function positionMap(before,after,movements){
+  const cellWidth=70,width=cellWidth*after.length;
+  const diagram=svg("svg",{viewBox:`0 0 ${width} 108`,width,height:108,"aria-hidden":"true"});
+  const x=i=>cellWidth*(i+.5);
+  for(const {from,to} of movements){
+   const color=to>from?"#3158c8":"#a25e19";
+   const line=svg("path",{d:`M ${x(from)},30 C ${x(from)},53 ${x(to)},55 ${x(to)},78`,stroke:color,fill:"none","stroke-width":2.5});
+   diagram.append(line,svg("path",{d:`M ${x(to)-4},72 L ${x(to)},78 L ${x(to)+4},72`,stroke:color,fill:"none","stroke-width":2.5}));
+  }
+  for(const [row,y] of [[before,5],[after,80]]){
+   row.forEach((n,i)=>{
+    const label=value(n),truncated=label.length>8?label.slice(0,7)+"…":label;
+    const node=svg("g",{});
+    node.append(svg("title",{},label),svg("rect",{x:x(i)-28,y,width:56,height:23,rx:5,fill:"#edf2fa",stroke:"#cad6e8"}),
+     svg("text",{x:x(i),y:y+16,"text-anchor":"middle",fill:"#192c49","font-size":11},truncated));
+    diagram.append(node);
+   });
+  }
+  return add(el("div","learning-position-map"),p("قبل"),diagram,p("بعد"));
  }
  function numericBars(v,old){
   const a=array(v),b=array(old);
@@ -85,12 +109,13 @@ window.AlgoXRayLearning=(()=>{
     for(const m of movements.slice(0,12)){
      const row=add(el("div","learning-movement"),mono("strong",value(m.x)),mono("span",String(m.from)+" → "+m.to));row.dataset.from=String(m.from);row.dataset.to=String(m.to);map.append(row)
     }
-    add(outer,el("strong","learning-small-title","تغيّر مواضع القيم"),map,p("نفس القيم الفريدة في لقطتين بمواضع مختلفة. الأسهم تقارن المواضع فقط، ولا تثبت طريقة الفرز أو حدوث swap بعينه."));
+    outer.prepend(positionMap(b,a,movements),map,
+     p("الأسهم تصل موضع القيمة نفسها بين اللقطتين."));
    }
   }
   return outer;
  }
- function build(report,events,lines,jump){
+ function build(report,events,previousEvents,lines,jump){
   const host=el("div","learning-inspector");host.id="learning-inspector";
   const explain=el("div","learning-explain");explain.id="learning-explain";
   const relation=el("div","learning-relations");relation.id="learning-relations";
@@ -102,19 +127,19 @@ window.AlgoXRayLearning=(()=>{
   const indexById=new Map(events.map((e,i)=>[e.event_id,i]));
   const go=id=>{const i=indexById.get(id);if(i!==undefined)jump(i)};
   const marks=events.map((e,i)=>{
-   const prev=events.slice(0,i).reverse().find(x=>x.frame_id===e.frame_id);
+   const prev=previousEvents[i];
    return i===0||["call","return","exception"].includes(e.kind)||Object.keys(e.locals||{}).some(k=>!own(prev?.locals,k)||changed(prev.locals[k],e.locals[k]));
   });
   const keyNav=el("div","learning-key-nav");
   let pos=0;
   const back=btn("التغيّر السابق",()=>{for(let i=pos-1;i>=0;i--)if(marks[i]){jump(i);break}}),forward=btn("التغيّر التالي",()=>{for(let i=pos+1;i<events.length;i++)if(marks[i]){jump(i);break}});
   back.id="learning-prev-change";forward.id="learning-next-change";
-  add(keyNav,back,el("span","learning-note","انتقل إلى لقطة فيها قيمة جديدة أو تغيّر مدعوم أو حدث دالة."),forward);
+  add(keyNav,back,forward);
   add(host,explain,relation,context,tree,predict,keyNav);
   function render(i){
-   pos=i;const e=events[i],previous=events.slice(0,i).reverse().find(x=>x.frame_id===e.frame_id),cur=e.locals||{},prior=previous?.locals||{};
+   pos=i;const e=events[i],previous=previousEvents[i],cur=e.locals||{},prior=previous?.locals||{};
    explain.replaceChildren();
-   const title=e.kind==="call"?"دخول إطار تنفيذ":e.kind==="return"?"حدث عودة من الإطار":e.kind==="exception"?"رُصد استثناء":"قبل تنفيذ السطر "+e.line;
+   const title=e.kind==="call"?"دخول إطار تنفيذ":e.kind==="return"?"حدث عودة من الإطار":e.kind==="exception"?"رُصد استثناء":"ما الذي تغيّر في القيم؟";
    const what=el("strong","",title);what.id="learning-step-title";explain.append(what);
    const diffs=Object.keys(cur).filter(k=>own(prior,k)&&changed(prior[k],cur[k]));
    const added=Object.keys(cur).filter(k=>!own(prior,k)&&scalar(cur[k]));
@@ -138,7 +163,7 @@ window.AlgoXRayLearning=(()=>{
    if(e.kind==="exception"&&e.exception_type)explain.append(p("نوع الاستثناء المسجل: "+e.exception_type+". قد يعالجه البرنامج لاحقاً."));
    if(previous){
     if(items.children.length&&previous.line>0&&previous.line<=lines.length){
-     const context=add(el("div","learning-previous-source"),p("السطر عند اللقطة السابقة (قبل تنفيذه إذا كانت من نوع line):"),mono("code","L"+previous.line+"  "+lines[previous.line-1]));
+     const context=add(el("div","learning-previous-source"),p(previous.kind==="line"?"اللقطة السابقة، قبل تنفيذ هذا السطر":"السطر عند اللقطة السابقة"),mono("code","L"+previous.line+"  "+lines[previous.line-1]));
      explain.append(context);
     }
     explain.append(btn("شاهد اللقطة السابقة في هذا الإطار",()=>go(previous.event_id)));
@@ -167,7 +192,7 @@ window.AlgoXRayLearning=(()=>{
      if(l===e.line){row.classList.add("learning-code-current");row.setAttribute("aria-current","step")}
      code.append(row)
     }
-    add(context,el("strong","learning-small-title","السطر ضمن سياق الكود"),code)
+    context.append(code);
    }
    // Frame genealogy observed up to the selected event, not an assumed live stack.
    tree.replaceChildren();
@@ -232,21 +257,38 @@ window.AlgoXRayLearning=(()=>{
   const stats=q=>q.summary?.wall_ns;
   const usable=q=>q.summary?.completed===q.summary?.requested&&q.summary?.completed>0&&["min","median","max"].every(k=>Number.isFinite(stats(q)?.[k])&&stats(q)[k]>=0);
   const valid=points.filter(usable);if(!valid.length)return null;
-  const ns="http://www.w3.org/2000/svg",svg=(tag,attrs,text)=>{const n=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,String(v));if(text!==undefined)n.textContent=text;return n};
   const W=640,H=245,L=78,R=20,T=18,B=44,max=Math.max(1,...valid.map(q=>stats(q).max));
   const lo=points[0].size,hi=points.at(-1).size,x=n=>L+(n-lo)/(hi-lo)*(W-L-R),y=n=>T+(1-n/max)*(H-T-B);
-  const canvas=svg("svg",{viewBox:"0 0 "+W+" "+H,role:"img","aria-label":"منحنى وسيط زمن التنفيذ حسب حجم المدخل مع نطاق أقل وأعلى قياس"});canvas.classList.add("learning-growth-svg");
-  for(let i=0;i<=4;i++){const n=max*i/4;canvas.append(svg("line",{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:"#d9e1eb"}),svg("text",{x:L-8,y:y(n)+4,"text-anchor":"end","font-size":11},(n/1e6).toPrecision(3)))}
-  canvas.append(svg("text",{x:12,y:12,"font-size":11},"ms"));
+  const canvas=svg("svg",{viewBox:"0 0 "+W+" "+H,role:"img",direction:"ltr","aria-label":"منحنى وسيط زمن التنفيذ حسب حجم المدخل مع نطاق أقل وأعلى قياس"});canvas.classList.add("learning-growth-svg");
+  for(let i=0;i<=4;i++){const n=max*i/4;canvas.append(svg("line",{x1:L,x2:W-R,y1:y(n),y2:y(n),stroke:"#d9e1eb"}),svg("text",{x:L-10,y:y(n)+4,"text-anchor":"end","font-size":14},(n/1e6).toPrecision(3)))}
+  canvas.append(svg("text",{x:12,y:15,"font-size":13},"ms"));
+  let previousLabelX=-Infinity;
   for(const [i,q] of points.entries()){
-   const px=x(q.size);canvas.append(svg("text",{x:px,y:H-16,"text-anchor":"middle","font-size":11},String(q.size)));
-   if(!usable(q)){canvas.append(svg("text",{x:px,y:H-B-5,"text-anchor":"middle","font-size":10,fill:"#a15b0c"},"—"));continue}
+   const px=x(q.size);
+   if(i===points.length-1||(px-previousLabelX>=55&&x(hi)-px>=55)){
+    canvas.append(svg("text",{x:px,y:H-16,"text-anchor":"middle","font-size":14},String(q.size)));previousLabelX=px;
+   }
+   if(!usable(q)){canvas.append(svg("text",{x:px,y:H-B-5,"text-anchor":"middle","font-size":14,fill:"#a15b0c"},"×"));continue}
    const s=stats(q),prev=points[i-1];
    if(prev&&usable(prev))canvas.append(svg("line",{x1:x(prev.size),y1:y(stats(prev).median),x2:px,y2:y(s.median),stroke:"#3158c8","stroke-width":2.5}));
    const group=svg("g",{"data-size":q.size});
    group.append(svg("title",{},String(q.size)+" · "+(s.median/1e6).toPrecision(4)+" ms"),svg("line",{x1:px,x2:px,y1:y(s.min),y2:y(s.max),stroke:"#8196c5","stroke-width":4}),svg("circle",{cx:px,cy:y(s.median),r:5,fill:q.correctness==="recorded_mismatch"?"#b42335":"#3158c8"}));canvas.append(group)
   }
-  const host=add(el("div","learning-growth"),el("strong","","منحنى النمو المرصود"),canvas,p("حقل الحجم: "+(report.size_field||"size")+" · النقطة وسيط القياسات، والخط العمودي أقل/أعلى قياس. لا نصل النقاط عبر قياس ناقص، ولا نثبت فئة Big-O."));host.id="learning-growth";return host;
+  const sizes=el("div","learning-growth-sizes"),detail=el("div","learning-growth-detail");
+  detail.setAttribute("aria-live","polite");
+  const field=report.size_field||"size",statsLabels=[["الوسيط","median"],["الأقل","min"],["الأعلى","max"]];
+  function select(q){
+   for(const b of sizes.children)b.setAttribute("aria-pressed",String(b.dataset.size===String(q.size)));
+   detail.replaceChildren();
+   if(!usable(q)){detail.append(p("القياس غير مكتمل لهذا الحجم."));return}
+   for(const [label,key] of statsLabels)detail.append(add(el("div","story-metric"),el("span","",label),mono("strong",(stats(q)[key]/1e6).toFixed(4)+" ms")));
+   if(q.correctness==="recorded_mismatch")detail.append(p("الخرج غير مطابق للمرجع عند هذا الحجم."));
+  }
+  for(const q of points){const b=btn(`${field} = ${q.size}`,()=>select(q));b.dir="ltr";b.dataset.size=String(q.size);sizes.append(b)}
+  select(valid[0]);
+  const host=add(el("div","learning-growth"),el("h4","","كيف تغيّر الزمن مع حجم المدخل؟"),canvas,
+   p("● وسيط الزمن · الخط العمودي من أقل زمن إلى أعلاه · × قياس ناقص"),sizes,detail);
+  host.id="learning-growth";return host;
  }
  return {build,tableValue,numericBars,growth,scalar,changed,value};
 })();

@@ -52,7 +52,7 @@ window.AlgoXRayTabs=(()=>{
   const techPanel=add(el("section","panel ux-tab-tech"),el("h2","","أدلة التنفيذ"),advancedResult);
   const benchTech=add(el("section","panel ux-tab-tech"),el("h2","","أدلة القياس"),benchDetails);
   add(panels.input,intro,workspace,settingsLink);
-  add(panels.summary,fullPanel,single,results,quick);
+  add(panels.summary,results,single,quick,fullPanel);
   add(panels.execution,execSlot,emptyExec);
   add(panels.fault,faultSlot,emptyFault);
   add(panels.performance,benchPanel,hotSlot,emptyPerf);
@@ -133,7 +133,7 @@ window.AlgoXRayTabs=(()=>{
    single.hidden=!has||Boolean(s.fullReport?.phases?.length)||!record;
    if(!single.hidden){singleVerdict.textContent=verdict[record.status]||"نتيجة مسجلة";singleScope.textContent=record.status==="no_witness_found"?
       "هذا الحكم يخص الحالات المجربة فقط.":record.status==="profiled_execution"?"هذا تنفيذ واحد، لا حكم عام على الصحة.":"راجع الأدلة المتاحة لهذا الطلب."}
-   qTrace.hidden=!traceAvailable;qFault.hidden=!faultAvailable;qShrink.hidden=!faultSlot.querySelector("#story-shrink");
+   qTrace.hidden=!execSlot.querySelector("#story-slider");qFault.hidden=!faultAvailable;qShrink.hidden=!faultSlot.querySelector("#story-shrink-bars");
    qPerf.hidden=!(hotAvailable||measured);quick.hidden=!has;
    if(!has&&active!=="input"&&active!=="advanced")select("input",false);
    if(previousBusy&&!s.busy&&autoPending&&has){autoPending=false;select("summary",true)}

@@ -79,6 +79,20 @@ def test(url,folder):
         expect(page.locator("#story-code-map [data-rank='1'] code")).to_contain_text("range(n-1)")
         expect(page.locator("#story-findings .story-range .story-skipped strong")).to_have_text(["2"])
         expect(page.locator("#story-findings .story-range .story-read strong")).to_have_text(["0","1"])
+        outputs=page.locator(".story-witness-outputs pre")
+        assert outputs.all_text_contents()==[result["witness"]["student"]["stdout"],result["witness"]["reference"]["stdout"]]
+        before_compare=list(posts)
+        comparison=page.locator(".story-witness-traces")
+        comparison.locator("summary").click()
+        student,reference=comparison.get_by_role("slider").all()
+        previous_reference=reference.input_value()
+        student.focus()
+        student.press("End")
+        last=result["witness"]["student"]["events"][-1]
+        expect(comparison.locator(".story-compare-snapshot").first).to_contain_text(last["event_id"])
+        assert reference.input_value()==previous_reference and posts==before_compare
+        comparison.locator("summary").click()
+        checks.append("same_witness_outputs_and_independent_reference_navigation")
         n=len(posts)
         page.screenshot(path=str(folder/"story-localization.jpg"),type="jpeg",quality=75)
         page.locator("#story-findings button.story-finding").first.click()
