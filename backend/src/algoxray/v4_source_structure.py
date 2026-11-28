@@ -5,6 +5,7 @@ does not establish which of several expressions on that line executed.
 """
 import ast
 import hashlib
+import re
 
 VERSION=1
 MAX_NODES=512
@@ -20,7 +21,7 @@ def source_structure(source,events=()):
         result.update(status="syntax_error" if isinstance(exc,SyntaxError) else "unavailable")
         if isinstance(exc,SyntaxError):result["error"]={"line":exc.lineno,"column":exc.offset,"message":exc.msg[:180]}
         return result
-    lines=source.splitlines()
+    lines=re.split(r"\r\n?|\n",source)
     encoded=[line.encode("utf-8") for line in lines]
     stack=[(tree,None,"root",None,0,None)]
     while stack:

@@ -1,5 +1,6 @@
 """Bounded observational debugging for approved stdio packages. No universal correctness claim."""
 import time
+from collections import Counter
 from .v4_contracts import validate_package,serialize,generate,smaller,equal,digest,complexity
 from .v4_isolation import execute_stdio
 from .v4_shrinking import failure_signature
@@ -90,7 +91,7 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         return {"kind":kind,"case":c,"stdin":stdin,"student":actual,"reference":ref,"judgment":judgment}
     cases=[case] if case is not None else [c["case"] for c in p["controls"]]+list(hypothesis_cases(m,seed,count) if generator=="hypothesis" else generate(m,seed,count))
     ledger.enter("search")
-    seen=set();found=None;inconclusive=0
+    seen=set();found=None;inconclusive=Counter()
     for c in cases:
         key=digest(c)
         if key in seen: continue
@@ -100,7 +101,7 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         if result["kind"]=="oracle_unavailable":
             return {"status":"oracle_unavailable","detail":result,"attempts":attempts}
         if result["kind"] in ("wrong_answer","exception"): found=result;break
-        if result["kind"]=="inconclusive": inconclusive+=1
+        if result["kind"]=="inconclusive": inconclusive[result["student"]["status"]]+=1
     def run_suggestions(witness=None,hypotheses=()):
         nonlocal suggested
         suggested=True
@@ -120,6 +121,7 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
             seen.add(key)
             result=pair(proposal["case"])
             guidance["probes"].append(classify_probe(proposal,result))
+            if result["kind"]=="inconclusive":inconclusive[result["student"]["status"]]+=1
             if result["kind"]=="cancelled":return None
             if result["kind"]=="oracle_unavailable":return result
             if first is None and result["kind"] in ("wrong_answer","exception"):first=result
@@ -128,7 +130,10 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         found=run_suggestions()
         if found and found["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":found,"guidance":guidance}
         if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
-    if not found: return {"status":"inconclusive" if inconclusive or any(x["status"]=="inconclusive" for x in guidance["probes"]) else "no_witness_found","attempts":attempts,"generator":generator,"guidance":guidance,"scope":"Bounded tests only; correctness not proven."}
+    if not found:
+        return {"status":"inconclusive" if inconclusive or any(x["status"]=="inconclusive" for x in guidance["probes"]) else "no_witness_found",
+                "attempts":attempts,"generator":generator,"guidance":guidance,"scope":"Bounded tests only; correctness not proven.",
+                "inconclusive_student_outcomes":dict(inconclusive)}
     original=found
     ledger.partial={"witness":original,"replay_verified":False}
     ledger.enter("shrink")
@@ -163,19 +168,31 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
     def identity(x):
         student=x.get("student",{})
         return (x["kind"],x.get("reference",{}).get("stdout"),student.get("stdout"),student.get("detail"),student.get("failure_location"))
+
+    def replay_case(expected,trace_limit,label):
+        first=None
+        for _ in range(3):
+            replayed=pair(expected["case"],trace_limit)
+            kind=replayed["kind"]
+            if kind=="cancelled":
+                return None,{"status":kind,"attempts":attempts}
+            if kind=="oracle_unavailable":
+                return None,{"status":kind,"detail":replayed,"attempts":attempts}
+            if identity(replayed)!=identity(expected):
+                return None,{"status":"unstable","attempts":attempts,"reduction":reduction,
+                             "scope":label+" replay disagreed; no accusation."}
+            if first is None:first=replayed
+        return first,None
+
     ledger.enter("replay")
     if accepted:
-        original_replay=[pair(original["case"],0) for _ in range(3)]
-        if any(x["kind"]=="cancelled" for x in original_replay):return {"status":"cancelled","attempts":attempts}
-        if any(identity(x)!=identity(original) for x in original_replay):
-            return {"status":"unstable","attempts":attempts,"reduction":reduction,"scope":"Original replay disagreed; no accusation."}
+        _,failure=replay_case(original,0,"Original")
+        if failure:return failure
         reduction["original_replay_count"]=3
-    replay=[pair(found["case"],128) for _ in range(3)]
-    if any(x["kind"]=="cancelled" for x in replay):return {"status":"cancelled","attempts":attempts}
-    if any(identity(x)!=identity(found) for x in replay):
-        return {"status":"unstable","attempts":attempts,"reduction":reduction,"scope":"Replay disagreed; no accusation."}
+    witness,failure=replay_case(found,128,"Best witness")
+    if failure:return failure
     reduction["reduced_replay_count"]=3
-    witness=replay[0];seen.add(digest(witness["case"]))
+    seen.add(digest(witness["case"]))
     ledger.partial={"witness":witness,"original_case":original["case"],"reduction":reduction,"replay_verified":True}
     student_events=witness["student"].get("events",[])
     reference_events=witness["reference"].get("events",[])

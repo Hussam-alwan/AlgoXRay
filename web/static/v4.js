@@ -1,6 +1,7 @@
 "use strict";
 const $=id=>document.getElementById(id);
 let token="",demos={},activeDemo="hamburgers",result=null,side="student",index=0,sources={},busy=false,analysisId=null,profileSelection=null,activeIntake=null,preparedStatement=null,benchmarkResult=null;
+let traceTimer=null;
 async function api(path,body){
  const opts=body===undefined?{}:{method:"POST",headers:{"Content-Type":"application/json","X-AlgoXRay-Token":token},body:JSON.stringify(body)};
  const response=await fetch(path,opts);const data=await response.json();if(!response.ok){const error=Error(typeof data.detail==="string"?data.detail:JSON.stringify(data.detail));error.payload=data.detail;throw error}return data;
@@ -39,6 +40,7 @@ $("approve").onclick=async()=>{if(busy)return;setBusy(true);msg("approval","فح
 $("run").onclick=async()=>{if(busy)return;let caseValue=null;try{caseValue=$("analysis-case").value.trim()?JSON.parse($("analysis-case").value):null}catch(e){msg("status","Invalid JSON test case");return}setBusy(true);analysisId=crypto.randomUUID().replaceAll("-","");$("cancel").hidden=false;$("results").hidden=true;$("benchmark-results").hidden=true;msg("status","تنفيذ الحالات والبحث وإعادة التحقق...");try{const source=$("source").value;result=await api("/api/v4/analyze",{package_key:$("packages").value,source,trusted_local_source:$("trusted").checked,use_ai:$("ai").checked,...aiOptions(),generator:$("generator").value,guided:$("guided").checked,spectrum:$("spectrum").checked,count:Number($("count").value),reduce_calls:Number($("reduce-count").value),case:caseValue,session_seconds:Number($("session-seconds").value),analysis_id:analysisId});if(result.analysis_id!==analysisId||source!==$("source").value)return;showRunReport(result);msg("status",result.status+" · "+(result.attempts||0)+" attempts");if(result.status==="observed_mismatch"){sources={student:source,reference:result.reference_source||""};side="student";index=0;show() }else msg("status",result.status+" — "+((result.scope||"No supported conclusion")+" | "+JSON.stringify(result.guidance||{})))}catch(e){msg("status",e.message)}finally{analysisId=null;$("cancel").hidden=true;setBusy(false);refreshModels().catch(()=>{})}};
 $("cancel").onclick=async()=>{const id=analysisId;if(!id)return;for(let i=0;i<12&&analysisId===id;i++){try{await api("/api/v4/analysis/"+id+"/cancel",{});msg("status","Cancellation requested");return}catch(e){await new Promise(r=>setTimeout(r,150))}}};
 function show(){
+ stopTracePlayback();
  $("repair-panel").hidden=result.status!=="observed_mismatch";
  msg("result-title",result.status==="profiled_execution"?"3. قياس تنفيذ واحد · "+result.kind:"3. الشاهد وأدلة التنفيذ");
  profileSelection=null;$("ast-tree").dataset.sourceKey="";$("candidate").value="";$("patch-reviewed").checked=false;
@@ -63,6 +65,7 @@ function show(){
  setupComparison();showRanking();render();showExecutionDiagnostics();showAI();showLocalization();showBranchRanking();
 }
 function jumpToEvidence(line,eventId,endLine=line){
+ stopTracePlayback();
  side="student";const events=result.witness.student.events||[];
  const pos=events.findIndex(e=>eventId?e.event_id===eventId:e.line===line);
  if(pos>=0)index=pos;profileSelection={line,end_line:endLine};
@@ -185,10 +188,40 @@ function drawObservedGraph(g,events,ev){
  const zoom=Number($("graph-zoom").value)/100;svg.style.width=(width*zoom)+"px";svg.style.height=(height*zoom)+"px";container.append(svg);
  msg("graph-status","عرض "+nodes.length+" من "+g.nodes.length+" عقدة مرصودة"+(candidates.length>128?" · حد العرض 128":"")+(ev&&!visibleIds.has(ev.event_id)?" · الحدث الحالي خارج المرشح":""));
 }
+function renderSourceLine(line, number, active){
+ const element=document.createElement("span");
+ element.textContent=String(number).padStart(3)+"  ";
+ if(active)element.classList.add("active");
+ const selection=profileSelection;
+ if(!selection||number<selection.line||number>selection.end_line){element.append(line);return element}
+ element.classList.add("profile-range");
+ const span=selection.sourceSpan;
+ if(!span){element.append(line);return element}
+ const bytes=new TextEncoder().encode(line), decoder=new TextDecoder();
+ const start=number===span.line?span.column_utf8:0;
+ const end=number===span.end_line?span.end_column_utf8:bytes.length;
+ const highlight=document.createElement("mark");
+ highlight.className="ast-span";
+ highlight.textContent=decoder.decode(bytes.slice(start,end));
+ element.append(decoder.decode(bytes.slice(0,start)),highlight,decoder.decode(bytes.slice(end)));
+ return element;
+}
+function stopTracePlayback(){
+ if(traceTimer!==null){clearInterval(traceTimer);traceTimer=null}
+ msg("play-trace","تشغيل التتبع");
+}
 function render(){
  const w=result.witness[side],events=w.events||[],g=result[side+"_graph"];index=Math.max(0,Math.min(index,events.length-1));const ev=events[index];
  $("slider").max=Math.max(0,events.length-1);$("slider").value=index;
- msg("step",(ev?ev.event_id+" · "+ev.kind+" · L"+ev.line:"No events")+" · "+w.trace_status);
+ $("slider").disabled=events.length<2;
+ $("prev").disabled=index===0;
+ $("next").disabled=index>=events.length-1;
+ $("play-trace").disabled=events.length<2;
+ const traceStatus={complete:"تتبع مكتمل",truncated:"تتبع جزئي · بلغ حد التسجيل",disabled:"التتبع معطل",not_run:"لم يشغّل"};
+ const eventLabel=ev?.snapshot_timing==="before_line"?"قبل تنفيذ السطر":ev?.kind;
+ const statusText=traceStatus[w.trace_status]||"حالة التتبع غير متاحة";
+ msg("step",ev?ev.event_id+" · "+eventLabel+" · L"+ev.line+" · "+statusText:
+  "لا توجد أحداث مسجلة"+(w.trace_status==="complete"?"":" · "+statusText));
  msg("locals",ev?JSON.stringify(ev.locals,null,2):"");
  const previous=ev?[...events.slice(0,index)].reverse().find(e=>e.frame_id===ev.frame_id):null;
  msg("previous-locals",previous?JSON.stringify(previous.locals,null,2):"لا توجد لقطة سابقة في هذا الإطار.");
@@ -200,7 +233,8 @@ function render(){
  msg("snapshot-changes",JSON.stringify(snapshotChanges,null,2));
  const frames=new Map((g.frames||[]).map(f=>[f.id,f]));let stack=[],id=ev&&ev.frame_id;
  while(id&&frames.has(id)&&stack.length<32){const f=frames.get(id);stack.push(f.id+" · "+f.function);id=f.parent}msg("stack",stack.reverse().join("\n"));
- const code=$("code");code.replaceChildren();(sources[side]||"").split("\n").forEach((line,i)=>{const span=document.createElement("span");span.textContent=String(i+1).padStart(3)+"  "+line;if(ev&&ev.line===i+1)span.classList.add("active");if(profileSelection&&profileSelection.line<=i+1&&profileSelection.end_line>=i+1)span.classList.add("profile-range");code.append(span)});
+ const code=$("code");
+ code.replaceChildren(...(sources[side]||"").split(/\r\n?|\n/).map((line,i)=>renderSourceLine(line,i+1,ev?.line===i+1)));
  refreshGraphFrames(g);drawObservedGraph(g,events,ev);
  $("changes").replaceChildren();for(const change of g.changes){const d=document.createElement("div");d.className="change";d.textContent=change.name+": "+JSON.stringify(change.before)+" → "+JSON.stringify(change.after)+" ("+change.before_event_id+"→"+change.after_event_id+")";$("changes").append(d)}
  $("relations").replaceChildren();
@@ -225,7 +259,25 @@ $("graph").addEventListener("pointerdown",e=>{if(e.button!==0||e.target.closest(
 $("graph").addEventListener("pointermove",e=>{if(!graphDrag)return;$("graph").scrollLeft=graphDrag.left-(e.clientX-graphDrag.x);$("graph").scrollTop=graphDrag.top-(e.clientY-graphDrag.y)});
 for(const kind of ["pointerup","pointercancel","lostpointercapture"])$("graph").addEventListener(kind,()=>{graphDrag=null});
 
-$("student").onclick=()=>{side="student";index=0;profileSelection=null;render()};$("reference").onclick=()=>{side="reference";index=0;profileSelection=null;render()};$("prev").onclick=()=>{index--;render()};$("next").onclick=()=>{index++;render()};$("slider").oninput=()=>{index=Number($("slider").value);render()};$("export").onclick=()=>{if(!result)return;const u=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download="algoxray-v4-evidence.json";a.click();URL.revokeObjectURL(u)};
+$("student").onclick=()=>{stopTracePlayback();side="student";index=0;profileSelection=null;render()};
+$("reference").onclick=()=>{stopTracePlayback();side="reference";index=0;profileSelection=null;render()};
+$("prev").onclick=()=>{stopTracePlayback();index--;render()};
+$("next").onclick=()=>{stopTracePlayback();index++;render()};
+$("slider").oninput=()=>{stopTracePlayback();index=Number($("slider").value);render()};
+$("play-trace").onclick=()=>{
+ if(traceTimer!==null){stopTracePlayback();return}
+ const playbackResult=result, playbackSide=side;
+ const events=playbackResult?.witness?.[playbackSide]?.events||[];
+ if(events.length<2)return;
+ if(index>=events.length-1){index=0;render()}
+ msg("play-trace","إيقاف التتبع");
+ traceTimer=setInterval(()=>{
+  if(result!==playbackResult||side!==playbackSide||$("results").hidden){stopTracePlayback();return}
+  index++;render();
+  if(index>=events.length-1)stopTracePlayback();
+ },550);
+};
+$("export").onclick=()=>{if(!result)return;const u=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download="algoxray-v4-evidence.json";a.click();URL.revokeObjectURL(u)};
 (async()=>{try{token=(await api("/api/session")).custom_code_token;await refreshModels();demos=await (await fetch("/static/v4-demos.json")).json();loadDemo();await packages()}catch(e){msg("health",e.message)}})();
 
 function repairBody(){return {package_key:result.package_sha256,source:result.student_source,case:result.witness.case,original_case:result.original_case||null}}
@@ -251,7 +303,7 @@ async function refreshRepairs(){
 }
 $("load-repair").onclick=async()=>{try{const key=$("repair-history").value;if(!key)return;const r=await api("/api/v4/repair/version/"+key);msg("repair-history-view",JSON.stringify(r,null,2))}catch(e){msg("repair-history-view",e.message)}};
 
-function invalidateResult(){if(!busy){lastRunReport=null;$("run-report-panel").hidden=true;result=null;benchmarkResult=null;$("results").hidden=true;$("benchmark-results").hidden=true;profileSelection=null}}
+function invalidateResult(){if(!busy){stopTracePlayback();lastRunReport=null;$("run-report-panel").hidden=true;result=null;benchmarkResult=null;$("results").hidden=true;$("benchmark-results").hidden=true;profileSelection=null}}
 $("source").addEventListener("input",invalidateResult);
 $("profile-case").addEventListener("input",invalidateResult);
 for(const id of ["analysis-case","session-seconds"])$(id).addEventListener("input",invalidateResult);
@@ -387,7 +439,8 @@ function showLocalization(){
  const loc=result?.evidence_localization||{};
  msg("localization-scope",loc.scope||"لا تتوفر أدلة كافية لترشيح موضع.");
  const effect=loc.effect_site;
- msg("effect-site",effect?"موضع ظهور الأثر: L"+effect.line+" · "+effect.kind:"لم يحدد موضع ظهور الأثر من اللقطات.");
+ msg("effect-site",effect?"موضع ظهور الأثر · "+effect.kind:"لم يحدد موضع ظهور الأثر من اللقطات.");
+ if(effect)$("effect-site").append(evidenceButton("L"+effect.line+(effect.event_id?" · "+effect.event_id:""),effect.line,effect.event_id));
  for(const row of loc.ranked||[]){
   const div=document.createElement("div");div.className="diagnostic-card";
   const button=document.createElement("button");button.textContent="L"+row.line+" · "+row.score.toFixed(3)+" · suspected";
@@ -412,10 +465,12 @@ function renderAst(g,events){
  const key=side+":"+tree.source_sha256;
  if(view.dataset.sourceKey===key)return;
  view.dataset.sourceKey=key;view.replaceChildren();
- msg("ast-scope",tree.status+" · "+tree.nodes.length+" nodes · "+tree.scope);
- const children=new Map(),nodes=new Map();
+ const unsupported=[...new Set((tree.unsupported||[]).map(node=>node.kind))];
+ const scope=tree.status+" · "+tree.nodes.length+" nodes · "+tree.scope+
+  (unsupported.length?" · دعم تحليل التحكم أو البيانات محدود لهذه البنى: "+unsupported.join(", "):"");
+ msg("ast-scope",scope);
+ const children=new Map();
  for(const n of tree.nodes){
-  nodes.set(n.id,n);
   const list=children.get(n.parent_id)||[];list.push(n);children.set(n.parent_id,list);
  }
  const eventLinks=tree.event_links||[];
@@ -428,10 +483,11 @@ function renderAst(g,events){
    if(n.source_span){
     const link=eventLinks.find(e=>e.candidate_node_ids.includes(n.id));
     b.onclick=()=>{
-     profileSelection={line:n.source_span.line,end_line:n.source_span.end_line};
+     stopTracePlayback();
+     profileSelection={line:n.source_span.line,end_line:n.source_span.end_line,sourceSpan:n.source_span};
      if(link){const pos=events.findIndex(e=>e.event_id===link.event_id);if(pos>=0)index=pos}
      render();$("code").scrollIntoView({block:"center"});
-     msg("ast-scope",tree.status+" · "+n.id+" · "+(link?link.association+" / "+link.event_id:"Static node; no recorded event association."));
+     msg("ast-scope",scope+" · "+n.id+" · "+(link?link.association+" / "+link.event_id:"Static node; no recorded event association."));
     };
    }else b.disabled=true;
    li.append(b);

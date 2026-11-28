@@ -1,12 +1,19 @@
 """Restricted syntactic CFG and conservative observed output-compatible dependency chain."""
 import ast
+from collections import Counter
+
+MAX_CFG_ITEMS = 256
 
 def static_cfg(source):
     try:t=ast.parse(source)
     except (SyntaxError,ValueError,RecursionError):return {"status":"unavailable","nodes":[],"edges":[]}
+    line_counts=Counter(n.lineno for n in ast.walk(t) if isinstance(n,ast.stmt))
+    ambiguous=set(line for line,count in line_counts.items() if count>1)
     nodes={};edges=[];unsupported=[]
     def block(stmts,scope,follow=None):
         for i,n in enumerate(stmts):
+            if n.lineno in ambiguous:
+                continue
             nxt=stmts[i+1].lineno if i+1<len(stmts) else follow
             key=scope+":"+str(n.lineno)
             nodes[key]={"id":key,"line":n.lineno,"scope":scope,"kind":type(n).__name__}
@@ -16,7 +23,7 @@ def static_cfg(source):
                 edge(n.body[0].lineno,"condition_true");edge(n.orelse[0].lineno if n.orelse else nxt,"condition_false")
                 block(n.body,scope,nxt);block(n.orelse,scope,nxt)
             elif isinstance(n,(ast.While,ast.For)):
-                if any(isinstance(z,(ast.Break,ast.Continue,ast.Try,ast.With,ast.AsyncFor)) for z in ast.walk(n)):
+                if any(isinstance(z,(ast.Break,ast.Continue,ast.Try,ast.TryStar,ast.With,ast.AsyncFor)) for z in ast.walk(n)):
                     unsupported.append(key);continue
                 edge(n.body[0].lineno,"loop_body");edge(n.orelse[0].lineno if n.orelse else nxt,"loop_exit")
                 block(n.body,scope,n.lineno);block(n.orelse,scope,nxt)
@@ -27,8 +34,14 @@ def static_cfg(source):
             elif isinstance(n,(ast.Assign,ast.AugAssign,ast.AnnAssign,ast.Expr,ast.Pass,ast.Import,ast.ImportFrom,ast.Global,ast.Nonlocal,ast.Assert)):edge(nxt,"next")
             else:unsupported.append(key)
     block(t.body,"module")
+    visible={key:nodes[key] for key in list(nodes)[:MAX_CFG_ITEMS]}
     edges=[e for e in edges if e["to"] in nodes]
-    return {"status":"restricted_syntactic_cfg","nodes":list(nodes.values())[:256],"edges":edges[:256],"unsupported":unsupported[:256],"scope":"Syntactic successors only, no runtime reachability or call/exception proof."}
+    return {"status":"restricted_syntactic_cfg","nodes":list(visible.values()),
+            "edges":[e for e in edges if e["from"] in visible and e["to"] in visible][:MAX_CFG_ITEMS],
+            "unsupported":[key for key in unsupported if key in visible],
+            "ambiguous_lines":sorted(ambiguous)[:MAX_CFG_ITEMS],
+            "truncated":max(len(nodes),len(edges),len(ambiguous))>MAX_CFG_ITEMS,
+            "scope":"Syntactic successors only, no runtime reachability or call/exception proof. Lines containing multiple statements are omitted."}
 
 def output_chain(source,result,graph):
     """Only a single simple print(name) matching one stdout value; no causal claim."""

@@ -89,7 +89,7 @@ def test(url,out):
   value=response.value.json();assert value["status"]=="observed_mismatch" and value["kind"]=="exception",value.get("status")
   assert value["witness"]["student"].get("events",[])==[]
   assert page.locator("#graph .node").count()==0
-  expect(page.locator("#step")).to_contain_text("No events");checks.append("syntax_exception_has_no_fabricated_trace")
+  expect(page.locator("#step")).to_contain_text("لا توجد أحداث مسجلة");checks.append("syntax_exception_has_no_fabricated_trace")
   page.screenshot(path=str(out/"missing-trace.png"),full_page=True)
   timeout_source="l=1\nr=2\nwhile l<r:\n    mid=(l+r)//2\n    l=mid\n"
   page.locator("#source").fill(timeout_source)

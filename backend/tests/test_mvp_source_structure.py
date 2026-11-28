@@ -34,6 +34,16 @@ def test_snapshot_collections_bounded():
     assert ev["locals"]["f"]==1.5
     assert ev["snapshot_meta"]["max_collection_items"]==24
 
+
+def test_ast_preview_uses_python_newlines_instead_of_unicode_separators():
+    source = "x = 'a\u2028b'; y = 2\rprint(y)\r\n"
+    tree = source_structure(source)
+    assignments = [node for node in tree["nodes"] if node["kind"] == "Assign"]
+    assert [node["preview"] for node in assignments] == ["x = 'a\u2028b'", "y = 2"]
+    assert all(node["source_span"]["line"] == 1 for node in assignments)
+    statement = next(node for node in tree["nodes"] if node["kind"] == "Expr")
+    assert statement["source_span"]["line"] == 2 and statement["preview"] == "print(y)"
+
 def test_bounds_evidence_and_effect_separate():
     source="n=int(input())\na=list(map(int,input().split()))\ntotal=0\nfor i in range(n-1):\n    total += a[i]\nprint(total)\n"
     execution=guest(source,"4\n1 2 3 4\n")
@@ -58,3 +68,22 @@ def test_no_fabricated_missing_line():
     graph=observed_graph(execution["events"],source)
     r=localize(source,{"kind":"wrong_answer","student":execution},graph)
     assert r["status"]=="insufficient_evidence" and r["ranked"]==[]
+
+
+def test_recursive_frames_and_exception_link_keep_the_recorded_snapshot():
+    source = "def recur(n):\n    x = n\n    if n:\n        recur(n - 1)\n    else:\n        raise ValueError()\nrecur(2)\n"
+    execution = guest(source)
+    events = execution["events"]
+    calls = [e for e in events if e["kind"] == "call" and e["function"] == "recur"]
+    assert [e["locals"]["n"] for e in calls] == [2, 1, 0]
+    assert len({e["frame_id"] for e in calls}) == 3
+    assert [e["parent_frame_id"] for e in calls[1:]] == [e["frame_id"] for e in calls[:-1]]
+    for call in calls:
+        before, after = [e for e in events if e["frame_id"] == call["frame_id"] and e["line"] in (2, 3)]
+        assert before["snapshot_timing"] == after["snapshot_timing"] == "before_line"
+        assert "x" not in before["locals"] and after["locals"]["x"] == call["locals"]["n"]
+
+    evidence = localize(source, {"kind": "exception", "student": execution}, observed_graph(events, source))
+    effect = next(e for e in events if e["event_id"] == evidence["effect_site"]["event_id"])
+    assert effect["line"] == 6 and effect["kind"] == "exception"
+    assert effect["frame_id"] == calls[-1]["frame_id"] and effect["locals"]["x"] == 0

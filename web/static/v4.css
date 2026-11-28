@@ -16,3 +16,5 @@ main{grid-template-columns:minmax(0,1fr)}.panel,#profiling{min-width:0}
 
 #branch-coverage,#branch-ranking{display:flex;flex-wrap:wrap;gap:6px;max-height:280px;overflow:auto}#branch-coverage button,#branch-ranking button{direction:ltr;font:12px monospace;white-space:normal;overflow-wrap:anywhere;max-width:100%}
 #scope{overflow-wrap:anywhere}
+
+#code .ast-span{background:#fde68a;color:#172337;text-decoration:underline}

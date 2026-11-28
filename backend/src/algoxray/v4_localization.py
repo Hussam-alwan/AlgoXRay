@@ -83,10 +83,14 @@ def localize(source,witness,graph,ranking=None,diagnostics=None):
     if execution.get("status")=="exception":
         loc=execution.get("failure_location") or {}
         line=loc.get("line")
-        if type(line) is int:
-            add(line,"reported_exception_location",3,[e["event_id"] for e in known.values() if e["line"]==line and e.get("kind")=="exception"],
+        if type(line) is int and 1<=line<=max_line:
+            exception_ids=[e["event_id"] for e in known.values() if e["line"]==line and e.get("kind")=="exception"
+                           and (not loc.get("function") or e.get("function")==loc["function"])
+                           and (not execution.get("detail") or e.get("exception_type")==execution["detail"])]
+            add(line,"reported_exception_location",3,exception_ids,
                 "Guest-reported exception location, not necessarily the defect origin.")
             effect={"line":line,"kind":"reported_exception_location","causal_verified":False}
+            if exception_ids:effect["event_id"]=exception_ids[-1]
     for row in (ranking or {}).get("ranked",[])[:32]:
         score=row.get("ochiai")
         if type(score) in (int,float) and 0<=score<=1:

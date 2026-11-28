@@ -11,3 +11,17 @@ def test_partial_output_chain():
     g=observed_graph(events,source);r=output_chain(source,{"events":events,"stdout":"4\n"},g)
     assert r["status"]=="snapshot_compatible_with_stdout" and len(r["links"])==2 and not r["causal_verified"]
     assert output_chain(source,{"events":events,"stdout":"5\n"},g)["status"]=="unsupported"
+
+
+def test_cfg_discloses_ambiguous_lines_without_collapsing_statements():
+    cfg = static_cfg("x = 0\nif x: x = 2\nprint(x)\n")
+    assert cfg["ambiguous_lines"] == [2]
+    assert [node["line"] for node in cfg["nodes"]] == [1, 3]
+    assert cfg["edges"] == []
+
+
+def test_cfg_cap_retains_only_edges_between_returned_nodes():
+    cfg = static_cfg("\n".join(f"x = {i}" for i in range(300)))
+    ids = {node["id"] for node in cfg["nodes"]}
+    assert cfg["truncated"] and len(ids) == 256 and len(cfg["edges"]) == 255
+    assert all(edge["from"] in ids and edge["to"] in ids for edge in cfg["edges"])
