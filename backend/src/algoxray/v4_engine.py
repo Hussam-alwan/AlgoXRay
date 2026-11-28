@@ -40,7 +40,26 @@ def review(p,run=execute_stdio):
         checks.append({"case":c["case"],"status":r["status"],"matches":r["status"]=="ok" and judge_output(p,c["case"],r["stdout"],c["expected"])["status"]=="accepted"})
     return {"passed":all(x["matches"] for x in checks),"checks":checks,"limitation":"Finite owner-supplied controls, not proof of reference correctness."}
 
-def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provider=None,run=execute_stdio,cancel=None,generator="boundary_random",guided=False,spectrum=False,*,session_seconds=240,run_id=None):
+def observed_example(p,source,witness):
+    """Reuse an instrumented search pair, without another guest or AI call."""
+    from .v4_branches import observed_branches
+    from .v4_execution_diagnostics import execution_diagnostics
+    from .v4_localization import localize
+    def graph(code,execution):
+        g=with_loops(attach_profile(observed_graph(execution.get("events",[]),code),execution),code,execution)
+        g["output_chain"]=output_chain(code,execution,g)
+        g["branches"]=observed_branches(code,execution,cfg=g["static_cfg"])
+        return g
+    student=witness["student"];sg=graph(source,student);rg=graph(p["reference"],witness["reference"])
+    progress=execution_diagnostics(source,student)
+    return {"status":"profiled_execution","kind":"match" if witness["kind"]=="match" else student["status"],
+            "witness":witness,"package_sha256":digest(p),"student_source":source,"reference_source":p["reference"],
+            "student_graph":sg,"reference_graph":rg,"replay_count":0,"attempts":1,"reused_search_trace":True,
+            "execution_diagnostics":progress,"evidence_localization":localize(source,witness,sg,diagnostics=progress),
+            **diagnose_execution(p,source,witness),
+            "scope":"One example already observed during bounded search, not a failure witness or proof of general correctness. Instrumented timing is not normal runtime."}
+
+def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provider=None,run=execute_stdio,cancel=None,generator="boundary_random",guided=False,spectrum=False,*,session_seconds=240,run_id=None,capture_example=False):
     if type(count) is not int or not 1<=count<=12 or type(reduce_calls) is not int or not 0<=reduce_calls<=32:
         raise ValueError("Invalid analysis budget")
     if type(session_seconds) not in (int,float) or not 1<=session_seconds<=300:raise ValueError("Invalid session budget")
@@ -48,18 +67,18 @@ def analyze_package(p,source,seed=2026,count=6,reduce_calls=12,case=None,provide
         max_executions=3*(8+count+reduce_calls+3+6+4),
         parameters={"seed":seed,"count":count,"reduce_calls":reduce_calls,"case":case,"generator":generator,
                     "spectrum":spectrum,"guided":guided,"ai_requested":provider is not None,
-                    "model":getattr(provider,"model",None),"trace_limit":128,"replays":3})
+                    "model":getattr(provider,"model",None),"trace_limit":128,"replays":3,"capture_example":capture_example})
     for stage,enabled in (("guided_search",guided and provider is not None),("guided_confirmation",guided and provider is not None),
                           ("diagnosis",provider is not None),("spectrum",spectrum)):
         if not enabled:ledger.skip(stage,"not_requested")
     try:
-        result=_analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,generator,guided,spectrum,ledger)
+        result=_analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,generator,guided,spectrum,ledger,capture_example)
         return ledger.finish(result)
     except BudgetExhausted as exc:
         return ledger.finish({"status":"inconclusive","stop_reason":str(exc),
                               "scope":"Analysis stopped at a declared session budget checkpoint. Partial observations are not a new verified verdict."},stop_reason=str(exc))
 
-def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,generator,guided,spectrum,ledger):
+def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,generator,guided,spectrum,ledger,capture_example):
     ledger.enter("validation")
     validate_package(p);m=p["manifest"]
     if type(count) is not int or not 1<=count<=12 or type(reduce_calls) is not int or not 0<=reduce_calls<=32: raise ValueError("Invalid analysis budget")
@@ -91,16 +110,17 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         return {"kind":kind,"case":c,"stdin":stdin,"student":actual,"reference":ref,"judgment":judgment}
     cases=[case] if case is not None else [c["case"] for c in p["controls"]]+list(hypothesis_cases(m,seed,count) if generator=="hypothesis" else generate(m,seed,count))
     ledger.enter("search")
-    seen=set();found=None;inconclusive=Counter()
+    seen=set();found=None;example=None;inconclusive=Counter()
     for c in cases:
         key=digest(c)
         if key in seen: continue
         seen.add(key)
-        result=pair(c)
+        result=pair(c,128 if capture_example and example is None else 0)
         if result["kind"]=="cancelled":return {"status":"cancelled","attempts":attempts}
         if result["kind"]=="oracle_unavailable":
             return {"status":"oracle_unavailable","detail":result,"attempts":attempts}
         if result["kind"] in ("wrong_answer","exception"): found=result;break
+        if capture_example and example is None:example=result
         if result["kind"]=="inconclusive": inconclusive[result["student"]["status"]]+=1
     def run_suggestions(witness=None,hypotheses=()):
         nonlocal suggested
@@ -131,9 +151,14 @@ def _analyze_package(p,source,seed,count,reduce_calls,case,provider,run,cancel,g
         if found and found["kind"]=="oracle_unavailable":return {"status":"oracle_unavailable","attempts":attempts,"detail":found,"guidance":guidance}
         if cancel is not None and cancel.is_set():return {"status":"cancelled","attempts":attempts}
     if not found:
-        return {"status":"inconclusive" if inconclusive or any(x["status"]=="inconclusive" for x in guidance["probes"]) else "no_witness_found",
+        response={"status":"inconclusive" if inconclusive or any(x["status"]=="inconclusive" for x in guidance["probes"]) else "no_witness_found",
                 "attempts":attempts,"generator":generator,"guidance":guidance,"scope":"Bounded tests only; correctness not proven.",
                 "inconclusive_student_outcomes":dict(inconclusive)}
+        if example is not None:
+            ledger.enter("structure")
+            ledger.check()
+            response["example_observation"]=observed_example(p,source,example)
+        return response
     original=found
     ledger.partial={"witness":original,"replay_verified":False}
     ledger.enter("shrink")

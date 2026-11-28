@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "checks": [
+    "default_comprehensive_no_automatic_execution",
+    "new_draft_preflight_requires_visible_review_no_worker",
+    "wrong_solution_single_action_shared_witness_and_uninstrumented_measurement",
+    "passing_solution_reuses_search_pair_no_extra_profile_or_approval",
+    "matching_approved_draft_reused_without_review_repetition",
+    "invalid_and_stale_draft_blocked_before_execution",
+    "measurement_failure_preserves_analysis",
+    "cancelled_analysis_does_not_start_measurement",
+    "mobile_layout"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Synthetic local browser and real Docker; measurement failure simulated; no human usability study.",
+  "wrong_case": {
+    "n": 3,
+    "a": [
+      1,
+      2,
+      3
+    ]
+  },
+  "wrong_analysis_calls": 8,
+  "wrong_benchmark_calls": 2,
+  "passing_analysis_calls": 2,
+  "passing_benchmark_calls": 2,
+  "passing_reused_trace": true,
+  "wrong_measurement_correctness": "recorded_mismatch",
+  "passing_measurement_correctness": "recorded_match"
+}

@@ -78,6 +78,7 @@ class Run(BaseModel):
     generator:str="boundary_random"
     guided:bool=False
     spectrum:bool=False
+    capture_example:bool=False
     count:int=Field(default=6,ge=1,le=12)
     reduce_calls:int=Field(default=12,ge=0,le=32)
     session_seconds:float=Field(default=240.0,ge=1,le=300)
@@ -103,6 +104,7 @@ class Benchmark(BaseModel):
     trusted_local_source:bool=False
     stdin:str|None=Field(default=None,max_length=16384)
     package_key:str|None=None
+    case:dict|None=None
     size_field:str|None=Field(default=None,max_length=31)
     sizes:list[int]|None=Field(default=None,min_length=1,max_length=5)
     seed:int=Field(default=2026,ge=0,le=2**32-1)
@@ -194,6 +196,23 @@ def router_for(require_loopback,token):
         try:return audit_package(body.package,body.max_cases)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:lock.release()
+    @router.post("/packages/preflight")
+    def package_preflight(body:Approve,request:Request):
+        """Non-executing structural validation; never creates an approval."""
+        guard(request)
+        from .v4_contracts import digest
+        try:
+            p=validate_package(body.package)
+            key=digest(p)
+            try:
+                store.load(key)
+                approved=True
+            except (ValueError,OSError):
+                approved=False
+            return {"status":"valid_structure","key":key,"already_approved":approved,
+                    "scope":"Structural validation only; reference and constraints still require independent owner review."}
+        except (ValueError,TypeError,KeyError,OverflowError,RecursionError) as exc:
+            raise HTTPException(422,str(exc)[:240]) from None
     @router.post("/packages/approve")
     def approve(body:Approve,request:Request):
         guard(request)
@@ -269,12 +288,19 @@ def router_for(require_loopback,token):
         from .v4_observation import generated_size_inputs,benchmark_source
         def execute(c):
             if body.package_key is not None:
-                if body.stdin is not None or body.size_field is None or body.sizes is None:
-                    raise ValueError("Choose package and size field/sizes, not manual stdin")
+                if body.stdin is not None:
+                    raise ValueError("Choose package and case or size field/sizes, not manual stdin")
                 package=store.load(body.package_key)
-                inputs=generated_size_inputs(package["manifest"],body.size_field,body.sizes,body.seed)
+                if body.case is not None:
+                    if body.size_field is not None or body.sizes is not None:
+                        raise ValueError("Choose exact case or scaling sizes, not both")
+                    inputs=[{"size":None,"case":body.case,"stdin":serialize(package["manifest"],body.case)}]
+                else:
+                    if body.size_field is None or body.sizes is None:
+                        raise ValueError("Choose exact case or size field/sizes")
+                    inputs=generated_size_inputs(package["manifest"],body.size_field,body.sizes,body.seed)
             else:
-                if body.stdin is None or body.size_field is not None or body.sizes is not None:
+                if body.stdin is None or body.case is not None or body.size_field is not None or body.sizes is not None:
                     raise ValueError("Supply manual stdin, or package and size field/sizes")
                 package=None
                 inputs=[{"size":None,"case":None,"stdin":body.stdin}]
@@ -302,7 +328,7 @@ def router_for(require_loopback,token):
             with active_lock:active[body.analysis_id]=c
         try:
             p=store.load(body.package_key)
-            return analyze_package(p,body.source,count=body.count,seed=body.seed,reduce_calls=body.reduce_calls,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum,session_seconds=body.session_seconds,run_id=body.analysis_id)
+            return analyze_package(p,body.source,count=body.count,seed=body.seed,reduce_calls=body.reduce_calls,case=body.case,provider=provider,cancel=c,generator=body.generator,guided=body.guided,spectrum=body.spectrum,session_seconds=body.session_seconds,run_id=body.analysis_id,capture_example=body.capture_example)
         except (ValueError,OSError) as exc:raise HTTPException(422,str(exc)) from exc
         finally:
             if body.analysis_id:
