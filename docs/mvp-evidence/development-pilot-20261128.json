@@ -1,0 +1,436 @@
+{
+  "scope": "Public authored development cases only. Not a blinded evaluation or a user study.",
+  "catalog_release_commit": "f6617e99e326138ab82dd64db2361a4ccccf2597",
+  "v4_baseline_commit": "333cf3d1b4c1015f836a14b4304a3a4aedae1abb",
+  "host_python": "3.12.10",
+  "host_platform": "Windows-11-10.0.26300-SP0",
+  "worker_image": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+  "seed": 2026,
+  "reduction_budget_per_arm": 6,
+  "cases": [
+    {
+      "id": "sum",
+      "problem_id": "sum_list",
+      "authored_defect_line": 3,
+      "reduction": {
+        "no_reduction": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 9735.0,
+          "attempts": 8,
+          "executions": 16,
+          "reduction_pipeline_worker_calls": 8,
+          "case": {
+            "n": 3,
+            "a": [
+              1,
+              2,
+              3
+            ]
+          },
+          "complexity": [
+            3,
+            9
+          ],
+          "expected": "6\n",
+          "actual": "3\n",
+          "stop_reason": "budget_exhausted"
+        },
+        "v4": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 6188.0,
+          "attempts": 5,
+          "executions": 10,
+          "reduction_pipeline_worker_calls": 10,
+          "case": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          },
+          "complexity": [
+            1,
+            2
+          ],
+          "expected": "1\n",
+          "actual": "0\n",
+          "stop_reason": null
+        },
+        "mvp": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 12281.0,
+          "attempts": 10,
+          "executions": 20,
+          "reduction_pipeline_worker_calls": 20,
+          "case": {
+            "n": 1,
+            "a": [
+              1
+            ]
+          },
+          "complexity": [
+            1,
+            2
+          ],
+          "expected": "1\n",
+          "actual": "0\n",
+          "stop_reason": "no_smaller_candidate"
+        }
+      },
+      "localization": {
+        "spectrum_status": "insufficient_complete_traces",
+        "passing_traces": 0,
+        "failing_traces": 5,
+        "additional_worker_calls": 8,
+        "ochiai": {
+          "status": "abstained",
+          "lines": [],
+          "top_1": false,
+          "top_3": false
+        },
+        "with_structural_evidence": {
+          "status": "abstained",
+          "lines": [],
+          "top_1": false,
+          "top_3": false
+        }
+      }
+    },
+    {
+      "id": "count",
+      "problem_id": "letter_count",
+      "authored_defect_line": 2,
+      "reduction": {
+        "no_reduction": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 9875.0,
+          "attempts": 8,
+          "executions": 16,
+          "reduction_pipeline_worker_calls": 8,
+          "case": {
+            "word": "AAABC"
+          },
+          "complexity": [
+            5,
+            3
+          ],
+          "expected": "3\n",
+          "actual": "1\n",
+          "stop_reason": "budget_exhausted"
+        },
+        "v4": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 6109.0,
+          "attempts": 5,
+          "executions": 10,
+          "reduction_pipeline_worker_calls": 10,
+          "case": {
+            "word": "A"
+          },
+          "complexity": [
+            1,
+            0
+          ],
+          "expected": "1\n",
+          "actual": "0\n",
+          "stop_reason": null
+        },
+        "mvp": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 11282.0,
+          "attempts": 9,
+          "executions": 18,
+          "reduction_pipeline_worker_calls": 18,
+          "case": {
+            "word": "A"
+          },
+          "complexity": [
+            1,
+            0
+          ],
+          "expected": "1\n",
+          "actual": "0\n",
+          "stop_reason": "no_smaller_candidate"
+        }
+      },
+      "localization": {
+        "spectrum_status": "insufficient_complete_traces",
+        "passing_traces": 0,
+        "failing_traces": 5,
+        "additional_worker_calls": 8,
+        "ochiai": {
+          "status": "abstained",
+          "lines": [],
+          "top_1": false,
+          "top_3": false
+        },
+        "with_structural_evidence": {
+          "status": "abstained",
+          "lines": [],
+          "top_1": false,
+          "top_3": false
+        }
+      }
+    },
+    {
+      "id": "matrix",
+      "problem_id": "matrix_sum",
+      "authored_defect_line": 3,
+      "reduction": {
+        "no_reduction": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 14812.0,
+          "attempts": 8,
+          "executions": 24,
+          "reduction_pipeline_worker_calls": 12,
+          "case": {
+            "r": 2,
+            "c": 2,
+            "a": [
+              [
+                1,
+                2
+              ],
+              [
+                3,
+                4
+              ]
+            ]
+          },
+          "complexity": [
+            4,
+            14
+          ],
+          "expected": "10\n",
+          "actual": "4\n",
+          "stop_reason": "budget_exhausted"
+        },
+        "v4": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 9234.0,
+          "attempts": 5,
+          "executions": 15,
+          "reduction_pipeline_worker_calls": 15,
+          "case": {
+            "r": 1,
+            "c": 2,
+            "a": [
+              [
+                1,
+                2
+              ]
+            ]
+          },
+          "complexity": [
+            2,
+            6
+          ],
+          "expected": "3\n",
+          "actual": "1\n",
+          "stop_reason": null
+        },
+        "mvp": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 23953.0,
+          "attempts": 12,
+          "executions": 36,
+          "reduction_pipeline_worker_calls": 36,
+          "case": {
+            "r": 1,
+            "c": 1,
+            "a": [
+              [
+                1
+              ]
+            ]
+          },
+          "complexity": [
+            1,
+            3
+          ],
+          "expected": "1\n",
+          "actual": "0\n",
+          "stop_reason": "no_smaller_candidate"
+        }
+      },
+      "localization": {
+        "spectrum_status": "insufficient_complete_traces",
+        "passing_traces": 0,
+        "failing_traces": 5,
+        "additional_worker_calls": 12,
+        "ochiai": {
+          "status": "abstained",
+          "lines": [],
+          "top_1": false,
+          "top_3": false
+        },
+        "with_structural_evidence": {
+          "status": "abstained",
+          "lines": [],
+          "top_1": false,
+          "top_3": false
+        }
+      }
+    },
+    {
+      "id": "reachability",
+      "problem_id": "graph_reachability",
+      "authored_defect_line": 7,
+      "reduction": {
+        "no_reduction": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 14453.0,
+          "attempts": 8,
+          "executions": 24,
+          "reduction_pipeline_worker_calls": 12,
+          "case": {
+            "n": 3,
+            "a": [
+              [
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                0,
+                0
+              ]
+            ]
+          },
+          "complexity": [
+            9,
+            5
+          ],
+          "expected": "3\n",
+          "actual": "2\n",
+          "stop_reason": "budget_exhausted"
+        },
+        "v4": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 13281.0,
+          "attempts": 6,
+          "executions": 18,
+          "reduction_pipeline_worker_calls": 18,
+          "case": {
+            "n": 2,
+            "a": [
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          },
+          "complexity": [
+            4,
+            3
+          ],
+          "expected": "2\n",
+          "actual": "1\n",
+          "stop_reason": null
+        },
+        "mvp": {
+          "status": "observed_mismatch",
+          "kind": "wrong_answer",
+          "replay_count": 3,
+          "elapsed_ms": 18109.0,
+          "attempts": 10,
+          "executions": 30,
+          "reduction_pipeline_worker_calls": 30,
+          "case": {
+            "n": 2,
+            "a": [
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          },
+          "complexity": [
+            4,
+            3
+          ],
+          "expected": "2\n",
+          "actual": "1\n",
+          "stop_reason": "no_smaller_candidate"
+        }
+      },
+      "localization": {
+        "spectrum_status": "observed_spectrum",
+        "passing_traces": 3,
+        "failing_traces": 2,
+        "additional_worker_calls": 12,
+        "ochiai": {
+          "status": "ranked",
+          "lines": [
+            9,
+            10,
+            8,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            11
+          ],
+          "top_1": false,
+          "top_3": false
+        },
+        "with_structural_evidence": {
+          "status": "ranked",
+          "lines": [
+            8,
+            7,
+            5,
+            9,
+            10,
+            1,
+            2,
+            3,
+            4,
+            6,
+            11
+          ],
+          "top_1": false,
+          "top_3": true
+        }
+      }
+    }
+  ]
+}
