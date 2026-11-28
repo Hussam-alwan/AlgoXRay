@@ -1,0 +1,267 @@
+{
+  "date": "2026-11-28",
+  "commit": "f6617e99e326138ab82dd64db2361a4ccccf2597",
+  "environment": {
+    "host": "Windows",
+    "python": "3.12.10",
+    "worker_image": "sha256:92a069b7123eb1a8878e5942cc20a6b0500aef3fde03bc20f6b45e8ff33ea107",
+    "setup": "fresh venv, lockfile, editable package, pip check"
+  },
+  "backend": {
+    "passed": 307,
+    "warnings": 1
+  },
+  "scope": "Local demo acceptance with synthetic fixtures. Not research or user-study data.",
+  "first": {
+    "witness": {
+      "checks": [
+        "intake_allowlist",
+        "description_prepared_without_ai",
+        "approval_guard",
+        "v2_package_approved",
+        "v2_real_docker_reduction_ui",
+        "mobile_width",
+        "intake_witness_to_repair_on_both_cases"
+      ],
+      "original": {
+        "t": 2,
+        "cases": [
+          {
+            "n": 2,
+            "a": [
+              0,
+              3
+            ]
+          },
+          {
+            "n": 3,
+            "a": [
+              1,
+              2,
+              4
+            ]
+          }
+        ]
+      },
+      "reduced": {
+        "t": 1,
+        "cases": [
+          {
+            "n": 1,
+            "a": [
+              2
+            ]
+          }
+        ]
+      },
+      "repair": {
+        "status": "passed_named_tests",
+        "suite_sha256": "b6d1ea520a2ac22ec699c221f9850d59ea2311552b315133c2262cdf6c3b5382",
+        "planned_cases": 7,
+        "executions": 16
+      }
+    },
+    "performance": {
+      "profile_stdout_matches": true,
+      "curves": {
+        "linear": {
+          "worker_calls": 30,
+          "growth": {
+            "status": "incomplete_noisy_or_incorrect"
+          },
+          "sizes": [
+            128,
+            256,
+            512,
+            1024,
+            2048
+          ],
+          "wall_medians_ns": [
+            157400,
+            177800,
+            195400,
+            253000,
+            373600
+          ],
+          "matching_points": 5,
+          "completed_student_runs": 25
+        },
+        "quadratic": {
+          "worker_calls": 30,
+          "growth": {
+            "status": "incomplete_noisy_or_incorrect"
+          },
+          "sizes": [
+            128,
+            256,
+            512,
+            1024,
+            2048
+          ],
+          "wall_medians_ns": [
+            1445700,
+            6952200,
+            25350401,
+            215578916,
+            869353765
+          ],
+          "matching_points": 5,
+          "completed_student_runs": 25
+        }
+      }
+    },
+    "fallback": {
+      "checks": [
+        "provider_outage_keeps_replayed_witness_and_graph",
+        "correct_control_not_accused_during_provider_outage",
+        "unsupported_contract_rejected",
+        "later_reference_disagreement_blocks_accusation",
+        "manual_trace_available_after_reference_disagreement",
+        "syntax_exception_has_no_fabricated_trace",
+        "profile_opt_in_outage_keeps_timeout_evidence_and_explains_state",
+        "profile_checked_opt_in_hypotheses_facts_conditions_and_context"
+      ],
+      "page_errors": [],
+      "external_requests": []
+    }
+  },
+  "repeat": {
+    "witness": {
+      "checks": [
+        "intake_allowlist",
+        "description_prepared_without_ai",
+        "approval_guard",
+        "v2_package_approved",
+        "v2_real_docker_reduction_ui",
+        "mobile_width",
+        "intake_witness_to_repair_on_both_cases"
+      ],
+      "original": {
+        "t": 2,
+        "cases": [
+          {
+            "n": 2,
+            "a": [
+              0,
+              3
+            ]
+          },
+          {
+            "n": 3,
+            "a": [
+              1,
+              2,
+              4
+            ]
+          }
+        ]
+      },
+      "reduced": {
+        "t": 1,
+        "cases": [
+          {
+            "n": 1,
+            "a": [
+              2
+            ]
+          }
+        ]
+      },
+      "repair": {
+        "status": "passed_named_tests",
+        "suite_sha256": "4625c030a4abd0a37e30117c1fa158c7d74886b6887e4a8bb1180b7e19590e6a",
+        "planned_cases": 7,
+        "executions": 16
+      }
+    },
+    "performance": {
+      "profile_stdout_matches": true,
+      "curves": {
+        "linear": {
+          "worker_calls": 30,
+          "growth": {
+            "status": "incomplete_noisy_or_incorrect"
+          },
+          "sizes": [
+            128,
+            256,
+            512,
+            1024,
+            2048
+          ],
+          "wall_medians_ns": [
+            161200,
+            170500,
+            193600,
+            255100,
+            373600
+          ],
+          "matching_points": 5,
+          "completed_student_runs": 25
+        },
+        "quadratic": {
+          "worker_calls": 30,
+          "growth": {
+            "status": "incomplete_noisy_or_incorrect"
+          },
+          "sizes": [
+            128,
+            256,
+            512,
+            1024,
+            2048
+          ],
+          "wall_medians_ns": [
+            1682500,
+            6659900,
+            74427098,
+            196412195,
+            798091511
+          ],
+          "matching_points": 5,
+          "completed_student_runs": 25
+        }
+      }
+    },
+    "fallback": {
+      "checks": [
+        "provider_outage_keeps_replayed_witness_and_graph",
+        "correct_control_not_accused_during_provider_outage",
+        "unsupported_contract_rejected",
+        "later_reference_disagreement_blocks_accusation",
+        "manual_trace_available_after_reference_disagreement",
+        "syntax_exception_has_no_fabricated_trace",
+        "profile_opt_in_outage_keeps_timeout_evidence_and_explains_state",
+        "profile_checked_opt_in_hypotheses_facts_conditions_and_context"
+      ],
+      "page_errors": [],
+      "external_requests": []
+    }
+  },
+  "observation": {
+    "checks": [
+      "manual_trace_without_reference",
+      "reviewed_sample_limited_judgment",
+      "independent_repeated_timing",
+      "legal_scaling_curve_and_export",
+      "mobile_width",
+      "source_change_invalidates_measurement",
+      "timeout_retained_and_marked_without_invented_runtime",
+      "active_benchmark_cancel_and_worker_limits"
+    ],
+    "worker_limits": {
+      "Memory": 134217728,
+      "MemorySwap": 134217728,
+      "NanoCpus": 500000000,
+      "PidsLimit": 32,
+      "NetworkMode": "none",
+      "ReadonlyRootfs": true
+    },
+    "cancelled": {
+      "status": "cancelled",
+      "cleanup_confirmed": true
+    },
+    "page_errors": [],
+    "external_requests": []
+  }
+}
