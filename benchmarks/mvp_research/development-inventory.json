@@ -1,0 +1,84 @@
+{
+  "inventory_version": 1,
+  "release_commit": "f6617e99e326138ab82dd64db2361a4ccccf2597",
+  "scope": "Public development examples used in the local demo and related verification. No held-out data.",
+  "source_files": {
+    "tools/verify_mvp_intake_browser.py": "d15179eec492f889ca604d47d61496d745e8db2df48ecd9e87f65339d4bd49d7",
+    "tools/verify_mvp_localization_browser.py": "c232df8f0774579600fbdbc433f88d729f184bff5b4b4b9eedb526a28904b57d",
+    "tools/verify_mvp_performance.py": "e866fee8f2535c4c16fca477d19aac280d49e769574106b72d53a4782664ec81",
+    "tools/verify_v4_failure_browser.py": "1947ae3c26cf6a2fd73d5f5bd3c2fcdc8f0bcf55fb7e7cf0e45ff5f28d512ab6",
+    "web/static/v4-demos.json": "f0bce528e8b50735c911c72f8da5c8f4de3428ecd4a687009cf158ce35df2698"
+  },
+  "entries": [
+    {
+      "id": "catalog-hamburgers",
+      "family": "recipe-budget",
+      "split": "development",
+      "source_file": "web/static/v4-demos.json",
+      "member": "hamburgers"
+    },
+    {
+      "id": "catalog-sum",
+      "family": "array-sums",
+      "split": "development",
+      "source_file": "web/static/v4-demos.json",
+      "member": "sum"
+    },
+    {
+      "id": "catalog-count",
+      "family": "letter-count",
+      "split": "development",
+      "source_file": "web/static/v4-demos.json",
+      "member": "count"
+    },
+    {
+      "id": "catalog-matrix",
+      "family": "matrix-sums",
+      "split": "development",
+      "source_file": "web/static/v4-demos.json",
+      "member": "matrix"
+    },
+    {
+      "id": "catalog-reachability",
+      "family": "graph-reachability",
+      "split": "development",
+      "source_file": "web/static/v4-demos.json",
+      "member": "reachability"
+    },
+    {
+      "id": "catalog-two_sum",
+      "family": "two-sum",
+      "split": "development",
+      "source_file": "web/static/v4-demos.json",
+      "member": "two_sum"
+    },
+    {
+      "id": "intake-repeated-sum",
+      "family": "array-sums",
+      "split": "development",
+      "source_file": "tools/verify_mvp_intake_browser.py",
+      "member": "MANIFEST"
+    },
+    {
+      "id": "failure-sum",
+      "family": "array-sums",
+      "split": "development",
+      "source_file": "tools/verify_v4_failure_browser.py",
+      "member": "browser_failure_sum"
+    },
+    {
+      "id": "localized-sum",
+      "family": "array-sums",
+      "split": "development",
+      "source_file": "tools/verify_mvp_localization_browser.py",
+      "member": "sum_all_mvp"
+    },
+    {
+      "id": "performance-synthetic-sum",
+      "family": "array-sums",
+      "split": "development",
+      "source_file": "tools/verify_mvp_performance.py",
+      "member": "MANIFEST"
+    }
+  ]
+}
