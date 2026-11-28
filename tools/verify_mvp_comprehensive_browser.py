@@ -24,9 +24,13 @@ def test(url,folder):
         expect(page.locator("#reviewed")).to_be_hidden()
         expect(page.locator("#ux-separate-modes")).not_to_have_attribute("open","")
         assert not posts
+        expect(page.locator("#ux-tab-input")).to_have_attribute("aria-selected","true")
+        assert page.locator("[role=tab]:visible").count()==2
+        expect(page.locator("#ux-tab-summary")).to_be_hidden()
         page.screenshot(path=str(folder/"comprehensive-initial.jpg"),type="jpeg",quality=70)
         checks.append("default_comprehensive_no_automatic_execution")
         # Keep a small deterministic fixture, and minimize test execution time.
+        page.locator("#ux-tab-advanced").click()
         page.locator("#ux-tools > summary").click()
         page.locator("#ux-analysis-options > summary").click()
         page.locator("#analysis-case").fill('{"n":3,"a":[1,2,3]}')
@@ -36,6 +40,7 @@ def test(url,folder):
         page.locator("#timing-repetitions").fill("1")
         page.locator("#ux-timing-options > summary").click()
         page.locator("#ux-tools > summary").click()
+        page.locator("#ux-tab-input").click()
         # First action on a new draft may validate structure only.
         before=len(posts)
         page.locator("#ux-run-full").click()
@@ -44,16 +49,25 @@ def test(url,folder):
         expect(page.locator("#ux-preview-controls")).to_have_attribute("open","")
         expect(page.locator("#package")).to_be_hidden()
         assert posts[before:]==["/api/v4/packages/preflight"],posts[before:]
+        expect(page.locator("#ux-tab-input")).to_have_attribute("aria-selected","true")
+        expect(page.locator("#ux-tab-summary")).to_be_hidden()
+        expect(page.locator("#ux-full-progress")).to_be_visible()
         checks.append("new_draft_preflight_requires_visible_review_no_worker")
         page.screenshot(path=str(folder/"comprehensive-review.jpg"),type="jpeg",quality=70)
+        def tab(name):page.locator("#ux-tab-"+name).click()
         def run():
+            tab("input")
             start=len(posts)
-            with page.expect_download(timeout=15000) as dl:
-                page.locator("#ux-run-full").click()
-                expect(page.locator("#ux-full-export")).to_be_visible(timeout=150000)
-                expect(page.locator("#ux-run-full")).to_be_enabled(timeout=150000)
-                page.locator("#ux-full-export").click()
+            page.locator("#ux-run-full").click()
+            expect(page.locator("#ux-run-full")).to_be_enabled(timeout=150000)
+            expect(page.locator("#ux-tab-summary")).to_have_attribute("aria-selected","true",timeout=150000)
+            assert page.locator("[role=tabpanel]:visible").count()==1
+            assert page.locator("[role=tab]:visible").count()==6
+            tab("advanced")
+            expect(page.locator("#ux-full-export")).to_be_visible()
+            with page.expect_download(timeout=15000) as dl:page.locator("#ux-full-export").click()
             path=folder/"report.json";dl.value.save_as(path)
+            tab("summary")
             return json.loads(path.read_text(encoding="utf-8")),posts[start:]
         wrong,requests=run()
         assert wrong["status"]=="completed",wrong.get("error")
@@ -68,7 +82,7 @@ def test(url,folder):
         assert a["package_sha256"]==b["package_sha256"]
         assert all(w["requested_mode"]=="benchmark_uninstrumented" for w in b["run_report"]["workers"])
         expect(page.locator("#results")).to_be_visible()
-        expect(page.locator("#benchmark-results")).to_be_visible()
+        expect(page.locator("#benchmark-results")).to_be_hidden()
         expect(page.locator("#actual")).to_have_text("3\n")
         expect(page.locator("#expected")).to_have_text("6\n")
         expect(page.locator("#ux-full-trace")).to_contain_text("\u0625\u0639\u0627\u062f\u0629")
@@ -76,6 +90,11 @@ def test(url,folder):
         page.screenshot(path=str(folder/"comprehensive-result.jpg"),type="jpeg",quality=70)
         checks.append("wrong_solution_single_action_shared_witness_and_uninstrumented_measurement")
         expect(page.locator("#ux-story-details")).not_to_have_attribute("open","")
+        expect(page.locator("#story-timeline")).to_be_hidden()
+        expect(page.locator("#story-findings")).to_be_hidden()
+        expect(page.locator("#ux-summary-trace")).to_be_visible()
+        page.locator("#ux-summary-trace").click()
+        expect(page.locator("#ux-tab-execution")).to_have_attribute("aria-selected","true")
         expect(page.locator("#story-timeline")).to_be_visible()
         expect(page.locator("#story-rail button")).to_have_count(len(a["witness"]["student"]["events"]))
         events=a["witness"]["student"]["events"]
@@ -83,19 +102,38 @@ def test(url,folder):
         page.locator("#story-rail button").nth(chosen).click()
         expect(page.locator("#story-step")).to_have_text(f"{chosen+1} / {len(events)}")
         expect(page.locator('[data-variable="a"] .story-cell strong')).to_have_text(["1","2","3"])
-        expect(page.locator("#story-shrink-bars .story-bar-row")).to_have_count(1+len(a["reduction"]["accepted"]))
-        expect(page.locator("#story-performance-bars .story-bar-row")).to_have_count(len(b["points"][0]["runs"]))
         n=len(posts)
+        step=page.locator("#story-step").text_content()
+        tab("fault")
+        expect(page.locator("#story-findings")).to_be_visible()
+        expect(page.locator("#story-shrink-bars .story-bar-row")).to_have_count(1+len(a["reduction"]["accepted"]))
+        page.screenshot(path=str(folder/"tabs-fault.jpg"),type="jpeg",quality=75)
+        tab("performance")
+        expect(page.locator("#story-performance")).to_be_visible()
+        expect(page.locator("#story-performance-bars .story-bar-row")).to_have_count(len(b["points"][0]["runs"]))
+        page.screenshot(path=str(folder/"tabs-performance.jpg"),type="jpeg",quality=75)
+        tab("execution")
+        expect(page.locator("#story-step")).to_have_text(step)
         page.locator("#story-next").click()
         assert len(posts)==n
-        page.locator("#story-timeline").scroll_into_view_if_needed()
         page.screenshot(path=str(folder/"story-timeline.jpg"),type="jpeg",quality=75)
+        # RTL keyboard navigation, one selected panel, no new run.
+        page.locator("#ux-tab-execution").focus()
+        page.keyboard.press("Home")
+        expect(page.locator("#ux-tab-input")).to_have_attribute("aria-selected","true")
+        page.keyboard.press("End")
+        expect(page.locator("#ux-tab-advanced")).to_have_attribute("aria-selected","true")
+        assert page.locator("[role=tabpanel]:visible").count()==1
+        assert len(posts)==n
+        checks.append("tab_keyboard_state_preservation_and_no_post")
         checks.append("visual_trace_array_cells_shrink_and_timing_from_report")
 
         # Changing code discards old comprehensive result. Same approved package
         # is reused, and the passing trace comes from the first search pair.
+        tab("input")
         page.locator("#ux-problem-library > summary").click()
         page.locator("#correct").click()
+        expect(page.locator("#ux-tab-summary")).to_be_hidden()
         expect(page.locator("#ux-full-result")).to_be_hidden()
         expect(page.locator("#results")).to_be_hidden()
         good,requests=run()
@@ -109,13 +147,18 @@ def test(url,folder):
         assert example["witness"]["case"]==b2["points"][0]["case"]
         assert b2["points"][0]["correctness"]=="recorded_match"
         expect(page.locator("#results")).to_be_visible()
+        tab("performance")
         expect(page.locator("#benchmark-results")).to_be_visible()
         checks.append("passing_solution_reuses_search_pair_no_extra_profile_or_approval")
+        tab("fault")
         expect(page.locator("#story-findings")).to_have_count(0)
+        expect(page.locator("#ux-tab-panel-fault .ux-tab-empty")).to_be_visible()
+        tab("execution")
         expect(page.locator("#story-timeline")).to_be_visible()
         checks.append("passing_trace_not_labeled_as_fault")
 
         # Exact already-approved draft can be reused without another approval.
+        tab("input")
         page.locator("#ux-full-target").select_option("draft")
         page.locator("#ux-package-review").evaluate("(el)=>el.open=false")
         repeated,requests=run()
@@ -123,6 +166,7 @@ def test(url,folder):
         assert requests==["/api/v4/packages/preflight","/api/v4/analyze","/api/v4/benchmark"],requests
         checks.append("matching_approved_draft_reused_without_review_repetition")
         # A stale or malformed draft must never trigger approval/worker requests.
+        tab("input")
         page.locator("#ux-full-target").select_option("draft")
         page.locator("#ux-package-review").evaluate("(el)=>el.open=true")
         page.locator("#ux-package-json").evaluate("(el)=>el.open=true")
@@ -177,12 +221,17 @@ def test(url,folder):
         page.unroute("**/api/v4/benchmark",fail_bench)
         checks.append("measurement_failure_preserves_analysis")
         # Cancel a real in-flight diagnostic request; a timing request must not follow.
+        tab("input")
         page.locator("#mutant").click()
         start=len(posts)
         with page.expect_request(lambda r:r.url.endswith("/v4/analyze"),timeout=15000):
             page.locator("#ux-run-full").click()
+        tab("advanced")
+        expect(page.locator("#cancel")).to_be_visible()
         page.locator("#cancel").click()
         expect(page.locator("#ux-run-full")).to_be_enabled(timeout=60000)
+        expect(page.locator("#ux-tab-summary")).to_have_attribute("aria-selected","true")
+        tab("advanced")
         expect(page.locator("#ux-full-export")).to_be_visible()
         with page.expect_download() as dl:page.locator("#ux-full-export").click()
         canceled_path=folder/"cancelled.json";dl.value.save_as(canceled_path)
@@ -192,6 +241,7 @@ def test(url,folder):
         checks.append("cancelled_analysis_does_not_start_measurement")
         # Mobile width must remain contained even when the result is present.
         page.set_viewport_size({"width":390,"height":844})
+        tab("summary")
         page.evaluate("window.scrollTo(0,0)")
         page.screenshot(path=str(folder/"comprehensive-mobile.jpg"),type="jpeg",quality=70)
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+1")

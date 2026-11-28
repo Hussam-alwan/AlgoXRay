@@ -106,9 +106,9 @@ window.AlgoXRayStory=(()=>{
   });
   slider.oninput=()=>{stop();select(Number(slider.value))};
   const firstArray=events.findIndex(e=>Object.values(e.locals||{}).some(v=>Array.isArray(v)||v?.kind==="list"));const first=firstArray>=0?firstArray:events.findIndex(e=>Object.keys(e.locals||{}).length);select(first<0?0:first);
-  return {host,selectEvent:id=>{stop();return select(events.findIndex(e=>e.event_id===id))},selectLine:n=>{stop();return select(events.findIndex(e=>e.line===n))}};
+  return {host,stop,selectEvent:id=>{stop();return select(events.findIndex(e=>e.event_id===id))},selectLine:n=>{stop();return select(events.findIndex(e=>e.line===n))}};
  }
- function findings(report,trace){
+ function findings(report,trace,onTrace){
   const loc=report.evidence_localization||{},rows=Array.isArray(loc.ranked)?loc.ranked:[];
   const host=section("أين أراجع الكود؟","ترتيب مبني على إشارات الأدلة المتاحة، لا نسبة احتمال ولا إثبات للسبب.");
   host.id="story-findings";
@@ -141,7 +141,7 @@ window.AlgoXRayStory=(()=>{
    const b=button("",()=>{
     const id=r.event_ids?.find(x=>report.witness.student.events?.some(e=>e.event_id===x&&e.line===r.line));
     const selected=id?trace.selectEvent?.(id):trace.selectLine?.(r.line);
-    if(selected)trace.host.scrollIntoView({block:"start"});
+    if(selected){onTrace?.();trace.host.scrollIntoView({block:"start"})}
     else onMissing.textContent="لا توجد لقطة لهذا السطر؛ الملاحظة تخص المصدر فقط.";
    });
    const onMissing=p("");b.classList.add("story-finding");b.dataset.line=String(r.line);b.dataset.rank=String(i+1);
@@ -165,7 +165,7 @@ window.AlgoXRayStory=(()=>{
    const card=add(el("div","story-hypothesis"),el("strong","","تفسير مقترح من AI — غير مؤكد"),p(h.text));
    if(h.basis==="recorded"&&Array.isArray(h.event_ids)){
     const id=h.event_ids.find(id=>report.witness.student.events?.some(e=>e.event_id===id&&e.line===h.line));
-    if(id)card.append(button("راجع اللقطة",()=>{if(trace.selectEvent?.(id))trace.host.scrollIntoView({block:"start"})}));
+    if(id)card.append(button("راجع اللقطة",()=>{if(trace.selectEvent?.(id)){onTrace?.();trace.host.scrollIntoView({block:"start"})}}));
    }
    host.append(card);
   }
@@ -198,7 +198,7 @@ window.AlgoXRayStory=(()=>{
   if(!r.accepted?.length)host.append(p(r.probes?"لم نعثر على مدخل أصغر ضمن الميزانية المستخدمة.":"لم تُنفّذ محاولات تصغير في هذا الطلب."));else selectStep(steps.length-1);
   return host;
  }
- function hotspots(report,trace){
+ function hotspots(report,trace,onTrace){
   const profile=report.witness?.student?.profile;
   if(!profile||!Array.isArray(profile.lines))return null;
   const rows=profile.lines.filter(r=>Number.isFinite(r.self_wall_ns)&&r.self_wall_ns>0&&Number.isInteger(r.line)).sort((a,b)=>b.self_wall_ns-a.self_wall_ns).slice(0,4);
@@ -208,19 +208,19 @@ window.AlgoXRayStory=(()=>{
   for(const r of rows){
    const b=button("",()=>{
     const event=report.witness.student.events?.find(e=>e.line===r.line&&e.frame_id===r.frame_id);
-    if(event&&trace.selectEvent?.(event.event_id))trace.host.scrollIntoView({block:"start"});
+    if(event&&trace.selectEvent?.(event.event_id)){onTrace?.();trace.host.scrollIntoView({block:"start"})}
    });b.classList.add("story-bar-row");b.dataset.line=String(r.line);
    const fill=el("div","story-bar-fill");fill.style.width=(r.self_wall_ns/max*100)+"%";
    add(b,mono("span","L"+r.line+" · "+r.frame_id),add(el("div","story-bar-track"),fill),mono("strong",(r.self_wall_ns/1e6).toFixed(4)+" ms"));bars.append(b);
   }
   host.append(bars);return host;
  }
- function execution(report,onEvidence){
+ function execution(report,onEvidence,onTrace){
   const host=el("div","story-execution");host.id="story-execution";
   if(!report?.witness)return host;
   const trace=timeline(report,onEvidence);
-  if(report.status==="observed_mismatch")add(host,findings(report,trace),shrink(report));
-  add(host,trace.host,hotspots(report,trace));
+  if(report.status==="observed_mismatch")add(host,findings(report,trace,onTrace),shrink(report));
+  add(host,trace.host,hotspots(report,trace,onTrace));host.stopPlayback=()=>trace.stop?.();
   return host;
  }
  function performance(report){

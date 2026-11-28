@@ -24,7 +24,7 @@
  const problem=by("demo").closest(".panel"),codePanel=by("source").closest(".panel"),settings=by("health").closest(".status");
  const intro=append(node("div","ux-intro"),node("p","ux-eyebrow","مساحة عمل AlgoXRay"),node("h2","","افهم حلّك خطوة بخطوة"),desc("أضف المسألة والكود. سنبحث عن الأخطاء ونشرح التنفيذ ونقيس الزمن."));
  const modes=node("div","ux-modes");modes.setAttribute("role","group");modes.setAttribute("aria-label","هدف التحليل");
- let mode="full";
+ let mode="full",tabs=null;
  const modeButtons=[];
  for(const [id,n,title,detail] of [
   ["full","01","التحليل الشامل","افهم التنفيذ، اكتشف الأخطاء، وقس الأداء في رحلة واحدة."],
@@ -215,8 +215,10 @@
  heading(codePanel,"2","الكود والتنفيذ");
  // Settings are available without presenting provider internals on the normal path.
  const settingItems=Array.from(settings.childNodes);
- const settingsDetails=disclosure("إعدادات الذكاء الاصطناعي والاتصال","ux-model-settings",settingItems);
+ const settingsWarning=node("p","ux-status-message");settingsWarning.hidden=true;settingsWarning.setAttribute("role","status");settingsWarning.dataset.tone="warning";
+ const settingsDetails=disclosure("إعدادات الذكاء الاصطناعي والاتصال","ux-model-settings",[settingsWarning,...settingItems]);
  settings.classList.add("ux-settings");settings.replaceChildren(settingsDetails);
+ for(const id of ["model","cloud-consent","ai"])by(id).addEventListener("change",()=>{settingsWarning.hidden=true});
  const tools=disclosure("إعدادات وأدوات إضافية","ux-tools",[diagnoseControls,advanced,timing,settings,modes]);
  const toolsPanel=append(node("section","panel ux-compact-tools"),tools);
  workspace.after(toolsPanel);
@@ -269,7 +271,7 @@
  new MutationObserver(()=>{updateAvailable();updateFullConsent()}).observe(approval,{childList:true,subtree:true,characterData:true});
 
  new MutationObserver(updateFullConsent).observe(approval,{childList:true,characterData:true,subtree:true});
- for(const b of modeButtons)b.addEventListener("click",()=>setMode(b.dataset.mode));
+ for(const b of modeButtons)b.addEventListener("click",()=>{setMode(b.dataset.mode);tabs?.select("input",true)});
  setMode(mode);updateAvailable();
  source.addEventListener("input",()=>{by("trusted").checked=false});
  // Keep results readable by grouping, but preserve the original evidence and links.
@@ -320,7 +322,7 @@
   originalBenchmark();
   if(!benchmarkResult)return;
   benchSlot.replaceChildren(window.AlgoXRayStory.performance(benchmarkResult));
-  benchDetails.open=mode!=="full";
+  benchDetails.open=mode!=="full";tabs?.refresh();
  };
  const footer=node("p","ux-footer","AlgoXRay · تجربة محلية · الملاحظات والفرضيات لا تثبت صحة جميع المدخلات أو السبب الجذري.");
  main.append(footer);
@@ -333,29 +335,32 @@
   const card=node("div","ux-full-card"),v=node("strong","","لم يبدأ");v.id="ux-full-"+key;fullValues[key]=v;
   append(card,node("span","",title),v);fullCards.append(card);
  }
- const viewTrace=node("button","","تفاصيل التنفيذ"),viewTiming=node("button","","تفاصيل الزمن"),fullExport=node("button","","حفظ التقرير الشامل");
- viewTrace.type=viewTiming.type=fullExport.type="button";viewTrace.hidden=viewTiming.hidden=fullExport.hidden=true;
+ const fullExport=node("button","","حفظ التقرير الشامل");
+ fullExport.type="button";fullExport.hidden=true;
  fullExport.id="ux-full-export";
- viewTrace.onclick=()=>results.scrollIntoView({block:"start"});
- viewTiming.onclick=()=>by("benchmark-results").scrollIntoView({block:"start"});
- append(fullPanel,fullTitle,fullProgress,fullCards,desc("زمن التشغيل العادي يُقاس دون التتبع على المدخل المختار. عدد مرات التشغيل الفعلية يظل مسجلاً في الأدلة."),append(node("div","ux-actions"),viewTrace,viewTiming,fullExport),desc("التقرير المحفوظ يحتوي على الكود والمدخلات والمخرجات؛ شاركه فقط إذا رغبت بذلك."));
+ append(fullPanel,fullTitle,fullProgress,fullCards,desc("زمن التشغيل العادي يُقاس دون التتبع على المدخل المختار. عدد مرات التشغيل الفعلية يظل مسجلاً في الأدلة."),fullExport);
  workspace.after(fullPanel);
  fullPanel.after(results,by("benchmark-results"),toolsPanel);
  let fullActive=false,fullCancelled=false,fullReport=null;
- function clearFull(){if(fullActive)return;fullReport=null;fullPanel.hidden=true;viewTrace.hidden=viewTiming.hidden=fullExport.hidden=true}
+ function clearFull(){if(fullActive)return;fullReport=null;fullPanel.hidden=true;fullExport.hidden=true}
  function invalidateFull(){if(fullActive||busy)return;if(fullReport)invalidateResult();clearFull()}
  const originalBusy=setBusy;setBusy=function(value){
   originalBusy(value);for(const b of modeButtons)b.disabled=value;
   fullTarget.disabled=fullButton.disabled=fileButton.disabled=value;authorForm.setBusy(value);
   updateFullConsent();
-  if(value&&!fullActive)clearFull();
+  tabs?.refresh();
  };
  for(const id of ["source","package","analysis-case","session-seconds","timing-repetitions","timing-seconds","count","reduce-count","statement","problem-url","manual-stdin","manual-expected","profile-case","size-field","size-values"]){
   by(id).addEventListener("input",invalidateFull)
  }
- for(const id of ["packages","model","ai","generator","guided","spectrum","cloud-consent","use-cache"]){by(id).addEventListener("change",invalidateFull)}
- for(const id of ["load","correct","mutant","prepare-replay"]){by(id).addEventListener("click",invalidateFull)}
+ for(const id of ["packages","model","ai","generator","guided","spectrum","cloud-consent","use-cache","sample-reviewed","sample-comparison"]){by(id).addEventListener("change",invalidateFull)}
+ for(const id of ["load","correct","mutant","prepare-replay","draft","draft-reference","prepare-statement","import-problem","approve"]){by(id).addEventListener("click",invalidateFull)}
  fullTarget.addEventListener("change",invalidateFull);
+ for(const id of ["run","observe-run","plain-benchmark","scaling-benchmark","profile-run"]){
+  by(id).addEventListener("click",()=>{if(!busy){invalidateResult();clearFull();tabs?.refresh()}},true);
+ }
+ const originalRunReport=showRunReport;showRunReport=function(data){originalRunReport(data);tabs?.noteReport(data)};
+
  cancel.addEventListener("click",()=>{if(fullActive){fullCancelled=true;fullProgress.textContent="طُلب الإلغاء؛ لن تبدأ مرحلة أخرى."}},true);
  fullExport.onclick=()=>{
   if(!fullReport)return;
@@ -383,7 +388,7 @@
    msg("status","تغيّر نص المسألة. اضغط «جهّز المسألة» لإنشاء مسودة مطابقة، ثم راجعها.");return
   }
   const modelOptions=aiOptions(),useAI=by("ai").checked;
-  if(useAI&&!modelOptions.model.startsWith("qwen2.5-coder:")&&!modelOptions.cloud_consent){settingsDetails.open=true;msg("status","راجع موافقة إرسال البيانات إلى المزود السحابي أو اختر نموذجاً محلياً.");return}
+  if(useAI&&!modelOptions.model.startsWith("qwen2.5-coder:")&&!modelOptions.cloud_consent){settingsDetails.open=true;tools.open=true;settingsWarning.textContent="راجع موافقة إرسال البيانات إلى المزود السحابي أو اختر نموذجاً محلياً، ثم ارجع إلى الإدخال للتحليل.";settingsWarning.hidden=false;tabs?.select("advanced",true);msg("status",settingsWarning.textContent);return}
   clearFull();fullActive=true;fullCancelled=false;
   fullReport={format:"algoxray_comprehensive_report",version:1,id:crypto.randomUUID().replaceAll("-",""),status:"running",phases:[],scope:"Local composite report; individual phase reports retain their own IDs and budgets. Not a signature or general correctness proof."};
   fullPanel.hidden=false;for(const v of Object.values(fullValues)){v.textContent="بانتظار التنفيذ";delete v.parentElement.dataset.tone}
@@ -406,14 +411,14 @@
      packageReview.open=true;
      for(const id of ["ux-preview-reference","ux-preview-controls","ux-preview-provenance"]){const d=by(id);if(d)d.open=true}
      fullProgress.textContent="عرضنا المسألة للمراجعة بشكل مقروء. راجع المرجع والقيود والاختبارات المستقلة، ثم اضغط زر التحليل مرة أخرى.";
-     fullReport.status="review_required";fullProgress.dataset.tone="warning";packageReview.scrollIntoView({block:"center"});return
+     fullReport.status="review_required";fullProgress.dataset.tone="warning";tabs?.select("input",true);packageReview.scrollIntoView({block:"center"});return
     }
     key=preflight.key;
     if(!preflight.already_approved){
      fullProgress.textContent="جارٍ اختبار المرجع الذي راجعته…";
      const approvalResult=await api("/api/v4/packages/approve",{package:draft,owner_reviewed:true});
      fullReport.approval=approvalResult;msg("approval",JSON.stringify(approvalResult.review,null,2));
-     if(approvalResult.status!=="approved_by_owner"||approvalResult.key!==key){fullReport.status="approval_rejected";fullProgress.textContent="لم ينجح فحص المرجع؛ لن نشغّل الحل قبل تصحيح المسألة.";fullProgress.dataset.tone="warning";packageReview.open=true;return}
+     if(approvalResult.status!=="approved_by_owner"||approvalResult.key!==key){fullReport.status="approval_rejected";fullProgress.textContent="لم ينجح فحص المرجع؛ لن نشغّل الحل قبل تصحيح المسألة.";fullProgress.dataset.tone="warning";packageReview.open=true;tabs?.select("input",true);return}
     }
     await packages(key);fullTarget.value="approved";packageReview.open=false;newProblem.open=false;updateAvailable();updateFullConsent();
    }
@@ -431,7 +436,7 @@
    fullValues.diagnosis.parentElement.dataset.tone=analysis.status==="no_witness_found"?"positive":"warning";
    if(observed?.witness&&observed.student_graph){
     result=observed;sources={student:code,reference:observed.reference_source||""};side="student";index=0;show();
-    fullValues.trace.textContent="تمت إعادة استخدام تتبع التحليل";viewTrace.hidden=false;
+    fullValues.trace.textContent="تمت إعادة استخدام تتبع التحليل";
    }else fullValues.trace.textContent="لا تتوفر خطوات موثقة";
    if(fullCancelled||analysis.status==="cancelled")return;
    if(!observed?.witness?.case||!["ok","timeout"].includes(observed.witness.student?.status)){
@@ -441,7 +446,7 @@
    fullProgress.textContent="جارٍ قياس زمن التشغيل الحقيقي على المدخل نفسه دون تتبع…";
    const measured=await phase("benchmark","/api/v4/benchmark",{package_key:key,case:observed.witness.case,source:code,trusted_local_source:true,repetitions:Number(by("timing-repetitions").value),seconds:Number(by("timing-seconds").value)});
    if(!measured)return;
-   benchmarkResult=measured;showBenchmark();viewTiming.hidden=false;
+   benchmarkResult=measured;showBenchmark();
    const stats=measured.points?.[0]?.summary;
    const wall=stats?.wall_ns?.median;
    if(Number.isFinite(wall)){
@@ -449,12 +454,12 @@
    }else fullValues.timing.textContent="لم يكتمل قياس صالح للزمن";
    showRunReport(analysis); // Keep analysis report accessible; composite export contains both reports.
    fullReport.status=measured.stop_reason==="completed"&&stats?.completed===stats?.requested&&Number.isFinite(wall)?"completed":"partial";
-   fullProgress.textContent=fullReport.status==="completed"?"اكتمل التحليل الشامل. تفاصيل التشخيص والفهم والأداء متاحة أدناه.":"انتهى التحليل مع قياس جزئي أو غير متاح.";
+   fullProgress.textContent=fullReport.status==="completed"?"اكتمل التحليل الشامل. اختر التبويب الذي تريد استكشافه.":"انتهى التحليل مع قياس جزئي أو غير متاح.";
    fullProgress.dataset.tone=fullReport.status==="completed"?"positive":"warning";
   }catch(e){
    fullReport.status="partial";fullReport.error=String(e.message||e);
    fullProgress.textContent="تعذر إكمال إحدى المراحل: "+fullReport.error;fullProgress.dataset.tone="warning";
-   if(!fullReport.phases.length&&fromDraft){packageReview.open=true;author.open=true;authorForm.refresh()}
+   if(!fullReport.phases.length&&fromDraft){packageReview.open=true;author.open=true;authorForm.refresh();tabs?.select("input",true)}
   }finally{
    if(fullCancelled||fullReport.phases.some(x=>x.data.status==="cancelled"||x.data.stop_reason==="cancelled")){
     fullReport.status="cancelled";fullProgress.textContent="أُلغي التحليل؛ النتائج المكتملة قبل الإلغاء محفوظة.";fullProgress.dataset.tone="warning"
@@ -463,7 +468,7 @@
    fullExport.hidden=!(fullReport.phases.length||fullReport.approval);analysisId=null;cancel.hidden=true;fullActive=false;setBusy(false);refreshModels().catch(()=>{})
   }
  };
- const originalJump=jumpToEvidence;jumpToEvidence=function(...args){advancedResult.open=true;trace.open=true;originalJump(...args)};
+ const originalJump=jumpToEvidence;jumpToEvidence=function(...args){tabs?.select("advanced",true);advancedResult.open=true;trace.open=true;originalJump(...args)};
  for(const id of ["ast-tree","profile-table"])by(id).addEventListener("click",e=>{if(e.target.closest("button"))trace.open=true},true);
  const originalShow=show;show=function(){
   originalShow();
@@ -474,7 +479,8 @@
   by("actual").parentElement.classList.add("ux-actual");
   resultCaution.textContent=manualResult?"تتبع مدخل يدوي؛ لا يثبت صحة الحل ولا قانونية المدخل.":profileResult?"الزمن أثناء التتبع يصف تنفيذاً واحداً، وليس زمن المسابقة.":"هذه حالة فشل مرصودة؛ مواضع الاشتباه والفرضيات لا تثبت السبب الجذري.";
   advancedResult.open=mode!=="full";trace.open=true;comparison.open=false;profiling.open=profileResult;aiResults.open=Boolean(result.hypotheses?.length);
-  storySlot.replaceChildren(window.AlgoXRayStory.execution(result,(line,id)=>jumpToEvidence(line,id)));
+  const story=window.AlgoXRayStory.execution(result,(line,id)=>jumpToEvidence(line,id),()=>tabs?.select("execution",true));
+  if(tabs)tabs.installStory(story);else storySlot.replaceChildren(story);
   if(!manualResult){
    by("actual").previousElementSibling.textContent="خرج برنامجك";
    by("expected").previousElementSibling.textContent=result.witness.judgment?.reference_output_is_example?"مثال لخرج مقبول":"الخرج المرجعي";
@@ -488,7 +494,7 @@
  by("prepare-replay").addEventListener("click",()=>{
   if(!importedReport||by("trusted").checked)return;
   const op=importedReport.run_report.operation;
-  if(op==="observe")setMode("understand");else if(op==="profile"){setMode("performance");profile.open=true}else setMode("diagnose");
+  if(op==="observe")setMode("understand");else if(op==="profile"){setMode("performance");profile.open=true}else setMode("diagnose");tabs?.select("input",true);
  });
  const readableStatuses={
   observed_mismatch:["وجدنا حالة فشل قابلة للمراجعة. تفاصيلها أدناه.","warning"],
@@ -502,4 +508,10 @@
  };
  function syncStatus(){const raw=status.textContent.trim(),key=raw.split(/[\s·]/)[0],v=readableStatuses[key];friendly.hidden=!v;if(v){friendly.textContent=v[0];friendly.dataset.tone=v[1]}}
  new MutationObserver(syncStatus).observe(status,{childList:true,characterData:true,subtree:true});
+ tabs=window.AlgoXRayTabs.mount({
+  main,intro,workspace,toolsPanel,results,fullPanel,fullProgress,cancel,benchPanel,benchDetails,advancedResult,reports,fullExport,footer,
+  state:()=>({busy,fullActive,fullReport,result,reportHidden:by("run-report-panel").hidden}),
+  stopTechnicalPlayback:()=>stopTracePlayback()
+ });
+
 })();

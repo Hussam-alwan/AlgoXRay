@@ -41,6 +41,7 @@ def test(url,folder):
         page.locator("#problem-url").fill("")
         page.locator("#ux-url-input").evaluate("(e)=>e.open=false")
         checks.append("unimported_link_cannot_reuse_previous_problem")
+        page.locator("#ux-tab-advanced").click()
         page.locator("#ux-tools > summary").click()
         page.locator("#ux-analysis-options > summary").click()
         page.locator("#analysis-case").fill(json.dumps({"n":100,"a":[1]*100}))
@@ -50,6 +51,7 @@ def test(url,folder):
         page.locator("#timing-repetitions").fill("2")
         page.locator("#ux-timing-options > summary").click()
         page.locator("#ux-tools > summary").click()
+        page.locator("#ux-tab-input").click()
         page.locator("#ux-run-full").click()
         expect(page.locator("#ux-run-full")).to_be_enabled(timeout=30000)
         expect(page.locator("#ux-preview-reference")).to_have_attribute("open","")
@@ -59,7 +61,10 @@ def test(url,folder):
         result=response.value.json()
         assert result["status"]=="observed_mismatch",result.get("status")
         expect(page.locator("#ux-run-full")).to_be_enabled(timeout=120000)
+        expect(page.locator("#ux-tab-summary")).to_have_attribute("aria-selected","true")
+        page.locator("#ux-tab-performance").click()
         expect(page.locator("#story-performance")).to_be_visible()
+        page.locator("#ux-tab-fault").click()
         assert result["original_case"]["n"]==100 and result["witness"]["case"]["n"]==3
         assert result["reduction"]["original_complexity"][0]==100 and result["reduction"]["reduced_complexity"][0]==3
         assert result["evidence_localization"]["ranked"][0]["line"]==4
@@ -75,24 +80,63 @@ def test(url,folder):
         expect(page.locator("#story-findings .story-range .story-skipped strong")).to_have_text(["2"])
         expect(page.locator("#story-findings .story-range .story-read strong")).to_have_text(["0","1"])
         n=len(posts)
-        page.locator("#story-findings button.story-finding").first.click()
-        expect(page.locator("#story-line")).to_contain_text("range(n-1)")
-        page.locator("#story-findings").scroll_into_view_if_needed()
         page.screenshot(path=str(folder/"story-localization.jpg"),type="jpeg",quality=75)
+        page.locator("#story-findings button.story-finding").first.click()
+        expect(page.locator("#ux-tab-execution")).to_have_attribute("aria-selected","true")
+        expect(page.locator("#story-line")).to_contain_text("range(n-1)")
         checks.append("ranked_source_and_observed_index_omission")
         previous=page.locator("#story-step").text_content()
         page.locator("#story-play").click()
         page.wait_for_function("(old)=>document.querySelector('#story-step').textContent!==old",arg=previous)
-        page.locator("#story-play").click()
+        # Leaving the trace tab pauses playback and preserves its selected step.
+        page.locator("#ux-tab-performance").click()
+        step=page.locator("#story-step").text_content()
+        page.wait_for_timeout(800)
+        expect(page.locator("#story-step")).to_have_text(step)
         assert len(posts)==n
         expect(page.locator("#story-hotspots .story-bar-row").first).to_be_visible()
+        page.locator("#story-hotspots .story-bar-row").first.click()
+        expect(page.locator("#ux-tab-execution")).to_have_attribute("aria-selected","true")
+        page.locator("#ux-tab-performance").click()
         expect(page.locator("#story-performance-bars .story-bar-row")).to_have_count(2)
         checks.append("playback_and_hotspots_reuse_recorded_evidence")
+        # Advanced repair is an explicit separate operation. It must not erase
+        # the original comprehensive result or restart analysis/measurement.
+        page.locator("#ux-tab-advanced").click()
+        page.locator("#ux-story-details > summary").click()
+        page.locator("#ux-repair > summary").click()
+        page.locator("#candidate").fill(PACKAGE["reference"])
+        page.locator("#patch-reviewed").check()
+        start=len(posts)
+        with page.expect_response(lambda r:r.url.endswith("/repair/verify"),timeout=120000) as response:
+            page.locator("#verify-patch").click()
+        repair=response.value.json()
+        assert repair["status"]=="passed_named_tests",repair.get("status")
+        expect(page.locator("#verify-patch")).to_be_enabled(timeout=60000)
+        expect(page.locator("#ux-tab-advanced")).to_have_attribute("aria-selected","true")
+        expect(page.locator("#ux-full-export")).to_be_visible()
+        assert posts[start:]==["/api/v4/repair/verify"],posts[start:]
+        page.locator("#ux-tab-summary").click()
+        expect(page.locator("#actual")).to_have_text("2\n")
+        expect(page.locator("#expected")).to_have_text("3\n")
+        page.locator("#ux-tab-performance").click()
+        expect(page.locator("#story-performance-bars .story-bar-row")).to_have_count(2)
+        page.locator("#ux-tab-execution").click()
+        expect(page.locator("#story-line")).to_be_visible()
+        checks.append("advanced_repair_preserves_original_tabs")
         page.set_viewport_size({"width":390,"height":844})
+        page.locator("#ux-tab-execution").click()
         page.locator("#story-timeline").scroll_into_view_if_needed()
         page.screenshot(path=str(folder/"story-mobile-result.jpg"),type="jpeg",quality=75)
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth+1")
-        checks.append("mobile_result_width")
+        # All tabs are reachable on a narrow viewport; the strip scrolls independently.
+        for name in ("summary","fault","performance","advanced","input","execution"):
+            page.locator("#ux-tab-"+name).click()
+            expect(page.locator("#ux-tab-"+name)).to_have_attribute("aria-selected","true")
+            assert page.evaluate("document.documentElement.scrollWidth<=innerWidth+1"),name
+        page.evaluate("window.scrollTo(0,document.body.scrollHeight)")
+        assert page.locator("#ux-tab-list").bounding_box()["y"]>=-2
+        checks.append("mobile_result_width_and_sticky_tabs")
         assert not errors,errors
         assert not external,external
         browser.close()

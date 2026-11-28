@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "checks": [
+    "guided_default_hides_technical_controls",
+    "mode_switch_is_local",
+    "manual_trace_without_reference",
+    "manual_performance_measurement",
+    "reviewed_demo_witness_and_progressive_evidence",
+    "evidence_and_reports_remain_reachable",
+    "mobile_layout_and_source_review_reset",
+    "expert_view_preserves_original_controls"
+  ],
+  "page_errors": [],
+  "external_requests": [],
+  "scope": "Synthetic local browser journeys. No human usability evaluation.",
+  "observation": "manual_observation",
+  "diagnosis": "observed_mismatch",
+  "case": {
+    "n": 3,
+    "a": [
+      1,
+      2,
+      3
+    ]
+  }
+}
