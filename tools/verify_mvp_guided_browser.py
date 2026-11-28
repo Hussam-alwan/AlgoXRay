@@ -1,0 +1,156 @@
+"""Guided UI browser acceptance, using a fresh local package store and Docker."""
+import argparse,json,os,subprocess,sys,tempfile,time,urllib.request
+from pathlib import Path
+from playwright.sync_api import sync_playwright,expect
+from verify_browser import available_browser
+
+def test(url,folder):
+    checks=[];errors=[];external=[];runs=[]
+    with sync_playwright() as p:
+        browser=p.chromium.launch(executable_path=available_browser(),headless=True)
+        page=browser.new_page(viewport={"width":1440,"height":1000},accept_downloads=True)
+        page.on("pageerror",lambda e:errors.append(str(e)))
+        def route(r):
+            if r.request.url.startswith(url+"/"):r.continue_()
+            else:external.append(r.request.url);r.abort()
+        page.route("**/*",route)
+        page.on("request",lambda req:runs.append(req.url) if req.method=="POST" else None)
+        page.goto(url+"/v4")
+        expect(page.locator("body")).to_have_class("guided-workspace")
+        expect(page.locator("#source")).not_to_be_empty(timeout=15000)
+        expect(page.locator('[data-mode="diagnose"]')).to_have_attribute("aria-pressed","true")
+        expect(page.locator("#run")).to_be_visible()
+        assert page.locator("#run").bounding_box()["y"] < 900
+        expect(page.locator("#count")).to_be_hidden()
+        expect(page.locator("#package")).to_be_hidden()
+        expect(page.locator("#health")).to_be_hidden()
+        expect(page.locator("#trusted")).not_to_be_checked()
+        page.screenshot(path=str(folder/"guided-initial.jpg"),type="jpeg",quality=65)
+        checks.append("guided_default_hides_technical_controls")
+        n=len(runs)
+        page.locator('[data-mode="understand"]').click()
+        expect(page.locator("#manual-stdin")).to_be_visible()
+        expect(page.locator("#observe-run")).to_be_visible()
+        expect(page.locator("#run")).to_be_hidden()
+        page.locator('[data-mode="performance"]').click()
+        expect(page.locator("#plain-benchmark")).to_be_visible()
+        expect(page.locator("#ux-scale-options")).to_be_visible()
+        assert len(runs)==n
+        checks.append("mode_switch_is_local")
+        page.locator('[data-mode="understand"]').click()
+        page.locator("#source").fill("n=int(input())\nprint(n*2)\n")
+        page.locator("#manual-stdin").fill("3\n")
+        page.locator("#trusted").check()
+        with page.expect_response(lambda r:r.url.endswith("/v4/observe"),timeout=45000) as response:
+            page.locator("#observe-run").click()
+        observation=response.value.json()
+        assert observation["status"]=="manual_observation",observation.get("status")
+        expect(page.locator("#results")).to_be_visible()
+        expect(page.locator("#actual")).to_have_text("6\n")
+        expect(page.locator("#code")).to_be_visible()
+        expect(page.locator("#reference")).to_be_disabled()
+        expect(page.locator("#facts")).to_be_hidden()
+        expect(page.locator("#ux-friendly-status")).to_be_visible()
+        page.locator("#results").scroll_into_view_if_needed()
+        page.screenshot(path=str(folder/"guided-observe.jpg"),type="jpeg",quality=65)
+        checks.append("manual_trace_without_reference")
+        page.locator('[data-mode="performance"]').click()
+        page.locator("#ux-timing-options > summary").click()
+        page.locator("#timing-repetitions").fill("1")
+        with page.expect_response(lambda r:r.url.endswith("/v4/benchmark"),timeout=45000) as response:
+            page.locator("#plain-benchmark").click()
+        measured=response.value.json()
+        assert measured["status"]=="benchmark_observation",measured.get("status")
+        expect(page.locator("#benchmark-results")).to_be_visible()
+        expect(page.locator("#benchmark-table tbody tr")).to_have_count(1)
+        expect(page.locator("#benchmark-growth")).to_be_hidden()
+        checks.append("manual_performance_measurement")
+        page.locator('[data-mode="diagnose"]').click()
+        page.locator("#demo").select_option("sum")
+        page.locator("#load").click()
+        expect(page.locator("#reviewed")).to_be_visible()
+        expect(page.locator("#reviewed")).not_to_be_checked()
+        expect(page.locator("#package")).to_be_hidden()
+        page.locator("#ux-package-json summary").click()
+        expect(page.locator("#package")).to_be_visible()
+        page.locator("#reviewed").check()
+        with page.expect_response(lambda r:r.url.endswith("/packages/approve"),timeout=50000) as response:
+            page.locator("#approve").click()
+        approved=response.value.json()
+        assert approved["status"]=="approved_by_owner",approved.get("status")
+        expect(page.locator("#packages")).to_have_value(approved["key"])
+        expect(page.locator("#approval")).to_be_hidden()
+        expect(page.locator("#ux-approval-details")).to_be_visible()
+        page.locator("#ux-package-review > summary").click()
+        page.locator("#ux-analysis-options summary").click()
+        page.locator("#analysis-case").fill('{"n":3,"a":[1,2,3]}')
+        page.locator("#reduce-count").fill("0")
+        page.locator("#ux-analysis-options summary").click()
+        page.locator("#trusted").check()
+        with page.expect_response(lambda r:r.url.endswith("/v4/analyze"),timeout=90000) as response:
+            page.locator("#run").click()
+        mismatch=response.value.json()
+        assert mismatch["status"]=="observed_mismatch",mismatch.get("status")
+        expect(page.locator("#expected")).to_have_text("6\n")
+        expect(page.locator("#actual")).to_have_text("3\n")
+        expect(page.locator("#result-title")).to_be_visible()
+        expect(page.locator("#ux-evidence")).to_be_visible()
+        expect(page.locator("#export")).to_be_hidden()
+        expect(page.locator("#code")).to_be_visible()
+        page.locator("#results").scroll_into_view_if_needed()
+        page.screenshot(path=str(folder/"guided-diagnose.jpg"),type="jpeg",quality=65)
+        checks.append("reviewed_demo_witness_and_progressive_evidence")
+        page.locator("#ux-evidence summary").click()
+        expect(page.locator("#export")).to_be_visible()
+        page.locator("#ux-run-reports > summary").click()
+        expect(page.locator("#run-report-export")).to_be_visible()
+        checks.append("evidence_and_reports_remain_reachable")
+        page.locator("#source").fill("print(1)")
+        expect(page.locator("#trusted")).not_to_be_checked()
+        expect(page.locator("#results")).to_be_hidden()
+        page.set_viewport_size({"width":390,"height":844})
+        page.evaluate("window.scrollTo(0,0)")
+        page.screenshot(path=str(folder/"guided-mobile.jpg"),type="jpeg",quality=65)
+        assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+1"),"Mobile horizontal overflow"
+        checks.append("mobile_layout_and_source_review_reset")
+        guided_ids=page.evaluate("Array.from(document.querySelectorAll('[id]'),e=>e.id)")
+        assert len(guided_ids)==len(set(guided_ids)), "Duplicate guided IDs"
+        page.goto(url+"/v4?view=expert")
+        expect(page.locator("#count")).to_be_visible()
+        expect(page.locator("#package")).to_be_visible(timeout=15000)
+        expect(page.locator("#health")).to_be_visible()
+        assert page.locator("body.guided-workspace").count()==0
+        expert_ids=set(page.evaluate("Array.from(document.querySelectorAll('[id]'),e=>e.id)"))
+        assert expert_ids<=set(guided_ids), sorted(expert_ids-set(guided_ids))
+        checks.append("expert_view_preserves_original_controls")
+        assert not errors,errors
+        assert not external,external
+        browser.close()
+    return {"status":"passed","checks":checks,"page_errors":errors,"external_requests":external,
+            "scope":"Synthetic local browser journeys. No human usability evaluation.",
+            "observation":observation["status"],"diagnosis":mismatch["status"],"case":mismatch["witness"]["case"]}
+
+if __name__=="__main__":
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--port",type=int,default=8793);parser.add_argument("--out",default="docs/mvp-evidence/guided-ui-browser.json")
+    parser.add_argument("--screenshots",default="results/guided-ui-preview");args=parser.parse_args()
+    url=f"http://127.0.0.1:{args.port}";folder=Path(args.screenshots);folder.mkdir(parents=True,exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="algoxray-guided-") as t:
+        temp=Path(t);env={**os.environ,"ALGOXRAY_V4_PACKAGE_STORE":str(temp/"packages")}
+        with (temp/"server.log").open("wb") as log:
+            proc=subprocess.Popen([sys.executable,"-m","uvicorn","algoxray.api:app","--host","127.0.0.1","--port",str(args.port),"--log-level","warning"],env=env,stdout=log,stderr=log)
+            try:
+                for _ in range(100):
+                    try:
+                        with urllib.request.urlopen(url+"/api/health",timeout=1) as r:
+                            if r.status==200:break
+                    except OSError:time.sleep(.1)
+                else:raise RuntimeError("Server unavailable")
+                report=test(url,folder)
+                out=Path(args.out);out.parent.mkdir(parents=True,exist_ok=True)
+                out.write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding="utf-8")
+                print(json.dumps(report),flush=True)
+            finally:
+                proc.terminate()
+                try:proc.wait(timeout=5)
+                except subprocess.TimeoutExpired:proc.kill();proc.wait()

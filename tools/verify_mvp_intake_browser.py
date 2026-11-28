@@ -24,7 +24,7 @@ def test(url):
             if r.request.url.startswith(url+"/"):r.continue_()
             else:external.append(r.request.url);r.abort()
         page.route("**/*",route)
-        page.goto(url+"/v4")
+        page.goto(url+"/v4?view=expert")
         expect(page.locator("#package")).not_to_be_empty(timeout=15000)
         page.locator("#problem-url").fill("https://example.com/problem")
         with page.expect_response(lambda r:r.url.endswith("/packages/intake"),timeout=10000) as response:

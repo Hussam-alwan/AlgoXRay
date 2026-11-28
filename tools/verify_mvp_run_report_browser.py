@@ -16,7 +16,7 @@ def test(url,temp):
         def route(r):
             if r.request.url.startswith(url+"/"):r.continue_()
             else:external.append(r.request.url);r.abort()
-        page.route("**/*",route);page.goto(url+"/v4")
+        page.route("**/*",route);page.goto(url+"/v4?view=expert")
         expect(page.locator("#package")).not_to_be_empty(timeout=15000)
         page.locator("#package").fill(json.dumps(P));page.locator("#reviewed").check()
         with page.expect_response(lambda r:r.url.endswith("/packages/approve"),timeout=35000) as response:page.locator("#approve").click()

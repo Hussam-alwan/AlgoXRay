@@ -53,7 +53,7 @@ def test(url,out):
   def route(r):
    if r.request.url.startswith(url+"/"):r.continue_()
    else:external.append(r.request.url);r.abort()
-  page.route("**/*",route);page.goto(url+"/v4")
+  page.route("**/*",route);page.goto(url+"/v4?view=expert")
   expect(page.locator("#package")).to_have_value(re.compile("hamburgers"),timeout=15000)
   page.locator("#package").fill(json.dumps(package));page.locator("#reviewed").check()
   def approve():

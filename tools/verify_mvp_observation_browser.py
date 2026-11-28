@@ -18,7 +18,7 @@ def test(url):
         def route(r):
             if r.request.url.startswith(url+"/"):r.continue_()
             else:external.append(r.request.url);r.abort()
-        page.route("**/*",route);page.goto(url+"/v4")
+        page.route("**/*",route);page.goto(url+"/v4?view=expert")
         expect(page.locator("#package")).not_to_be_empty(timeout=15000)
         page.locator("#source").fill("n=int(input())\nprint(n*n)")
         page.locator("#manual-stdin").fill("3\n")
