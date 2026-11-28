@@ -22,7 +22,7 @@
  header.querySelector("p").textContent="فهم الخوارزميات، بالأدلة.";
  const classic=headerActions.querySelector("a");classic.textContent="النسخة السابقة";classic.target="_blank";classic.rel="noopener";
  const problem=by("demo").closest(".panel"),codePanel=by("source").closest(".panel"),settings=by("health").closest(".status");
- const intro=append(node("div","ux-intro"),node("p","ux-eyebrow","مساحة عمل AlgoXRay"),node("h2","","افهم حلّك خطوة بخطوة"),desc("أضف المسألة والكود. سنبحث عن الأخطاء ونشرح التنفيذ ونقيس الزمن."));
+ const intro=append(node("div","ux-intro"),node("h2","","جرّب حلّك على Codeforces"),desc("ألصق رابط المسألة وكود Python لتشاهد تنفيذ حلّك على الأمثلة المنشورة."));
  const modes=node("div","ux-modes");modes.setAttribute("role","group");modes.setAttribute("aria-label","هدف التحليل");
  let mode="full",tabs=null;
  const modeButtons=[];
@@ -62,14 +62,15 @@
   desc("يمكنك تعديل طريقة تجهيز المسألة وإضافة أمثلة مستقلة للمراجعة."),
   by("import-samples"),statementKind,manualSamples,by("intake-review"),by("draft-review")
  ]);
- const urlInput=disclosure("أو استورد رابط Codeforces","ux-url-input",[importToolbar]);
+ const importButton=by("import-problem"),problemUrl=by("problem-url");
+ const urlInput=append(node("div","ux-auto-url"),importToolbar);urlInput.id="ux-url-input";
  statementField.querySelector("textarea").dir="auto";
  const statementLabel=statementField.querySelector("label");
  if(statementLabel)statementLabel.textContent="نص المسألة";
  statementField.querySelector("textarea").rows=5;statementField.querySelector("textarea").placeholder="ألصق نص المسألة هنا…";
  const prepareDraft=by("draft"),draftReference=by("draft-reference");
  const prepareRow=append(node("div","ux-actions"),prepareDraft);
- const draftEntry=append(node("div","ux-draft-entry"),statementField,urlInput,prepareRow);
+ const draftEntry=append(node("div","ux-draft-entry"),statementField,prepareRow);
 
  const currentProblem=append(node("div",""),node("strong","","المسألة الحالية"),desc(""));currentProblem.id="ux-current-problem";
  packageReview.lastElementChild.insertBefore(draftReference,packageJson);
@@ -91,7 +92,10 @@
  const approvalMessage=node("p","ux-status-message");approvalMessage.hidden=true;
  const approvalDetails=disclosure("تفاصيل فحص المسألة","ux-approval-details",[approval]);approvalDetails.hidden=true;
  const ph=problem.querySelector("h2");packageReview.lastElementChild.append(newProblem,preflightNote);
- problem.replaceChildren(ph,problemHint,currentProblem,draftEntry,preparationHelp,savedProblem,packageReview,approvalMessage,approvalDetails);
+ const manualProblem=disclosure("نص المسألة والأمثلة المحفوظة","ux-manual-problem",[
+  problemHint,currentProblem,draftEntry,preparationHelp,savedProblem,packageReview,approvalMessage,approvalDetails
+ ]);
+ problem.replaceChildren(ph,urlInput,manualProblem);
  function syncApproval(){
   const raw=approval.textContent.trim();let state;
   try{state=JSON.parse(raw)}catch(e){}
@@ -175,6 +179,7 @@
  new MutationObserver(updateAvailable).observe(by("packages"),{childList:true});
  // Core code editor and task-specific controls. No request is sent by mode selection.
  const source=by("source"),trusted=label("trusted"),status=by("status"),run=by("run"),cancel=by("cancel");
+ source.placeholder="ألصق حلّك بلغة Python هنا…";
  const sourceFile=node("input");sourceFile.type="file";sourceFile.accept=".py,text/plain";sourceFile.hidden=true;sourceFile.id="ux-source-file";
  const fileButton=node("button","","تحميل ملف .py");fileButton.type="button";fileButton.id="ux-load-source";
  fileButton.onclick=()=>{if(!busy)sourceFile.click()};
@@ -206,12 +211,14 @@
  const performanceControls=append(node("div","ux-task-controls"),scale,profile);
  const fullButton=node("button","ux-primary");fullButton.id="ux-run-full";fullButton.type="button";
  const fullConsent=desc("");fullConsent.id="ux-full-consent";
- const actionRow=append(node("div","ux-actions"),fullButton,run,observe,benchmark,cancel);
+ importButton.textContent="استيراد النص وتشغيل الحل";importButton.classList.add("ux-primary");
+ const autoNote=desc("بالضغط تؤكد أنك تثق بالكود الظاهر وتشغّله محلياً على أمثلة Codeforces المنشورة.");autoNote.id="ux-auto-note";
+ const actionRow=append(node("div","ux-actions"),importButton,fullButton,run,observe,benchmark,cancel);
  const friendly=node("p","ux-status-message","");friendly.hidden=true;friendly.id="ux-friendly-status";friendly.setAttribute("role","status");
  const ch=codePanel.querySelector("h2"),editor=append(node("div","ux-editor-title"),node("span","","solution.py"),fileButton,sourceFile);
  trusted.classList.add("ux-field");aiLabel.classList.add("ux-field");
  run.textContent="ابحث عن الخطأ";observe.textContent="ابدأ التتبع";benchmark.textContent="قس زمن التنفيذ";cancel.textContent="إلغاء";
- codePanel.replaceChildren(ch,taskHint,editor,source,trusted,node("p","ux-safety","شغّل فقط كوداً تثق به. العزل يقلل المخاطر ولا يضمن أمان الكود العدائي."),diagnoseControls,independentControls,fullConsent,actionRow,advanced,timing,performanceControls,friendly,status);
+ codePanel.replaceChildren(ch,taskHint,editor,source,trusted,diagnoseControls,independentControls,autoNote,fullConsent,actionRow,advanced,timing,performanceControls,friendly,status);
  heading(codePanel,"2","الكود والتنفيذ");
  // Settings are available without presenting provider internals on the normal path.
  const settingItems=Array.from(settings.childNodes);
@@ -233,7 +240,9 @@
   modes.classList.toggle("ux-show-full",!full);
   if(!full)tools.open=true;
   timing.hidden=diagnose;sample.hidden=performance;run.hidden=!diagnose;observe.hidden=id!=="understand";benchmark.hidden=!performance;
-  fullButton.hidden=!full;fullConsent.hidden=!full;targetLabel.hidden=!full;
+  urlInput.hidden=!full;importButton.hidden=!full;autoNote.hidden=!full;targetLabel.hidden=!full;
+  if(!full)manualProblem.open=true;
+  syncManualAction();
   trusted.hidden=full;reviewLabel.hidden=full;approve.hidden=full;
   preflightNote.hidden=!full;updateAvailable();updateFullConsent();
   if(!full)separate.open=true;
@@ -241,6 +250,10 @@
   problemHint.textContent=full?"ألصق نص المسألة أو اختر مثالاً محفوظاً.":diagnose?"اختر مسألة معتمدة للبحث عن أخطاء الحل.":performance?"اختيار مسألة معتمدة مطلوب فقط لقياس النمو على مدخلات قانونية.":"يمكنك تخطي هذه الخطوة، أو تحميل مثال لتجربة التتبع.";
   if(id==="understand")sample.open=false;
  }
+ function syncManualAction(){
+  fullButton.hidden=fullConsent.hidden=mode!=="full"||!manualProblem.open;
+ }
+ manualProblem.addEventListener("toggle",syncManualAction);
  function updateFullConsent(){
   const draft=fullTarget.value==="draft";
   fullButton.textContent=busy?"جارٍ التحليل…":"حلّل لي الحل";
@@ -257,16 +270,12 @@
  }
  fullTarget.addEventListener("change",()=>{updateAvailable();updateFullConsent()});
  by("packages").addEventListener("change",()=>{if(by("packages").value){fullTarget.value="approved";updateAvailable();updateFullConsent()}});
- for(const id of ["load","draft","draft-reference","import-problem","prepare-statement"]){
+ for(const id of ["load","draft","draft-reference","prepare-statement"]){
   by(id).addEventListener("click",()=>{fullTarget.value="draft";updateAvailable();updateFullConsent()})
  }
  by("package").addEventListener("input",()=>{fullTarget.value="draft";updateAvailable();updateFullConsent()});
  by("statement").addEventListener("input",()=>{fullTarget.value="draft";updateAvailable();updateFullConsent()});
- let importedUrlText="";
- by("problem-url").addEventListener("input",()=>{fullTarget.value="draft";updateAvailable();updateFullConsent()});
- const originalImport=by("import-problem").onclick;
- by("import-problem").onclick=async()=>{if(busy)return;const raw=by("problem-url").value.trim(),before=activeIntake;await originalImport();if(activeIntake&&activeIntake!==before&&activeIntake.kind==="codeforces")importedUrlText=raw};
- by("load").addEventListener("click",()=>{by("problem-url").value="";importedUrlText=""});
+ by("load").addEventListener("click",()=>{problemUrl.value=""});
 
  new MutationObserver(()=>{updateAvailable();updateFullConsent()}).observe(approval,{childList:true,subtree:true,characterData:true});
 
@@ -338,7 +347,8 @@
  const fullExport=node("button","","حفظ التقرير الشامل");
  fullExport.type="button";fullExport.hidden=true;
  fullExport.id="ux-full-export";
- append(fullPanel,fullTitle,fullProgress,fullCards,desc("زمن التشغيل العادي يُقاس دون التتبع على المدخل المختار. عدد مرات التشغيل الفعلية يظل مسجلاً في الأدلة."),fullExport);
+ const sampleList=node("ul","ux-sample-list");sampleList.id="ux-sample-list";sampleList.hidden=true;
+ append(fullPanel,fullTitle,fullProgress,fullCards,sampleList,desc("زمن التشغيل العادي يُقاس دون التتبع على المدخل المختار. عدد مرات التشغيل الفعلية يظل مسجلاً في الأدلة."),fullExport);
  workspace.after(fullPanel);
  fullPanel.after(results,by("benchmark-results"),toolsPanel);
  let fullActive=false,fullCancelled=false,fullReport=null;
@@ -367,6 +377,95 @@
   const blob=new Blob([JSON.stringify(fullReport,null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="algoxray-comprehensive-"+fullReport.id+".json";a.click();URL.revokeObjectURL(url)
  };
+ function beginFull(title,message){
+  clearFull();fullActive=true;fullCancelled=false;
+  fullReport={format:"algoxray_comprehensive_report",version:1,id:crypto.randomUUID().replaceAll("-",""),status:"running",phases:[],scope:"Local composite report; individual phase reports retain their own IDs and budgets."};
+  fullTitle.textContent=title;fullPanel.hidden=false;sampleList.hidden=true;sampleList.replaceChildren();
+  for(const v of Object.values(fullValues)){v.textContent="بانتظار التنفيذ";delete v.parentElement.dataset.tone}
+  fullProgress.textContent=message;fullProgress.dataset.tone="neutral";
+  results.hidden=true;benchPanel.hidden=true;result=null;benchmarkResult=null;
+  setBusy(true);cancel.hidden=false;msg("status","");
+ }
+ async function phase(name,path,body){
+  if(fullCancelled)return null;
+  const id=crypto.randomUUID().replaceAll("-","");analysisId=id;
+  const data=await api(path,{...body,analysis_id:id});
+  if(data.analysis_id!==id||source.value!==body.source)throw Error("تغيّر الكود أثناء التشغيل. أعد المحاولة.");
+  fullReport.phases.push({name,data});analysisId=null;return data;
+ }
+ function finishFull(){
+  if(fullCancelled||fullReport.phases.some(({data})=>data.status==="cancelled"||data.stop_reason==="cancelled"||data.run_report?.stop_reason==="cancelled")){
+   fullReport.status="cancelled";fullProgress.textContent="أُلغي التحليل. النتائج المكتملة قبل الإلغاء محفوظة.";fullProgress.dataset.tone="warning";
+  }
+  for(const v of Object.values(fullValues))if(v.textContent==="بانتظار التنفيذ")v.textContent="لم تُنفّذ";
+  fullExport.hidden=!(fullReport.phases.length||fullReport.approval);analysisId=null;cancel.hidden=true;fullActive=false;setBusy(false);refreshModels().catch(()=>{});
+ }
+ async function measureFull(input,code,record){
+  fullProgress.textContent="جارٍ قياس زمن التشغيل على المدخل المعروض…";
+  const measured=await phase("benchmark","/api/v4/benchmark",{...input,source:code,trusted_local_source:true,
+   repetitions:Number(by("timing-repetitions").value),seconds:Number(by("timing-seconds").value)});
+  if(!measured)return false;
+  benchmarkResult=measured;showBenchmark();
+  const stats=measured.points?.[0]?.summary;
+  const wall=stats?.wall_ns?.median;
+  if(Number.isFinite(wall)){
+   fullValues.timing.replaceChildren(node("bdi","",(wall/1e6).toFixed(4)+" ms"),document.createTextNode(" · "),node("bdi","",stats.completed+"/"+stats.requested),document.createTextNode(" تشغيلات"));
+  }else fullValues.timing.textContent="لم يكتمل قياس صالح للزمن";
+  showRunReport(record);
+  return measured.stop_reason==="completed"&&stats?.completed===stats?.requested&&Number.isFinite(wall);
+ }
+ const sampleStatuses={exception:"توقف البرنامج بخطأ",timeout:"تجاوز المهلة المحلية"};
+ function sampleLabel(check){
+  if(check.status==="ok")return check.same_output?"طابق الخرج المنشور":"خرج مختلف عن المثال";
+  return sampleStatuses[check.status]||"تعذّر تشغيل المثال";
+ }
+ importButton.onclick=async()=>{
+  if(busy)return;
+  const url=problemUrl.value.trim(),code=source.value;
+  if(!url){msg("status","ألصق رابط مسألة Codeforces.");problemUrl.focus();return}
+  if(!code.trim()){msg("status","ألصق كود Python أو حمّل ملفه.");source.focus();return}
+  beginFull("نتيجة أمثلة Codeforces","جارٍ استيراد المسألة وتشغيل أمثلتها المنشورة…");
+  const settings=aiOptions(),local=settings.model.startsWith("qwen2.5-coder:");
+  const allowCloud=by("ai").checked&&settings.cloud_consent;
+  const modelOptions=local||allowCloud?settings:{model:"qwen2.5-coder:7b",cloud_consent:false,use_cache:false};
+  try{
+   const data=await phase("codeforces_samples","/api/v4/codeforces/run",{url,source:code,trusted_local_source:true,
+    use_ai:true,...modelOptions,seconds:Number(by("timing-seconds").value)});
+   if(!data)return;
+   fullTitle.textContent=data.problem.statement.split("\n")[0];
+   showRunReport(data);
+   const checks=data.checks,matched=checks.filter(c=>c.same_output===true).length,total=data.problem.samples.length;
+   sampleList.hidden=!checks.length;
+   for(const check of checks)sampleList.append(node("li","","المثال "+check.number+" · "+sampleLabel(check)));
+   fullValues.diagnosis.textContent=total?`${matched} من ${total} أمثلة طابقت الخرج المنشور`:"تعذر استخراج أمثلة كاملة من الصفحة";
+   fullValues.diagnosis.parentElement.dataset.tone=total>0&&matched===total?"positive":"warning";
+   if(data.witness){
+    result={...data,sample_attention:data.judgment.status==="example_difference"||["syntax_error","runtime_error","timeout"].includes(data.kind)};
+    sources={student:code,reference:""};side="student";index=0;show();
+    fullValues.trace.textContent=data.witness.student.events?.length?"الخطوات المسجلة للمثال "+data.selected_sample:"لم تُسجّل خطوات لهذا المثال";
+   }else fullValues.trace.textContent="لا تتوفر خطوات للعرض";
+   const stop=data.run_report.stop_reason;
+   if(fullCancelled||stop==="cancelled")return;
+   const canMeasure=data.witness?.student.status==="ok"&&stop==="completed";
+   const measured=canMeasure&&await measureFull({stdin:data.witness.stdin},code,data);
+   if(!canMeasure)fullValues.timing.textContent="تعذّر قياس تشغيل مكتمل";
+   fullReport.status=measured?"completed":"partial";
+   fullProgress.textContent=total?"النتائج تخص الأمثلة المنشورة. Codeforces يتحقق من الحل على اختبارات إضافية.":"استوردنا المسألة، ولم نجد أزواج مدخل وخرج يمكن تشغيلها.";
+   if(stop==="worker_unavailable")fullProgress.textContent="استوردنا المسألة، لكن محرك التشغيل المحلي غير متاح.";
+   if(stop.endsWith("budget_exhausted"))fullProgress.textContent="انتهت مهلة الفحص. الملخص يعرض الأمثلة التي شُغّلت.";
+   fullProgress.dataset.tone=measured?"neutral":"warning";
+  }catch(e){
+   fullReport.status="partial";fullReport.error=String(e.message||e);
+   const message=fullReport.error;
+   fullProgress.textContent=fullReport.phases.length?"تم فحص الأمثلة وتعذّر قياس الزمن.":
+    /invalid codeforces url|only public https|unsupported codeforces problem/i.test(message)?"استخدم رابط مسألة عام يبدأ بـ https://codeforces.com/.":
+    /Codeforces fetch unavailable|Redirect blocked/i.test(message)?"تعذّر جلب الصفحة من Codeforces. تأكد من الرابط والاتصال ثم أعد المحاولة.":
+    /Statement missing|sample pairs|bound/i.test(message)?"تعذّر استخراج أمثلة المسألة ضمن الحدود المدعومة.":
+    "تعذّر بدء الفحص. أعد المحاولة أو راجع حالة المحرك في تبويب متقدم.";
+   fullProgress.dataset.tone="warning";
+  }finally{finishFull()}
+ };
+ problemUrl.addEventListener("keydown",e=>{if(e.key==="Enter"&&!importButton.disabled){e.preventDefault();importButton.click()}});
  fullButton.onclick=async()=>{
   if(busy)return;
   const code=source.value,fromDraft=fullTarget.value==="draft",reviewWasVisible=packageReview.open&&Boolean(by("ux-preview-reference")?.open)&&Boolean(by("ux-preview-controls")?.open)&&(!by("ux-preview-provenance")||by("ux-preview-provenance").open);
@@ -380,8 +479,8 @@
   if(fromDraft&&authorForm.isDirty()){
    packageReview.open=true;author.open=true;msg("status","احفظ المرجع والاختبارات في نموذج المراجعة أولاً.");return
   }
-  if(fromDraft&&by("problem-url").value.trim()&&by("problem-url").value.trim()!==importedUrlText){
-   urlInput.open=true;msg("status","استورد الرابط أولاً قبل تحليل المسألة.");return
+  if(fromDraft&&problemUrl.value.trim()){
+   msg("status","استخدم «استيراد النص وتشغيل الحل» لاختبار الرابط الموجود.");return
   }
   if(fromDraft&&by("statement").value.trim()&&draft?.manifest?.statement!==by("statement").value){
    draftEntry.hidden=false;prepareDraft.focus();
@@ -389,19 +488,7 @@
   }
   const modelOptions=aiOptions(),useAI=by("ai").checked;
   if(useAI&&!modelOptions.model.startsWith("qwen2.5-coder:")&&!modelOptions.cloud_consent){settingsDetails.open=true;tools.open=true;settingsWarning.textContent="راجع موافقة إرسال البيانات إلى المزود السحابي أو اختر نموذجاً محلياً، ثم ارجع إلى الإدخال للتحليل.";settingsWarning.hidden=false;tabs?.select("advanced",true);msg("status",settingsWarning.textContent);return}
-  clearFull();fullActive=true;fullCancelled=false;
-  fullReport={format:"algoxray_comprehensive_report",version:1,id:crypto.randomUUID().replaceAll("-",""),status:"running",phases:[],scope:"Local composite report; individual phase reports retain their own IDs and budgets. Not a signature or general correctness proof."};
-  fullPanel.hidden=false;for(const v of Object.values(fullValues)){v.textContent="بانتظار التنفيذ";delete v.parentElement.dataset.tone}
-  fullProgress.textContent="جارٍ فحص المسألة…";fullProgress.dataset.tone="neutral";
-  results.hidden=true;by("benchmark-results").hidden=true;result=null;benchmarkResult=null;
-  setBusy(true);cancel.hidden=false;msg("status","");
-  async function phase(name,path,body){
-   if(fullCancelled)return null;
-   const id=crypto.randomUUID().replaceAll("-","");analysisId=id;
-   const data=await api(path,{...body,analysis_id:id});
-   if(data.analysis_id!==id||source.value!==code)throw Error("Run identity changed; no new stage started.");
-   fullReport.phases.push({name,data});analysisId=null;return data
-  }
+  beginFull("نتيجة التحليل الشامل","جارٍ فحص المسألة…");
   try{
    if(fromDraft){
     const preflight=await api("/api/v4/packages/preflight",{package:draft});
@@ -443,41 +530,29 @@
     fullValues.timing.textContent="لا يتوفر مدخل أو تنفيذ صالح للقياس";
     fullReport.status="partial";fullProgress.textContent="اكتمل الجزء المتاح من التحليل؛ تعذر قياس الزمن دون تتبع.";fullProgress.dataset.tone="warning";return
    }
-   fullProgress.textContent="جارٍ قياس زمن التشغيل الحقيقي على المدخل نفسه دون تتبع…";
-   const measured=await phase("benchmark","/api/v4/benchmark",{package_key:key,case:observed.witness.case,source:code,trusted_local_source:true,repetitions:Number(by("timing-repetitions").value),seconds:Number(by("timing-seconds").value)});
-   if(!measured)return;
-   benchmarkResult=measured;showBenchmark();
-   const stats=measured.points?.[0]?.summary;
-   const wall=stats?.wall_ns?.median;
-   if(Number.isFinite(wall)){
-    fullValues.timing.replaceChildren(node("bdi","",(wall/1e6).toFixed(4)+" ms"),document.createTextNode(" · "),node("bdi","",stats.completed+"/"+stats.requested),document.createTextNode(" تشغيلات"));
-   }else fullValues.timing.textContent="لم يكتمل قياس صالح للزمن";
-   showRunReport(analysis); // Keep analysis report accessible; composite export contains both reports.
-   fullReport.status=measured.stop_reason==="completed"&&stats?.completed===stats?.requested&&Number.isFinite(wall)?"completed":"partial";
+   const measured=await measureFull({package_key:key,case:observed.witness.case},code,analysis);
+   fullReport.status=measured?"completed":"partial";
    fullProgress.textContent=fullReport.status==="completed"?"اكتمل التحليل الشامل. اختر التبويب الذي تريد استكشافه.":"انتهى التحليل مع قياس جزئي أو غير متاح.";
    fullProgress.dataset.tone=fullReport.status==="completed"?"positive":"warning";
   }catch(e){
    fullReport.status="partial";fullReport.error=String(e.message||e);
-   fullProgress.textContent="تعذر إكمال إحدى المراحل: "+fullReport.error;fullProgress.dataset.tone="warning";
+   fullProgress.textContent=fullReport.error==="Invalid reference"?"أضف حلاً مرجعياً في قسم المراجعة ثم احفظه مع الاختبارات.":
+    fullReport.error.startsWith("Supply 2–8")?"أضف اختبارين مستقلين على الأقل مع نتائجهما، ثم احفظهما.":
+    "تعذر إكمال إحدى المراحل: "+fullReport.error;
+   fullProgress.dataset.tone="warning";
    if(!fullReport.phases.length&&fromDraft){packageReview.open=true;author.open=true;authorForm.refresh();tabs?.select("input",true)}
-  }finally{
-   if(fullCancelled||fullReport.phases.some(x=>x.data.status==="cancelled"||x.data.stop_reason==="cancelled")){
-    fullReport.status="cancelled";fullProgress.textContent="أُلغي التحليل؛ النتائج المكتملة قبل الإلغاء محفوظة.";fullProgress.dataset.tone="warning"
-   }
-   for(const v of Object.values(fullValues))if(v.textContent==="بانتظار التنفيذ")v.textContent="لم تُنفّذ";
-   fullExport.hidden=!(fullReport.phases.length||fullReport.approval);analysisId=null;cancel.hidden=true;fullActive=false;setBusy(false);refreshModels().catch(()=>{})
-  }
+  }finally{finishFull()}
  };
  const originalJump=jumpToEvidence;jumpToEvidence=function(...args){tabs?.select("advanced",true);advancedResult.open=true;trace.open=true;originalJump(...args)};
  for(const id of ["ast-tree","profile-table"])by(id).addEventListener("click",e=>{if(e.target.closest("button"))trace.open=true},true);
  const originalShow=show;show=function(){
   originalShow();
-  const manualResult=result.status==="manual_observation",profileResult=result.status==="profiled_execution";
-  resultTitle.textContent=manualResult?"نتيجة تتبع البرنامج":result.reused_search_trace?"مثال من التنفيذ الذي تم اختباره":profileResult?"نتيجة قياس التنفيذ":"وجدنا حالة فشل قابلة للمراجعة";
+  const manualResult=result.status==="manual_observation",profileResult=result.status==="profiled_execution",sample=result.status==="codeforces_samples";
+  resultTitle.textContent=sample?"المثال "+result.selected_sample+" من Codeforces":manualResult?"نتيجة تتبع البرنامج":result.reused_search_trace?"مثال من التنفيذ الذي تم اختباره":profileResult?"نتيجة قياس التنفيذ":"وجدنا حالة فشل قابلة للمراجعة";
   triplet.classList.toggle("ux-mismatch",result.status==="observed_mismatch"&&result.kind!=="exception");
   by("expected").parentElement.classList.add("ux-expected");
   by("actual").parentElement.classList.add("ux-actual");
-  resultCaution.textContent=manualResult?"النتيجة تخص المدخل اليدوي الذي أدخلته.":result.reused_search_trace?
+  resultCaution.textContent=sample?sampleLabel(result.checks.find(c=>c.number===result.selected_sample)):manualResult?"النتيجة تخص المدخل اليدوي الذي أدخلته.":result.reused_search_trace?
    "هذه عينة من الحالات المجربة. راجع نتيجة البحث في ملخص التحليل.":profileResult?
    "النتيجة تخص هذا المدخل. قياس الأسطر متاح في تبويب الأداء.":"أعاد المحرك التحقق من الفشل على هذا المدخل.";
   advancedResult.open=mode!=="full";trace.open=true;comparison.open=false;profiling.open=profileResult;aiResults.open=Boolean(result.hypotheses?.length);
@@ -485,7 +560,7 @@
   if(tabs)tabs.installStory(story);else storySlot.replaceChildren(story);
   if(!manualResult){
    by("actual").previousElementSibling.textContent="خرج برنامجك";
-   by("expected").previousElementSibling.textContent=result.witness.judgment?.reference_output_is_example?"مثال لخرج مقبول":"الخرج المرجعي";
+   by("expected").previousElementSibling.textContent=sample?"الخرج المنشور في المثال":result.witness.judgment?.reference_output_is_example?"مثال لخرج مقبول":"الخرج المرجعي";
   }
   if(result.reused_search_trace)msg("ai-state","تم استخدام تتبع من البحث نفسه؛ لم يُطلب تشخيص AI إضافي لهذه الحالة.");
   raw.open=false;

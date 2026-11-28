@@ -14,8 +14,8 @@ $("model").onchange=()=>{$("cloud-consent").checked=false;refreshModels().catch(
 
 function setBusy(value){busy=value;if(value){lastRunReport=null;$("run-report-panel").hidden=true}for(const id of ["session-seconds","analysis-case","run-report-import","prepare-replay","run-report-export","candidate","patch-reviewed","package","reviewed","trusted","packages","demo","generator","guided","spectrum","count","reduce-count","observe-run","plain-benchmark","scaling-benchmark","manual-stdin","manual-expected","sample-reviewed","sample-comparison","size-field","size-values","timing-repetitions","timing-seconds","prepare-statement","statement","statement-kind","manual-samples","draft-schema","problem-url","approve","run","draft","load","correct","mutant","propose","verify-patch","model","cloud-consent","import-problem","draft-reference","profile-run","source","profile-case","ai","clear-cache","use-cache","audit-reference"])$(id).disabled=value}
 async function packages(selected){const p=await api("/api/v4/packages");$("packages").replaceChildren();for(const x of p){const opt=document.createElement("option");opt.value=x.key;opt.textContent=x.manifest.title+" · "+x.key.slice(0,8);$("packages").append(opt)}if(selected)$("packages").value=selected;}
-function loadDemo(){activeIntake=null;preparedStatement=null;$("intake-review").hidden=true;$("manual-samples").value="";activeDemo=$("demo").value;const d=demos[activeDemo];if(!d)return;$("package").value=JSON.stringify(d.package,null,2);$("statement").value=d.package.manifest.statement;$("source").value=d.mutant;$("reviewed").checked=false;$("trusted").checked=false;msg("approval","مسودة مثال؛ يجب المراجعة قبل الاعتماد.");}
-$("load").onclick=loadDemo;
+function loadDemo(includeSource=true){activeIntake=null;preparedStatement=null;$("intake-review").hidden=true;$("manual-samples").value="";activeDemo=$("demo").value;const d=demos[activeDemo];if(!d)return;$("package").value=JSON.stringify(d.package,null,2);$("statement").value=d.package.manifest.statement;if(includeSource)$("source").value=d.mutant;$("reviewed").checked=false;$("trusted").checked=false;msg("approval","مسودة مثال؛ يجب المراجعة قبل الاعتماد.");}
+$("load").onclick=()=>loadDemo();
 $("correct").onclick=()=>{$("source").value=demos[activeDemo].correct;$("trusted").checked=false};
 $("mutant").onclick=()=>{$("source").value=demos[activeDemo].mutant;$("trusted").checked=false};
 function displayIntake(r){
@@ -46,9 +46,9 @@ function show(){
  profileSelection=null;$("ast-tree").dataset.sourceKey="";$("candidate").value="";$("patch-reviewed").checked=false;
  for(const id of ["patch-status","patch-diff","repair-history-view"])msg(id,"");
  if(result.package_sha256)refreshRepairs().catch(()=>{});
- const w=result.witness;const manual=result.status==="manual_observation";
+ const w=result.witness;const manual=result.status==="manual_observation",sample=result.status==="codeforces_samples";
  $("results").hidden=false;$("benchmark-results").hidden=true;
- $("reference").disabled=manual;$("cmp-reference").closest("div").hidden=manual;
+ $("reference").disabled=manual||sample;$("cmp-reference").closest("div").hidden=manual||sample;
  $("expected").previousElementSibling.textContent=manual?"خرج عينة معلوم (إن روجع)":w.judgment?.reference_output_is_example?"مثال خرج مقبول (ليس الوحيد)":"المرجع";
  $("actual").previousElementSibling.textContent=manual?"خرج البرنامج":"الطالب";
  msg("stdin",w.stdin);msg("expected",manual?(result.judgment.expected??"لا يوجد مرجع متحقق"):w.reference.stdout);msg("actual",w.student.stdout||w.student.detail||w.student.status);
@@ -278,7 +278,7 @@ $("play-trace").onclick=()=>{
  },550);
 };
 $("export").onclick=()=>{if(!result)return;const u=URL.createObjectURL(new Blob([JSON.stringify(result,null,2)],{type:"application/json"}));const a=document.createElement("a");a.href=u;a.download="algoxray-v4-evidence.json";a.click();URL.revokeObjectURL(u)};
-(async()=>{try{token=(await api("/api/session")).custom_code_token;await refreshModels();demos=await (await fetch("/static/v4-demos.json")).json();loadDemo();await packages()}catch(e){msg("health",e.message)}})();
+(async()=>{try{token=(await api("/api/session")).custom_code_token;demos=await (await fetch("/static/v4-demos.json")).json();loadDemo(!document.body.classList.contains("guided-workspace")&&!$("source").value);await packages()}catch(e){msg("health",e.message)}finally{refreshModels().catch(e=>msg("health",e.message))}})();
 
 function repairBody(){return {package_key:result.package_sha256,source:result.student_source,case:result.witness.case,original_case:result.original_case||null}}
 $("propose").onclick=async()=>{if(busy||!result)return;setBusy(true);msg("patch-status","Generating a proposal using the selected model...");try{const r=await api("/api/v4/repair/propose",{...repairBody(),...aiOptions()});$("candidate").value=r.candidate;$("patch-reviewed").checked=false;msg("patch-status",r.status+" — "+r.rationale);msg("patch-diff",r.diff||"")}catch(e){msg("patch-status",e.message)}finally{setBusy(false);refreshModels().catch(()=>{})}};

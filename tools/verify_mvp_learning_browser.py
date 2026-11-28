@@ -21,7 +21,7 @@ def test(url,folder):
             else:external.append(r.request.url);r.abort()
         page.route("**/*",route)
         page.goto(url+"/v4")
-        expect(page.locator("#source")).not_to_be_empty(timeout=15000)
+        expect(page.locator("#package")).not_to_be_empty(timeout=15000)
         def tab(name):page.locator("#ux-tab-"+name).click()
         tab("advanced")
         page.locator("#ux-tools > summary").click()

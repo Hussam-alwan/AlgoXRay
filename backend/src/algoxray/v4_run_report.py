@@ -8,6 +8,7 @@ STAGES={
     "analysis":("validation","search","guided_search","shrink","replay","spectrum","structure","diagnosis","guided_confirmation"),
     "profile":("validation","reference","student","structure","diagnosis"),
     "observe":("validation","student","structure"),
+    "codeforces_samples":("validation","import","student","structure","diagnosis"),
     "benchmark":("validation","measurement"),
     "repair":("validation","reproduce","regression"),
 }

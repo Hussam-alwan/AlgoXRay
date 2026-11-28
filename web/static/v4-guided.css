@@ -17,6 +17,11 @@ body.guided-workspace{background:var(--ux-bg);color:var(--ux-ink);font:15px/1.75
 .ux-eyebrow{font-size:12px;font-weight:700;color:var(--ux-primary);margin:0 0 6px}
 .ux-intro h2{font-size:clamp(24px,3vw,34px);font-weight:750;line-height:1.35;margin:0 0 5px;letter-spacing:-.4px}
 .ux-intro p{color:var(--ux-muted);margin:0;max-width:780px}
+.guided-workspace .ux-auto-url .toolbar{display:grid;margin:0 0 16px}
+.guided-workspace .ux-auto-url input{width:100%;direction:ltr}
+.guided-workspace #import-problem{width:100%;min-height:46px}
+#ux-auto-note{margin:10px 0 0}
+.ux-sample-list{margin-block:8px 14px;padding-inline-start:24px;color:var(--ux-muted);font-size:13px}
 .ux-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .guided-workspace .ux-mode{display:flex;flex-direction:column;gap:5px;align-items:flex-start;text-align:start;min-width:0;padding:17px 18px;background:white;color:var(--ux-ink);border:1px solid var(--ux-line);border-radius:var(--ux-radius);min-height:108px;box-shadow:0 2px 5px #182c4c06;white-space:normal}
 .ux-mode strong{font-size:16px}

@@ -42,7 +42,6 @@ def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
     if result["status"]=="cancelled":
         return ledger.finish({"status":"cancelled"})
     status=result["status"]
-    outcome="syntax_error" if status=="exception" and result.get("detail") in ("SyntaxError","IndentationError","TabError") else "runtime_error" if status=="exception" else status
     if expected is None or not expected_reviewed:
         judgment={"status":"oracle_unavailable","authority":"none"}
     elif status!="ok":
@@ -53,23 +52,27 @@ def observe_source(source,stdin,*,expected=None,expected_reviewed=False,
     judgment.update(policy=comparison,expected=expected if expected_reviewed else None,
                     input_validity="not_verified_against_problem",general_correctness_claim=False)
     ledger.enter("structure")
-    graph=with_loops(attach_profile(observed_graph(result.get("events",[]),source),result),source,result)
-    graph["output_chain"]=output_chain(source,result,graph)
-    from .v4_branches import observed_branches
-    graph["branches"]=observed_branches(source,result,cfg=graph["static_cfg"])
-    from .v4_localization import localize
-    progress=execution_diagnostics(source,result)
-    localization=localize(source,{"student":result},graph,diagnostics=progress)
-
     return ledger.finish({"status":"manual_observation",
-            "kind":outcome,"judgment":judgment,"source_sha256":sha(source),"student_source":source,
-            "mode":mode,"witness":{"stdin":stdin,"case":None,"student":result,
-                     "reference":{"status":"not_run","stdout":"","events":[],"trace_status":"not_run"}},
-            "reference_source":"","student_graph":graph,
-            "reference_graph":observed_graph([],""),
-            "execution_diagnostics":progress,"evidence_localization":localization,
+            "judgment":judgment,"source_sha256":sha(source),"mode":mode,
+            **observation_evidence(source,stdin,result),
             "replay_count":0,"attempts":1,"ai_status":"disabled",
             "scope":"One manually supplied input; legality and general correctness not verified. No reference program ran. Sample comparison, if requested and reviewed, is an observation only."})
+
+def observation_evidence(source,stdin,result,*,example_output=""):
+    from .v4_branches import observed_branches
+    from .v4_localization import localize
+
+    status=result["status"]
+    outcome="syntax_error" if status=="exception" and result.get("detail") in ("SyntaxError","IndentationError","TabError") else "runtime_error" if status=="exception" else status
+    graph=with_loops(attach_profile(observed_graph(result.get("events",[]),source),result),source,result)
+    graph["output_chain"]=output_chain(source,result,graph)
+    graph["branches"]=observed_branches(source,result,cfg=graph["static_cfg"])
+    progress=execution_diagnostics(source,result)
+    witness={"stdin":stdin,"case":None,"student":result,
+             "reference":{"status":"not_run","stdout":example_output,"events":[],"trace_status":"not_run"}}
+    return {"kind":outcome,"witness":witness,"reference_source":"","student_graph":graph,
+            "reference_graph":observed_graph([],""),"execution_diagnostics":progress,
+            "evidence_localization":localize(source,witness,graph,diagnostics=progress)}
 
 def generated_size_inputs(m,size_field,sizes,seed):
     """Constrain an explicitly selected scalar or T, never replace original constraints."""

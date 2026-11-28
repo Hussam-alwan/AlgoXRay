@@ -6,7 +6,7 @@ window.AlgoXRayTabs=(()=>{
  const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
  const add=(p,...children)=>{p.append(...children.filter(Boolean));return p};
  const button=(title,fn)=>{const b=el("button","",title);b.type="button";b.onclick=fn;return b};
- const primaryOps=new Set(["analysis","observe","profile","benchmark"]);
+ const primaryOps=new Set(["analysis","observe","profile","benchmark","codeforces_samples"]);
  const verdict={
   observed_mismatch:"وجدنا حالة فشل",no_witness_found:"لم نجد خطأ في الحالات المجربة",
   manual_observation:"سجلنا تنفيذ البرنامج",profiled_execution:"سجلنا تنفيذ حالة واحدة",
@@ -122,9 +122,9 @@ window.AlgoXRayTabs=(()=>{
    const faultAvailable=!results.hidden&&faultSlot.childElementCount>0;
    const hotAvailable=!results.hidden&&hotSlot.childElementCount>0;
    const measured=!benchPanel.hidden;
-   const fault=s.result?.status==="observed_mismatch";
+   const fault=s.result?.status==="observed_mismatch"||s.result?.sample_attention;
    tabs.fault.classList.toggle("ux-tab-alert",Boolean(fault&&has));
-   tabs.fault.setAttribute("aria-label",fault?"مكان الخطأ، توجد حالة فشل":"مكان الخطأ");
+   tabs.fault.setAttribute("aria-label",fault?"مكان الخطأ، توجد ملاحظة تحتاج مراجعة":"مكان الخطأ");
    emptyExec.hidden=traceAvailable;emptyFault.hidden=faultAvailable;emptyPerf.hidden=hotAvailable||measured;
    emptyFault.querySelector("p").textContent=record?.status==="no_witness_found"||s.fullReport?.phases?.[0]?.data?.status==="no_witness_found"?
     "لم نجد حالة فشل في المدخلات المجربة؛ هذا لا يثبت صحة الحل لكل الحالات.":

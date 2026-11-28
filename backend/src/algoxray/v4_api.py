@@ -112,6 +112,18 @@ class Benchmark(BaseModel):
     seconds:float=Field(default=1.0,ge=.05,le=3)
     analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
 
+class CodeforcesRun(BaseModel):
+    model_config=ConfigDict(extra="forbid",strict=True)
+    url:str=Field(min_length=1,max_length=250)
+    source:str=Field(min_length=1,max_length=32768)
+    seconds:float=Field(default=1.0,ge=.05,le=3)
+    trusted_local_source:bool=False
+    use_ai:bool=False
+    model:str="qwen2.5-coder:7b"
+    cloud_consent:bool=False
+    use_cache:bool=False
+    analysis_id:str|None=Field(default=None,pattern=r'^[a-f0-9]{32}$')
+
 def router_for(require_loopback,token):
     router=APIRouter(prefix="/api/v4");lock=threading.Lock();active={};active_lock=threading.Lock()
     store=PackageStore(os.getenv("ALGOXRAY_V4_PACKAGE_STORE") or ROOT/"results"/"v4-packages")
@@ -282,6 +294,16 @@ def router_for(require_loopback,token):
         return local_observation(body,request,lambda c:observe_source(
             body.source,body.stdin,expected=body.expected,expected_reviewed=body.expected_reviewed,
             comparison=body.comparison,mode=body.mode,seconds=body.seconds,cancel=c,run_id=body.analysis_id))
+
+    @router.post("/codeforces/run")
+    def run_codeforces(body:CodeforcesRun,request:Request):
+        from .v4_codeforces import inspect_samples
+        def make_provider():
+            return provider_for(body.model,body.cloud_consent,use_cache=body.use_cache)
+
+        return local_observation(body,request,lambda c:inspect_samples(
+            body.url,body.source,seconds=body.seconds,cancel=c,run_id=body.analysis_id,
+            make_provider=make_provider if body.use_ai else None))
 
     @router.post("/benchmark")
     def benchmark(body:Benchmark,request:Request):

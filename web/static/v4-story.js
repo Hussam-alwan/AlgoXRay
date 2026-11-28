@@ -194,13 +194,17 @@ window.AlgoXRayStory=(()=>{
  }
  function findings(report,trace,onTrace){
   const loc=report.evidence_localization||{},rows=Array.isArray(loc.ranked)?loc.ranked:[];
-  const host=section("ماذا حدث في حالة الفشل؟");
+  const sample=report.status==="codeforces_samples";
+  const host=section(sample?"ماذا حدث على المثال المنشور؟":"ماذا حدث في حالة الفشل؟");
   host.id="story-findings";
-  if(report.status!=="observed_mismatch"){
+  if(report.status!=="observed_mismatch"&&!report.sample_attention){
    host.append(p("هذه لقطة من التنفيذ، وليست حالة فشل مثبتة؛ لن نعرض أسطراً على أنها أخطاء."));
    return host;
   }
-  host.append(compareWitness(report));
+  if(sample){
+   if(report.judgment.status==="example_difference")host.append(p("خرج البرنامج مختلف عن المثال المنشور. بعض المسائل تقبل أكثر من خرج، لذلك راجع النتيجة حسب نص المسألة."));
+   if(report.kind==="timeout")host.append(p("تجاوز التنفيذ المهلة المحلية على هذا المدخل."));
+  }else host.append(compareWitness(report));
   const lines=(report.student_source||"").split(/\r\n?|\n/);
   const candidates=rows.filter(r=>Number.isInteger(r.line)&&r.line>0&&r.line<=lines.length).slice(0,3);
   const judgment=report.witness?.judgment,reasonText={
@@ -210,7 +214,7 @@ window.AlgoXRayStory=(()=>{
    solution_exists:"يوجد زوج صالح، بينما أفاد الحل بعدم وجود حل."
   };
   if(judgment?.status==="rejected"&&reasonText[judgment.reason])host.append(p(reasonText[judgment.reason]));
-  if(report.kind==="exception"&&report.witness?.student?.detail)host.append(p("توقف البرنامج بسبب استثناء أبلغ عنه العامل: "+report.witness.student.detail+"."));
+  if(report.witness.student.status==="exception"&&report.witness.student.detail)host.append(p("توقف البرنامج أثناء التشغيل: "+report.witness.student.detail+"."));
   const review=add(el("div","story-fault-review"),el("h4","","سطور تستحق المراجعة"),p("الترتيب مبني على الأدلة المتوفرة. قد يكون السبب في موضع آخر."));
   host.append(review);
   const reviewGrid=el("div","story-fault-grid"),reviewActions=el("div","story-fault-actions");
@@ -224,7 +228,7 @@ window.AlgoXRayStory=(()=>{
    }
    add(review,add(reviewGrid,map,reviewActions));
   }
-  if(!candidates.length)host.append(p("وجدنا اختلافاً أو استثناء، لكن الأدلة لا تكفي لتحديد موضع السبب. قد يكون شرط أو سطر مفقوداً."));
+  if(!candidates.length)host.append(p("الأدلة المتوفرة لا تكفي لتحديد سطر بعينه."));
   for(const [i,r] of candidates.entries()){
    const b=button("",()=>{
     const id=r.event_ids?.find(x=>report.witness.student.events?.some(e=>e.event_id===x&&e.line===r.line));
@@ -312,6 +316,7 @@ window.AlgoXRayStory=(()=>{
   if(!report?.witness)return host;
   const trace=timeline(report,onEvidence);
   if(report.status==="observed_mismatch")add(host,findings(report,trace,onTrace),shrink(report));
+  if(report.sample_attention)host.append(findings(report,trace,onTrace));
   add(host,trace.host,hotspots(report,trace,onTrace));host.stopPlayback=()=>trace.stop?.();
   return host;
  }
